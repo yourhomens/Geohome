@@ -26,21 +26,19 @@
 }
 
 body{
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
     background:var(--bg);
     color:var(--dark);
 }
 
-button,
-select,
-input{
+button,input,select{
     font-family:inherit;
 }
 
 header{
     background:white;
     border-bottom:1px solid var(--border);
-    padding:16px 5%;
+    padding:15px 5%;
     display:flex;
     align-items:center;
     gap:30px;
@@ -49,6 +47,8 @@ header{
     z-index:100;
 }
 
+/* ================= LOGO ================= */
+
 .logo{
     display:flex;
     align-items:center;
@@ -56,44 +56,36 @@ header{
     min-width:190px;
 }
 
-.logo-icon{
-    width:42px;
-    height:36px;
-    position:relative;
+.logo-mark{
+    width:43px;
+    height:43px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-.logo-icon:before{
-    content:"";
-    position:absolute;
-    left:5px;
-    top:9px;
-    width:28px;
-    height:23px;
-    border:3px solid var(--olive);
-    border-top:none;
-}
-
-.logo-icon:after{
-    content:"";
-    position:absolute;
-    width:23px;
-    height:23px;
-    left:7px;
-    top:1px;
-    border-left:3px solid var(--olive);
-    border-top:3px solid var(--olive);
-    transform:rotate(45deg);
+.logo-mark svg{
+    width:43px;
+    height:43px;
+    fill:none;
+    stroke:var(--olive);
+    stroke-width:3;
+    stroke-linecap:round;
+    stroke-linejoin:round;
 }
 
 .logo-text{
     font-size:24px;
     font-weight:800;
     color:var(--dark);
+    letter-spacing:-.5px;
 }
 
 .logo-text span{
     color:var(--olive);
 }
+
+/* ================= MENU ================= */
 
 nav{
     display:flex;
@@ -114,7 +106,7 @@ nav a:hover{
 .header-right{
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:8px;
 }
 
 .language{
@@ -125,8 +117,8 @@ nav a:hover{
 }
 
 .login{
-    text-decoration:none;
     color:var(--dark);
+    text-decoration:none;
     font-weight:600;
     padding:10px;
 }
@@ -140,13 +132,13 @@ nav a:hover{
     font-weight:700;
 }
 
-/* HERO */
+/* ================= HERO ================= */
 
 .hero{
     min-height:530px;
     background:
-        linear-gradient(rgba(30,38,28,.40),rgba(30,38,28,.62)),
-        url("https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85");
+    linear-gradient(rgba(30,38,28,.42),rgba(30,38,28,.64)),
+    url("https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85");
     background-size:cover;
     background-position:center;
     display:flex;
@@ -172,7 +164,7 @@ nav a:hover{
     margin-bottom:35px;
 }
 
-/* SEARCH */
+/* ================= SEARCH ================= */
 
 .search-box{
     background:white;
@@ -246,7 +238,7 @@ nav a:hover{
     cursor:pointer;
 }
 
-/* FILTERS */
+/* ================= FILTERS ================= */
 
 .filters{
     max-width:1200px;
@@ -273,7 +265,7 @@ nav a:hover{
     color:var(--olive-dark);
 }
 
-/* SECTIONS */
+/* ================= SECTIONS ================= */
 
 .section{
     max-width:1200px;
@@ -298,7 +290,7 @@ nav a:hover{
     font-weight:600;
 }
 
-/* CARDS */
+/* ================= CARDS ================= */
 
 .properties{
     display:grid;
@@ -382,7 +374,7 @@ nav a:hover{
     font-size:13px;
 }
 
-/* MAP */
+/* ================= MAP ================= */
 
 .map-section{
     background:white;
@@ -396,8 +388,8 @@ nav a:hover{
     margin:auto;
     border-radius:18px;
     background:
-        linear-gradient(rgba(233,237,227,.78),rgba(233,237,227,.78)),
-        url("https://images.unsplash.com/photo-1524666041070-9cff998a5d6b?auto=format&fit=crop&w=1600&q=80");
+    linear-gradient(rgba(233,237,227,.78),rgba(233,237,227,.78)),
+    url("https://images.unsplash.com/photo-1524666041070-9cff998a5d6b?auto=format&fit=crop&w=1600&q=80");
     background-size:cover;
     position:relative;
     overflow:hidden;
@@ -423,7 +415,7 @@ nav a:hover{
     box-shadow:0 8px 25px rgba(0,0,0,.12);
 }
 
-/* CTA */
+/* ================= CTA ================= */
 
 .cta{
     max-width:1200px;
@@ -461,7 +453,7 @@ nav a:hover{
     white-space:nowrap;
 }
 
-/* FOOTER */
+/* ================= FOOTER ================= */
 
 footer{
     background:#20251f;
@@ -495,745 +487,4 @@ footer a:hover{
 }
 
 .social{
-    margin-top:18px;
-    display:flex;
-    gap:9px;
-}
-
-.social a{
-    border:1px solid #4b524a;
-    padding:9px 11px;
-    border-radius:8px;
-}
-
-/* RESPONSIVE */
-
-@media(max-width:950px){
-
-    header{
-        flex-wrap:wrap;
-    }
-
-    nav{
-        display:none;
-    }
-
-    .search-main{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .search-btn{
-        padding:14px;
-    }
-
-    .properties{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .footer-grid{
-        grid-template-columns:1fr 1fr;
-    }
-}
-
-@media(max-width:600px){
-
-    header{
-        padding:14px 4%;
-    }
-
-    .hero{
-        min-height:600px;
-        padding:40px 15px;
-    }
-
-    .hero h1{
-        font-size:34px;
-    }
-
-    .hero p{
-        font-size:16px;
-    }
-
-    .search-main{
-        grid-template-columns:1fr;
-    }
-
-    .tabs{
-        overflow-x:auto;
-    }
-
-    .tabs button{
-        white-space:nowrap;
-    }
-
-    .properties{
-        grid-template-columns:1fr;
-    }
-
-    .cta-box{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .footer-grid{
-        grid-template-columns:1fr;
-    }
-
-    .header-right{
-        width:100%;
-        justify-content:flex-end;
-    }
-}
-</style>
-</head>
-
-<body>
-
-<!-- HEADER -->
-
-<header>
-
-    <div class="logo">
-        <div class="logo-icon"></div>
-        <div class="logo-text">Geo<span>Home</span></div>
-    </div>
-
-    <nav>
-        <a href="#" data-ka="ყიდვა" data-ru="Продажа" data-en="Buy">ყიდვა</a>
-        <a href="#" data-ka="ქირაობა" data-ru="Аренда" data-en="Rent">ქირაობა</a>
-        <a href="#" data-ka="გირავდება" data-ru="Залог" data-en="Mortgage">გირავდება</a>
-        <a href="#" data-ka="კომერციული" data-ru="Коммерческая" data-en="Commercial">კომერციული</a>
-        <a href="#" data-ka="ახალი პროექტები" data-ru="Новостройки" data-en="New projects">ახალი პროექტები</a>
-    </nav>
-
-    <div class="header-right">
-
-        <select class="language" id="language">
-            <option value="ka">🇬🇪 GE</option>
-            <option value="ru">🇷🇺 RU</option>
-            <option value="en">🇬🇧 EN</option>
-        </select>
-
-        <a href="#" class="login"
-           data-ka="შესვლა"
-           data-ru="Войти"
-           data-en="Login">შესვლა</a>
-
-        <a href="#"
-           class="add-btn"
-           data-ka="+ განცხადება"
-           data-ru="+ Объявление"
-           data-en="+ Add listing">+ განცხადება</a>
-
-    </div>
-
-</header>
-
-
-<!-- HERO -->
-
-<section class="hero">
-
-    <div class="hero-content">
-
-        <h1 id="heroTitle">იპოვე უძრავი ქონება საქართველოში</h1>
-
-        <p id="heroSubtitle">
-            იყიდე ან იქირავე სასურველი სახლი, ბინა ან კომერციული ფართი.
-        </p>
-
-        <div class="search-box">
-
-            <div class="tabs">
-
-                <button class="active"
-                    data-ka="იყიდება"
-                    data-ru="Продажа"
-                    data-en="For sale">
-                    იყიდება
-                </button>
-
-                <button
-                    data-ka="ქირავდება"
-                    data-ru="Аренда"
-                    data-en="For rent">
-                    ქირავდება
-                </button>
-
-                <button
-                    data-ka="გირავდება"
-                    data-ru="Залог"
-                    data-en="Mortgage">
-                    გირავდება
-                </button>
-
-            </div>
-
-
-            <div class="search-main">
-
-                <div class="field">
-
-                    <label data-ka="📍 მდებარეობა"
-                           data-ru="📍 Местоположение"
-                           data-en="📍 Location">
-                        📍 მდებარეობა
-                    </label>
-
-                    <input type="text"
-                           placeholder="ქალაქი, უბანი ან ქუჩა"
-                           data-placeholder-ka="ქალაქი, უბანი ან ქუჩა"
-                           data-placeholder-ru="Город, район или улица"
-                           data-placeholder-en="City, district or street">
-                </div>
-
-
-                <div class="field">
-
-                    <label data-ka="🏠 ქონების ტიპი"
-                           data-ru="🏠 Тип недвижимости"
-                           data-en="🏠 Property type">
-                        🏠 ქონების ტიპი
-                    </label>
-
-                    <select>
-                        <option data-ka="ყველა ტიპი" data-ru="Все типы" data-en="All types">ყველა ტიპი</option>
-                        <option data-ka="ბინა" data-ru="Квартира" data-en="Apartment">ბინა</option>
-                        <option data-ka="სახლი" data-ru="Дом" data-en="House">სახლი</option>
-                        <option data-ka="კომერციული" data-ru="Коммерческая" data-en="Commercial">კომერციული</option>
-                        <option data-ka="მიწა" data-ru="Земля" data-en="Land">მიწა</option>
-                    </select>
-
-                </div>
-
-
-                <div class="field">
-
-                    <label data-ka="🚪 ოთახები"
-                           data-ru="🚪 Комнаты"
-                           data-en="🚪 Rooms">
-                        🚪 ოთახები
-                    </label>
-
-                    <select>
-                        <option>ნებისმიერი</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4+</option>
-                    </select>
-
-                </div>
-
-
-                <div class="field">
-
-                    <label data-ka="💰 ფასი"
-                           data-ru="💰 Цена"
-                           data-en="💰 Price">
-                        💰 ფასი
-                    </label>
-
-                    <input type="text"
-                           placeholder="მაგ. $100,000"
-                           data-placeholder-ka="მაგ. $100,000"
-                           data-placeholder-ru="Например $100,000"
-                           data-placeholder-en="e.g. $100,000">
-
-                </div>
-
-
-                <button class="search-btn"
-                        data-ka="🔍 ძებნა"
-                        data-ru="🔍 Поиск"
-                        data-en="🔍 Search">
-                    🔍 ძებნა
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- QUICK FILTERS -->
-
-<section class="filters">
-
-    <div class="filter-row">
-
-        <button class="filter-chip">🏢 ბინა</button>
-        <button class="filter-chip">🏡 სახლი</button>
-        <button class="filter-chip">🌳 მიწა</button>
-        <button class="filter-chip">🏬 კომერციული</button>
-        <button class="filter-chip">🏖️ აგარაკი</button>
-        <button class="filter-chip">🏗️ ახალი პროექტი</button>
-        <button class="filter-chip">👤 მესაკუთრე</button>
-        <button class="filter-chip">🏢 აგენტი</button>
-        <button class="filter-chip">🛋️ ავეჯით</button>
-
-    </div>
-
-</section>
-
-
-<!-- MOST VIEWED -->
-
-<section class="section">
-
-    <div class="section-head">
-
-        <h2>🔥 ყველაზე ნახვადი</h2>
-
-        <a href="#">ყველას ნახვა →</a>
-
-    </div>
-
-
-    <div class="properties">
-
-        <div class="card">
-
-            <div class="card-img"
-                 style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80');">
-
-                <div class="badge">🔥 TOP</div>
-                <button class="heart">♡</button>
-
-            </div>
-
-            <div class="card-body">
-
-                <div class="price">$145,000</div>
-
-                <div class="address">📍 თბილისი, საბურთალო</div>
-
-                <div class="details">
-                    <span>🛏 3 ოთახი</span>
-                    <span>📐 82 მ²</span>
-                    <span>🏢 7/12</span>
-                </div>
-
-                <div class="owner">
-                    👤 მესაკუთრე · 👁 1,248 ნახვა
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-img"
-                 style="background-image:url('https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80');">
-
-                <div class="badge">⭐ VIP</div>
-                <button class="heart">♡</button>
-
-            </div>
-
-            <div class="card-body">
-
-                <div class="price">$210,000</div>
-
-                <div class="address">📍 თბილისი, ვაკე</div>
-
-                <div class="details">
-                    <span>🛏 4 ოთახი</span>
-                    <span>📐 115 მ²</span>
-                    <span>🏢 4/8</span>
-                </div>
-
-                <div class="owner">
-                    🏢 სააგენტო · 👁 986 ნახვა
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-img"
-                 style="background-image:url('https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=900&q=80');">
-
-                <button class="heart">♡</button>
-
-            </div>
-
-            <div class="card-body">
-
-                <div class="price">$98,000</div>
-
-                <div class="address">📍 თბილისი, დიდუბე</div>
-
-                <div class="details">
-                    <span>🛏 2 ოთახი</span>
-                    <span>📐 61 მ²</span>
-                    <span>🏢 5/9</span>
-                </div>
-
-                <div class="owner">
-                    👤 მესაკუთრე · 👁 742 ნახვა
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- VIP -->
-
-<section class="section">
-
-    <div class="section-head">
-
-        <h2>⭐ VIP განცხადებები</h2>
-
-        <a href="#">ყველას ნახვა →</a>
-
-    </div>
-
-
-    <div class="properties">
-
-        <div class="card">
-
-            <div class="card-img"
-                 style="background-image:url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=900&q=80');">
-
-                <div class="badge">⭐ VIP</div>
-                <button class="heart">♡</button>
-
-            </div>
-
-            <div class="card-body">
-
-                <div class="price">$320,000</div>
-                <div class="address">📍 თბილისი, ვერა</div>
-
-                <div class="details">
-                    <span>🛏 4 ოთახი</span>
-                    <span>📐 145 მ²</span>
-                    <span>🏢 3/6</span>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-img"
-                 style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=900&q=80');">
-
-                <div class="badge">⭐ VIP</div>
-                <button class="heart">♡</button>
-
-            </div>
-
-            <div class="card-body">
-
-                <div class="price">$185,000</div>
-                <div class="address">📍 თბილისი, დიღომი</div>
-
-                <div class="details">
-                    <span>🛏 3 ოთახი</span>
-                    <span>📐 96 მ²</span>
-                    <span>🏢 2/10</span>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-img"
-                 style="background-image:url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=900&q=80');">
-
-                <div class="badge">⭐ VIP</div>
-                <button class="heart">♡</button>
-
-            </div>
-
-            <div class="card-body">
-
-                <div class="price">$260,000</div>
-                <div class="address">📍 თბილისი, მთაწმინდა</div>
-
-                <div class="details">
-                    <span>🛏 5 ოთახი</span>
-                    <span>📐 170 მ²</span>
-                    <span>🏢 2/4</span>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- MAP -->
-
-<section class="map-section">
-
-    <div class="section">
-
-        <div class="section-head">
-
-            <h2>🗺️ მოძებნე რუკაზე</h2>
-
-            <a href="#">რუკის გახსნა →</a>
-
-        </div>
-
-        <div class="map">
-
-            <div class="map-pin" style="top:28%;left:31%;">$120k</div>
-            <div class="map-pin" style="top:54%;left:58%;">$185k</div>
-            <div class="map-pin" style="top:38%;left:76%;">$260k</div>
-
-            <div class="map-center">
-                📍 აქ განთავსდება ინტერაქტიული რუკა
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- ADD LISTING -->
-
-<section class="cta">
-
-    <div class="cta-box">
-
-        <div>
-
-            <h2>გაქვს უძრავი ქონება?</h2>
-
-            <p>
-                განათავსე განცხადება GeoHome-ზე და მიაწვდინე ხმა
-                დაინტერესებულ ადამიანებს.
-            </p>
-
-        </div>
-
-        <a href="#" class="cta-btn">
-            + განცხადების დამატება
-        </a>
-
-    </div>
-
-</section>
-
-
-<!-- FOOTER -->
-
-<footer>
-
-    <div class="footer-grid">
-
-        <div>
-
-            <h3>GeoHome</h3>
-
-            <p>
-                იპოვე უძრავი ქონება საქართველოში.
-            </p>
-
-            <div class="social">
-
-                <a href="https://www.facebook.com/share/1HtanV8Xwi/"
-                   target="_blank">
-                    Facebook
-                </a>
-
-                <a href="https://www.facebook.com/share/g/1EBUpigYYd/"
-                   target="_blank">
-                    ჯგუფი
-                </a>
-
-            </div>
-
-        </div>
-
-
-        <div>
-
-            <h3>ქონება</h3>
-
-            <a href="#">იყიდება</a>
-            <a href="#">ქირავდება</a>
-            <a href="#">გირავდება</a>
-            <a href="#">კომერციული</a>
-
-        </div>
-
-
-        <div>
-
-            <h3>GeoHome</h3>
-
-            <a href="#">ჩვენ შესახებ</a>
-            <a href="#">დახმარება</a>
-            <a href="#">კონტაქტი</a>
-            <a href="#">წესები და პირობები</a>
-
-        </div>
-
-
-        <div>
-
-            <h3>დაგვიკავშირდით</h3>
-
-            <p>📧 yourhomensp@gmail.com</p>
-
-            <a href="tel:+995577133990">
-                📞 +995 577 133 990
-            </a>
-
-            <a href="https://wa.me/995577133990"
-               target="_blank">
-                💬 WhatsApp
-            </a>
-
-            <a href="https://www.facebook.com/share/1HtanV8Xwi/"
-               target="_blank">
-                📘 Facebook გვერდი
-            </a>
-
-            <a href="https://www.facebook.com/share/g/1EBUpigYYd/"
-               target="_blank">
-                👥 Facebook ჯგუფი
-            </a>
-
-        </div>
-
-    </div>
-
-</footer>
-
-
-<script>
-
-/* LANGUAGE SYSTEM */
-
-const language = document.getElementById("language");
-
-function changeLanguage(lang){
-
-    document.documentElement.lang = lang;
-
-    document.querySelectorAll("[data-ka]").forEach(element => {
-
-        if(element.tagName === "OPTION"){
-            element.textContent = element.dataset[lang];
-        }else{
-            element.textContent = element.dataset[lang];
-        }
-
-    });
-
-    document.querySelectorAll("input[data-placeholder-ka]").forEach(input => {
-
-        input.placeholder =
-            input.dataset["placeholder-" + lang];
-
-    });
-
-    const titles = {
-
-        ka:{
-            title:"იპოვე უძრავი ქონება საქართველოში",
-            subtitle:"იყიდე ან იქირავე სასურველი სახლი, ბინა ან კომერციული ფართი."
-        },
-
-        ru:{
-            title:"Найдите недвижимость в Грузии",
-            subtitle:"Купите или арендуйте подходящий дом, квартиру или коммерческую недвижимость."
-        },
-
-        en:{
-            title:"Find real estate in Georgia",
-            subtitle:"Buy or rent the perfect house, apartment or commercial property."
-        }
-
-    };
-
-    document.getElementById("heroTitle").textContent =
-        titles[lang].title;
-
-    document.getElementById("heroSubtitle").textContent =
-        titles[lang].subtitle;
-
-    localStorage.setItem("geohomeLanguage",lang);
-}
-
-
-/* LOAD SAVED LANGUAGE */
-
-const savedLanguage =
-    localStorage.getItem("geohomeLanguage") || "ka";
-
-language.value = savedLanguage;
-
-changeLanguage(savedLanguage);
-
-language.addEventListener("change",function(){
-
-    changeLanguage(this.value);
-
-});
-
-
-/* TABS */
-
-document.querySelectorAll(".tabs button").forEach(button => {
-
-    button.addEventListener("click",function(){
-
-        document.querySelectorAll(".tabs button")
-            .forEach(btn => btn.classList.remove("active"));
-
-        this.classList.add("active");
-
-    });
-
-});
-
-
-/* FAVORITES */
-
-document.querySelectorAll(".heart").forEach(button => {
-
-    button.addEventListener("click",function(){
-
-        this.textContent =
-            this.textContent === "♡" ? "♥" : "♡";
-
-    });
-
-});
-
-</script>
-
-</body>
-</html>
+    margin-top
