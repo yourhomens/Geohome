@@ -3,493 +3,1023 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>GeoHome — უძრავი ქონება საქართველოში</title>
 
 <style>
-:root{
-    --olive:#7d8b45;
-    --olive-dark:#59652d;
-    --olive-light:#eef1df;
-    --dark:#222820;
-    --text:#3f453d;
-    --muted:#7b8179;
-    --bg:#f7f8f5;
-    --white:#ffffff;
-    --border:#e3e6df;
+:root {
+    --olive: #7d8b45;
+    --olive-dark: #5f6c32;
+    --light: #f5f6f1;
+    --dark: #252a24;
+    --gray: #737970;
+    --border: #e2e5dd;
+    --white: #ffffff;
 }
 
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-body{
-    font-family:Arial,sans-serif;
-    background:var(--bg);
-    color:var(--dark);
+body {
+    font-family: Arial, sans-serif;
+    background: var(--light);
+    color: var(--dark);
 }
 
-button,input,select{
-    font-family:inherit;
+button,
+input,
+select {
+    font-family: inherit;
 }
 
-header{
-    background:white;
-    border-bottom:1px solid var(--border);
-    padding:15px 5%;
-    display:flex;
-    align-items:center;
-    gap:30px;
-    position:sticky;
-    top:0;
-    z-index:100;
+/* HEADER */
+
+header {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 5%;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-/* ================= LOGO ================= */
-
-.logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    min-width:190px;
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 185px;
 }
 
-.logo-mark{
-    width:43px;
-    height:43px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+.logo svg {
+    width: 44px;
+    height: 44px;
+    fill: none;
+    stroke: var(--olive);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
-.logo-mark svg{
-    width:43px;
-    height:43px;
-    fill:none;
-    stroke:var(--olive);
-    stroke-width:3;
-    stroke-linecap:round;
-    stroke-linejoin:round;
+.logo-text {
+    font-size: 25px;
+    font-weight: 800;
 }
 
-.logo-text{
-    font-size:24px;
-    font-weight:800;
-    color:var(--dark);
-    letter-spacing:-.5px;
+.logo-text span {
+    color: var(--olive);
 }
 
-.logo-text span{
-    color:var(--olive);
+nav {
+    display: flex;
+    gap: 20px;
+    flex: 1;
 }
 
-/* ================= MENU ================= */
-
-nav{
-    display:flex;
-    gap:20px;
-    flex:1;
+nav a {
+    color: var(--dark);
+    text-decoration: none;
+    font-size: 14px;
 }
 
-nav a{
-    text-decoration:none;
-    color:var(--text);
-    font-size:14px;
+nav a:hover {
+    color: var(--olive);
 }
 
-nav a:hover{
-    color:var(--olive-dark);
+.header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.header-right{
-    display:flex;
-    align-items:center;
-    gap:8px;
+.login {
+    color: var(--dark);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px;
 }
 
-.language{
-    border:1px solid var(--border);
-    background:white;
-    padding:9px;
-    border-radius:8px;
+.add-button {
+    background: var(--olive);
+    color: white;
+    text-decoration: none;
+    padding: 11px 16px;
+    border-radius: 8px;
+    font-weight: 700;
 }
 
-.login{
-    color:var(--dark);
-    text-decoration:none;
-    font-weight:600;
-    padding:10px;
-}
+/* HERO */
 
-.add-btn{
-    background:var(--olive);
-    color:white;
-    text-decoration:none;
-    padding:11px 16px;
-    border-radius:9px;
-    font-weight:700;
-}
-
-/* ================= HERO ================= */
-
-.hero{
-    min-height:530px;
+.hero {
+    min-height: 500px;
     background:
-    linear-gradient(rgba(30,38,28,.42),rgba(30,38,28,.64)),
-    url("https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=85");
-    background-size:cover;
-    background-position:center;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:70px 5%;
+        linear-gradient(rgba(30,35,28,.45), rgba(30,35,28,.68)),
+        url("https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=80");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 5%;
 }
 
-.hero-content{
-    width:100%;
-    max-width:1100px;
-    text-align:center;
-    color:white;
+.hero-content {
+    width: 100%;
+    max-width: 1100px;
+    text-align: center;
+    color: white;
 }
 
-.hero h1{
-    font-size:48px;
-    margin-bottom:15px;
+.hero h1 {
+    font-size: 46px;
+    margin-bottom: 15px;
 }
 
-.hero p{
-    font-size:19px;
-    margin-bottom:35px;
+.hero p {
+    font-size: 18px;
+    margin-bottom: 30px;
 }
 
-/* ================= SEARCH ================= */
+/* SEARCH */
 
-.search-box{
-    background:white;
-    border-radius:18px;
-    padding:10px;
-    box-shadow:0 15px 45px rgba(0,0,0,.2);
-    color:var(--dark);
+.search-box {
+    background: white;
+    padding: 10px;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.2);
+    color: var(--dark);
 }
 
-.tabs{
-    display:flex;
-    gap:5px;
-    padding:4px;
-    border-bottom:1px solid var(--border);
+.tabs {
+    display: flex;
+    gap: 5px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
 }
 
-.tabs button{
-    border:none;
-    background:white;
-    padding:13px 22px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:700;
-    color:var(--muted);
+.tabs button {
+    border: 0;
+    background: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--gray);
 }
 
-.tabs button.active{
-    background:var(--olive-light);
-    color:var(--olive-dark);
+.tabs button.active {
+    background: #eef1e4;
+    color: var(--olive-dark);
 }
 
-.search-main{
-    display:grid;
-    grid-template-columns:1.5fr 1fr 1fr 1fr auto;
-    gap:9px;
-    padding-top:12px;
+.search-fields {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr auto;
+    gap: 8px;
+    padding-top: 10px;
 }
 
-.field{
-    border:1px solid var(--border);
-    border-radius:9px;
-    padding:11px;
-    text-align:left;
-    background:white;
+.field {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px;
+    text-align: left;
 }
 
-.field label{
-    display:block;
-    color:var(--muted);
-    font-size:12px;
-    margin-bottom:5px;
+.field label {
+    display: block;
+    color: var(--gray);
+    font-size: 12px;
+    margin-bottom: 5px;
 }
 
-.field select,
-.field input{
-    border:none;
-    outline:none;
-    width:100%;
-    font-size:14px;
-    background:white;
-    color:var(--dark);
+.field input,
+.field select {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: white;
+    font-size: 14px;
 }
 
-.search-btn{
-    border:none;
-    background:var(--olive);
-    color:white;
-    padding:0 22px;
-    border-radius:9px;
-    font-weight:700;
-    cursor:pointer;
+.search-button {
+    border: 0;
+    background: var(--olive);
+    color: white;
+    padding: 0 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
 }
 
-/* ================= FILTERS ================= */
+/* FILTERS */
 
-.filters{
-    max-width:1200px;
-    margin:35px auto 0;
-    padding:0 25px;
+.filters {
+    max-width: 1200px;
+    margin: 30px auto 0;
+    padding: 0 25px;
 }
 
-.filter-row{
-    display:flex;
-    gap:9px;
-    flex-wrap:wrap;
+.filter-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
-.filter-chip{
-    border:1px solid var(--border);
-    background:white;
-    padding:11px 15px;
-    border-radius:9px;
-    cursor:pointer;
+.filter {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
 }
 
-.filter-chip:hover{
-    border-color:var(--olive);
-    color:var(--olive-dark);
+.filter:hover {
+    border-color: var(--olive);
 }
 
-/* ================= SECTIONS ================= */
+/* SECTIONS */
 
-.section{
-    max-width:1200px;
-    margin:55px auto;
-    padding:0 25px;
+.section {
+    max-width: 1200px;
+    margin: 55px auto;
+    padding: 0 25px;
 }
 
-.section-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:22px;
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
 }
 
-.section-head h2{
-    font-size:27px;
+.section-title h2 {
+    font-size: 27px;
 }
 
-.section-head a{
-    color:var(--olive-dark);
-    text-decoration:none;
-    font-weight:600;
+.section-title a {
+    color: var(--olive-dark);
+    text-decoration: none;
+    font-weight: 600;
 }
 
-/* ================= CARDS ================= */
+/* CARDS */
 
-.properties{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:22px;
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
 }
 
-.card{
-    background:white;
-    border-radius:15px;
-    overflow:hidden;
-    border:1px solid var(--border);
-    transition:.2s;
+.card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
 }
 
-.card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 12px 30px rgba(0,0,0,.09);
+.card-image {
+    height: 220px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
 }
 
-.card-img{
-    height:220px;
-    background-size:cover;
-    background-position:center;
-    position:relative;
+.badge {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    background: var(--olive);
+    color: white;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
 }
 
-.badge{
-    position:absolute;
-    top:12px;
-    left:12px;
-    background:var(--olive);
-    color:white;
-    padding:7px 10px;
-    border-radius:7px;
-    font-size:12px;
-    font-weight:bold;
+.favorite {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: white;
+    font-size: 20px;
+    cursor: pointer;
 }
 
-.heart{
-    position:absolute;
-    right:12px;
-    top:12px;
-    width:36px;
-    height:36px;
-    border:0;
-    border-radius:50%;
-    background:white;
-    font-size:19px;
-    cursor:pointer;
+.card-body {
+    padding: 16px;
 }
 
-.card-body{
-    padding:17px;
+.price {
+    font-size: 23px;
+    font-weight: 800;
+    margin-bottom: 7px;
 }
 
-.price{
-    font-size:23px;
-    font-weight:800;
-    margin-bottom:7px;
+.address {
+    color: var(--gray);
+    margin-bottom: 14px;
 }
 
-.address{
-    color:var(--muted);
-    margin-bottom:14px;
+.details {
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 13px;
 }
 
-.details{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-    border-top:1px solid var(--border);
-    padding-top:13px;
-    color:var(--text);
-    font-size:13px;
+.owner {
+    color: var(--gray);
+    font-size: 13px;
+    margin-top: 12px;
 }
 
-.owner{
-    margin-top:12px;
-    color:var(--muted);
-    font-size:13px;
+/* CTA */
+
+.cta {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 25px;
 }
 
-/* ================= MAP ================= */
-
-.map-section{
-    background:white;
-    padding:55px 5%;
-    margin-top:60px;
+.cta-box {
+    background: var(--dark);
+    color: white;
+    border-radius: 16px;
+    padding: 38px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
 }
 
-.map{
-    max-width:1200px;
-    height:400px;
-    margin:auto;
-    border-radius:18px;
-    background:
-    linear-gradient(rgba(233,237,227,.78),rgba(233,237,227,.78)),
-    url("https://images.unsplash.com/photo-1524666041070-9cff998a5d6b?auto=format&fit=crop&w=1600&q=80");
-    background-size:cover;
-    position:relative;
-    overflow:hidden;
+.cta-box h2 {
+    margin-bottom: 8px;
 }
 
-.map-pin{
-    position:absolute;
-    background:var(--olive);
-    color:white;
-    padding:9px 13px;
-    border-radius:20px;
-    font-weight:bold;
+.cta-box p {
+    color: #c6ccc4;
 }
 
-.map-center{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    background:white;
-    padding:18px 25px;
-    border-radius:12px;
-    box-shadow:0 8px 25px rgba(0,0,0,.12);
+.cta-button {
+    background: var(--olive);
+    color: white;
+    text-decoration: none;
+    padding: 13px 20px;
+    border-radius: 8px;
+    font-weight: bold;
 }
 
-/* ================= CTA ================= */
+/* FOOTER */
 
-.cta{
-    max-width:1200px;
-    margin:60px auto;
-    padding:0 25px;
+footer {
+    background: #20251f;
+    color: white;
+    padding: 50px 5%;
 }
 
-.cta-box{
-    background:var(--dark);
-    color:white;
-    border-radius:18px;
-    padding:40px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:25px;
+.footer-grid {
+    max-width: 1200px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 35px;
 }
 
-.cta-box h2{
-    font-size:29px;
-    margin-bottom:9px;
-}
-
-.cta-box p{
-    color:#c8cdc6;
-}
-
-.cta-btn{
-    background:var(--olive);
-    color:white;
-    text-decoration:none;
-    padding:14px 22px;
-    border-radius:9px;
-    font-weight:bold;
-    white-space:nowrap;
-}
-
-/* ================= FOOTER ================= */
-
-footer{
-    background:#20251f;
-    color:white;
-    padding:50px 5%;
-}
-
-.footer-grid{
-    max-width:1200px;
-    margin:auto;
-    display:grid;
-    grid-template-columns:2fr 1fr 1fr 1.5fr;
-    gap:40px;
-}
-
-footer h3{
-    margin-bottom:16px;
+footer h3 {
+    margin-bottom: 15px;
 }
 
 footer p,
-footer a{
-    display:block;
-    color:#c1c7c0;
-    text-decoration:none;
-    margin-bottom:10px;
-    font-size:14px;
+footer a {
+    display: block;
+    color: #c1c7c0;
+    text-decoration: none;
+    margin-bottom: 10px;
+    font-size: 14px;
 }
 
-footer a:hover{
-    color:white;
+footer a:hover {
+    color: white;
 }
 
+.social {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
 
-   
+.social a {
+    border: 1px solid #4c534b;
+    padding: 8px 11px;
+    border-radius: 7px;
+}
+
+/* MOBILE */
+
+@media (max-width: 950px) {
+
+    header {
+        flex-wrap: wrap;
+    }
+
+    nav {
+        display: none;
+    }
+
+    .search-fields {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .cards {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+
+    header {
+        padding: 12px 4%;
+    }
+
+    .hero {
+        min-height: 580px;
+        padding: 40px 15px;
+    }
+
+    .hero h1 {
+        font-size: 34px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    .search-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .search-button {
+        padding: 14px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .cta-box {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .header-buttons {
+        margin-left: auto;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+
+        <svg viewBox="0 0 64 64">
+            <path d="M8 29 L32 8 L56 29"></path>
+            <path d="M14 26 V55 H50 V26"></path>
+            <path d="M27 55 V37 H37 V55"></path>
+            <path d="M24 27 H40 V33 H24 Z"></path>
+        </svg>
+
+        <div class="logo-text">
+            Geo<span>Home</span>
+        </div>
+
+    </div>
+
+    <nav>
+        <a href="#">ყიდვა</a>
+        <a href="#">ქირავდება</a>
+        <a href="#">გირავდება</a>
+        <a href="#">კომერციული</a>
+        <a href="#">ახალი პროექტები</a>
+    </nav>
+
+    <div class="header-buttons">
+
+        <a href="#" class="login">შესვლა</a>
+
+        <a href="#" class="add-button">
+            + განცხადება
+        </a>
+
+    </div>
+
+</header>
+
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h1>იპოვე უძრავი ქონება საქართველოში</h1>
+
+        <p>
+            იყიდე, იქირავე ან იგირავე — მოძებნე შენთვის სასურველი ქონება მარტივად.
+        </p>
+
+        <div class="search-box">
+
+            <div class="tabs">
+
+                <button class="active">იყიდება</button>
+                <button>ქირავდება</button>
+                <button>გირავდება</button>
+
+            </div>
+
+            <div class="search-fields">
+
+                <div class="field">
+
+                    <label>მდებარეობა</label>
+
+                    <input
+                        type="text"
+                        placeholder="ქალაქი, უბანი ან ქუჩა">
+
+                </div>
+
+                <div class="field">
+
+                    <label>ქონების ტიპი</label>
+
+                    <select>
+                        <option>ყველა</option>
+                        <option>ბინა</option>
+                        <option>სახლი</option>
+                        <option>კომერციული</option>
+                        <option>მიწა</option>
+                        <option>აგარაკი</option>
+                    </select>
+
+                </div>
+
+                <div class="field">
+
+                    <label>ოთახები</label>
+
+                    <select>
+                        <option>ნებისმიერი</option>
+                        <option>1 ოთახი</option>
+                        <option>2 ოთახი</option>
+                        <option>3 ოთახი</option>
+                        <option>4 ოთახი</option>
+                        <option>5+ ოთახი</option>
+                    </select>
+
+                </div>
+
+                <div class="field">
+
+                    <label>ფასი</label>
+
+                    <input
+                        type="text"
+                        placeholder="მაგ. $100,000">
+
+                </div>
+
+                <button class="search-button">
+                    ძებნა
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="filters">
+
+    <div class="filter-list">
+
+        <button class="filter">ბინა</button>
+        <button class="filter">სახლი</button>
+        <button class="filter">მიწა</button>
+        <button class="filter">კომერციული</button>
+        <button class="filter">აგარაკი</button>
+        <button class="filter">ახალი აშენებული</button>
+        <button class="filter">მშენებარე</button>
+        <button class="filter">თეთრი კარკასი</button>
+        <button class="filter">მწვანე კარკასი</button>
+        <button class="filter">ახალი რემონტით</button>
+        <button class="filter">ძველი რემონტით</button>
+        <button class="filter">ავეჯით</button>
+        <button class="filter">მესაკუთრე</button>
+        <button class="filter">აგენტი</button>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="section-title">
+
+        <h2>🔥 ყველაზე ნახვადი</h2>
+
+        <a href="#">ყველას ნახვა →</a>
+
+    </div>
+
+    <div class="cards">
+
+        <div class="card">
+
+            <div
+                class="card-image"
+                style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80');">
+
+                <div class="badge">TOP</div>
+
+                <button class="favorite">♡</button>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="price">$145,000</div>
+
+                <div class="address">
+                    თბილისი, საბურთალო
+                </div>
+
+                <div class="details">
+                    <span>3 ოთახი</span>
+                    <span>82 მ²</span>
+                    <span>7/12 სართული</span>
+                </div>
+
+                <div class="owner">
+                    მესაკუთრე · 1,248 ნახვა
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div
+                class="card-image"
+                style="background-image:url('https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80');">
+
+                <div class="badge">VIP</div>
+
+                <button class="favorite">♡</button>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="price">$210,000</div>
+
+                <div class="address">
+                    თბილისი, ვაკე
+                </div>
+
+                <div class="details">
+                    <span>4 ოთახი</span>
+                    <span>115 მ²</span>
+                    <span>4/8 სართული</span>
+                </div>
+
+                <div class="owner">
+                    აგენტი · 986 ნახვა
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div
+                class="card-image"
+                style="background-image:url('https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=900&q=80');">
+
+                <button class="favorite">♡</button>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="price">$98,000</div>
+
+                <div class="address">
+                    თბილისი, დიდუბე
+                </div>
+
+                <div class="details">
+                    <span>2 ოთახი</span>
+                    <span>61 მ²</span>
+                    <span>5/9 სართული</span>
+                </div>
+
+                <div class="owner">
+                    მესაკუთრე · 742 ნახვა
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="section-title">
+
+        <h2>⭐ VIP განცხადებები</h2>
+
+        <a href="#">ყველას ნახვა →</a>
+
+    </div>
+
+    <div class="cards">
+
+        <div class="card">
+
+            <div
+                class="card-image"
+                style="background-image:url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=900&q=80');">
+
+                <div class="badge">VIP</div>
+
+                <button class="favorite">♡</button>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="price">$320,000</div>
+
+                <div class="address">
+                    თბილისი, ვერა
+                </div>
+
+                <div class="details">
+                    <span>4 ოთახი</span>
+                    <span>145 მ²</span>
+                    <span>3/6 სართული</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div
+                class="card-image"
+                style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=900&q=80');">
+
+                <div class="badge">VIP</div>
+
+                <button class="favorite">♡</button>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="price">$185,000</div>
+
+                <div class="address">
+                    თბილისი, დიღომი
+                </div>
+
+                <div class="details">
+                    <span>3 ოთახი</span>
+                    <span>96 მ²</span>
+                    <span>2/10 სართული</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div
+                class="card-image"
+                style="background-image:url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=900&q=80');">
+
+                <div class="badge">VIP</div>
+
+                <button class="favorite">♡</button>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="price">$260,000</div>
+
+                <div class="address">
+                    თბილისი, მთაწმინდა
+                </div>
+
+                <div class="details">
+                    <span>5 ოთახი</span>
+                    <span>170 მ²</span>
+                    <span>2/4 სართული</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="cta">
+
+    <div class="cta-box">
+
+        <div>
+
+            <h2>გაქვს უძრავი ქონება?</h2>
+
+            <p>
+                განათავსე განცხადება GeoHome-ზე.
+            </p>
+
+        </div>
+
+        <a href="#" class="cta-button">
+            + განცხადების დამატება
+        </a>
+
+    </div>
+
+</section>
+
+
+<footer>
+
+    <div class="footer-grid">
+
+        <div>
+
+            <h3>GeoHome</h3>
+
+            <p>
+                იპოვე უძრავი ქონება საქართველოში.
+            </p>
+
+            <div class="social">
+
+                <a
+                    href="https://www.facebook.com/share/1HtanV8Xwi/"
+                    target="_blank">
+                    Facebook
+                </a>
+
+                <a
+                    href="https://www.facebook.com/share/g/1EBUpigYYd/"
+                    target="_blank">
+                    ჯგუფი
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div>
+
+            <h3>ქონება</h3>
+
+            <a href="#">იყიდება</a>
+            <a href="#">ქირავდება</a>
+            <a href="#">გირავდება</a>
+            <a href="#">კომერციული</a>
+
+        </div>
+
+
+        <div>
+
+            <h3>დახმარება</h3>
+
+            <a href="#">ჩვენ შესახებ</a>
+            <a href="#">დახმარება</a>
+            <a href="#">წესები და პირობები</a>
+
+        </div>
+
+
+        <div>
+
+            <h3>დაგვიკავშირდით</h3>
+
+            <p>
+                yourhomensp@gmail.com
+            </p>
+
+            <a href="tel:+995577133990">
+                +995 577 133 990
+            </a>
+
+            <a
+                href="https://wa.me/995577133990"
+                target="_blank">
+                WhatsApp
+            </a>
+
+            <a
+                href="https://www.facebook.com/share/1HtanV8Xwi/"
+                target="_blank">
+                Facebook გვერდი
+            </a>
+
+            <a
+                href="https://www.facebook.com/share/g/1EBUpigYYd/"
+                target="_blank">
+                Facebook ჯგუფი
+            </a>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+document.querySelectorAll(".tabs button").forEach(function(button) {
+
+    button.addEventListener("click", function() {
+
+        document.querySelectorAll(".tabs button").forEach(function(item) {
+            item.classList.remove("active");
+        });
+
+        this.classList.add("active");
+
+    });
+
+});
+
+
+document.querySelectorAll(".favorite").forEach(function(button) {
+
+    button.addEventListener("click", function() {
+
+        if (this.textContent.trim() === "♡") {
+            this.textContent = "♥";
+        } else {
+            this.textContent = "♡";
+        }
+
+    });
+
+});
+
 </script>
 
 </body>
 </html>
-
