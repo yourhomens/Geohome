@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ka">
 <head>
@@ -23,6 +24,11 @@
         button,
         input {
             font-family: inherit;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .container {
@@ -58,7 +64,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,.55);
+            background: rgba(0, 0, 0, .55);
             z-index: 9999;
             align-items: center;
             justify-content: center;
@@ -76,7 +82,7 @@
             border-radius: 18px;
             padding: 25px;
             position: relative;
-            box-shadow: 0 20px 60px rgba(0,0,0,.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .2);
         }
 
         .close {
@@ -157,18 +163,6 @@
             margin-top: 5px;
         }
 
-        .secondary-button {
-            width: 100%;
-            border: 1px solid #ddd;
-            background: white;
-            color: #222;
-            padding: 13px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 15px;
-            margin-top: 10px;
-        }
-
         .forgot {
             display: block;
             margin-top: 13px;
@@ -232,6 +226,20 @@
             color: #666;
             font-size: 18px;
         }
+
+        @media (max-width: 600px) {
+            .hero {
+                padding: 55px 15px;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+
+            .modal-box {
+                padding: 22px;
+            }
+        }
     </style>
 </head>
 
@@ -240,16 +248,16 @@
 <header>
     <div class="logo">ჩემი საიტი</div>
 
-    <button id="loginButton">
+    <button id="loginButton" type="button">
         შესვლა
     </button>
 </header>
-
 
 <main class="container">
 
     <section class="hero">
         <h1>კეთილი იყოს თქვენი მობრძანება ❤️</h1>
+
         <p>
             საიტის მთავარი გვერდი
         </p>
@@ -258,7 +266,9 @@
 </main>
 
 
-<!-- LOGIN MODAL -->
+<!-- =========================
+     LOGIN MODAL
+========================= -->
 
 <div id="loginModal" class="modal">
 
@@ -297,7 +307,7 @@
         </div>
 
 
-        <!-- LOGIN -->
+        <!-- LOGIN FORM -->
 
         <div
             id="loginForm"
@@ -306,9 +316,7 @@
 
             <div class="field">
 
-                <label>
-                    ელფოსტა
-                </label>
+                <label>ელფოსტა</label>
 
                 <input
                     id="loginEmail"
@@ -322,9 +330,7 @@
 
             <div class="field">
 
-                <label>
-                    პაროლი
-                </label>
+                <label>პაროლი</label>
 
                 <input
                     id="loginPassword"
@@ -355,7 +361,7 @@
         </div>
 
 
-        <!-- REGISTER -->
+        <!-- REGISTER FORM -->
 
         <div
             id="registerForm"
@@ -364,9 +370,7 @@
 
             <div class="field">
 
-                <label>
-                    სახელი და გვარი
-                </label>
+                <label>სახელი და გვარი</label>
 
                 <input
                     id="registerName"
@@ -380,9 +384,7 @@
 
             <div class="field">
 
-                <label>
-                    ელფოსტა
-                </label>
+                <label>ელფოსტა</label>
 
                 <input
                     id="registerEmail"
@@ -396,9 +398,7 @@
 
             <div class="field">
 
-                <label>
-                    ტელეფონის ნომერი
-                </label>
+                <label>ტელეფონის ნომერი</label>
 
                 <input
                     id="registerPhone"
@@ -412,9 +412,7 @@
 
             <div class="field">
 
-                <label>
-                    პაროლი
-                </label>
+                <label>პაროლი</label>
 
                 <input
                     id="registerPassword"
@@ -428,9 +426,7 @@
 
             <div class="field">
 
-                <label>
-                    გაიმეორეთ პაროლი
-                </label>
+                <label>გაიმეორეთ პაროლი</label>
 
                 <input
                     id="registerRepeatPassword"
@@ -457,7 +453,9 @@
 </div>
 
 
-<!-- EMAIL VERIFICATION MODAL -->
+<!-- =========================
+     EMAIL VERIFICATION MODAL
+========================= -->
 
 <div id="verifyModal" class="modal">
 
@@ -551,6 +549,38 @@ let verificationEmail = "";
 
 
 /* =========================
+   ELEMENTS
+========================= */
+
+const loginModal =
+    document.getElementById("loginModal");
+
+const verifyModal =
+    document.getElementById("verifyModal");
+
+const loginButton =
+    document.getElementById("loginButton");
+
+const loginClose =
+    document.getElementById("loginClose");
+
+const verifyClose =
+    document.getElementById("verifyClose");
+
+const registerButton =
+    document.getElementById("fakeRegister");
+
+const verifyButton =
+    document.getElementById("verifyButton");
+
+const loginSubmit =
+    document.getElementById("fakeLogin");
+
+const forgotPassword =
+    document.getElementById("forgotPassword");
+
+
+/* =========================
    MESSAGE
 ========================= */
 
@@ -569,29 +599,37 @@ function showMessage(text) {
     message.classList.add("show");
 
     setTimeout(function () {
-
         message.classList.remove("show");
-
     }, 3500);
 }
 
 
 /* =========================
-   ELEMENTS
+   UPDATE USER BUTTON
 ========================= */
 
-const loginModal =
-    document.getElementById("loginModal");
+function updateLoginButton() {
 
-const verifyModal =
-    document.getElementById("verifyModal");
+    if (!loginButton) return;
 
-const loginButton =
-    document.getElementById("loginButton");
+    if (currentUser) {
+
+        loginButton.textContent =
+            currentUser.user_metadata?.name ||
+            currentUser.email ||
+            "ანგარიში";
+
+    } else {
+
+        loginButton.textContent =
+            "შესვლა";
+
+    }
+}
 
 
 /* =========================
-   USER
+   LOAD USER
 ========================= */
 
 async function loadCurrentUser() {
@@ -617,34 +655,9 @@ async function loadCurrentUser() {
         console.error(error);
 
         currentUser = null;
-
     }
 
     updateLoginButton();
-}
-
-
-/* =========================
-   LOGIN BUTTON
-========================= */
-
-function updateLoginButton() {
-
-    if (!loginButton) return;
-
-    if (currentUser) {
-
-        loginButton.textContent =
-            currentUser.user_metadata?.name ||
-            currentUser.email ||
-            "ანგარიში";
-
-    } else {
-
-        loginButton.textContent =
-            "შესვლა";
-
-    }
 }
 
 
@@ -659,13 +672,12 @@ supabaseClient.auth.onAuthStateChange(
             session?.user || null;
 
         updateLoginButton();
-
     }
 );
 
 
 /* =========================
-   LOGIN BUTTON CLICK
+   LOGIN BUTTON
 ========================= */
 
 if (loginButton) {
@@ -683,8 +695,10 @@ if (loginButton) {
 
                 if (!logout) return;
 
+
                 const result =
                     await supabaseClient.auth.signOut();
+
 
                 if (result.error) {
 
@@ -694,6 +708,7 @@ if (loginButton) {
 
                     return;
                 }
+
 
                 currentUser = null;
 
@@ -714,19 +729,14 @@ if (loginButton) {
                 }
 
             }
-
         }
     );
-
 }
 
 
 /* =========================
-   LOGIN CLOSE
+   CLOSE LOGIN
 ========================= */
-
-const loginClose =
-    document.getElementById("loginClose");
 
 if (loginClose) {
 
@@ -734,22 +744,21 @@ if (loginClose) {
         "click",
         function () {
 
-            loginModal.classList.remove(
-                "active"
-            );
+            if (loginModal) {
 
+                loginModal.classList.remove(
+                    "active"
+                );
+
+            }
         }
     );
-
 }
 
 
 /* =========================
-   VERIFY CLOSE
+   CLOSE VERIFY
 ========================= */
-
-const verifyClose =
-    document.getElementById("verifyClose");
 
 if (verifyClose) {
 
@@ -757,18 +766,20 @@ if (verifyClose) {
         "click",
         function () {
 
-            verifyModal.classList.remove(
-                "active"
-            );
+            if (verifyModal) {
 
+                verifyModal.classList.remove(
+                    "active"
+                );
+
+            }
         }
     );
-
 }
 
 
 /* =========================
-   TABS
+   LOGIN TABS
 ========================= */
 
 document
@@ -781,28 +792,24 @@ document
 
                 document
                     .querySelectorAll(".login-tab")
-                    .forEach(
-                        function (item) {
+                    .forEach(function (item) {
 
-                            item.classList.remove(
-                                "active"
-                            );
+                        item.classList.remove(
+                            "active"
+                        );
 
-                        }
-                    );
+                    });
 
 
                 document
                     .querySelectorAll(".login-form")
-                    .forEach(
-                        function (form) {
+                    .forEach(function (form) {
 
-                            form.classList.remove(
-                                "active"
-                            );
+                        form.classList.remove(
+                            "active"
+                        );
 
-                        }
-                    );
+                    });
 
 
                 this.classList.add("active");
@@ -836,12 +843,6 @@ document
    REGISTER
 ========================= */
 
-const registerButton =
-    document.getElementById(
-        "fakeRegister"
-    );
-
-
 if (registerButton) {
 
     registerButton.addEventListener(
@@ -850,18 +851,14 @@ if (registerButton) {
 
             const name =
                 document
-                    .getElementById(
-                        "registerName"
-                    )
+                    .getElementById("registerName")
                     .value
                     .trim();
 
 
             const email =
                 document
-                    .getElementById(
-                        "registerEmail"
-                    )
+                    .getElementById("registerEmail")
                     .value
                     .trim()
                     .toLowerCase();
@@ -869,18 +866,14 @@ if (registerButton) {
 
             const phone =
                 document
-                    .getElementById(
-                        "registerPhone"
-                    )
+                    .getElementById("registerPhone")
                     .value
                     .trim();
 
 
             const password =
                 document
-                    .getElementById(
-                        "registerPassword"
-                    )
+                    .getElementById("registerPassword")
                     .value;
 
 
@@ -904,20 +897,10 @@ if (registerButton) {
             }
 
 
-            if (!email) {
+            if (!email || !email.includes("@")) {
 
                 showMessage(
-                    "შეიყვანეთ ელფოსტა."
-                );
-
-                return;
-            }
-
-
-            if (!email.includes("@")) {
-
-                showMessage(
-                    "ელფოსტა არასწორია."
+                    "შეიყვანეთ სწორი ელფოსტა."
                 );
 
                 return;
@@ -928,16 +911,6 @@ if (registerButton) {
 
                 showMessage(
                     "შეიყვანეთ ტელეფონის ნომერი."
-                );
-
-                return;
-            }
-
-
-            if (!password) {
-
-                showMessage(
-                    "შეიყვანეთ პაროლი."
                 );
 
                 return;
@@ -982,11 +955,8 @@ if (registerButton) {
                         options: {
 
                             data: {
-
                                 name: name,
-
                                 phone: phone
-
                             }
 
                         }
@@ -995,6 +965,8 @@ if (registerButton) {
 
 
                 if (result.error) {
+
+                    console.error(result.error);
 
                     showMessage(
                         result.error.message
@@ -1005,7 +977,8 @@ if (registerButton) {
 
 
                 /*
-                 * თუ session უკვე არსებობს
+                 * თუ Supabase პირდაპირ
+                 * ავტორიზაციას აკეთებს
                  */
 
                 if (result.data.session) {
@@ -1028,11 +1001,10 @@ if (registerButton) {
 
 
                 /*
-                 * ელფოსტის კოდის შეყვანა
+                 * ელფოსტის დადასტურება
                  */
 
-                verificationEmail =
-                    email;
+                verificationEmail = email;
 
 
                 const verifyEmail =
@@ -1060,7 +1032,7 @@ if (registerButton) {
 
 
                 showMessage(
-                    "კოდი გამოგზავნილია ელფოსტაზე ❤️"
+                    "6-ნიშნა კოდი გამოგზავნილია ელფოსტაზე ❤️"
                 );
 
 
@@ -1084,19 +1056,12 @@ if (registerButton) {
 
         }
     );
-
 }
 
 
 /* =========================
    VERIFY CODE
 ========================= */
-
-const verifyButton =
-    document.getElementById(
-        "verifyButton"
-    );
-
 
 if (verifyButton) {
 
@@ -1106,9 +1071,7 @@ if (verifyButton) {
 
             const code =
                 document
-                    .getElementById(
-                        "verifyCode"
-                    )
+                    .getElementById("verifyCode")
                     .value
                     .trim();
 
@@ -1123,28 +1086,17 @@ if (verifyButton) {
             }
 
 
-            if (!code) {
-
-                showMessage(
-                    "შეიყვანეთ ელფოსტაზე მიღებული კოდი."
-                );
-
-                return;
-            }
-
-
             if (!/^\d{6}$/.test(code)) {
 
                 showMessage(
-                    "კოდი უნდა შედგებოდეს 6 ციფრისგან."
+                    "შეიყვანეთ 6-ნიშნა კოდი."
                 );
 
                 return;
             }
 
 
-            verifyButton.disabled =
-                true;
+            verifyButton.disabled = true;
 
             verifyButton.textContent =
                 "მოწმდება...";
@@ -1194,9 +1146,7 @@ if (verifyButton) {
 
 
                 document
-                    .getElementById(
-                        "verifyCode"
-                    )
+                    .getElementById("verifyCode")
                     .value = "";
 
 
@@ -1228,19 +1178,12 @@ if (verifyButton) {
 
         }
     );
-
 }
 
 
 /* =========================
    LOGIN
 ========================= */
-
-const loginSubmit =
-    document.getElementById(
-        "fakeLogin"
-    );
-
 
 if (loginSubmit) {
 
@@ -1250,9 +1193,7 @@ if (loginSubmit) {
 
             const email =
                 document
-                    .getElementById(
-                        "loginEmail"
-                    )
+                    .getElementById("loginEmail")
                     .value
                     .trim()
                     .toLowerCase();
@@ -1260,9 +1201,7 @@ if (loginSubmit) {
 
             const password =
                 document
-                    .getElementById(
-                        "loginPassword"
-                    )
+                    .getElementById("loginPassword")
                     .value;
 
 
@@ -1276,8 +1215,7 @@ if (loginSubmit) {
             }
 
 
-            loginSubmit.disabled =
-                true;
+            loginSubmit.disabled = true;
 
             loginSubmit.textContent =
                 "მიმდინარეობს...";
@@ -1289,11 +1227,9 @@ if (loginSubmit) {
                     await supabaseClient.auth
                         .signInWithPassword({
 
-                            email:
-                                email,
+                            email: email,
 
-                            password:
-                                password
+                            password: password
 
                         });
 
@@ -1335,8 +1271,7 @@ if (loginSubmit) {
 
             } finally {
 
-                loginSubmit.disabled =
-                    false;
+                loginSubmit.disabled = false;
 
                 loginSubmit.textContent =
                     "შესვლა";
@@ -1345,19 +1280,12 @@ if (loginSubmit) {
 
         }
     );
-
 }
 
 
 /* =========================
    PASSWORD RESET
 ========================= */
-
-const forgotPassword =
-    document.getElementById(
-        "forgotPassword"
-    );
-
 
 if (forgotPassword) {
 
@@ -1367,9 +1295,7 @@ if (forgotPassword) {
 
             const email =
                 document
-                    .getElementById(
-                        "loginEmail"
-                    )
+                    .getElementById("loginEmail")
                     .value
                     .trim()
                     .toLowerCase();
@@ -1425,66 +1351,6 @@ if (forgotPassword) {
 
         }
     );
-
-}
-
-
-/* =========================
-   FACEBOOK
-========================= */
-
-const facebookButton =
-    document.getElementById(
-        "fakeFacebook"
-    );
-
-
-if (facebookButton) {
-
-    facebookButton.addEventListener(
-        "click",
-        async function () {
-
-            try {
-
-                const result =
-                    await supabaseClient.auth
-                        .signInWithOAuth({
-
-                            provider:
-                                "facebook",
-
-                            options: {
-
-                                redirectTo:
-                                    window.location.origin
-
-                            }
-
-                        });
-
-
-                if (result.error) {
-
-                    showMessage(
-                        result.error.message
-                    );
-
-                }
-
-            } catch (error) {
-
-                console.error(error);
-
-                showMessage(
-                    "Facebook-ით შესვლისას შეცდომა მოხდა."
-                );
-
-            }
-
-        }
-    );
-
 }
 
 
