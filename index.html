@@ -1,924 +1,835 @@
-<!DOCTYPE html>
-<html lang="ka">
+<!DOCTYPE html><html lang="ka">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Your Home — უძრავი ქონება საქართველოში</title>
-
-<style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Your Home — უძრავი ქონება საქართველოში</title><style>
 :root{
-    --olive:#7d8b45;
-    --olive-dark:#5d6933;
-    --olive-light:#eef1e3;
-    --dark:#252a24;
-    --text:#444a42;
-    --muted:#777d75;
-    --bg:#f6f7f3;
-    --white:#fff;
-    --border:#e1e5dc;
+--olive:#7d8b45;
+--olive-dark:#5d6933;
+--olive-light:#eef1e3;
+--dark:#252a24;
+--text:#444a42;
+--muted:#777d75;
+--bg:#f6f7f3;
+--white:#fff;
+--border:#e1e5dc;
 }
 
 *{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
+box-sizing:border-box;
+margin:0;
+padding:0;
 }
 
 body{
-    font-family:Arial,sans-serif;
-    background:var(--bg);
-    color:var(--dark);
+font-family:Arial,sans-serif;
+background:var(--bg);
+color:var(--dark);
 }
 
 button,input,select,textarea{
-    font-family:inherit;
+font-family:inherit;
 }
 
 button{
-    cursor:pointer;
+cursor:pointer;
 }
 
 /* HEADER */
 
 header{
-    background:#fff;
-    border-bottom:1px solid var(--border);
-    padding:14px 5%;
-    display:flex;
-    align-items:center;
-    gap:25px;
-    position:sticky;
-    top:0;
-    z-index:100;
+background:#fff;
+border-bottom:1px solid var(--border);
+padding:14px 5%;
+display:flex;
+align-items:center;
+gap:25px;
+position:sticky;
+top:0;
+z-index:100;
 }
 
 .logo{
-    display:flex;
-    align-items:center;
-    gap:9px;
-    min-width:190px;
+display:flex;
+align-items:center;
+gap:9px;
+min-width:190px;
 }
 
 .logo svg{
-    width:44px;
-    height:44px;
-    fill:none;
-    stroke:var(--olive);
-    stroke-width:3;
-    stroke-linecap:round;
-    stroke-linejoin:round;
+width:44px;
+height:44px;
+fill:none;
+stroke:var(--olive);
+stroke-width:3;
+stroke-linecap:round;
+stroke-linejoin:round;
 }
 
 .logo-text{
-    font-size:23px;
-    font-weight:800;
+font-size:23px;
+font-weight:800;
 }
 
 .logo-text span{
-    color:var(--olive);
+color:var(--olive);
 }
 
 nav{
-    display:flex;
-    gap:15px;
-    flex:1;
+display:flex;
+gap:18px;
+flex:1;
 }
 
 nav button{
-    border:0;
-    background:none;
-    color:var(--text);
-    font-size:14px;
+border:0;
+background:none;
+color:var(--text);
+font-size:14px;
 }
 
 nav button:hover{
-    color:var(--olive-dark);
+color:var(--olive-dark);
 }
 
 .header-right{
-    display:flex;
-    align-items:center;
-    gap:7px;
+display:flex;
+align-items:center;
+gap:7px;
 }
 
 .language{
-    border:1px solid var(--border);
-    background:#fff;
-    padding:9px;
-    border-radius:8px;
+border:1px solid var(--border);
+background:#fff;
+padding:9px;
+border-radius:8px;
 }
 
 .login{
-    border:0;
-    background:none;
-    font-weight:600;
-    padding:10px;
+border:0;
+background:none;
+font-weight:600;
+padding:10px;
 }
 
 .add-button{
-    border:0;
-    background:var(--olive);
-    color:#fff;
-    padding:11px 16px;
-    border-radius:8px;
-    font-weight:700;
+border:0;
+background:var(--olive);
+color:white;
+padding:11px 16px;
+border-radius:8px;
+font-weight:700;
 }
 
 /* HERO */
 
 .hero{
-    min-height:500px;
-    background:
-    linear-gradient(rgba(28,34,27,.43),rgba(28,34,27,.68)),
-    url("https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=80");
-    background-size:cover;
-    background-position:center;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:60px 5%;
+min-height:500px;
+background:
+linear-gradient(rgba(28,34,27,.43),rgba(28,34,27,.68)),
+url("https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=80");
+background-size:cover;
+background-position:center;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:60px 5%;
 }
 
 .hero-content{
-    width:100%;
-    max-width:1100px;
-    text-align:center;
-    color:#fff;
+width:100%;
+max-width:1100px;
+text-align:center;
+color:white;
 }
 
 .hero h1{
-    font-size:46px;
-    margin-bottom:14px;
+font-size:46px;
+margin-bottom:14px;
 }
 
 .hero p{
-    font-size:18px;
-    margin-bottom:30px;
+font-size:18px;
+margin-bottom:30px;
 }
 
 /* SEARCH */
 
 .search-box{
-    background:#fff;
-    padding:10px;
-    border-radius:16px;
-    box-shadow:0 15px 40px rgba(0,0,0,.2);
-    color:var(--dark);
+background:white;
+padding:10px;
+border-radius:16px;
+box-shadow:0 15px 40px rgba(0,0,0,.2);
+color:var(--dark);
 }
 
 .tabs{
-    display:flex;
-    gap:5px;
-    border-bottom:1px solid var(--border);
-    padding-bottom:8px;
+display:flex;
+gap:5px;
+border-bottom:1px solid var(--border);
+padding-bottom:8px;
 }
 
 .tabs button{
-    border:0;
-    background:#fff;
-    padding:12px 22px;
-    border-radius:8px;
-    color:var(--muted);
-    font-weight:700;
+border:0;
+background:white;
+padding:12px 22px;
+border-radius:8px;
+color:var(--muted);
+font-weight:700;
 }
 
 .tabs button.active{
-    background:var(--olive-light);
-    color:var(--olive-dark);
+background:var(--olive-light);
+color:var(--olive-dark);
 }
 
 .search-fields{
-    display:grid;
-    grid-template-columns:1.5fr 1fr 1fr 1fr auto;
-    gap:8px;
-    padding-top:10px;
+display:grid;
+grid-template-columns:1.5fr 1fr 1fr 1fr auto;
+gap:8px;
+padding-top:10px;
 }
 
 .field{
-    border:1px solid var(--border);
-    border-radius:8px;
-    padding:9px;
-    text-align:left;
+border:1px solid var(--border);
+border-radius:8px;
+padding:9px;
+text-align:left;
 }
 
 .field label{
-    display:block;
-    color:var(--muted);
-    font-size:12px;
-    margin-bottom:5px;
+display:block;
+color:var(--muted);
+font-size:12px;
+margin-bottom:5px;
 }
 
 .field input,
 .field select{
-    width:100%;
-    border:0;
-    outline:0;
-    background:#fff;
-    font-size:14px;
+width:100%;
+border:0;
+outline:0;
+background:white;
+font-size:14px;
 }
 
 .search-button{
-    border:0;
-    background:var(--olive);
-    color:#fff;
-    padding:0 22px;
-    border-radius:8px;
-    font-weight:700;
+border:0;
+background:var(--olive);
+color:white;
+padding:0 22px;
+border-radius:8px;
+font-weight:700;
 }
 
 /* FILTERS */
 
 .filters{
-    max-width:1200px;
-    margin:30px auto 0;
-    padding:0 25px;
+max-width:1200px;
+margin:30px auto 0;
+padding:0 25px;
 }
 
 .filter-list{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
+display:flex;
+flex-wrap:wrap;
+gap:8px;
 }
 
 .filter{
-    background:#fff;
-    border:1px solid var(--border);
-    border-radius:8px;
-    padding:10px 14px;
+background:white;
+border:1px solid var(--border);
+border-radius:8px;
+padding:10px 14px;
 }
 
 .filter.active{
-    background:var(--olive-light);
-    border-color:var(--olive);
-    color:var(--olive-dark);
+background:var(--olive-light);
+border-color:var(--olive);
+color:var(--olive-dark);
 }
 
 /* SECTIONS */
 
 .section{
-    max-width:1200px;
-    margin:55px auto;
-    padding:0 25px;
+max-width:1200px;
+margin:55px auto;
+padding:0 25px;
 }
 
 .section-title{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:22px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:22px;
 }
 
 .section-title h2{
-    font-size:27px;
+font-size:27px;
 }
 
 .section-title button{
-    border:0;
-    background:none;
-    color:var(--olive-dark);
-    font-weight:600;
+border:0;
+background:none;
+color:var(--olive-dark);
+font-weight:600;
 }
 
 /* CARDS */
 
 .cards{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
 }
 
 .card{
-    background:#fff;
-    border:1px solid var(--border);
-    border-radius:14px;
-    overflow:hidden;
-    transition:.2s;
+background:white;
+border:1px solid var(--border);
+border-radius:14px;
+overflow:hidden;
+transition:.2s;
 }
 
 .card.hidden{
-    display:none;
+display:none;
 }
 
 .card:hover{
-    transform:translateY(-3px);
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
+transform:translateY(-3px);
+box-shadow:0 10px 25px rgba(0,0,0,.08);
 }
 
 .card-image{
-    height:220px;
-    background-size:cover;
-    background-position:center;
-    position:relative;
+height:220px;
+background-size:cover;
+background-position:center;
+position:relative;
 }
 
 .badge{
-    position:absolute;
-    left:12px;
-    top:12px;
-    background:var(--olive);
-    color:#fff;
-    padding:7px 10px;
-    border-radius:6px;
-    font-size:12px;
-    font-weight:bold;
+position:absolute;
+left:12px;
+top:12px;
+background:var(--olive);
+color:white;
+padding:7px 10px;
+border-radius:6px;
+font-size:12px;
+font-weight:bold;
 }
 
 .favorite{
-    position:absolute;
-    right:12px;
-    top:12px;
-    width:36px;
-    height:36px;
-    border:0;
-    border-radius:50%;
-    background:#fff;
-    font-size:20px;
+position:absolute;
+right:12px;
+top:12px;
+width:36px;
+height:36px;
+border:0;
+border-radius:50%;
+background:white;
+font-size:20px;
 }
 
 .favorite.saved{
-    color:#d44;
+color:#d44;
 }
 
 .card-body{
-    padding:16px;
+padding:16px;
 }
 
 .price{
-    font-size:23px;
-    font-weight:800;
-    margin-bottom:7px;
+font-size:23px;
+font-weight:800;
+margin-bottom:7px;
 }
 
 .address{
-    color:var(--muted);
-    margin-bottom:14px;
+color:var(--muted);
+margin-bottom:14px;
 }
 
 .details{
-    border-top:1px solid var(--border);
-    padding-top:12px;
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-    font-size:13px;
+border-top:1px solid var(--border);
+padding-top:12px;
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+font-size:13px;
 }
 
 .owner{
-    color:var(--muted);
-    font-size:13px;
-    margin-top:12px;
+color:var(--muted);
+font-size:13px;
+margin-top:12px;
 }
 
 /* ADD PAGE */
 
 .add-page{
-    display:none;
-    max-width:1000px;
-    margin:45px auto;
-    padding:0 20px 60px;
+display:none;
+max-width:1000px;
+margin:45px auto;
+padding:0 20px 60px;
 }
 
 .add-page.active{
-    display:block;
+display:block;
 }
 
 .home-page.hidden{
-    display:none;
+display:none;
 }
 
 .add-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:25px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
 }
 
 .add-header h1{
-    font-size:32px;
+font-size:32px;
 }
 
 .back-button{
-    border:1px solid var(--border);
-    background:#fff;
-    padding:10px 15px;
-    border-radius:8px;
+border:1px solid var(--border);
+background:white;
+padding:10px 15px;
+border-radius:8px;
 }
 
 .form-card{
-    background:#fff;
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:28px;
-    margin-bottom:20px;
+background:white;
+border:1px solid var(--border);
+border-radius:16px;
+padding:28px;
+margin-bottom:20px;
 }
 
 .form-card h2{
-    font-size:20px;
-    margin-bottom:20px;
+font-size:20px;
+margin-bottom:20px;
 }
 
 .form-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:16px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:16px;
 }
 
 .form-group{
-    display:flex;
-    flex-direction:column;
-    gap:7px;
+display:flex;
+flex-direction:column;
+gap:7px;
 }
 
 .form-group.full{
-    grid-column:1/-1;
+grid-column:1/-1;
 }
 
 .form-group label{
-    font-size:14px;
-    font-weight:600;
+font-size:14px;
+font-weight:600;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea{
-    width:100%;
-    padding:12px;
-    border:1px solid var(--border);
-    border-radius:8px;
-    outline:none;
-    font-size:14px;
-    background:#fff;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus{
-    border-color:var(--olive);
+width:100%;
+padding:12px;
+border:1px solid var(--border);
+border-radius:8px;
+outline:none;
+font-size:14px;
+background:white;
 }
 
 .form-group textarea{
-    min-height:130px;
-    resize:vertical;
+min-height:130px;
+resize:vertical;
 }
 
 .choice-group{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
+display:flex;
+flex-wrap:wrap;
+gap:8px;
 }
 
-.choice,
-.contact-choice{
-    border:1px solid var(--border);
-    background:#fff;
-    padding:10px 14px;
-    border-radius:8px;
+.choice{
+border:1px solid var(--border);
+background:white;
+padding:10px 14px;
+border-radius:8px;
 }
 
-.choice.selected,
-.contact-choice.selected{
-    background:var(--olive-light);
-    border-color:var(--olive);
-    color:var(--olive-dark);
-    font-weight:700;
+.choice.selected{
+background:var(--olive-light);
+border-color:var(--olive);
+color:var(--olive-dark);
+font-weight:700;
 }
 
 /* PHOTOS */
 
 .photo-upload{
-    border:2px dashed #cdd4c5;
-    border-radius:12px;
-    padding:28px;
-    text-align:center;
-    background:#fafbf8;
+border:2px dashed #cdd4c5;
+border-radius:12px;
+padding:28px;
+text-align:center;
+background:#fafbf8;
 }
 
 .photo-upload strong{
-    display:block;
-    margin-bottom:7px;
+display:block;
+margin-bottom:7px;
 }
 
 .photo-upload p{
-    color:var(--muted);
-    font-size:13px;
-    margin-bottom:15px;
+color:var(--muted);
+font-size:13px;
+margin-bottom:15px;
 }
 
 .photo-button{
-    display:inline-block;
-    background:var(--olive);
-    color:#fff;
-    padding:11px 17px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:700;
+display:inline-block;
+background:var(--olive);
+color:white;
+padding:11px 17px;
+border-radius:8px;
+cursor:pointer;
+font-weight:700;
 }
 
 .photo-upload input{
-    display:none;
+display:none;
 }
 
 .preview{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:10px;
-    margin-top:15px;
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+margin-top:15px;
 }
 
 .preview-item{
-    height:110px;
-    border-radius:8px;
-    overflow:hidden;
-    position:relative;
-    background:#eee;
+height:110px;
+border-radius:8px;
+overflow:hidden;
+position:relative;
+background:#eee;
 }
 
 .preview-item img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+width:100%;
+height:100%;
+object-fit:cover;
 }
 
 .preview-item span{
-    position:absolute;
-    right:5px;
-    top:5px;
-    background:rgba(0,0,0,.65);
-    color:#fff;
-    border-radius:50%;
-    width:24px;
-    height:24px;
-    text-align:center;
-    line-height:24px;
-    cursor:pointer;
+position:absolute;
+right:5px;
+top:5px;
+background:rgba(0,0,0,.65);
+color:white;
+border-radius:50%;
+width:24px;
+height:24px;
+text-align:center;
+line-height:24px;
+cursor:pointer;
+}
+
+/* CONTACT */
+
+.contact-options{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+}
+
+.contact-choice{
+border:1px solid var(--border);
+background:white;
+padding:11px 15px;
+border-radius:8px;
+}
+
+.contact-choice.selected{
+background:var(--olive-light);
+border-color:var(--olive);
+color:var(--olive-dark);
 }
 
 /* ACTIONS */
 
 .form-actions{
-    display:flex;
-    justify-content:flex-end;
-    gap:10px;
+display:flex;
+justify-content:flex-end;
+gap:10px;
 }
 
 .cancel-button{
-    border:1px solid var(--border);
-    background:#fff;
-    padding:13px 20px;
-    border-radius:8px;
+border:1px solid var(--border);
+background:white;
+padding:13px 20px;
+border-radius:8px;
 }
 
 .publish-button{
-    border:0;
-    background:var(--olive);
-    color:#fff;
-    padding:13px 25px;
-    border-radius:8px;
-    font-weight:700;
+border:0;
+background:var(--olive);
+color:white;
+padding:13px 25px;
+border-radius:8px;
+font-weight:700;
 }
 
 /* CTA */
 
 .cta{
-    max-width:1200px;
-    margin:60px auto;
-    padding:0 25px;
+max-width:1200px;
+margin:60px auto;
+padding:0 25px;
 }
 
 .cta-box{
-    background:var(--dark);
-    color:#fff;
-    border-radius:16px;
-    padding:38px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:20px;
+background:var(--dark);
+color:white;
+border-radius:16px;
+padding:38px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:20px;
 }
 
 .cta-box p{
-    color:#c8cec6;
-    margin-top:7px;
+color:#c8cec6;
+margin-top:7px;
 }
 
 .cta-button{
-    border:0;
-    background:var(--olive);
-    color:#fff;
-    padding:13px 20px;
-    border-radius:8px;
-    font-weight:700;
+border:0;
+background:var(--olive);
+color:white;
+padding:13px 20px;
+border-radius:8px;
+font-weight:700;
 }
 
 /* FOOTER */
 
 footer{
-    background:#20251f;
-    color:#fff;
-    padding:50px 5%;
+background:#20251f;
+color:white;
+padding:50px 5%;
 }
 
 .footer-grid{
-    max-width:1200px;
-    margin:auto;
-    display:grid;
-    grid-template-columns:2fr 1fr 1fr 1.5fr;
-    gap:35px;
+max-width:1200px;
+margin:auto;
+display:grid;
+grid-template-columns:2fr 1fr 1fr 1.5fr;
+gap:35px;
 }
 
 footer h3{
-    margin-bottom:15px;
+margin-bottom:15px;
 }
 
 footer p,
 footer a{
-    display:block;
-    color:#c1c7c0;
-    text-decoration:none;
-    margin-bottom:10px;
-    font-size:14px;
+display:block;
+color:#c1c7c0;
+text-decoration:none;
+margin-bottom:10px;
+font-size:14px;
 }
 
 footer a:hover{
-    color:#fff;
+color:white;
 }
 
 .social{
-    display:flex;
-    gap:8px;
-    margin-top:15px;
+display:flex;
+gap:8px;
+margin-top:15px;
 }
 
 .social a{
-    border:1px solid #4c534b;
-    padding:8px 11px;
-    border-radius:7px;
+border:1px solid #4c534b;
+padding:8px 11px;
+border-radius:7px;
 }
 
 /* MESSAGE */
 
 .message{
-    position:fixed;
-    bottom:25px;
-    left:50%;
-    transform:translateX(-50%) translateY(100px);
-    background:var(--dark);
-    color:#fff;
-    padding:14px 22px;
-    border-radius:10px;
-    opacity:0;
-    transition:.3s;
-    z-index:999;
-    text-align:center;
+position:fixed;
+bottom:25px;
+left:50%;
+transform:translateX(-50%) translateY(100px);
+background:var(--dark);
+color:white;
+padding:14px 22px;
+border-radius:10px;
+opacity:0;
+transition:.3s;
+z-index:999;
+text-align:center;
 }
 
 .message.show{
-    transform:translateX(-50%) translateY(0);
-    opacity:1;
+transform:translateX(-50%) translateY(0);
+opacity:1;
 }
 
 /* MOBILE */
 
 @media(max-width:950px){
 
-    header{
-        flex-wrap:wrap;
-    }
+header{
+flex-wrap:wrap;
+}
 
-    nav{
-        display:none;
-    }
+nav{
+display:none;
+}
 
-    .search-fields{
-        grid-template-columns:1fr 1fr;
-    }
+.search-fields{
+grid-template-columns:1fr 1fr;
+}
 
-    .cards{
-        grid-template-columns:1fr 1fr;
-    }
+.cards{
+grid-template-columns:1fr 1fr;
+}
 
-    .footer-grid{
-        grid-template-columns:1fr 1fr;
-    }
+.footer-grid{
+grid-template-columns:1fr 1fr;
+}
 
-    .preview{
-        grid-template-columns:repeat(3,1fr);
-    }
+.preview{
+grid-template-columns:repeat(3,1fr);
+}
+
 }
 
 @media(max-width:600px){
 
-    header{
-        padding:12px 4%;
-    }
-
-    .hero{
-        min-height:580px;
-        padding:40px 15px;
-    }
-
-    .hero h1{
-        font-size:34px;
-    }
-
-    .hero p{
-        font-size:16px;
-    }
-
-    .search-fields{
-        grid-template-columns:1fr;
-    }
-
-    .search-button{
-        padding:14px;
-    }
-
-    .cards{
-        grid-template-columns:1fr;
-    }
-
-    .form-grid{
-        grid-template-columns:1fr;
-    }
-
-    .form-group.full{
-        grid-column:auto;
-    }
-
-    .form-card{
-        padding:18px;
-    }
-
-    .preview{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .add-header{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .cta-box{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .footer-grid{
-        grid-template-columns:1fr;
-    }
+header{
+padding:12px 4%;
 }
-</style>
-</head>
 
-<body>
+.hero{
+min-height:580px;
+padding:40px 15px;
+}
 
-<header>
+.hero h1{
+font-size:34px;
+}
 
-<div class="logo">
+.hero p{
+font-size:16px;
+}
 
-<svg viewBox="0 0 64 64">
+.search-fields{
+grid-template-columns:1fr;
+}
+
+.search-button{
+padding:14px;
+}
+
+.cards{
+grid-template-columns:1fr;
+}
+
+.form-grid{
+grid-template-columns:1fr;
+}
+
+.form-group.full{
+grid-column:auto;
+}
+
+.form-card{
+padding:18px;
+}
+
+.preview{
+grid-template-columns:repeat(2,1fr);
+}
+
+.add-header{
+align-items:flex-start;
+gap:15px;
+flex-direction:column;
+}
+
+.cta-box{
+flex-direction:column;
+align-items:flex-start;
+}
+
+.footer-grid{
+grid-template-columns:1fr;
+}
+
+}
+
+</style></head><body><header><div class="logo"><svg viewBox="0 0 64 64">
 <path d="M8 29 L32 8 L56 29"></path>
 <path d="M14 26 V55 H50 V26"></path>
 <path d="M27 55 V37 H37 V55"></path>
 <path d="M24 27 H40 V33 H24 Z"></path>
-</svg>
-
-<div class="logo-text">
+</svg><div class="logo-text">
 YOUR <span>HOME</span>
-</div>
-
-</div>
-
-<nav>
-
-<button data-type="sale">ყიდვა</button>
+</div></div><nav><button data-type="sale">ყიდვა</button>
 <button data-type="rent">ქირავდება</button>
 <button data-type="pledge">გირავდება</button>
-<button data-message="კომერციული">კომერციული</button>
-<button data-message="ახალი პროექტები">ახალი პროექტები</button>
+<button id="commercialNav">კომერციული</button>
+<button id="projectsNav">ახალი პროექტები</button>
 
-</nav>
-
-<div class="header-right">
-
-<select class="language" id="language">
-<option value="ka">🇬🇪 GE</option>
+</nav><div class="header-right"><select class="language" id="language"><option value="ka">🇬🇪 GE</option>
 <option value="en">🇬🇧 EN</option>
-<option value="ru">🇷🇺 RU</option>
-</select>
-
-<button class="login" id="loginButton">შესვლა</button>
-
-<button class="add-button" id="addButton">
+<option value="ru">🇷🇺 RU</option></select><button class="login" id="loginButton">
+შესვლა
+</button><button class="add-button" id="addButton">
 + განცხადება
-</button>
-
-</div>
-
-</header>
-
-
-<main id="homePage">
-
-<section class="hero">
-
-<div class="hero-content">
-
-<h1 id="heroTitle">
+</button></div></header><main id="homePage"><section class="hero"><div class="hero-content"><h1 id="heroTitle">
 იპოვე უძრავი ქონება საქართველოში
-</h1>
-
-<p id="heroSubtitle">
-იპოვე შენთვის სასურველი სახლი, ბინა ან სხვა უძრავი ქონება მარტივად.
-</p>
-
-<div class="search-box">
-
-<div class="tabs">
-
-<button class="active" data-type="sale">იყიდება</button>
-<button data-type="rent">ქირავდება</button>
-<button data-type="pledge">გირავდება</button>
-
-</div>
-
-<div class="search-fields">
-
-<div class="field">
-
-<label id="locationLabel">მდებარეობა</label>
-
-<input
-id="locationInput"
-type="text"
-placeholder="ქალაქი, უბანი ან ქუჩა">
-
-</div>
-
-<div class="field">
-
-<label id="typeLabel">ქონების ტიპი</label>
-
-<select id="propertyType">
-
-<option value="all">ყველა</option>
+</h1><p id="heroSubtitle">
+იყიდე, იქირავე ან იგირავე — იპოვე შენთვის სასურველი ქონება მარტივად.
+</p><div class="search-box"><div class="tabs"><button class="active" data-type="sale">
+იყიდება
+</button><button data-type="rent">
+ქირავდება
+</button><button data-type="pledge">
+გირავდება
+</button></div><div class="search-fields"><div class="field"><label id="locationLabel">
+მდებარეობა
+</label><input id="locationInput" type="text" placeholder="ქალაქი, უბანი ან ქუჩა"></div><div class="field"><label id="typeLabel">
+ქონების ტიპი
+</label><select id="propertyType"><option value="all">ყველა</option>
 <option value="apartment">ბინა</option>
 <option value="house">სახლი</option>
 <option value="commercial">კომერციული</option>
 <option value="land">მიწა</option>
-<option value="cottage">აგარაკი</option>
-
-</select>
-
-</div>
-
-<div class="field">
-
-<label id="roomsLabel">ოთახები</label>
-
-<select id="rooms">
-
-<option value="all">ნებისმიერი</option>
+<option value="cottage">აგარაკი</option></select></div><div class="field"><label id="roomsLabel">
+ოთახები
+</label><select id="rooms"><option value="all">ნებისმიერი</option>
 <option value="1">1 ოთახი</option>
 <option value="2">2 ოთახი</option>
 <option value="3">3 ოთახი</option>
 <option value="4">4 ოთახი</option>
-<option value="5">5+ ოთახი</option>
-
-</select>
-
-</div>
-
-<div class="field">
-
-<label id="priceLabel">ფასი</label>
-
-<input
-id="priceInput"
-type="text"
-placeholder="მაგ. $100,000">
-
-</div>
-
-<button class="search-button" id="searchButton">
+<option value="5">5+ ოთახი</option></select></div><div class="field"><label id="priceLabel">
+ფასი
+</label><input id="priceInput" type="text" placeholder="მაგ. $100,000"></div><button class="search-button" id="searchButton">
 ძებნა
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section class="filters">
-
-<div class="filter-list">
-
-<button class="filter" data-filter="apartment">ბინა</button>
+</button></div></div></div></section><section class="filters"><div class="filter-list"><button class="filter" data-filter="apartment">ბინა</button>
 <button class="filter" data-filter="house">სახლი</button>
 <button class="filter" data-filter="land">მიწა</button>
 <button class="filter" data-filter="commercial">კომერციული</button>
@@ -934,301 +845,148 @@ placeholder="მაგ. $100,000">
 <button class="filter" data-filter="owner">მესაკუთრე</button>
 <button class="filter" data-filter="agent">აგენტი</button>
 
-</div>
-
-</section>
-
-
-<section class="section">
-
-<div class="section-title">
-
-<h2 id="popularTitle">🔥 ყველაზე ნახვადი</h2>
-
-<button id="showAll">ყველას ნახვა →</button>
-
-</div>
-
-<div class="cards" id="propertyCards">
-
-
-<div class="card property-card"
+</div></section><section class="section"><div class="section-title"><h2 id="popularTitle">
+🔥 ყველაზე ნახვადი
+</h2><button id="showAll">
+ყველას ნახვა →
+</button></div><div class="cards" id="propertyCards"><div class="card property-card"
 data-type="sale"
 data-property="apartment"
 data-rooms="3"
 data-location="საბურთალო"
-data-tags="new renovated furnished owner">
-
-<div class="card-image"
-style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80');">
-
-<div class="badge">TOP</div>
-<button class="favorite">♡</button>
-
-</div>
-
-<div class="card-body">
-
-<div class="price">$145,000</div>
-
-<div class="address">თბილისი, საბურთალო</div>
-
-<div class="details">
+data-tags="new renovated furnished owner"><div class="card-image"
+style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80');"><div class="badge">TOP</div>
+<button class="favorite">♡</button></div><div class="card-body"><div class="price">$145,000</div><div class="address">
+თბილისი, საბურთალო
+</div><div class="details">
 <span>3 ოთახი</span>
+<span>2 საძინებელი</span>
 <span>82 მ²</span>
 <span>7/12 სართული</span>
-</div>
-
-<div class="owner">მესაკუთრე · 1,248 ნახვა</div>
-
-</div>
-</div>
-
-
-<div class="card property-card"
+<span>1 აივანი · 8 მ²</span>
+</div><div class="owner">
+მესაკუთრე · 1,248 ნახვა
+</div></div>
+</div><div class="card property-card"
 data-type="sale"
 data-property="apartment"
 data-rooms="4"
 data-location="ვაკე"
-data-tags="new renovated furnished agent">
-
-<div class="card-image"
-style="background-image:url('https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80');">
-
-<div class="badge">VIP</div>
-<button class="favorite">♡</button>
-
-</div>
-
-<div class="card-body">
-
-<div class="price">$210,000</div>
-<div class="address">თბილისი, ვაკე</div>
-
-<div class="details">
+data-tags="new renovated furnished agent"><div class="card-image"
+style="background-image:url('https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80');"><div class="badge">VIP</div>
+<button class="favorite">♡</button></div><div class="card-body"><div class="price">$210,000</div><div class="address">
+თბილისი, ვაკე
+</div><div class="details">
 <span>4 ოთახი</span>
+<span>3 საძინებელი</span>
 <span>115 მ²</span>
 <span>4/8 სართული</span>
-</div>
-
-<div class="owner">აგენტი · 986 ნახვა</div>
-
-</div>
-</div>
-
-
-<div class="card property-card"
+<span>2 აივანი · 12 მ²</span>
+</div><div class="owner">
+აგენტი · 986 ნახვა
+</div></div>
+</div><div class="card property-card"
 data-type="rent"
 data-property="apartment"
 data-rooms="2"
 data-location="დიდუბე"
-data-tags="old furnished owner">
+data-tags="old furnished owner"><div class="card-image"
+style="background-image:url('https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=900&q=80');"><button class="favorite">♡</button>
 
-<div class="card-image"
-style="background-image:url('https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=900&q=80');">
-
-<button class="favorite">♡</button>
-
-</div>
-
-<div class="card-body">
-
-<div class="price">$800 / თვე</div>
-<div class="address">თბილისი, დიდუბე</div>
-
-<div class="details">
+</div><div class="card-body"><div class="price">$800 / თვე</div><div class="address">
+თბილისი, დიდუბე
+</div><div class="details">
 <span>2 ოთახი</span>
+<span>1 საძინებელი</span>
 <span>61 მ²</span>
 <span>5/9 სართული</span>
-</div>
-
-<div class="owner">მესაკუთრე · 742 ნახვა</div>
-
-</div>
-</div>
-
-
-<div class="card property-card"
+<span>1 აივანი · 5 მ²</span>
+</div><div class="owner">
+მესაკუთრე · 742 ნახვა
+</div></div>
+</div><div class="card property-card"
 data-type="pledge"
 data-property="house"
 data-rooms="5"
 data-location="მთაწმინდა"
-data-tags="new renovated owner">
-
-<div class="card-image"
-style="background-image:url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=900&q=80');">
-
-<div class="badge">VIP</div>
-<button class="favorite">♡</button>
-
-</div>
-
-<div class="card-body">
-
-<div class="price">$260,000</div>
-<div class="address">თბილისი, მთაწმინდა</div>
-
-<div class="details">
+data-tags="oldbuilding renovated owner"><div class="card-image"
+style="background-image:url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=900&q=80');"><div class="badge">VIP</div>
+<button class="favorite">♡</button></div><div class="card-body"><div class="price">$260,000</div><div class="address">
+თბილისი, მთაწმინდა
+</div><div class="details">
 <span>5 ოთახი</span>
+<span>3 საძინებელი</span>
 <span>170 მ²</span>
-<span>2/4 სართული</span>
-</div>
-
-<div class="owner">მესაკუთრე · 621 ნახვა</div>
-
-</div>
-</div>
-
-
-<div class="card property-card"
+<span>2 სართული</span>
+<span>1 აივანი · 15 მ²</span>
+</div><div class="owner">
+მესაკუთრე · 621 ნახვა
+</div></div>
+</div><div class="card property-card"
 data-type="rent"
 data-property="house"
 data-rooms="4"
 data-location="დიღომი"
-data-tags="new furnished agent">
+data-tags="new furnished agent"><div class="card-image"
+style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=900&q=80');"><button class="favorite">♡</button>
 
-<div class="card-image"
-style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=900&q=80');">
-
-<button class="favorite">♡</button>
-
-</div>
-
-<div class="card-body">
-
-<div class="price">$1,200 / თვე</div>
-<div class="address">თბილისი, დიღომი</div>
-
-<div class="details">
+</div><div class="card-body"><div class="price">$1,200 / თვე</div><div class="address">
+თბილისი, დიღომი
+</div><div class="details">
 <span>4 ოთახი</span>
+<span>2 საძინებელი</span>
 <span>145 მ²</span>
 <span>2/10 სართული</span>
-</div>
-
-<div class="owner">აგენტი · 512 ნახვა</div>
-
-</div>
-</div>
-
-
-<div class="card property-card"
+<span>1 აივანი · 10 მ²</span>
+</div><div class="owner">
+აგენტი · 512 ნახვა
+</div></div>
+</div><div class="card property-card"
 data-type="sale"
 data-property="house"
 data-rooms="5"
 data-location="წყნეთი"
-data-tags="new green renovated furnished owner">
-
-<div class="card-image"
-style="background-image:url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=900&q=80');">
-
-<div class="badge">VIP</div>
-<button class="favorite">♡</button>
-
-</div>
-
-<div class="card-body">
-
-<div class="price">$390,000</div>
-<div class="address">თბილისი, წყნეთი</div>
-
-<div class="details">
+data-tags="new green renovated furnished owner"><div class="card-image"
+style="background-image:url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=900&q=80');"><div class="badge">VIP</div>
+<button class="favorite">♡</button></div><div class="card-body"><div class="price">$390,000</div><div class="address">
+თბილისი, წყნეთი
+</div><div class="details">
 <span>5 ოთახი</span>
+<span>3 საძინებელი</span>
 <span>210 მ²</span>
 <span>2 სართული</span>
-</div>
-
-<div class="owner">მესაკუთრე · 1,102 ნახვა</div>
-
-</div>
-</div>
-
-</div>
-</section>
-
-
-<section class="cta">
-
-<div class="cta-box">
-
-<div>
-<h2 id="ctaTitle">გაქვს უძრავი ქონება?</h2>
-<p id="ctaText">განათავსე განცხადება Your Home-ზე.</p>
-</div>
-
-<button class="cta-button" id="ctaButton">
+<span>2 აივანი · 20 მ²</span>
+</div><div class="owner">
+მესაკუთრე · 1,102 ნახვა
+</div></div>
+</div></div></section><section class="cta"><div class="cta-box"><div><h2 id="ctaTitle">
+გაქვს უძრავი ქონება?
+</h2><p id="ctaText">
+განათავსე განცხადება Your Home-ზე.
+</p></div><button class="cta-button" id="ctaButton">
 + განცხადების დამატება
-</button>
-
-</div>
-
-</section>
-
-</main>
-
-
-<!-- ADD LISTING -->
-
-<section class="add-page" id="addPage">
-
-<div class="add-header">
-
-<h1>განცხადების დამატება</h1>
-
-<button class="back-button" id="backButton">
+</button></div></section></main><!-- ADD LISTING --><section class="add-page" id="addPage"><div class="add-header"><h1>
+განცხადების დამატება
+</h1><button class="back-button" id="backButton">
 ← უკან
-</button>
+</button></div><div class="form-card"><h2>რა გსურთ გააკეთოთ?</h2><div class="choice-group" id="dealChoices"><button class="choice selected" data-value="sale">
+იყიდება
+</button><button class="choice" data-value="rent">
+ქირავდება
+</button><button class="choice" data-value="pledge">
+გირავდება
+</button></div></div><div class="form-card"><h2>ქონების შესახებ</h2><div class="form-grid"><div class="form-group"><label>ქონების ტიპი *</label>
 
-</div>
+<select id="listingProperty"><option value="">აირჩიეთ</option>
+<option>ბინა</option>
+<option>სახლი</option>
+<option>კომერციული ფართი</option>
+<option>მიწის ნაკვეთი</option>
+<option>აგარაკი</option>
+<option>სასტუმრო</option>
+<option>სხვა</option></select></div><div class="form-group"><label>მდგომარეობა</label>
 
-
-<div class="form-card">
-
-<h2>რა გსურთ გააკეთოთ?</h2>
-
-<div class="choice-group" id="dealChoices">
-
-<button class="choice selected" data-value="sale">იყიდება</button>
-<button class="choice" data-value="rent">ქირავდება</button>
-<button class="choice" data-value="pledge">გირავდება</button>
-
-</div>
-
-</div>
-
-
-<div class="form-card">
-
-<h2>ქონების შესახებ</h2>
-
-<div class="form-grid">
-
-<div class="form-group">
-
-<label>ქონების ტიპი *</label>
-
-<select id="listingProperty">
-
-<option value="">აირჩიეთ</option>
-<option value="apartment">ბინა</option>
-<option value="house">სახლი</option>
-<option value="commercial">კომერციული ფართი</option>
-<option value="land">მიწის ნაკვეთი</option>
-<option value="cottage">აგარაკი</option>
-<option value="hotel">სასტუმრო</option>
-<option value="other">სხვა</option>
-
-</select>
-
-</div>
-
-
-<div class="form-group">
-
-<label>მდგომარეობა</label>
-
-<select id="condition">
-
-<option value="">აირჩიეთ</option>
+<select id="condition"><option value="">აირჩიეთ</option>
 <option>მშენებარე</option>
 <option>ახალი აშენებული</option>
 <option>ძველი აშენებული</option>
@@ -1236,501 +994,202 @@ style="background-image:url('https://images.unsplash.com/photo-1600585154526-990
 <option>მწვანე კარკასი</option>
 <option>ახალი რემონტით</option>
 <option>ძველი რემონტით</option>
-<option>სარემონტო</option>
+<option>სარემონტო</option></select></div><div class="form-group"><label>ოთახების რაოდენობა</label>
 
-</select>
-
-</div>
-
-
-<div class="form-group">
-
-<label>ოთახების რაოდენობა</label>
-
-<select id="listingRooms">
-
-<option value="">აირჩიეთ</option>
+<select id="listingRooms"><option value="">აირჩიეთ</option>
 <option>1</option>
 <option>2</option>
 <option>3</option>
 <option>4</option>
 <option>5</option>
-<option>6+</option>
+<option>6+</option></select></div><div class="form-group"><label>საძინებლების რაოდენობა</label>
 
-</select>
-
-</div>
-
-
-<div class="form-group">
-
-<label>საძინებლების რაოდენობა</label>
-
-<select id="bedrooms">
-
-<option value="">აირჩიეთ</option>
+<select id="bedrooms"><option value="">აირჩიეთ</option>
 <option>სტუდიო</option>
 <option>1</option>
 <option>2</option>
 <option>3</option>
 <option>4</option>
-<option>5+</option>
+<option>5</option>
+<option>6+</option></select></div><div class="form-group"><label>სართული</label>
 
-</select>
+<input type="number" id="floor" placeholder="მაგ. 7"></div><div class="form-group"><label>სართულების რაოდენობა</label>
 
-</div>
+<input type="number" id="totalFloors" placeholder="მაგ. 12"></div><div class="form-group"><label>ფართობი მ²</label>
 
+<input type="number" id="area" placeholder="მაგ. 82"></div><div class="form-group"><label>აივნების რაოდენობა</label>
 
-<div class="form-group">
+<input type="number" id="balconyCount" min="0" placeholder="მაგ. 1"></div><div class="form-group"><label>აივნის ფართობი მ²</label>
 
-<label>სართული</label>
+<input type="number" id="balconyArea" min="0" placeholder="მაგ. 8"></div></div></div><div class="form-card"><h2>მდებარეობა</h2><div class="form-grid"><div class="form-group"><label>ქალაქი *</label>
 
-<input type="number" id="floor" placeholder="მაგ. 7">
+<input type="text" id="city" placeholder="მაგ. თბილისი"></div><div class="form-group"><label>უბანი</label>
 
-</div>
+<input type="text" id="district" placeholder="მაგ. საბურთალო"></div><div class="form-group full"><label>მისამართი</label>
 
+<input type="text" id="address" placeholder="ქუჩა, ნომერი"></div></div></div><div class="form-card"><h2>ფასი</h2><div class="form-grid"><div class="form-group"><label>ფასი *</label>
 
-<div class="form-group">
+<input type="number" id="listingPrice" placeholder="მაგ. 145000"></div><div class="form-group"><label>ვალუტა</label>
 
-<label>სართულების რაოდენობა</label>
-
-<input type="number" id="totalFloors" placeholder="მაგ. 12">
-
-</div>
-
-
-<div class="form-group">
-
-<label>საერთო ფართობი მ²</label>
-
-<input type="number" id="area" placeholder="მაგ. 82">
-
-</div>
-
-
-<div class="form-group">
-
-<label>აივანი</label>
-
-<select id="balcony">
-
-<option value="">აირჩიეთ</option>
-<option>არა</option>
-<option>კი</option>
-
-</select>
-
-</div>
-
-
-<div class="form-group">
-
-<label>აივნების რაოდენობა</label>
-
-<input type="number" id="balconyCount" placeholder="მაგ. 2" min="0">
-
-</div>
-
-
-<div class="form-group">
-
-<label>აივნის ფართობი მ²</label>
-
-<input type="number" id="balconyArea" placeholder="მაგ. 8" min="0">
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="form-card">
-
-<h2>მდებარეობა</h2>
-
-<div class="form-grid">
-
-<div class="form-group">
-
-<label>ქალაქი *</label>
-
-<input type="text" id="city" placeholder="მაგ. თბილისი">
-
-</div>
-
-<div class="form-group">
-
-<label>უბანი</label>
-
-<input type="text" id="district" placeholder="მაგ. საბურთალო">
-
-</div>
-
-<div class="form-group full">
-
-<label>მისამართი</label>
-
-<input type="text" id="address" placeholder="ქუჩა, ნომერი">
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="form-card">
-
-<h2>ფასი</h2>
-
-<div class="form-grid">
-
-<div class="form-group">
-
-<label>ფასი *</label>
-
-<input type="number" id="listingPrice" placeholder="მაგ. 145000">
-
-</div>
-
-<div class="form-group">
-
-<label>ვალუტა</label>
-
-<select id="currency">
-<option>USD — $</option>
+<select id="currency"><option>USD — $</option>
 <option>GEL — ₾</option>
-<option>EUR — €</option>
-</select>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="form-card">
-
-<h2>ვინ აქვეყნებს განცხადებას?</h2>
-
-<div class="choice-group" id="ownerChoices">
-
-<button class="choice selected" data-value="owner">
+<option>EUR — €</option></select></div></div></div><div class="form-card"><h2>ვინ აქვეყნებს განცხადებას?</h2><div class="choice-group" id="ownerChoices"><button class="choice selected" data-value="owner">
 👤 მესაკუთრე
-</button>
-
-<button class="choice" data-value="agent">
+</button><button class="choice" data-value="agent">
 🏢 აგენტი
-</button>
+</button></div></div><div class="form-card"><h2>ფოტოები</h2><div class="photo-upload"><strong>
+დაამატე ფოტოები
+</strong><p>
+მაქსიმუმ 10 ფოტო. პირველი ფოტო იქნება მთავარი.
+</p><label class="photo-button">📷 ფოტოების არჩევა
 
-</div>
+<input type="file" id="photoInput" accept="image/*" multiple></label><div class="preview" id="photoPreview"></div></div></div><div class="form-card"><h2>საკონტაქტო ინფორმაცია</h2><div class="form-grid"><div class="form-group"><label>ტელეფონის ნომერი *</label>
 
-</div>
+<input type="tel" id="phone" placeholder="+995 5XX XX XX XX"></div><div class="form-group"><label>საკონტაქტო პირი</label>
 
-
-<div class="form-card">
-
-<h2>ფოტოები</h2>
-
-<div class="photo-upload">
-
-<strong>დაამატე ფოტოები</strong>
-
-<p>მაქსიმუმ 10 ფოტო. პირველი ფოტო იქნება მთავარი.</p>
-
-<label class="photo-button">
-
-📷 ფოტოების არჩევა
-
-<input type="file"
-id="photoInput"
-accept="image/*"
-multiple>
-
-</label>
-
-<div class="preview" id="photoPreview"></div>
-
-</div>
-
-</div>
-
-
-<div class="form-card">
-
-<h2>საკონტაქტო ინფორმაცია</h2>
-
-<div class="form-grid">
-
-<div class="form-group">
-
-<label>ტელეფონის ნომერი *</label>
-
-<input type="tel"
-id="phone"
-placeholder="+995 5XX XX XX XX">
-
-</div>
-
-<div class="form-group">
-
-<label>საკონტაქტო პირი</label>
-
-<input type="text"
-id="contactName"
-placeholder="სახელი">
-
-</div>
-
-</div>
-
-<br>
-
-<label style="display:block;margin-bottom:10px;font-weight:600;">
+<input type="text" id="contactName" placeholder="სახელი"></div></div><br><label style="display:block;margin-bottom:10px;font-weight:600;">
 რომელ აპში დაგიკავშირდნენ?
-</label>
+</label><div class="contact-options"><button class="contact-choice selected">
+📞 ზარი
+</button><button class="contact-choice">
+WhatsApp
+</button><button class="contact-choice">
+Telegram
+</button><button class="contact-choice">
+Viber
+</button></div></div><div class="form-card"><h2>განცხადების აღწერა</h2><div class="form-group"><label>აღწერა</label>
 
-<div class="contact-options">
-
-<button class="contact-choice selected">📞 ზარი</button>
-<button class="contact-choice">WhatsApp</button>
-<button class="contact-choice">Telegram</button>
-<button class="contact-choice">Viber</button>
-
-</div>
-
-</div>
-
-
-<div class="form-card">
-
-<h2>განცხადების აღწერა</h2>
-
-<div class="form-group">
-
-<label>აღწერა</label>
-
-<textarea
-id="description"
-placeholder="დაწერეთ დამატებითი ინფორმაცია ქონების შესახებ..."></textarea>
-
-</div>
-
-</div>
-
-
-<div class="form-card">
-
-<div class="form-actions">
-
-<button class="cancel-button" id="cancelButton">
+<textarea id="description"
+placeholder="დაწერეთ დამატებითი ინფორმაცია ქონების შესახებ..."></textarea></div></div><div class="form-card"><div class="form-actions"><button class="cancel-button" id="cancelButton">
 გაუქმება
-</button>
-
-<button class="publish-button" id="publishButton">
+</button><button class="publish-button" id="publishButton">
 გამოქვეყნების გაგრძელება →
-</button>
-
-</div>
-
-</div>
-
-</section>
-
-
-<footer>
-
-<div class="footer-grid">
-
-<div>
-
-<h3>YOUR HOME</h3>
-
-<p>იპოვე უძრავი ქონება საქართველოში.</p>
-
-<div class="social">
-
-<a href="https://www.facebook.com/share/1HtanV8Xwi/" target="_blank">
+</button></div></div></section><footer><div class="footer-grid"><div><h3>YOUR HOME</h3><p>
+იპოვე უძრავი ქონება საქართველოში.
+</p><div class="social"><a href="https://www.facebook.com/share/1HtanV8Xwi/" target="_blank">
 Facebook
-</a>
-
-<a href="https://www.facebook.com/share/g/1EBUpigYYd/" target="_blank">
+</a><a href="https://www.facebook.com/share/g/1EBUpigYYd/" target="_blank">
 ჯგუფი
-</a>
-
-</div>
-
-</div>
-
-
-<div>
-
-<h3>ქონება</h3>
-
-<a href="#" data-type="sale">იყიდება</a>
+</a></div></div><div><h3>ქონება</h3><a href="#" data-type="sale">იყიდება</a>
 <a href="#" data-type="rent">ქირავდება</a>
 <a href="#" data-type="pledge">გირავდება</a>
-<a href="#" data-message="კომერციული">კომერციული</a>
+<a href="#">კომერციული</a>
 
-</div>
+</div><div><h3>დახმარება</h3><a href="#" class="info-link">ჩვენ შესახებ</a>
+<a href="#" class="info-link">დახმარება</a>
+<a href="#" class="info-link">წესები და პირობები</a>
 
-
-<div>
-
-<h3>დახმარება</h3>
-
-<a href="#" data-message="ჩვენ შესახებ">ჩვენ შესახებ</a>
-<a href="#" data-message="დახმარება">დახმარება</a>
-<a href="#" data-message="წესები და პირობები">წესები და პირობები</a>
-
-</div>
-
-
-<div>
-
-<h3>დაგვიკავშირდით</h3>
-
-<p>yourhomensp@gmail.com</p>
-
-<a href="tel:+995577133990">
+</div><div><h3>დაგვიკავშირდით</h3><p>
+yourhomensp@gmail.com
+</p><a href="tel:+995577133990">
 +995 577 133 990
-</a>
-
-<a href="https://wa.me/995577133990" target="_blank">
+</a><a href="https://wa.me/995577133990" target="_blank">
 WhatsApp
-</a>
-
-<a href="https://www.facebook.com/share/1HtanV8Xwi/" target="_blank">
+</a><a href="https://www.facebook.com/share/1HtanV8Xwi/" target="_blank">
 Facebook გვერდი
-</a>
-
-<a href="https://www.facebook.com/share/g/1EBUpigYYd/" target="_blank">
+</a><a href="https://www.facebook.com/share/g/1EBUpigYYd/" target="_blank">
 Facebook ჯგუფი
-</a>
-
-</div>
-
-</div>
-
-</footer>
-
-
-<div class="message" id="message"></div>
-
-
-<script>
+</a></div></div></footer><div class="message" id="message"></div><script>
 
 /* MESSAGE */
 
 function showMessage(text){
 
-    const message=document.getElementById("message");
+const message=document.getElementById("message");
 
-    message.textContent=text;
-    message.classList.add("show");
+message.textContent=text;
+message.classList.add("show");
 
-    clearTimeout(window.messageTimer);
+setTimeout(function(){
+message.classList.remove("show");
+},2800);
 
-    window.messageTimer=setTimeout(function(){
-
-        message.classList.remove("show");
-
-    },2800);
 }
 
 
-/* PAGES */
+/* PAGE */
 
 const homePage=document.getElementById("homePage");
 const addPage=document.getElementById("addPage");
 
 function openAddPage(){
 
-    homePage.classList.add("hidden");
-    addPage.classList.add("active");
+homePage.classList.add("hidden");
+addPage.classList.add("active");
 
-    window.scrollTo(0,0);
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
 }
 
 function closeAddPage(){
 
-    addPage.classList.remove("active");
-    homePage.classList.remove("hidden");
+addPage.classList.remove("active");
+homePage.classList.remove("hidden");
 
-    window.scrollTo(0,0);
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
 }
 
 
-/* ADD BUTTONS */
-
-document.getElementById("addButton")
-.addEventListener("click",openAddPage);
-
-document.getElementById("ctaButton")
-.addEventListener("click",openAddPage);
-
-document.getElementById("backButton")
-.addEventListener("click",closeAddPage);
-
-document.getElementById("cancelButton")
-.addEventListener("click",closeAddPage);
+document.getElementById("addButton").onclick=openAddPage;
+document.getElementById("ctaButton").onclick=openAddPage;
+document.getElementById("backButton").onclick=closeAddPage;
+document.getElementById("cancelButton").onclick=closeAddPage;
 
 
-/* DEAL CHOICES */
+/* DEAL */
 
-document.querySelectorAll("#dealChoices .choice")
-.forEach(function(button){
+document.querySelectorAll("#dealChoices .choice").forEach(function(button){
 
-    button.addEventListener("click",function(){
+button.addEventListener("click",function(){
 
-        document.querySelectorAll("#dealChoices .choice")
-        .forEach(function(item){
-            item.classList.remove("selected");
-        });
+document.querySelectorAll("#dealChoices .choice").forEach(function(item){
+item.classList.remove("selected");
+});
 
-        this.classList.add("selected");
+this.classList.add("selected");
 
-    });
+});
 
 });
 
 
-/* OWNER CHOICES */
+/* OWNER */
 
-document.querySelectorAll("#ownerChoices .choice")
-.forEach(function(button){
+document.querySelectorAll("#ownerChoices .choice").forEach(function(button){
 
-    button.addEventListener("click",function(){
+button.addEventListener("click",function(){
 
-        document.querySelectorAll("#ownerChoices .choice")
-        .forEach(function(item){
-            item.classList.remove("selected");
-        });
+document.querySelectorAll("#ownerChoices .choice").forEach(function(item){
+item.classList.remove("selected");
+});
 
-        this.classList.add("selected");
+this.classList.add("selected");
 
-    });
+});
 
 });
 
 
-/* CONTACT BUTTONS */
+/* CONTACT */
 
-document.querySelectorAll(".contact-choice")
-.forEach(function(button){
+document.querySelectorAll(".contact-choice").forEach(function(button){
 
-    button.addEventListener("click",function(){
+button.addEventListener("click",function(){
 
-        document.querySelectorAll(".contact-choice")
-        .forEach(function(item){
-            item.classList.remove("selected");
-        });
+document.querySelectorAll(".contact-choice").forEach(function(item){
+item.classList.remove("selected");
+});
 
-        this.classList.add("selected");
+this.classList.add("selected");
 
-    });
+});
 
 });
 
@@ -1744,385 +1203,305 @@ let selectedFiles=[];
 
 photoInput.addEventListener("change",function(){
 
-    selectedFiles=Array.from(this.files).slice(0,10);
+selectedFiles=Array.from(this.files).slice(0,10);
 
-    if(this.files.length>10){
-        showMessage("მაქსიმუმ 10 ფოტოს დამატებაა შესაძლებელი.");
-    }
+if(this.files.length>10){
+showMessage("მაქსიმუმ 10 ფოტოს დამატებაა შესაძლებელი.");
+}
 
-    renderPhotos();
+renderPhotos();
 
 });
 
 
 function renderPhotos(){
 
-    photoPreview.innerHTML="";
+photoPreview.innerHTML="";
 
-    selectedFiles.forEach(function(file,index){
+selectedFiles.forEach(function(file,index){
 
-        const reader=new FileReader();
+const reader=new FileReader();
 
-        reader.onload=function(event){
+reader.onload=function(event){
 
-            const item=document.createElement("div");
+const item=document.createElement("div");
 
-            item.className="preview-item";
+item.className="preview-item";
 
-            item.innerHTML=
-                '<img src="'+event.target.result+'">' +
-                '<span>×</span>';
+item.innerHTML=
+'<img src="'+event.target.result+'">'+
+'<span data-index="'+index+'">×</span>';
 
-            photoPreview.appendChild(item);
+photoPreview.appendChild(item);
 
-            item.querySelector("span")
-            .addEventListener("click",function(){
+item.querySelector("span").onclick=function(){
 
-                selectedFiles.splice(index,1);
+selectedFiles.splice(index,1);
+renderPhotos();
 
-                renderPhotos();
+};
 
-            });
+};
 
-        };
+reader.readAsDataURL(file);
 
-        reader.readAsDataURL(file);
-
-    });
+});
 
 }
 
 
-/* SEARCH TYPE */
+/* SEARCH */
 
 let searchType="sale";
 
 function setSearchType(type){
 
-    searchType=type;
+searchType=type;
 
-    document.querySelectorAll(".tabs button")
-    .forEach(function(button){
+document.querySelectorAll(".tabs button").forEach(function(button){
 
-        button.classList.toggle(
-            "active",
-            button.dataset.type===type
-        );
+button.classList.remove("active");
 
-    });
+if(button.dataset.type===type){
+button.classList.add("active");
+}
 
-    filterProperties();
+});
+
+filterProperties();
+
 }
 
 
-document.querySelectorAll(".tabs button")
-.forEach(function(button){
+document.querySelectorAll(".tabs button").forEach(function(button){
 
-    button.addEventListener("click",function(){
+button.addEventListener("click",function(){
 
-        setSearchType(this.dataset.type);
+setSearchType(this.dataset.type);
 
-    });
+});
 
 });
 
 
 /* NAVIGATION */
 
-document.querySelectorAll("nav button")
-.forEach(function(button){
+document.querySelectorAll("nav button[data-type]").forEach(function(button){
 
-    button.addEventListener("click",function(){
+button.addEventListener("click",function(){
 
-        if(this.dataset.type){
+setSearchType(this.dataset.type);
 
-            setSearchType(this.dataset.type);
+document.querySelector(".search-box").scrollIntoView({
+behavior:"smooth"
+});
 
-            document.querySelector(".search-box")
-            .scrollIntoView({
-                behavior:"smooth"
-            });
-
-        }else{
-
-            showMessage(
-                this.dataset.message || "ეს განყოფილება მალე დაემატება."
-            );
-
-        }
-
-    });
+});
 
 });
 
 
-/* FILTERS */
+document.getElementById("commercialNav").onclick=function(){
+showMessage("კომერციული უძრავი ქონება მალე დაემატება.");
+};
 
-document.querySelectorAll(".filter")
-.forEach(function(button){
+document.getElementById("projectsNav").onclick=function(){
+showMessage("ახალი პროექტების განყოფილება მალე დაემატება.");
+};
 
-    button.addEventListener("click",function(){
 
-        const wasActive=this.classList.contains("active");
+/* FILTER */
 
-        document.querySelectorAll(".filter")
-        .forEach(function(item){
-            item.classList.remove("active");
-        });
+document.querySelectorAll(".filter").forEach(function(button){
 
-        if(!wasActive){
-            this.classList.add("active");
-        }
+button.addEventListener("click",function(){
 
-        filterProperties();
+const active=this.classList.contains("active");
 
-    });
+document.querySelectorAll(".filter").forEach(function(item){
+item.classList.remove("active");
+});
+
+if(!active){
+this.classList.add("active");
+}
+
+filterProperties();
+
+});
 
 });
 
 
-/* SEARCH */
+/* SEARCH FUNCTION */
 
-document.getElementById("searchButton")
-.addEventListener("click",function(){
+document.getElementById("searchButton").onclick=function(){
 
-    filterProperties();
+filterProperties();
 
-    document.getElementById("propertyCards")
-    .scrollIntoView({
-        behavior:"smooth"
-    });
-
+document.getElementById("propertyCards").scrollIntoView({
+behavior:"smooth"
 });
+
+};
 
 
 function filterProperties(){
 
-    const location=document
-        .getElementById("locationInput")
-        .value
-        .toLowerCase()
-        .trim();
+const location=document.getElementById("locationInput").value.toLowerCase().trim();
 
-    const property=document
-        .getElementById("propertyType")
-        .value;
+const property=document.getElementById("propertyType").value;
 
-    const rooms=document
-        .getElementById("rooms")
-        .value;
+const rooms=document.getElementById("rooms").value;
 
-    const activeFilter=document.querySelector(".filter.active");
+const activeFilter=document.querySelector(".filter.active");
 
-    const filter=activeFilter
-        ? activeFilter.dataset.filter
-        : null;
+const filter=activeFilter ? activeFilter.dataset.filter : null;
 
-    let visible=0;
+let visible=0;
 
-    document.querySelectorAll(".property-card")
-    .forEach(function(card){
+document.querySelectorAll(".property-card").forEach(function(card){
 
-        const typeMatch=
-            card.dataset.type===searchType;
+const typeMatch=card.dataset.type===searchType;
 
-        const propertyMatch=
-            property==="all" ||
-            card.dataset.property===property;
+const propertyMatch=
+property==="all" ||
+card.dataset.property===property;
 
-        const roomMatch=
-            rooms==="all" ||
-            card.dataset.rooms===rooms ||
-            (rooms==="5" && Number(card.dataset.rooms)>=5);
+const roomMatch=
+rooms==="all" ||
+card.dataset.rooms===rooms ||
+(rooms==="5" && Number(card.dataset.rooms)>=5);
 
-        const locationMatch=
-            !location ||
-            card.dataset.location
-            .toLowerCase()
-            .includes(location);
+const locationMatch=
+!location ||
+card.dataset.location.toLowerCase().includes(location);
 
-        const filterMatch=
-            !filter ||
-            card.dataset.property===filter ||
-            card.dataset.tags.includes(filter);
+const filterMatch=
+!filter ||
+card.dataset.property===filter ||
+card.dataset.tags.includes(filter);
 
-        const visibleCard=
-            typeMatch &&
-            propertyMatch &&
-            roomMatch &&
-            locationMatch &&
-            filterMatch;
+if(typeMatch && propertyMatch && roomMatch && locationMatch && filterMatch){
 
-        card.classList.toggle("hidden",!visibleCard);
+card.classList.remove("hidden");
+visible++;
 
-        if(visibleCard){
-            visible++;
-        }
+}else{
 
-    });
+card.classList.add("hidden");
 
-    if(visible===0){
+}
 
-        showMessage(
-            "ამ პირობებით განცხადება ვერ მოიძებნა."
-        );
+});
 
-    }
+if(visible===0){
+showMessage("ამ პირობებით განცხადება ვერ მოიძებნა.");
+}
 
 }
 
 
 /* SHOW ALL */
 
-document.getElementById("showAll")
-.addEventListener("click",function(){
+document.getElementById("showAll").onclick=function(){
 
-    document.getElementById("locationInput").value="";
-    document.getElementById("propertyType").value="all";
-    document.getElementById("rooms").value="all";
+document.getElementById("locationInput").value="";
+document.getElementById("propertyType").value="all";
+document.getElementById("rooms").value="all";
 
-    document.querySelectorAll(".filter")
-    .forEach(function(item){
-        item.classList.remove("active");
-    });
-
-    document.querySelectorAll(".property-card")
-    .forEach(function(card){
-        card.classList.remove("hidden");
-    });
-
+document.querySelectorAll(".filter").forEach(function(item){
+item.classList.remove("active");
 });
+
+document.querySelectorAll(".property-card").forEach(function(card){
+card.classList.remove("hidden");
+});
+
+};
 
 
 /* FAVORITES */
 
-document.querySelectorAll(".favorite")
-.forEach(function(button){
+document.querySelectorAll(".favorite").forEach(function(button){
 
-    button.addEventListener("click",function(event){
+button.addEventListener("click",function(){
 
-        event.stopPropagation();
+this.classList.toggle("saved");
 
-        this.classList.toggle("saved");
+if(this.classList.contains("saved")){
 
-        if(this.classList.contains("saved")){
+this.textContent="♥";
+showMessage("განცხადება რჩეულებში დაემატა.");
 
-            this.textContent="♥";
+}else{
 
-            showMessage(
-                "განცხადება რჩეულებში დაემატა."
-            );
+this.textContent="♡";
+showMessage("განცხადება რჩეულებიდან წაიშალა.");
 
-        }else{
+}
 
-            this.textContent="♡";
-
-            showMessage(
-                "განცხადება რჩეულებიდან წაიშალა."
-            );
-
-        }
-
-    });
+});
 
 });
 
 
 /* LOGIN */
 
-document.getElementById("loginButton")
-.addEventListener("click",function(){
+document.getElementById("loginButton").onclick=function(){
 
-    showMessage(
-        "შესვლა და რეგისტრაცია შემდეგ ეტაპზე დაემატება."
-    );
+showMessage("შესვლა და რეგისტრაცია შემდეგ ეტაპზე დაემატება.");
+
+};
+
+
+/* INFO LINKS */
+
+document.querySelectorAll(".info-link").forEach(function(link){
+
+link.onclick=function(e){
+
+e.preventDefault();
+
+showMessage("ეს განყოფილება მალე დაემატება.");
+
+};
 
 });
 
 
 /* PUBLISH */
 
-document.getElementById("publishButton")
-.addEventListener("click",function(){
+document.getElementById("publishButton").onclick=function(){
 
-    const property=
-        document.getElementById("listingProperty").value;
+const property=document.getElementById("listingProperty").value;
+const city=document.getElementById("city").value.trim();
+const price=document.getElementById("listingPrice").value.trim();
+const phone=document.getElementById("phone").value.trim();
 
-    const city=
-        document.getElementById("city").value.trim();
+if(!property){
+showMessage("გთხოვთ აირჩიოთ ქონების ტიპი.");
+return;
+}
 
-    const price=
-        document.getElementById("listingPrice").value.trim();
+if(!city){
+showMessage("გთხოვთ მიუთითოთ ქალაქი.");
+return;
+}
 
-    const phone=
-        document.getElementById("phone").value.trim();
+if(!price){
+showMessage("გთხოვთ მიუთითოთ ფასი.");
+return;
+}
 
-    if(!property){
+if(!phone){
+showMessage("გთხოვთ მიუთითოთ ტელეფონის ნომერი.");
+return;
+}
 
-        showMessage("გთხოვთ აირჩიოთ ქონების ტიპი.");
-        return;
+showMessage("ფორმა მზად არის! რეალურ გამოქვეყნებას შემდეგ ეტაპზე დავამატებთ.");
 
-    }
-
-    if(!city){
-
-        showMessage("გთხოვთ მიუთითოთ ქალაქი.");
-        return;
-
-    }
-
-    if(!price){
-
-        showMessage("გთხოვთ მიუთითოთ ფასი.");
-        return;
-
-    }
-
-    if(!phone){
-
-        showMessage("გთხოვთ მიუთითოთ ტელეფონის ნომერი.");
-        return;
-
-    }
-
-    showMessage(
-        "განცხადება მზად არის! გადახდისა და რეალური გამოქვეყნების ეტაპს შემდეგ დავამატებთ."
-    );
-
-});
-
-
-/* FOOTER LINKS */
-
-document.querySelectorAll("footer a")
-.forEach(function(link){
-
-    link.addEventListener("click",function(event){
-
-        if(this.dataset.type){
-
-            event.preventDefault();
-
-            setSearchType(this.dataset.type);
-
-            window.scrollTo({
-                top:0,
-                behavior:"smooth"
-            });
-
-        }
-
-        if(this.dataset.message){
-
-            event.preventDefault();
-
-            showMessage(this.dataset.message);
-
-        }
-
-    });
-
-});
+};
 
 
 /* LANGUAGE */
@@ -2131,7 +1510,7 @@ const translations={
 
 ka:{
 title:"იპოვე უძრავი ქონება საქართველოში",
-subtitle:"იპოვე შენთვის სასურველი სახლი, ბინა ან სხვა უძრავი ქონება მარტივად.",
+subtitle:"იყიდე, იქირავე ან იგირავე — იპოვე შენთვის სასურველი ქონება მარტივად.",
 location:"მდებარეობა",
 locationPlaceholder:"ქალაქი, უბანი ან ქუჩა",
 property:"ქონების ტიპი",
@@ -2143,12 +1522,12 @@ popular:"🔥 ყველაზე ნახვადი",
 all:"ყველას ნახვა →",
 ctaTitle:"გაქვს უძრავი ქონება?",
 ctaText:"განათავსე განცხადება Your Home-ზე.",
-add:"+ განცხადება"
+add:"+ განცხადების დამატება"
 },
 
 en:{
 title:"Find real estate in Georgia",
-subtitle:"Find your ideal house, apartment or other property easily.",
+subtitle:"Buy, rent or pledge — find the property that suits you.",
 location:"Location",
 locationPlaceholder:"City, district or street",
 property:"Property type",
@@ -2165,7 +1544,7 @@ add:"+ Add listing"
 
 ru:{
 title:"Найдите недвижимость в Грузии",
-subtitle:"Легко найдите подходящий дом, квартиру или другую недвижимость.",
+subtitle:"Купите, арендуйте или заложите — найдите подходящую недвижимость.",
 location:"Местоположение",
 locationPlaceholder:"Город, район или улица",
 property:"Тип недвижимости",
@@ -2185,51 +1564,41 @@ add:"+ Добавить объявление"
 
 function changeLanguage(lang){
 
-    const t=translations[lang];
+const t=translations[lang];
 
-    document.documentElement.lang=lang;
+document.documentElement.lang=lang;
 
-    document.getElementById("heroTitle").textContent=t.title;
-    document.getElementById("heroSubtitle").textContent=t.subtitle;
+document.getElementById("heroTitle").textContent=t.title;
+document.getElementById("heroSubtitle").textContent=t.subtitle;
+document.getElementById("locationLabel").textContent=t.location;
 
-    document.getElementById("locationLabel").textContent=t.location;
+document.getElementById("locationInput").placeholder=
+t.locationPlaceholder;
 
-    document.getElementById("locationInput").placeholder=
-        t.locationPlaceholder;
+document.getElementById("typeLabel").textContent=t.property;
+document.getElementById("roomsLabel").textContent=t.rooms;
+document.getElementById("priceLabel").textContent=t.price;
 
-    document.getElementById("typeLabel").textContent=t.property;
-    document.getElementById("roomsLabel").textContent=t.rooms;
-    document.getElementById("priceLabel").textContent=t.price;
+document.getElementById("priceInput").placeholder=
+t.pricePlaceholder;
 
-    document.getElementById("priceInput").placeholder=
-        t.pricePlaceholder;
-
-    document.getElementById("searchButton").textContent=t.search;
-    document.getElementById("popularTitle").textContent=t.popular;
-    document.getElementById("showAll").textContent=t.all;
-
-    document.getElementById("ctaTitle").textContent=t.ctaTitle;
-    document.getElementById("ctaText").textContent=t.ctaText;
-
-    document.getElementById("addButton").textContent=t.add;
-    document.getElementById("ctaButton").textContent=t.add;
+document.getElementById("searchButton").textContent=t.search;
+document.getElementById("popularTitle").textContent=t.popular;
+document.getElementById("showAll").textContent=t.all;
+document.getElementById("ctaTitle").textContent=t.ctaTitle;
+document.getElementById("ctaText").textContent=t.ctaText;
+document.getElementById("addButton").textContent=t.add;
+document.getElementById("ctaButton").textContent=t.add;
 
 }
 
 
-document.getElementById("language")
-.addEventListener("change",function(){
+document.getElementById("language").addEventListener("change",function(){
 
-    changeLanguage(this.value);
+changeLanguage(this.value);
 
 });
 
 
-/* INITIALIZE */
-
-changeLanguage("ka");
-
-</script>
-
-</body>
+</script></body>
 </html>
