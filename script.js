@@ -1,5 +1,10 @@
 const SUPABASE_URL = "https://clymnqkiarrpatcfuwwt.supabase.co";
-const SUPABASE_KEY = "შენი Publishable key აქ";
+const SUPABASE_KEY = "შენი Publishable key";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
 /* YOUR HOME — მთავარი JavaScript ფაილი */
 
