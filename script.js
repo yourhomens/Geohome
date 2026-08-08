@@ -1,3 +1,6 @@
+const SUPABASE_URL = "https://clymnqkiarrpatcfuwwt.supabase.co";
+const SUPABASE_KEY = "შენი Publishable key აქ";
+
 /* YOUR HOME — მთავარი JavaScript ფაილი */
 
 /* =========================
