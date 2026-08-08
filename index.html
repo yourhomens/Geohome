@@ -7,6 +7,7 @@
 <title>Your Home — უძრავი ქონება საქართველოში</title>
 
 <style>
+
 :root{
     --olive:#7d8b45;
     --olive-dark:#5d6933;
@@ -38,6 +39,7 @@ button,input,select,textarea{
 button{
     cursor:pointer;
 }
+
 
 /* HEADER */
 
@@ -125,6 +127,7 @@ nav button:hover{
     font-weight:700;
 }
 
+
 /* HERO */
 
 .hero{
@@ -156,6 +159,7 @@ nav button:hover{
     font-size:18px;
     margin-bottom:30px;
 }
+
 
 /* SEARCH */
 
@@ -227,6 +231,7 @@ nav button:hover{
     font-weight:700;
 }
 
+
 /* FILTERS */
 
 .filters{
@@ -254,6 +259,7 @@ nav button:hover{
     color:var(--olive-dark);
 }
 
+
 /* SECTIONS */
 
 .section{
@@ -279,6 +285,7 @@ nav button:hover{
     color:var(--olive-dark);
     font-weight:600;
 }
+
 
 /* CARDS */
 
@@ -369,6 +376,7 @@ nav button:hover{
     font-size:13px;
     margin-top:12px;
 }
+
 
 /* ADD PAGE */
 
@@ -482,6 +490,7 @@ nav button:hover{
     font-weight:700;
 }
 
+
 /* PHOTOS */
 
 .photo-upload{
@@ -552,6 +561,7 @@ nav button:hover{
     cursor:pointer;
 }
 
+
 /* CONTACT */
 
 .contact-options{
@@ -572,6 +582,7 @@ nav button:hover{
     border-color:var(--olive);
     color:var(--olive-dark);
 }
+
 
 /* ACTIONS */
 
@@ -596,6 +607,7 @@ nav button:hover{
     border-radius:8px;
     font-weight:700;
 }
+
 
 /* CTA */
 
@@ -629,6 +641,7 @@ nav button:hover{
     border-radius:8px;
     font-weight:700;
 }
+
 
 /* FOOTER */
 
@@ -675,6 +688,7 @@ footer a:hover{
     border-radius:7px;
 }
 
+
 /* MESSAGE */
 
 .message{
@@ -688,7 +702,7 @@ footer a:hover{
     border-radius:10px;
     opacity:0;
     transition:.3s;
-    z-index:999;
+    z-index:9999;
     text-align:center;
 }
 
@@ -696,6 +710,175 @@ footer a:hover{
     transform:translateX(-50%) translateY(0);
     opacity:1;
 }
+
+
+/* LOGIN MODAL */
+
+.login-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(25,30,24,.65);
+    backdrop-filter:blur(4px);
+    z-index:5000;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.login-modal.active{
+    display:flex;
+}
+
+.login-box{
+    width:100%;
+    max-width:430px;
+    max-height:90vh;
+    overflow-y:auto;
+    background:#fff;
+    border-radius:18px;
+    padding:32px;
+    position:relative;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+
+.login-close{
+    position:absolute;
+    right:16px;
+    top:12px;
+    width:36px;
+    height:36px;
+    border:0;
+    background:#f3f4ef;
+    border-radius:50%;
+    font-size:25px;
+    color:#555;
+}
+
+.login-logo{
+    text-align:center;
+    font-size:25px;
+    font-weight:800;
+    margin-bottom:18px;
+}
+
+.login-logo span{
+    color:var(--olive);
+}
+
+.login-box h2{
+    text-align:center;
+    font-size:22px;
+    margin-bottom:8px;
+}
+
+.login-subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:24px;
+}
+
+.login-tabs{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    background:#f1f3ed;
+    border-radius:9px;
+    padding:4px;
+    margin-bottom:22px;
+}
+
+.login-tab{
+    border:0;
+    background:transparent;
+    padding:11px;
+    border-radius:7px;
+    font-weight:700;
+    color:var(--muted);
+}
+
+.login-tab.active{
+    background:#fff;
+    color:var(--olive-dark);
+    box-shadow:0 2px 7px rgba(0,0,0,.08);
+}
+
+.login-form{
+    display:none;
+}
+
+.login-form.active{
+    display:block;
+}
+
+.login-form label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:7px;
+    margin-top:13px;
+}
+
+.login-form input{
+    width:100%;
+    padding:12px 13px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    outline:none;
+    font-size:14px;
+}
+
+.login-form input:focus{
+    border-color:var(--olive);
+}
+
+.login-submit{
+    width:100%;
+    border:0;
+    background:var(--olive);
+    color:#fff;
+    padding:13px;
+    border-radius:8px;
+    margin-top:20px;
+    font-weight:700;
+    font-size:15px;
+}
+
+.forgot-password{
+    display:block;
+    margin:13px auto 0;
+    border:0;
+    background:none;
+    color:var(--olive-dark);
+    font-size:13px;
+}
+
+.login-divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:22px 0 15px;
+    color:#999;
+    font-size:13px;
+}
+
+.login-divider::before,
+.login-divider::after{
+    content:"";
+    height:1px;
+    background:var(--border);
+    flex:1;
+}
+
+.social-login{
+    width:100%;
+    border:1px solid var(--border);
+    background:#fff;
+    padding:12px;
+    border-radius:8px;
+    font-weight:600;
+}
+
 
 /* MOBILE */
 
@@ -787,11 +970,20 @@ footer a:hover{
     .footer-grid{
         grid-template-columns:1fr;
     }
+
+    .login-box{
+        padding:25px 20px;
+    }
 }
+
 </style>
 </head>
 
+
 <body>
+
+
+<!-- HEADER -->
 
 <header>
 
@@ -810,13 +1002,17 @@ footer a:hover{
 
     </div>
 
+
     <nav>
+
         <button data-type="sale">ყიდვა</button>
         <button data-type="rent">ქირავდება</button>
         <button data-type="pledge">გირავდება</button>
         <button>კომერციული</button>
         <button>ახალი პროექტები</button>
+
     </nav>
+
 
     <div class="header-right">
 
@@ -839,7 +1035,10 @@ footer a:hover{
 </header>
 
 
+<!-- HOME PAGE -->
+
 <main id="homePage" class="home-page">
+
 
 <section class="hero">
 
@@ -852,6 +1051,7 @@ footer a:hover{
         <p id="heroSubtitle">
             იყიდე, იქირავე ან იგირავე — მოძებნე შენთვის სასურველი ქონება მარტივად.
         </p>
+
 
         <div class="search-box">
 
@@ -871,6 +1071,7 @@ footer a:hover{
 
             </div>
 
+
             <div class="search-fields">
 
                 <div class="field">
@@ -886,6 +1087,7 @@ footer a:hover{
 
                 </div>
 
+
                 <div class="field">
 
                     <label id="typeLabel">
@@ -893,15 +1095,18 @@ footer a:hover{
                     </label>
 
                     <select id="propertyType">
+
                         <option value="all">ყველა</option>
                         <option value="apartment">ბინა</option>
                         <option value="house">სახლი</option>
                         <option value="commercial">კომერციული</option>
                         <option value="land">მიწა</option>
                         <option value="cottage">აგარაკი</option>
+
                     </select>
 
                 </div>
+
 
                 <div class="field">
 
@@ -910,15 +1115,18 @@ footer a:hover{
                     </label>
 
                     <select id="rooms">
+
                         <option value="all">ნებისმიერი</option>
                         <option value="1">1 ოთახი</option>
                         <option value="2">2 ოთახი</option>
                         <option value="3">3 ოთახი</option>
                         <option value="4">4 ოთახი</option>
                         <option value="5">5+ ოთახი</option>
+
                     </select>
 
                 </div>
+
 
                 <div class="field">
 
@@ -933,6 +1141,7 @@ footer a:hover{
 
                 </div>
 
+
                 <button class="search-button" id="searchButton">
                     ძებნა
                 </button>
@@ -946,6 +1155,8 @@ footer a:hover{
 </section>
 
 
+<!-- FILTERS -->
+
 <section class="filters">
 
     <div class="filter-list">
@@ -957,7 +1168,6 @@ footer a:hover{
         <button class="filter" data-filter="cottage">აგარაკი</button>
         <button class="filter" data-filter="new">ახალი აშენებული</button>
         <button class="filter" data-filter="building">მშენებარე</button>
-        <button class="filter" data-filter="oldbuilding">ძველი აშენებული</button>
         <button class="filter" data-filter="white">თეთრი კარკასი</button>
         <button class="filter" data-filter="green">მწვანე კარკასი</button>
         <button class="filter" data-filter="renovated">ახალი რემონტით</button>
@@ -970,6 +1180,8 @@ footer a:hover{
 
 </section>
 
+
+<!-- PROPERTIES -->
 
 <section class="section">
 
@@ -985,26 +1197,37 @@ footer a:hover{
 
     </div>
 
+
     <div class="cards" id="propertyCards">
 
-        <div class="card property-card"
-             data-type="sale"
-             data-property="apartment"
-             data-rooms="3"
-             data-location="საბურთალო"
-             data-tags="new renovated furnished owner">
 
-            <div class="card-image"
-                 style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80');">
+        <div
+            class="card property-card"
+            data-type="sale"
+            data-property="apartment"
+            data-rooms="3"
+            data-location="საბურთალო"
+            data-tags="new renovated furnished owner">
 
-                <div class="badge">TOP</div>
-                <button class="favorite">♡</button>
+            <div
+                class="card-image"
+                style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80');">
+
+                <div class="badge">
+                    TOP
+                </div>
+
+                <button class="favorite">
+                    ♡
+                </button>
 
             </div>
 
             <div class="card-body">
 
-                <div class="price">$145,000</div>
+                <div class="price">
+                    $145,000
+                </div>
 
                 <div class="address">
                     თბილისი, საბურთალო
@@ -1025,24 +1248,33 @@ footer a:hover{
         </div>
 
 
-        <div class="card property-card"
-             data-type="sale"
-             data-property="apartment"
-             data-rooms="4"
-             data-location="ვაკე"
-             data-tags="new renovated furnished agent">
+        <div
+            class="card property-card"
+            data-type="sale"
+            data-property="apartment"
+            data-rooms="4"
+            data-location="ვაკე"
+            data-tags="new renovated furnished agent">
 
-            <div class="card-image"
-                 style="background-image:url('https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80');">
+            <div
+                class="card-image"
+                style="background-image:url('https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80');">
 
-                <div class="badge">VIP</div>
-                <button class="favorite">♡</button>
+                <div class="badge">
+                    VIP
+                </div>
+
+                <button class="favorite">
+                    ♡
+                </button>
 
             </div>
 
             <div class="card-body">
 
-                <div class="price">$210,000</div>
+                <div class="price">
+                    $210,000
+                </div>
 
                 <div class="address">
                     თბილისი, ვაკე
@@ -1063,23 +1295,29 @@ footer a:hover{
         </div>
 
 
-        <div class="card property-card"
-             data-type="rent"
-             data-property="apartment"
-             data-rooms="2"
-             data-location="დიდუბე"
-             data-tags="old furnished owner">
+        <div
+            class="card property-card"
+            data-type="rent"
+            data-property="apartment"
+            data-rooms="2"
+            data-location="დიდუბე"
+            data-tags="old furnished owner">
 
-            <div class="card-image"
-                 style="background-image:url('https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=900&q=80');">
+            <div
+                class="card-image"
+                style="background-image:url('https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=900&q=80');">
 
-                <button class="favorite">♡</button>
+                <button class="favorite">
+                    ♡
+                </button>
 
             </div>
 
             <div class="card-body">
 
-                <div class="price">$800 / თვე</div>
+                <div class="price">
+                    $800 / თვე
+                </div>
 
                 <div class="address">
                     თბილისი, დიდუბე
@@ -1100,24 +1338,33 @@ footer a:hover{
         </div>
 
 
-        <div class="card property-card"
-             data-type="pledge"
-             data-property="house"
-             data-rooms="5"
-             data-location="მთაწმინდა"
-             data-tags="new renovated owner">
+        <div
+            class="card property-card"
+            data-type="pledge"
+            data-property="house"
+            data-rooms="5"
+            data-location="მთაწმინდა"
+            data-tags="new renovated owner">
 
-            <div class="card-image"
-                 style="background-image:url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=900&q=80');">
+            <div
+                class="card-image"
+                style="background-image:url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=900&q=80');">
 
-                <div class="badge">VIP</div>
-                <button class="favorite">♡</button>
+                <div class="badge">
+                    VIP
+                </div>
+
+                <button class="favorite">
+                    ♡
+                </button>
 
             </div>
 
             <div class="card-body">
 
-                <div class="price">$260,000</div>
+                <div class="price">
+                    $260,000
+                </div>
 
                 <div class="address">
                     თბილისი, მთაწმინდა
@@ -1138,23 +1385,29 @@ footer a:hover{
         </div>
 
 
-        <div class="card property-card"
-             data-type="rent"
-             data-property="house"
-             data-rooms="4"
-             data-location="დიღომი"
-             data-tags="new furnished agent">
+        <div
+            class="card property-card"
+            data-type="rent"
+            data-property="house"
+            data-rooms="4"
+            data-location="დიღომი"
+            data-tags="new furnished agent">
 
-            <div class="card-image"
-                 style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=900&q=80');">
+            <div
+                class="card-image"
+                style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=900&q=80');">
 
-                <button class="favorite">♡</button>
+                <button class="favorite">
+                    ♡
+                </button>
 
             </div>
 
             <div class="card-body">
 
-                <div class="price">$1,200 / თვე</div>
+                <div class="price">
+                    $1,200 / თვე
+                </div>
 
                 <div class="address">
                     თბილისი, დიღომი
@@ -1175,24 +1428,33 @@ footer a:hover{
         </div>
 
 
-        <div class="card property-card"
-             data-type="sale"
-             data-property="house"
-             data-rooms="5"
-             data-location="წყნეთი"
-             data-tags="new green renovated furnished owner">
+        <div
+            class="card property-card"
+            data-type="sale"
+            data-property="house"
+            data-rooms="5"
+            data-location="წყნეთი"
+            data-tags="new green renovated furnished owner">
 
-            <div class="card-image"
-                 style="background-image:url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=900&q=80');">
+            <div
+                class="card-image"
+                style="background-image:url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=900&q=80');">
 
-                <div class="badge">VIP</div>
-                <button class="favorite">♡</button>
+                <div class="badge">
+                    VIP
+                </div>
+
+                <button class="favorite">
+                    ♡
+                </button>
 
             </div>
 
             <div class="card-body">
 
-                <div class="price">$390,000</div>
+                <div class="price">
+                    $390,000
+                </div>
 
                 <div class="address">
                     თბილისი, წყნეთი
@@ -1216,6 +1478,8 @@ footer a:hover{
 
 </section>
 
+
+<!-- CTA -->
 
 <section class="cta">
 
@@ -1248,6 +1512,7 @@ footer a:hover{
 
 <section class="add-page" id="addPage">
 
+
     <div class="add-header">
 
         <h1>
@@ -1261,9 +1526,13 @@ footer a:hover{
     </div>
 
 
+    <!-- DEAL TYPE -->
+
     <div class="form-card">
 
-        <h2>რა გსურთ გააკეთოთ?</h2>
+        <h2>
+            რა გსურთ გააკეთოთ?
+        </h2>
 
         <div class="choice-group" id="dealChoices">
 
@@ -1284,26 +1553,56 @@ footer a:hover{
     </div>
 
 
+    <!-- PROPERTY -->
+
     <div class="form-card">
 
-        <h2>ქონების შესახებ</h2>
+        <h2>
+            ქონების შესახებ
+        </h2>
 
         <div class="form-grid">
 
+
             <div class="form-group">
 
-                <label>ქონების ტიპი *</label>
+                <label>
+                    ქონების ტიპი *
+                </label>
 
                 <select id="listingProperty">
 
-                    <option value="">აირჩიეთ</option>
-                    <option>ბინა</option>
-                    <option>სახლი</option>
-                    <option>კომერციული ფართი</option>
-                    <option>მიწის ნაკვეთი</option>
-                    <option>აგარაკი</option>
-                    <option>სასტუმრო</option>
-                    <option>სხვა</option>
+                    <option value="">
+                        აირჩიეთ
+                    </option>
+
+                    <option>
+                        ბინა
+                    </option>
+
+                    <option>
+                        სახლი
+                    </option>
+
+                    <option>
+                        კომერციული ფართი
+                    </option>
+
+                    <option>
+                        მიწის ნაკვეთი
+                    </option>
+
+                    <option>
+                        აგარაკი
+                    </option>
+
+                    <option>
+                        სასტუმრო
+                    </option>
+
+                    <option>
+                        სხვა
+                    </option>
 
                 </select>
 
@@ -1312,19 +1611,47 @@ footer a:hover{
 
             <div class="form-group">
 
-                <label>მდგომარეობა</label>
+                <label>
+                    მდგომარეობა
+                </label>
 
                 <select id="condition">
 
-                    <option value="">აირჩიეთ</option>
-                    <option>მშენებარე</option>
-                    <option>ახალი აშენებული</option>
-                    <option>ძველი აშენებული</option>
-                    <option>თეთრი კარკასი</option>
-                    <option>მწვანე კარკასი</option>
-                    <option>ახალი რემონტით</option>
-                    <option>ძველი რემონტით</option>
-                    <option>სარემონტო</option>
+                    <option value="">
+                        აირჩიეთ
+                    </option>
+
+                    <option>
+                        მშენებარე
+                    </option>
+
+                    <option>
+                        ახალი აშენებული
+                    </option>
+
+                    <option>
+                        ძველი აშენებული
+                    </option>
+
+                    <option>
+                        თეთრი კარკასი
+                    </option>
+
+                    <option>
+                        მწვანე კარკასი
+                    </option>
+
+                    <option>
+                        ახალი რემონტით
+                    </option>
+
+                    <option>
+                        ძველი რემონტით
+                    </option>
+
+                    <option>
+                        სარემონტო
+                    </option>
 
                 </select>
 
@@ -1333,11 +1660,16 @@ footer a:hover{
 
             <div class="form-group">
 
-                <label>ოთახების რაოდენობა</label>
+                <label>
+                    ოთახების რაოდენობა
+                </label>
 
                 <select id="listingRooms">
 
-                    <option value="">აირჩიეთ</option>
+                    <option value="">
+                        აირჩიეთ
+                    </option>
+
                     <option>1</option>
                     <option>2</option>
                     <option>3</option>
@@ -1352,17 +1684,25 @@ footer a:hover{
 
             <div class="form-group">
 
-                <label>საძინებლების რაოდენობა</label>
+                <label>
+                    საძინებლების რაოდენობა
+                </label>
 
-                <select id="listingBedrooms">
+                <select id="bedrooms">
 
-                    <option value="">აირჩიეთ</option>
+                    <option value="">
+                        აირჩიეთ
+                    </option>
+
+                    <option>
+                        სტუდიო
+                    </option>
+
                     <option>1</option>
                     <option>2</option>
                     <option>3</option>
                     <option>4</option>
-                    <option>5</option>
-                    <option>6+</option>
+                    <option>5+</option>
 
                 </select>
 
@@ -1371,7 +1711,9 @@ footer a:hover{
 
             <div class="form-group">
 
-                <label>სართული</label>
+                <label>
+                    სართული
+                </label>
 
                 <input
                     type="number"
@@ -1383,7 +1725,9 @@ footer a:hover{
 
             <div class="form-group">
 
-                <label>სართულების რაოდენობა</label>
+                <label>
+                    სართულების რაოდენობა
+                </label>
 
                 <input
                     type="number"
@@ -1395,7 +1739,9 @@ footer a:hover{
 
             <div class="form-group">
 
-                <label>ფართობი მ²</label>
+                <label>
+                    ფართობი მ²
+                </label>
 
                 <input
                     type="number"
@@ -1407,26 +1753,17 @@ footer a:hover{
 
             <div class="form-group">
 
-                <label>აივანი</label>
+                <label>
+                    აივნების რაოდენობა
+                </label>
 
-                <select id="balcony">
+                <select id="balconies">
 
-                    <option value="">აირჩიეთ</option>
-                    <option>კი</option>
-                    <option>არა</option>
+                    <option value="">
+                        აირჩიეთ
+                    </option>
 
-                </select>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>აივნის რაოდენობა</label>
-
-                <select id="balconyCount">
-
-                    <option value="">აირჩიეთ</option>
+                    <option>0</option>
                     <option>1</option>
                     <option>2</option>
                     <option>3</option>
@@ -1439,7 +1776,9 @@ footer a:hover{
 
             <div class="form-group">
 
-                <label>აივნის ფართობი მ²</label>
+                <label>
+                    აივნის ფართობი მ²
+                </label>
 
                 <input
                     type="number"
@@ -1453,15 +1792,21 @@ footer a:hover{
     </div>
 
 
+    <!-- LOCATION -->
+
     <div class="form-card">
 
-        <h2>მდებარეობა</h2>
+        <h2>
+            მდებარეობა
+        </h2>
 
         <div class="form-grid">
 
             <div class="form-group">
 
-                <label>ქალაქი *</label>
+                <label>
+                    ქალაქი *
+                </label>
 
                 <input
                     type="text"
@@ -1473,7 +1818,9 @@ footer a:hover{
 
             <div class="form-group">
 
-                <label>უბანი</label>
+                <label>
+                    უბანი
+                </label>
 
                 <input
                     type="text"
@@ -1485,7 +1832,9 @@ footer a:hover{
 
             <div class="form-group full">
 
-                <label>მისამართი</label>
+                <label>
+                    მისამართი
+                </label>
 
                 <input
                     type="text"
@@ -1499,15 +1848,21 @@ footer a:hover{
     </div>
 
 
+    <!-- PRICE -->
+
     <div class="form-card">
 
-        <h2>ფასი</h2>
+        <h2>
+            ფასი
+        </h2>
 
         <div class="form-grid">
 
             <div class="form-group">
 
-                <label>ფასი *</label>
+                <label>
+                    ფასი *
+                </label>
 
                 <input
                     type="number"
@@ -1519,13 +1874,23 @@ footer a:hover{
 
             <div class="form-group">
 
-                <label>ვალუტა</label>
+                <label>
+                    ვალუტა
+                </label>
 
                 <select id="currency">
 
-                    <option>USD — $</option>
-                    <option>GEL — ₾</option>
-                    <option>EUR — €</option>
+                    <option>
+                        USD — $
+                    </option>
+
+                    <option>
+                        GEL — ₾
+                    </option>
+
+                    <option>
+                        EUR — €
+                    </option>
 
                 </select>
 
@@ -1536,9 +1901,13 @@ footer a:hover{
     </div>
 
 
+    <!-- OWNER -->
+
     <div class="form-card">
 
-        <h2>ვინ აქვეყნებს განცხადებას?</h2>
+        <h2>
+            ვინ აქვეყნებს განცხადებას?
+        </h2>
 
         <div class="choice-group" id="ownerChoices">
 
@@ -1555,9 +1924,13 @@ footer a:hover{
     </div>
 
 
+    <!-- PHOTOS -->
+
     <div class="form-card">
 
-        <h2>ფოტოები</h2>
+        <h2>
+            ფოტოები
+        </h2>
 
         <div class="photo-upload">
 
@@ -1581,22 +1954,31 @@ footer a:hover{
 
             </label>
 
-            <div class="preview" id="photoPreview"></div>
+            <div
+                class="preview"
+                id="photoPreview">
+            </div>
 
         </div>
 
     </div>
 
 
+    <!-- CONTACT -->
+
     <div class="form-card">
 
-        <h2>საკონტაქტო ინფორმაცია</h2>
+        <h2>
+            საკონტაქტო ინფორმაცია
+        </h2>
 
         <div class="form-grid">
 
             <div class="form-group">
 
-                <label>ტელეფონის ნომერი *</label>
+                <label>
+                    ტელეფონის ნომერი *
+                </label>
 
                 <input
                     type="tel"
@@ -1608,7 +1990,9 @@ footer a:hover{
 
             <div class="form-group">
 
-                <label>საკონტაქტო პირი</label>
+                <label>
+                    საკონტაქტო პირი
+                </label>
 
                 <input
                     type="text"
@@ -1619,11 +2003,16 @@ footer a:hover{
 
         </div>
 
+
         <br>
 
+
         <label style="display:block;margin-bottom:10px;font-weight:600;">
+
             რომელ აპში დაგიკავშირდნენ?
+
         </label>
+
 
         <div class="contact-options">
 
@@ -1648,13 +2037,19 @@ footer a:hover{
     </div>
 
 
+    <!-- DESCRIPTION -->
+
     <div class="form-card">
 
-        <h2>განცხადების აღწერა</h2>
+        <h2>
+            განცხადების აღწერა
+        </h2>
 
         <div class="form-group">
 
-            <label>აღწერა</label>
+            <label>
+                აღწერა
+            </label>
 
             <textarea
                 id="description"
@@ -1665,16 +2060,27 @@ footer a:hover{
     </div>
 
 
+    <!-- ACTIONS -->
+
     <div class="form-card">
 
         <div class="form-actions">
 
-            <button class="cancel-button" id="cancelButton">
+            <button
+                class="cancel-button"
+                id="cancelButton">
+
                 გაუქმება
+
             </button>
 
-            <button class="publish-button" id="publishButton">
+
+            <button
+                class="publish-button"
+                id="publishButton">
+
                 გამოქვეყნების გაგრძელება →
+
             </button>
 
         </div>
@@ -1684,30 +2090,41 @@ footer a:hover{
 </section>
 
 
+<!-- FOOTER -->
+
 <footer>
 
     <div class="footer-grid">
 
+
         <div>
 
-            <h3>YOUR HOME</h3>
+            <h3>
+                YOUR HOME
+            </h3>
 
             <p id="footerDescription">
                 იპოვე უძრავი ქონება საქართველოში.
             </p>
+
 
             <div class="social">
 
                 <a
                     href="https://www.facebook.com/share/1HtanV8Xwi/"
                     target="_blank">
+
                     Facebook
+
                 </a>
+
 
                 <a
                     href="https://www.facebook.com/share/g/1EBUpigYYd/"
                     target="_blank">
+
                     ჯგუფი
+
                 </a>
 
             </div>
@@ -1778,19 +2195,25 @@ footer a:hover{
             <a
                 href="https://wa.me/995577133990"
                 target="_blank">
+
                 WhatsApp
+
             </a>
 
             <a
                 href="https://www.facebook.com/share/1HtanV8Xwi/"
                 target="_blank">
+
                 Facebook გვერდი
+
             </a>
 
             <a
                 href="https://www.facebook.com/share/g/1EBUpigYYd/"
                 target="_blank">
+
                 Facebook ჯგუფი
+
             </a>
 
         </div>
@@ -1800,24 +2223,219 @@ footer a:hover{
 </footer>
 
 
-<div class="message" id="message"></div>
+<!-- MESSAGE -->
+
+<div
+    class="message"
+    id="message">
+</div>
+
+
+<!-- LOGIN MODAL -->
+
+<div
+    class="login-modal"
+    id="loginModal">
+
+
+    <div class="login-box">
+
+
+        <button
+            class="login-close"
+            id="loginClose">
+
+            ×
+
+        </button>
+
+
+        <div class="login-logo">
+
+            <span>YOUR</span> HOME
+
+        </div>
+
+
+        <h2>
+            კეთილი იყოს თქვენი მობრძანება
+        </h2>
+
+
+        <p class="login-subtitle">
+
+            შედით ანგარიშში ან შექმენით ახალი ანგარიში
+
+        </p>
+
+
+        <div class="login-tabs">
+
+            <button
+                class="login-tab active"
+                data-login-tab="login">
+
+                შესვლა
+
+            </button>
+
+
+            <button
+                class="login-tab"
+                data-login-tab="register">
+
+                რეგისტრაცია
+
+            </button>
+
+        </div>
+
+
+        <!-- LOGIN FORM -->
+
+        <div
+            class="login-form active"
+            id="loginForm">
+
+
+            <label>
+                ელფოსტა ან ტელეფონის ნომერი
+            </label>
+
+            <input
+                type="text"
+                placeholder="შეიყვანეთ ელფოსტა ან ნომერი">
+
+
+            <label>
+                პაროლი
+            </label>
+
+            <input
+                type="password"
+                placeholder="შეიყვანეთ პაროლი">
+
+
+            <button
+                class="login-submit"
+                id="fakeLogin">
+
+                შესვლა
+
+            </button>
+
+
+            <button
+                class="forgot-password"
+                id="forgotPassword">
+
+                დაგავიწყდათ პაროლი?
+
+            </button>
+
+        </div>
+
+
+        <!-- REGISTER FORM -->
+
+        <div
+            class="login-form"
+            id="registerForm">
+
+
+            <label>
+                სახელი და გვარი
+            </label>
+
+            <input
+                type="text"
+                placeholder="მაგ. სოფიო ბაიაშვილი">
+
+
+            <label>
+                ელფოსტა
+            </label>
+
+            <input
+                type="email"
+                placeholder="your@email.com">
+
+
+            <label>
+                ტელეფონის ნომერი
+            </label>
+
+            <input
+                type="tel"
+                placeholder="+995 5XX XX XX XX">
+
+
+            <label>
+                პაროლი
+            </label>
+
+            <input
+                type="password"
+                placeholder="შექმენით პაროლი">
+
+
+            <label>
+                გაიმეორეთ პაროლი
+            </label>
+
+            <input
+                type="password"
+                placeholder="გაიმეორეთ პაროლი">
+
+
+            <button
+                class="login-submit"
+                id="fakeRegister">
+
+                რეგისტრაცია
+
+            </button>
+
+        </div>
+
+
+        <div class="login-divider">
+
+            <span>
+                ან
+            </span>
+
+        </div>
+
+
+        <button
+            class="social-login"
+            id="fakeFacebook">
+
+            Facebook-ით გაგრძელება
+
+        </button>
+
+    </div>
+
+</div>
 
 
 <script>
+
 
 /* MESSAGE */
 
 function showMessage(text){
 
-    const message = document.getElementById("message");
+    const message =
+        document.getElementById("message");
 
     message.textContent = text;
 
     message.classList.add("show");
 
-    clearTimeout(window.messageTimer);
-
-    window.messageTimer = setTimeout(function(){
+    setTimeout(function(){
 
         message.classList.remove("show");
 
@@ -1828,13 +2446,17 @@ function showMessage(text){
 
 /* PAGES */
 
-const homePage = document.getElementById("homePage");
-const addPage = document.getElementById("addPage");
+const homePage =
+    document.getElementById("homePage");
+
+const addPage =
+    document.getElementById("addPage");
 
 
 function openAddPage(){
 
     homePage.classList.add("hidden");
+
     addPage.classList.add("active");
 
     window.scrollTo({
@@ -1848,6 +2470,7 @@ function openAddPage(){
 function closeAddPage(){
 
     addPage.classList.remove("active");
+
     homePage.classList.remove("hidden");
 
     window.scrollTo({
@@ -1858,13 +2481,24 @@ function closeAddPage(){
 }
 
 
-document.getElementById("addButton").onclick = openAddPage;
+document
+.getElementById("addButton")
+.addEventListener("click",openAddPage);
 
-document.getElementById("ctaButton").onclick = openAddPage;
 
-document.getElementById("backButton").onclick = closeAddPage;
+document
+.getElementById("ctaButton")
+.addEventListener("click",openAddPage);
 
-document.getElementById("cancelButton").onclick = closeAddPage;
+
+document
+.getElementById("backButton")
+.addEventListener("click",closeAddPage);
+
+
+document
+.getElementById("cancelButton")
+.addEventListener("click",closeAddPage);
 
 
 /* DEAL TYPE */
@@ -1872,80 +2506,98 @@ document.getElementById("cancelButton").onclick = closeAddPage;
 let currentType = "sale";
 
 
-document.querySelectorAll("#dealChoices .choice").forEach(function(button){
+document
+.querySelectorAll("#dealChoices .choice")
+.forEach(function(button){
 
-    button.onclick = function(){
+    button.addEventListener("click",function(){
 
         document
         .querySelectorAll("#dealChoices .choice")
         .forEach(function(item){
+
             item.classList.remove("selected");
+
         });
 
         this.classList.add("selected");
 
-        currentType = this.dataset.value;
+        currentType =
+            this.dataset.value;
 
-    };
+    });
 
 });
 
 
-/* OWNER */
+/* OWNER TYPE */
 
-document.querySelectorAll("#ownerChoices .choice").forEach(function(button){
+document
+.querySelectorAll("#ownerChoices .choice")
+.forEach(function(button){
 
-    button.onclick = function(){
+    button.addEventListener("click",function(){
 
         document
         .querySelectorAll("#ownerChoices .choice")
         .forEach(function(item){
+
             item.classList.remove("selected");
+
         });
 
         this.classList.add("selected");
 
-    };
+    });
 
 });
 
 
 /* CONTACT */
 
-document.querySelectorAll(".contact-choice").forEach(function(button){
+document
+.querySelectorAll(".contact-choice")
+.forEach(function(button){
 
-    button.onclick = function(){
+    button.addEventListener("click",function(){
 
         this.classList.toggle("selected");
 
-    };
+    });
 
 });
 
 
 /* PHOTOS */
 
-const photoInput = document.getElementById("photoInput");
-const photoPreview = document.getElementById("photoPreview");
+const photoInput =
+    document.getElementById("photoInput");
+
+const photoPreview =
+    document.getElementById("photoPreview");
 
 let selectedFiles = [];
 
 
-photoInput.onchange = function(){
+photoInput.addEventListener("change",function(){
 
-    const files = Array.from(this.files);
+    const files =
+        Array.from(this.files);
 
     if(files.length > 10){
 
-        showMessage("მაქსიმუმ 10 ფოტოს დამატებაა შესაძლებელი.");
+        showMessage(
+            "მაქსიმუმ 10 ფოტოს დამატებაა შესაძლებელი."
+        );
 
     }
 
-    selectedFiles = files.slice(0,10);
+    selectedFiles =
+        files.slice(0,10);
 
     renderPhotos();
 
-};
+});
 
 
 function renderPhotos(){
@@ -1954,34 +2606,40 @@ function renderPhotos(){
 
     selectedFiles.forEach(function(file,index){
 
-        const reader = new FileReader();
+        const reader =
+            new FileReader();
 
-        reader.onload = function(event){
+        reader.onload =
+            function(event){
 
-            const item = document.createElement("div");
+                const item =
+                    document.createElement("div");
 
-            item.className = "preview-item";
+                item.className =
+                    "preview-item";
 
-            const img = document.createElement("img");
-            img.src = event.target.result;
+                item.innerHTML = `
+                    <img src="${event.target.result}">
+                    <span data-index="${index}">×</span>
+                `;
 
-            const remove = document.createElement("span");
-            remove.textContent = "×";
+                photoPreview.appendChild(item);
 
-            item.appendChild(img);
-            item.appendChild(remove);
 
-            photoPreview.appendChild(item);
+                item
+                .querySelector("span")
+                .addEventListener("click",function(){
 
-            remove.onclick = function(){
+                    const i =
+                        Number(this.dataset.index);
 
-                selectedFiles.splice(index,1);
+                    selectedFiles.splice(i,1);
 
-                renderPhotos();
+                    renderPhotos();
+
+                });
 
             };
-
-        };
 
         reader.readAsDataURL(file);
 
@@ -1999,12 +2657,16 @@ function setSearchType(type){
 
     searchType = type;
 
-    document.querySelectorAll(".tabs button").forEach(function(button){
+    document
+    .querySelectorAll(".tabs button")
+    .forEach(function(button){
 
         button.classList.remove("active");
 
         if(button.dataset.type === type){
+
             button.classList.add("active");
+
         }
 
     });
@@ -2014,26 +2676,34 @@ function setSearchType(type){
 }
 
 
-document.querySelectorAll(".tabs button").forEach(function(button){
+document
+.querySelectorAll(".tabs button")
+.forEach(function(button){
 
-    button.onclick = function(){
+    button.addEventListener("click",function(){
 
-        setSearchType(this.dataset.type);
+        setSearchType(
+            this.dataset.type
+        );
 
-    };
+    });
 
 });
 
 
 /* NAV */
 
-document.querySelectorAll("nav button").forEach(function(button){
+document
+.querySelectorAll("nav button")
+.forEach(function(button){
 
-    button.onclick = function(){
+    button.addEventListener("click",function(){
 
         if(this.dataset.type){
 
-            setSearchType(this.dataset.type);
+            setSearchType(
+                this.dataset.type
+            );
 
             document
             .querySelector(".search-box")
@@ -2043,41 +2713,54 @@ document.querySelectorAll("nav button").forEach(function(button){
 
         }else{
 
-            showMessage("ეს განყოფილება მალე დაემატება.");
+            showMessage(
+                "ეს განყოფილება მალე დაემატება."
+            );
 
         }
 
-    };
+    });
 
 });
 
 
 /* FILTERS */
 
-document.querySelectorAll(".filter").forEach(function(button){
+document
+.querySelectorAll(".filter")
+.forEach(function(button){
 
-    button.onclick = function(){
+    button.addEventListener("click",function(){
 
-        const wasActive = this.classList.contains("active");
+        const active =
+            this.classList.contains("active");
 
-        document.querySelectorAll(".filter").forEach(function(item){
+        document
+        .querySelectorAll(".filter")
+        .forEach(function(item){
+
             item.classList.remove("active");
+
         });
 
-        if(!wasActive){
+        if(!active){
+
             this.classList.add("active");
+
         }
 
         filterProperties();
 
-    };
+    });
 
 });
 
 
 /* SEARCH BUTTON */
 
-document.getElementById("searchButton").onclick = function(){
+document
+.getElementById("searchButton")
+.addEventListener("click",function(){
 
     filterProperties();
 
@@ -2087,7 +2770,7 @@ document.getElementById("searchButton").onclick = function(){
         behavior:"smooth"
     });
 
-};
+});
 
 
 function filterProperties(){
@@ -2099,31 +2782,44 @@ function filterProperties(){
         .toLowerCase()
         .trim();
 
+
     const property =
-        document.getElementById("propertyType").value;
+        document
+        .getElementById("propertyType")
+        .value;
+
 
     const rooms =
-        document.getElementById("rooms").value;
+        document
+        .getElementById("rooms")
+        .value;
+
 
     const activeFilter =
         document.querySelector(".filter.active");
+
 
     const filter =
         activeFilter
         ? activeFilter.dataset.filter
         : null;
 
+
     let visible = 0;
 
 
-    document.querySelectorAll(".property-card").forEach(function(card){
+    document
+    .querySelectorAll(".property-card")
+    .forEach(function(card){
 
         const typeMatch =
             card.dataset.type === searchType;
 
+
         const propertyMatch =
             property === "all" ||
             card.dataset.property === property;
+
 
         const roomMatch =
             rooms === "all" ||
@@ -2133,16 +2829,19 @@ function filterProperties(){
                 Number(card.dataset.rooms) >= 5
             );
 
+
         const locationMatch =
             !location ||
             card.dataset.location
             .toLowerCase()
             .includes(location);
 
+
         const filterMatch =
             !filter ||
             card.dataset.property === filter ||
             card.dataset.tags.includes(filter);
+
 
         if(
             typeMatch &&
@@ -2178,30 +2877,50 @@ function filterProperties(){
 
 /* SHOW ALL */
 
-document.getElementById("showAll").onclick = function(){
+document
+.getElementById("showAll")
+.addEventListener("click",function(){
 
-    document.getElementById("locationInput").value = "";
+    document
+    .getElementById("locationInput")
+    .value = "";
 
-    document.getElementById("propertyType").value = "all";
+    document
+    .getElementById("propertyType")
+    .value = "all";
 
-    document.getElementById("rooms").value = "all";
+    document
+    .getElementById("rooms")
+    .value = "all";
 
-    document.querySelectorAll(".filter").forEach(function(item){
+
+    document
+    .querySelectorAll(".filter")
+    .forEach(function(item){
+
         item.classList.remove("active");
+
     });
 
-    document.querySelectorAll(".property-card").forEach(function(card){
+
+    document
+    .querySelectorAll(".property-card")
+    .forEach(function(card){
+
         card.classList.remove("hidden");
+
     });
 
-};
+});
 
 
 /* FAVORITES */
 
-document.querySelectorAll(".favorite").forEach(function(button){
+document
+.querySelectorAll(".favorite")
+.forEach(function(button){
 
-    button.onclick = function(){
+    button.addEventListener("click",function(){
 
         this.classList.toggle("saved");
 
@@ -2223,37 +2942,42 @@ document.querySelectorAll(".favorite").forEach(function(button){
 
         }
 
-    };
+    });
 
 });
 
 
-/* LOGIN */
-
-document.getElementById("loginButton").onclick = function(){
-
-    showMessage(
-        "შესვლა და რეგისტრაცია შემდეგ ეტაპზე დაემატება."
-    );
-
-};
-
-
 /* PUBLISH */
 
-document.getElementById("publishButton").onclick = function(){
+document
+.getElementById("publishButton")
+.addEventListener("click",function(){
 
     const property =
-        document.getElementById("listingProperty").value;
+        document
+        .getElementById("listingProperty")
+        .value;
+
 
     const city =
-        document.getElementById("city").value.trim();
+        document
+        .getElementById("city")
+        .value
+        .trim();
+
 
     const price =
-        document.getElementById("listingPrice").value.trim();
+        document
+        .getElementById("listingPrice")
+        .value
+        .trim();
+
 
     const phone =
-        document.getElementById("phone").value.trim();
+        document
+        .getElementById("phone")
+        .value
+        .trim();
 
 
     if(!property){
@@ -2301,10 +3025,139 @@ document.getElementById("publishButton").onclick = function(){
 
 
     showMessage(
-        "ფორმა მზად არის! შემდეგ ეტაპზე განცხადების რეალურ გამოქვეყნებას დავამატებთ."
+        "ფორმა მზად არის! რეალური გამოქვეყნება შემდეგ ეტაპზე დაემატება."
     );
 
-};
+});
+
+
+/* LOGIN MODAL */
+
+const loginModal =
+    document.getElementById("loginModal");
+
+const loginButton =
+    document.getElementById("loginButton");
+
+const loginClose =
+    document.getElementById("loginClose");
+
+
+loginButton.addEventListener("click",function(){
+
+    loginModal.classList.add("active");
+
+});
+
+
+loginClose.addEventListener("click",function(){
+
+    loginModal.classList.remove("active");
+
+});
+
+
+loginModal.addEventListener("click",function(event){
+
+    if(event.target === loginModal){
+
+        loginModal.classList.remove("active");
+
+    }
+
+});
+
+
+/* LOGIN / REGISTER TABS */
+
+document
+.querySelectorAll(".login-tab")
+.forEach(function(tab){
+
+    tab.addEventListener("click",function(){
+
+        document
+        .querySelectorAll(".login-tab")
+        .forEach(function(item){
+
+            item.classList.remove("active");
+
+        });
+
+
+        document
+        .querySelectorAll(".login-form")
+        .forEach(function(form){
+
+            form.classList.remove("active");
+
+        });
+
+
+        this.classList.add("active");
+
+
+        const selected =
+            this.dataset.loginTab;
+
+
+        document
+        .getElementById(
+            selected === "login"
+            ? "loginForm"
+            : "registerForm"
+        )
+        .classList.add("active");
+
+    });
+
+});
+
+
+/* DEMO LOGIN BUTTONS */
+
+document
+.getElementById("fakeLogin")
+.addEventListener("click",function(){
+
+    showMessage(
+        "შესვლის ფუნქცია შემდეგ ეტაპზე გააქტიურდება."
+    );
+
+});
+
+
+document
+.getElementById("fakeRegister")
+.addEventListener("click",function(){
+
+    showMessage(
+        "რეგისტრაციის ფუნქცია შემდეგ ეტაპზე გააქტიურდება."
+    );
+
+});
+
+
+document
+.getElementById("forgotPassword")
+.addEventListener("click",function(){
+
+    showMessage(
+        "პაროლის აღდგენა შემდეგ ეტაპზე დაემატება."
+    );
+
+});
+
+
+document
+.getElementById("fakeFacebook")
+.addEventListener("click",function(){
+
+    showMessage(
+        "Facebook-ით შესვლა შემდეგ ეტაპზე დაემატება."
+    );
+
+});
 
 
 /* LANGUAGE */
@@ -2332,6 +3185,7 @@ const translations = {
         contact:"დაგვიკავშირდით"
     },
 
+
     en:{
         title:"Find real estate in Georgia",
         subtitle:"Buy, rent or pledge — find the property that suits you.",
@@ -2344,7 +3198,7 @@ const translations = {
         search:"Search",
         popular:"🔥 Most viewed",
         all:"View all →",
-        ctaTitle:"Have a property to sell?",
+        ctaTitle:"Have a property?",
         ctaText:"Post your property on Your Home.",
         add:"+ Add listing",
         footerDescription:"Find real estate in Georgia.",
@@ -2352,6 +3206,7 @@ const translations = {
         help:"Help",
         contact:"Contact us"
     },
+
 
     ru:{
         title:"Найдите недвижимость в Грузии",
@@ -2379,88 +3234,125 @@ const translations = {
 
 function changeLanguage(lang){
 
-    const t = translations[lang];
+    const t =
+        translations[lang];
 
-    if(!t){
-        return;
-    }
 
-    document.documentElement.lang = lang;
+    document.documentElement.lang =
+        lang;
 
-    document.getElementById("heroTitle").textContent = t.title;
 
-    document.getElementById("heroSubtitle").textContent = t.subtitle;
+    document
+    .getElementById("heroTitle")
+    .textContent = t.title;
 
-    document.getElementById("locationLabel").textContent = t.location;
 
-    document.getElementById("locationInput").placeholder =
+    document
+    .getElementById("heroSubtitle")
+    .textContent = t.subtitle;
+
+
+    document
+    .getElementById("locationLabel")
+    .textContent = t.location;
+
+
+    document
+    .getElementById("locationInput")
+    .placeholder =
         t.locationPlaceholder;
 
-    document.getElementById("typeLabel").textContent = t.property;
 
-    document.getElementById("roomsLabel").textContent = t.rooms;
+    document
+    .getElementById("typeLabel")
+    .textContent = t.property;
 
-    document.getElementById("priceLabel").textContent = t.price;
 
-    document.getElementById("priceInput").placeholder =
+    document
+    .getElementById("roomsLabel")
+    .textContent = t.rooms;
+
+
+    document
+    .getElementById("priceLabel")
+    .textContent = t.price;
+
+
+    document
+    .getElementById("priceInput")
+    .placeholder =
         t.pricePlaceholder;
 
-    document.getElementById("searchButton").textContent =
-        t.search;
 
-    document.getElementById("popularTitle").textContent =
-        t.popular;
+    document
+    .getElementById("searchButton")
+    .textContent = t.search;
 
-    document.getElementById("showAll").textContent =
-        t.all;
 
-    document.getElementById("ctaTitle").textContent =
-        t.ctaTitle;
+    document
+    .getElementById("popularTitle")
+    .textContent = t.popular;
 
-    document.getElementById("ctaText").textContent =
-        t.ctaText;
 
-    document.getElementById("addButton").textContent =
-        t.add;
+    document
+    .getElementById("showAll")
+    .textContent = t.all;
 
-    document.getElementById("ctaButton").textContent =
-        t.add;
 
-    document.getElementById("footerDescription").textContent =
+    document
+    .getElementById("ctaTitle")
+    .textContent = t.ctaTitle;
+
+
+    document
+    .getElementById("ctaText")
+    .textContent = t.ctaText;
+
+
+    document
+    .getElementById("addButton")
+    .textContent = t.add;
+
+
+    document
+    .getElementById("ctaButton")
+    .textContent = t.add;
+
+
+    document
+    .getElementById("footerDescription")
+    .textContent =
         t.footerDescription;
 
-    document.getElementById("footerProperty").textContent =
+
+    document
+    .getElementById("footerProperty")
+    .textContent =
         t.propertyTitle;
 
-    document.getElementById("footerHelp").textContent =
+
+    document
+    .getElementById("footerHelp")
+    .textContent =
         t.help;
 
-    document.getElementById("footerContact").textContent =
+
+    document
+    .getElementById("footerContact")
+    .textContent =
         t.contact;
 
 }
 
 
-document.getElementById("language").onchange = function(){
+document
+.getElementById("language")
+.addEventListener("change",function(){
 
     changeLanguage(this.value);
 
-};
-
-
-/* PREVENT EMPTY FOOTER LINKS FROM JUMPING */
-
-document.querySelectorAll('footer a[href="#"]').forEach(function(link){
-
-    link.onclick = function(event){
-
-        event.preventDefault();
-
-        showMessage("ეს გვერდი შემდეგ ეტაპზე დაემატება.");
-
-    };
-
 });
+
 
 </script>
 
