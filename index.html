@@ -1,378 +1,326 @@
-/* =====================================================
-   SUPABASE
-===================================================== */
+const SUPABASE_URL = "https://clymnqkiarrpatcfuwwt.supabase.co";
 
-const SUPABASE_URL =
-    "https://clymnqkiarrpatcfuwwt.supabase.co";
+const SUPABASE_KEY = "sb_publishable__CQ1qg7_KizhMzPKDaD3tA_TQq6AzsM";
 
-const SUPABASE_KEY =
-    "sb_publishable__CQ1qg7_KizhMzPKDaD3tA_TQq6AzsM";
+const supabaseClient = supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
+/* =========================
+YOUR HOME — მთავარი JavaScript
+========================= */
 
-
-/* =====================================================
-   MESSAGE
-===================================================== */
+/* =========================
+MESSAGE
+========================= */
 
 function showMessage(text) {
 
-    const message =
-        document.getElementById("message");
+const message = document.getElementById("message");
 
-    if (!message) {
-        alert(text);
-        return;
-    }
+if (!message) return;
 
-    message.textContent = text;
+message.textContent = text;
 
-    message.classList.add("show");
+message.classList.add("show");
 
-    setTimeout(function () {
+setTimeout(function () {
 
-        message.classList.remove("show");
+    message.classList.remove("show");
 
-    }, 2800);
+}, 2800);
+
 }
 
-
-/* =====================================================
-   LOGIN MODAL
-===================================================== */
+/* =========================
+LOGIN MODAL
+========================= */
 
 function openLogin() {
 
-    const modal =
-        document.getElementById("loginModal");
+const modal =
+    document.getElementById("loginModal");
 
-    if (modal) {
+if (modal) {
 
-        modal.classList.add("active");
+    modal.classList.add("active");
 
-    }
 }
 
+}
 
 function closeLogin() {
 
-    const modal =
-        document.getElementById("loginModal");
+const modal =
+    document.getElementById("loginModal");
 
-    if (modal) {
+if (modal) {
 
-        modal.classList.remove("active");
+    modal.classList.remove("active");
 
-    }
 }
 
+}
 
-/* =====================================================
-   ADD LISTING PAGE
-===================================================== */
+/* =========================
+ADD LISTING PAGE
+========================= */
 
 function openAddPage() {
 
-    const homePage =
-        document.getElementById("homePage");
+const homePage =
+    document.getElementById("homePage");
 
-    const addPage =
-        document.getElementById("addPage");
-
-
-    if (homePage) {
-
-        homePage.classList.add("hidden");
-
-    }
+const addPage =
+    document.getElementById("addPage");
 
 
-    if (addPage) {
+if (homePage) {
 
-        addPage.classList.add("active");
-
-    }
-
-
-    window.scrollTo({
-
-        top: 0,
-
-        behavior: "smooth"
-
-    });
+    homePage.classList.add("hidden");
 
 }
 
+
+if (addPage) {
+
+    addPage.classList.add("active");
+
+}
+
+
+window.scrollTo({
+
+    top: 0,
+
+    behavior: "smooth"
+
+});
+
+}
 
 function closeAddPage() {
 
-    const homePage =
-        document.getElementById("homePage");
+const homePage =
+    document.getElementById("homePage");
 
-    const addPage =
-        document.getElementById("addPage");
-
-
-    if (addPage) {
-
-        addPage.classList.remove("active");
-
-    }
+const addPage =
+    document.getElementById("addPage");
 
 
-    if (homePage) {
+if (addPage) {
 
-        homePage.classList.remove("hidden");
-
-    }
-
-
-    window.scrollTo({
-
-        top: 0,
-
-        behavior: "smooth"
-
-    });
+    addPage.classList.remove("active");
 
 }
 
 
-/* =====================================================
-   INITIALIZATION
-===================================================== */
+if (homePage) {
+
+    homePage.classList.remove("hidden");
+
+}
+
+
+window.scrollTo({
+
+    top: 0,
+
+    behavior: "smooth"
+
+});
+
+}
+
+/* =========================
+INITIALIZATION
+========================= */
 
 document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+"DOMContentLoaded",
+function () {
+
+    const loginButton =
+        document.getElementById(
+            "loginButton"
+        );
 
 
-        /* ---------------------------------------------
-           ELEMENTS
-        --------------------------------------------- */
-
-        const loginButton =
-            document.getElementById(
-                "loginButton"
-            );
+    const loginClose =
+        document.getElementById(
+            "loginClose"
+        );
 
 
-        const loginClose =
-            document.getElementById(
-                "loginClose"
-            );
+    const loginModal =
+        document.getElementById(
+            "loginModal"
+        );
 
 
-        const loginModal =
-            document.getElementById(
-                "loginModal"
-            );
+    const addButton =
+        document.getElementById(
+            "addButton"
+        );
 
 
-        const addButton =
-            document.getElementById(
-                "addButton"
-            );
+    const ctaButton =
+        document.getElementById(
+            "ctaButton"
+        );
 
 
-        const ctaButton =
-            document.getElementById(
-                "ctaButton"
-            );
+    const backButton =
+        document.getElementById(
+            "backButton"
+        );
 
 
-        const backButton =
-            document.getElementById(
-                "backButton"
-            );
+    const cancelButton =
+        document.getElementById(
+            "cancelButton"
+        );
 
 
-        const cancelButton =
-            document.getElementById(
-                "cancelButton"
-            );
+    /* =====================
+       LOGIN
+    ===================== */
+
+    if (loginButton) {
+
+        loginButton.addEventListener(
+            "click",
+            openLogin
+        );
+
+    }
 
 
-        /* ---------------------------------------------
-           LOGIN
-        --------------------------------------------- */
+    if (loginClose) {
 
-        if (loginButton) {
+        loginClose.addEventListener(
+            "click",
+            closeLogin
+        );
 
-            loginButton.addEventListener(
-                "click",
-                function () {
-
-                    openLogin();
-
-                }
-            );
-
-        }
+    }
 
 
-        if (loginClose) {
+    if (loginModal) {
 
-            loginClose.addEventListener(
-                "click",
-                function () {
+        loginModal.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    loginModal
+                ) {
 
                     closeLogin();
 
                 }
-            );
 
-        }
-
-
-        /* ---------------------------------------------
-           CLOSE LOGIN WHEN CLICKING OUTSIDE
-        --------------------------------------------- */
-
-        if (loginModal) {
-
-            loginModal.addEventListener(
-                "click",
-                function (event) {
-
-                    if (
-                        event.target ===
-                        loginModal
-                    ) {
-
-                        closeLogin();
-
-                    }
-
-                }
-            );
-
-        }
-
-
-        /* ---------------------------------------------
-           ADD LISTING
-        --------------------------------------------- */
-
-        if (addButton) {
-
-            addButton.addEventListener(
-                "click",
-                function () {
-
-                    openAddPage();
-
-                }
-            );
-
-        }
-
-
-        if (ctaButton) {
-
-            ctaButton.addEventListener(
-                "click",
-                function () {
-
-                    openAddPage();
-
-                }
-            );
-
-        }
-
-
-        /* ---------------------------------------------
-           BACK BUTTON
-        --------------------------------------------- */
-
-        if (backButton) {
-
-            backButton.addEventListener(
-                "click",
-                function () {
-
-                    closeAddPage();
-
-                }
-            );
-
-        }
-
-
-        /* ---------------------------------------------
-           CANCEL BUTTON
-        --------------------------------------------- */
-
-        if (cancelButton) {
-
-            cancelButton.addEventListener(
-                "click",
-                function () {
-
-                    closeAddPage();
-
-                }
-            );
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   SUPABASE CONNECTION TEST
-===================================================== */
-
-async function testSupabaseConnection() {
-
-    try {
-
-        const result =
-            await supabaseClient.auth.getSession();
-
-
-        if (result.error) {
-
-            console.error(
-                "Supabase error:",
-                result.error
-            );
-
-            return false;
-
-        }
-
-
-        console.log(
-            "Supabase connected successfully."
+            }
         );
 
-        return true;
+    }
 
 
-    } catch (error) {
+    /* =====================
+       ADD LISTING
+    ===================== */
+
+    if (addButton) {
+
+        addButton.addEventListener(
+            "click",
+            openAddPage
+        );
+
+    }
+
+
+    if (ctaButton) {
+
+        ctaButton.addEventListener(
+            "click",
+            openAddPage
+        );
+
+    }
+
+
+    if (backButton) {
+
+        backButton.addEventListener(
+            "click",
+            closeAddPage
+        );
+
+    }
+
+
+    if (cancelButton) {
+
+        cancelButton.addEventListener(
+            "click",
+            closeAddPage
+        );
+
+    }
+
+}
+
+);
+
+/* =========================
+SUPABASE CONNECTION TEST
+========================= */
+
+async function checkSupabaseConnection() {
+
+try {
+
+    const result =
+        await supabaseClient.auth.getSession();
+
+
+    if (result.error) {
 
         console.error(
-            "Supabase connection error:",
-            error
+            "Supabase error:",
+            result.error
         );
 
         return false;
 
     }
 
+
+    console.log(
+        "Supabase connected successfully."
+    );
+
+
+    return true;
+
+} catch (error) {
+
+    console.error(
+        "Supabase connection error:",
+        error
+    );
+
+    return false;
+
 }
 
+}
 
-/* =====================================================
-   START
-===================================================== */
+/* =========================
+START
+========================= */
 
-testSupabaseConnection();
+checkSupabaseConnection();
