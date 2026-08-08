@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ka">
 <head>
@@ -17,6 +18,7 @@
     --bg:#f6f7f3;
     --white:#fff;
     --border:#e1e5dc;
+    --danger:#c65353;
 }
 
 *{
@@ -31,7 +33,7 @@ body{
     color:var(--dark);
 }
 
-button,input,select{
+button,input,select,textarea{
     font-family:inherit;
 }
 
@@ -73,7 +75,6 @@ header{
 .logo-text{
     font-size:23px;
     font-weight:800;
-    letter-spacing:.5px;
 }
 
 .logo-text span{
@@ -371,6 +372,234 @@ nav button:hover{
     margin-top:12px;
 }
 
+/* ADD LISTING */
+
+.add-page{
+    display:none;
+    max-width:1000px;
+    margin:45px auto;
+    padding:0 20px 60px;
+}
+
+.add-page.active{
+    display:block;
+}
+
+.home-page.hidden{
+    display:none;
+}
+
+.add-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.add-header h1{
+    font-size:32px;
+}
+
+.back-button{
+    border:1px solid var(--border);
+    background:#fff;
+    padding:10px 15px;
+    border-radius:8px;
+}
+
+.form-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:28px;
+    margin-bottom:20px;
+}
+
+.form-card h2{
+    font-size:20px;
+    margin-bottom:20px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+.form-group label{
+    font-size:14px;
+    font-weight:600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    outline:none;
+    font-size:14px;
+    background:#fff;
+}
+
+.form-group textarea{
+    min-height:130px;
+    resize:vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    border-color:var(--olive);
+}
+
+.choice-group{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.choice{
+    border:1px solid var(--border);
+    background:#fff;
+    padding:10px 14px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.choice.selected{
+    background:var(--olive-light);
+    border-color:var(--olive);
+    color:var(--olive-dark);
+    font-weight:700;
+}
+
+/* PHOTOS */
+
+.photo-upload{
+    border:2px dashed #cdd4c5;
+    border-radius:12px;
+    padding:28px;
+    text-align:center;
+    background:#fafbf8;
+}
+
+.photo-upload strong{
+    display:block;
+    margin-bottom:7px;
+}
+
+.photo-upload p{
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:15px;
+}
+
+.photo-button{
+    display:inline-block;
+    background:var(--olive);
+    color:#fff;
+    padding:11px 17px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.photo-upload input{
+    display:none;
+}
+
+.preview{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+    margin-top:15px;
+}
+
+.preview-item{
+    height:110px;
+    border-radius:8px;
+    overflow:hidden;
+    position:relative;
+    background:#eee;
+}
+
+.preview-item img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.preview-item span{
+    position:absolute;
+    right:5px;
+    top:5px;
+    background:rgba(0,0,0,.65);
+    color:#fff;
+    border-radius:50%;
+    width:24px;
+    height:24px;
+    text-align:center;
+    line-height:24px;
+    cursor:pointer;
+}
+
+/* CONTACT */
+
+.contact-options{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.contact-choice{
+    border:1px solid var(--border);
+    background:#fff;
+    padding:11px 15px;
+    border-radius:8px;
+}
+
+.contact-choice.selected{
+    background:var(--olive-light);
+    border-color:var(--olive);
+    color:var(--olive-dark);
+}
+
+/* FORM FOOTER */
+
+.form-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+}
+
+.cancel-button{
+    border:1px solid var(--border);
+    background:#fff;
+    padding:13px 20px;
+    border-radius:8px;
+}
+
+.publish-button{
+    border:0;
+    background:var(--olive);
+    color:#fff;
+    padding:13px 25px;
+    border-radius:8px;
+    font-weight:700;
+}
+
 /* CTA */
 
 .cta{
@@ -463,6 +692,7 @@ footer a:hover{
     opacity:0;
     transition:.3s;
     z-index:999;
+    text-align:center;
 }
 
 .message.show{
@@ -492,6 +722,10 @@ footer a:hover{
 
     .footer-grid{
         grid-template-columns:1fr 1fr;
+    }
+
+    .preview{
+        grid-template-columns:repeat(3,1fr);
     }
 }
 
@@ -526,6 +760,28 @@ footer a:hover{
         grid-template-columns:1fr;
     }
 
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-group.full{
+        grid-column:auto;
+    }
+
+    .form-card{
+        padding:18px;
+    }
+
+    .preview{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .add-header{
+        align-items:flex-start;
+        gap:15px;
+        flex-direction:column;
+    }
+
     .cta-box{
         flex-direction:column;
         align-items:flex-start;
@@ -534,15 +790,13 @@ footer a:hover{
     .footer-grid{
         grid-template-columns:1fr;
     }
-
-    .header-right{
-        margin-left:auto;
-    }
 }
 </style>
 </head>
 
 <body>
+
+<!-- HEADER -->
 
 <header>
 
@@ -562,11 +816,13 @@ footer a:hover{
     </div>
 
     <nav>
+
         <button data-type="sale">ყიდვა</button>
         <button data-type="rent">ქირავდება</button>
         <button data-type="pledge">გირავდება</button>
         <button>კომერციული</button>
         <button>ახალი პროექტები</button>
+
     </nav>
 
     <div class="header-right">
@@ -589,6 +845,10 @@ footer a:hover{
 
 </header>
 
+
+<!-- HOME PAGE -->
+
+<main id="homePage" class="home-page">
 
 <section class="hero">
 
@@ -699,61 +959,20 @@ footer a:hover{
 
     <div class="filter-list">
 
-        <button class="filter" data-filter="apartment">
-            ბინა
-        </button>
-
-        <button class="filter" data-filter="house">
-            სახლი
-        </button>
-
-        <button class="filter" data-filter="land">
-            მიწა
-        </button>
-
-        <button class="filter" data-filter="commercial">
-            კომერციული
-        </button>
-
-        <button class="filter" data-filter="cottage">
-            აგარაკი
-        </button>
-
-        <button class="filter" data-filter="new">
-            ახალი აშენებული
-        </button>
-
-        <button class="filter" data-filter="building">
-            მშენებარე
-        </button>
-
-        <button class="filter" data-filter="white">
-            თეთრი კარკასი
-        </button>
-
-        <button class="filter" data-filter="green">
-            მწვანე კარკასი
-        </button>
-
-        <button class="filter" data-filter="renovated">
-            ახალი რემონტით
-        </button>
-
-        <button class="filter" data-filter="old">
-            ძველი რემონტით
-        </button>
-
-        <button class="filter" data-filter="furnished">
-            ავეჯით
-        </button>
-
-        <button class="filter" data-filter="owner">
-            მესაკუთრე
-        </button>
-
-        <button class="filter" data-filter="agent">
-            აგენტი
-        </button>
+        <button class="filter" data-filter="apartment">ბინა</button>
+        <button class="filter" data-filter="house">სახლი</button>
+        <button class="filter" data-filter="land">მიწა</button>
+        <button class="filter" data-filter="commercial">კომერციული</button>
+        <button class="filter" data-filter="cottage">აგარაკი</button>
+        <button class="filter" data-filter="new">ახალი აშენებული</button>
+        <button class="filter" data-filter="building">მშენებარე</button>
+        <button class="filter" data-filter="white">თეთრი კარკასი</button>
+        <button class="filter" data-filter="green">მწვანე კარკასი</button>
+        <button class="filter" data-filter="renovated">ახალი რემონტით</button>
+        <button class="filter" data-filter="old">ძველი რემონტით</button>
+        <button class="filter" data-filter="furnished">ავეჯით</button>
+        <button class="filter" data-filter="owner">მესაკუთრე</button>
+        <button class="filter" data-filter="agent">აგენტი</button>
 
     </div>
 
@@ -774,9 +993,7 @@ footer a:hover{
 
     </div>
 
-
     <div class="cards" id="propertyCards">
-
 
         <div
             class="card property-card"
@@ -792,17 +1009,13 @@ footer a:hover{
 
                 <div class="badge">TOP</div>
 
-                <button class="favorite">
-                    ♡
-                </button>
+                <button class="favorite">♡</button>
 
             </div>
 
             <div class="card-body">
 
-                <div class="price">
-                    $145,000
-                </div>
+                <div class="price">$145,000</div>
 
                 <div class="address">
                     თბილისი, საბურთალო
@@ -837,17 +1050,13 @@ footer a:hover{
 
                 <div class="badge">VIP</div>
 
-                <button class="favorite">
-                    ♡
-                </button>
+                <button class="favorite">♡</button>
 
             </div>
 
             <div class="card-body">
 
-                <div class="price">
-                    $210,000
-                </div>
+                <div class="price">$210,000</div>
 
                 <div class="address">
                     თბილისი, ვაკე
@@ -880,17 +1089,13 @@ footer a:hover{
                 class="card-image"
                 style="background-image:url('https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=900&q=80');">
 
-                <button class="favorite">
-                    ♡
-                </button>
+                <button class="favorite">♡</button>
 
             </div>
 
             <div class="card-body">
 
-                <div class="price">
-                    $800 / თვე
-                </div>
+                <div class="price">$800 / თვე</div>
 
                 <div class="address">
                     თბილისი, დიდუბე
@@ -925,17 +1130,13 @@ footer a:hover{
 
                 <div class="badge">VIP</div>
 
-                <button class="favorite">
-                    ♡
-                </button>
+                <button class="favorite">♡</button>
 
             </div>
 
             <div class="card-body">
 
-                <div class="price">
-                    $260,000
-                </div>
+                <div class="price">$260,000</div>
 
                 <div class="address">
                     თბილისი, მთაწმინდა
@@ -968,17 +1169,13 @@ footer a:hover{
                 class="card-image"
                 style="background-image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=900&q=80');">
 
-                <button class="favorite">
-                    ♡
-                </button>
+                <button class="favorite">♡</button>
 
             </div>
 
             <div class="card-body">
 
-                <div class="price">
-                    $1,200 / თვე
-                </div>
+                <div class="price">$1,200 / თვე</div>
 
                 <div class="address">
                     თბილისი, დიღომი
@@ -1013,17 +1210,13 @@ footer a:hover{
 
                 <div class="badge">VIP</div>
 
-                <button class="favorite">
-                    ♡
-                </button>
+                <button class="favorite">♡</button>
 
             </div>
 
             <div class="card-body">
 
-                <div class="price">
-                    $390,000
-                </div>
+                <div class="price">$390,000</div>
 
                 <div class="address">
                     თბილისი, წყნეთი
@@ -1053,6 +1246,7 @@ footer a:hover{
     <div class="cta-box">
 
         <div>
+
             <h2 id="ctaTitle">
                 გაქვს უძრავი ქონება?
             </h2>
@@ -1060,6 +1254,7 @@ footer a:hover{
             <p id="ctaText">
                 განათავსე განცხადება Your Home-ზე.
             </p>
+
         </div>
 
         <button class="cta-button" id="ctaButton">
@@ -1070,6 +1265,405 @@ footer a:hover{
 
 </section>
 
+</main>
+
+
+<!-- ADD LISTING PAGE -->
+
+<section class="add-page" id="addPage">
+
+    <div class="add-header">
+
+        <h1>
+            განცხადების დამატება
+        </h1>
+
+        <button class="back-button" id="backButton">
+            ← უკან
+        </button>
+
+    </div>
+
+
+    <!-- TYPE -->
+
+    <div class="form-card">
+
+        <h2>რა გსურთ გააკეთოთ?</h2>
+
+        <div class="choice-group" id="dealChoices">
+
+            <button class="choice selected" data-value="sale">
+                იყიდება
+            </button>
+
+            <button class="choice" data-value="rent">
+                ქირავდება
+            </button>
+
+            <button class="choice" data-value="pledge">
+                გირავდება
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- PROPERTY -->
+
+    <div class="form-card">
+
+        <h2>ქონების შესახებ</h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>ქონების ტიპი *</label>
+
+                <select id="listingProperty">
+
+                    <option value="">აირჩიეთ</option>
+                    <option>ბინა</option>
+                    <option>სახლი</option>
+                    <option>კომერციული ფართი</option>
+                    <option>მიწის ნაკვეთი</option>
+                    <option>აგარაკი</option>
+                    <option>სასტუმრო</option>
+                    <option>სხვა</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>მდგომარეობა</label>
+
+                <select id="condition">
+
+                    <option value="">აირჩიეთ</option>
+                    <option>მშენებარე</option>
+                    <option>ახალი აშენებული</option>
+                    <option>თეთრი კარკასი</option>
+                    <option>მწვანე კარკასი</option>
+                    <option>ახალი რემონტით</option>
+                    <option>ძველი რემონტით</option>
+                    <option>სარემონტო</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>ოთახების რაოდენობა</label>
+
+                <select id="listingRooms">
+
+                    <option value="">აირჩიეთ</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6+</option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>სართული</label>
+
+                <input
+                    type="number"
+                    id="floor"
+                    placeholder="მაგ. 7">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>სართულების რაოდენობა</label>
+
+                <input
+                    type="number"
+                    id="totalFloors"
+                    placeholder="მაგ. 12">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>ფართობი მ²</label>
+
+                <input
+                    type="number"
+                    id="area"
+                    placeholder="მაგ. 82">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- LOCATION -->
+
+    <div class="form-card">
+
+        <h2>მდებარეობა</h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>ქალაქი *</label>
+
+                <input
+                    type="text"
+                    id="city"
+                    placeholder="მაგ. თბილისი">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>უბანი</label>
+
+                <input
+                    type="text"
+                    id="district"
+                    placeholder="მაგ. საბურთალო">
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>მისამართი</label>
+
+                <input
+                    type="text"
+                    id="address"
+                    placeholder="ქუჩა, ნომერი">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PRICE -->
+
+    <div class="form-card">
+
+        <h2>ფასი</h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>ფასი *</label>
+
+                <input
+                    type="number"
+                    id="listingPrice"
+                    placeholder="მაგ. 145000">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>ვალუტა</label>
+
+                <select id="currency">
+
+                    <option>USD — $</option>
+                    <option>GEL — ₾</option>
+                    <option>EUR — €</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- OWNER -->
+
+    <div class="form-card">
+
+        <h2>ვინ აქვეყნებს განცხადებას?</h2>
+
+        <div class="choice-group" id="ownerChoices">
+
+            <button class="choice selected" data-value="owner">
+                👤 მესაკუთრე
+            </button>
+
+            <button class="choice" data-value="agent">
+                🏢 აგენტი
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- PHOTOS -->
+
+    <div class="form-card">
+
+        <h2>ფოტოები</h2>
+
+        <div class="photo-upload">
+
+            <strong>
+                დაამატე ფოტოები
+            </strong>
+
+            <p>
+                მაქსიმუმ 10 ფოტო. პირველი ფოტო იქნება მთავარი.
+            </p>
+
+            <label class="photo-button">
+
+                📷 ფოტოების არჩევა
+
+                <input
+                    type="file"
+                    id="photoInput"
+                    accept="image/*"
+                    multiple>
+
+            </label>
+
+            <div class="preview" id="photoPreview"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONTACT -->
+
+    <div class="form-card">
+
+        <h2>საკონტაქტო ინფორმაცია</h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>ტელეფონის ნომერი *</label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    placeholder="+995 5XX XX XX XX">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>საკონტაქტო პირი</label>
+
+                <input
+                    type="text"
+                    id="contactName"
+                    placeholder="სახელი">
+
+            </div>
+
+        </div>
+
+
+        <br>
+
+        <label style="display:block;margin-bottom:10px;font-weight:600;">
+            რომელ აპში დაგიკავშირდნენ?
+        </label>
+
+        <div class="contact-options">
+
+            <button class="contact-choice selected">
+                📞 ზარი
+            </button>
+
+            <button class="contact-choice">
+                WhatsApp
+            </button>
+
+            <button class="contact-choice">
+                Telegram
+            </button>
+
+            <button class="contact-choice">
+                Viber
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- DESCRIPTION -->
+
+    <div class="form-card">
+
+        <h2>განცხადების აღწერა</h2>
+
+        <div class="form-group">
+
+            <label>აღწერა</label>
+
+            <textarea
+                id="description"
+                placeholder="დაწერეთ დამატებითი ინფორმაცია ქონების შესახებ..."></textarea>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div class="form-card">
+
+        <div class="form-actions">
+
+            <button class="cancel-button" id="cancelButton">
+                გაუქმება
+            </button>
+
+            <button class="publish-button" id="publishButton">
+                გამოქვეყნების გაგრძელება →
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
 
 <footer>
 
@@ -1196,32 +1790,217 @@ footer a:hover{
 
 function showMessage(text){
 
-    const message = document.getElementById("message");
+    const message=document.getElementById("message");
 
-    message.textContent = text;
+    message.textContent=text;
+
     message.classList.add("show");
 
     setTimeout(function(){
+
         message.classList.remove("show");
-    },2500);
+
+    },2800);
+
 }
 
 
-/* ================= PROPERTY TYPE ================= */
+/* ================= PAGES ================= */
 
-let currentType = "sale";
+const homePage=document.getElementById("homePage");
+const addPage=document.getElementById("addPage");
 
 
-function setType(type){
+function openAddPage(){
 
-    currentType = type;
+    homePage.classList.add("hidden");
+    addPage.classList.add("active");
 
-    document.querySelectorAll(".tabs button").forEach(function(button){
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+function closeAddPage(){
+
+    addPage.classList.remove("active");
+    homePage.classList.remove("hidden");
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+document.getElementById("addButton")
+.addEventListener("click",openAddPage);
+
+
+document.getElementById("ctaButton")
+.addEventListener("click",openAddPage);
+
+
+document.getElementById("backButton")
+.addEventListener("click",closeAddPage);
+
+
+document.getElementById("cancelButton")
+.addEventListener("click",closeAddPage);
+
+
+/* ================= DEAL TYPE ================= */
+
+let currentType="sale";
+
+
+document.querySelectorAll("#dealChoices .choice")
+.forEach(function(button){
+
+    button.addEventListener("click",function(){
+
+        document
+        .querySelectorAll("#dealChoices .choice")
+        .forEach(function(item){
+
+            item.classList.remove("selected");
+
+        });
+
+        this.classList.add("selected");
+
+        currentType=this.dataset.value;
+
+    });
+
+});
+
+
+/* ================= OWNER TYPE ================= */
+
+document.querySelectorAll("#ownerChoices .choice")
+.forEach(function(button){
+
+    button.addEventListener("click",function(){
+
+        document
+        .querySelectorAll("#ownerChoices .choice")
+        .forEach(function(item){
+
+            item.classList.remove("selected");
+
+        });
+
+        this.classList.add("selected");
+
+    });
+
+});
+
+
+/* ================= CONTACT APPS ================= */
+
+document.querySelectorAll(".contact-choice")
+.forEach(function(button){
+
+    button.addEventListener("click",function(){
+
+        this.classList.toggle("selected");
+
+    });
+
+});
+
+
+/* ================= PHOTOS ================= */
+
+const photoInput=document.getElementById("photoInput");
+const photoPreview=document.getElementById("photoPreview");
+
+let selectedFiles=[];
+
+
+photoInput.addEventListener("change",function(){
+
+    const files=Array.from(this.files);
+
+    if(files.length>10){
+
+        showMessage("მაქსიმუმ 10 ფოტოს დამატებაა შესაძლებელი.");
+
+    }
+
+    selectedFiles=files.slice(0,10);
+
+    renderPhotos();
+
+});
+
+
+function renderPhotos(){
+
+    photoPreview.innerHTML="";
+
+    selectedFiles.forEach(function(file,index){
+
+        const reader=new FileReader();
+
+        reader.onload=function(event){
+
+            const item=document.createElement("div");
+
+            item.className="preview-item";
+
+            item.innerHTML=`
+                <img src="${event.target.result}">
+                <span data-index="${index}">×</span>
+            `;
+
+            photoPreview.appendChild(item);
+
+
+            item.querySelector("span")
+            .addEventListener("click",function(){
+
+                const i=Number(this.dataset.index);
+
+                selectedFiles.splice(i,1);
+
+                renderPhotos();
+
+            });
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+}
+
+
+/* ================= SEARCH TYPE ================= */
+
+let searchType="sale";
+
+
+function setSearchType(type){
+
+    searchType=type;
+
+    document.querySelectorAll(".tabs button")
+    .forEach(function(button){
 
         button.classList.remove("active");
 
-        if(button.dataset.type === type){
+        if(button.dataset.type===type){
+
             button.classList.add("active");
+
         }
 
     });
@@ -1231,33 +2010,34 @@ function setType(type){
 }
 
 
-/* ================= TABS ================= */
-
-document.querySelectorAll(".tabs button").forEach(function(button){
+document.querySelectorAll(".tabs button")
+.forEach(function(button){
 
     button.addEventListener("click",function(){
 
-        setType(this.dataset.type);
+        setSearchType(this.dataset.type);
 
     });
 
 });
 
 
-/* ================= NAV BUTTONS ================= */
+/* ================= NAV ================= */
 
-document.querySelectorAll("nav button").forEach(function(button){
+document.querySelectorAll("nav button")
+.forEach(function(button){
 
     button.addEventListener("click",function(){
 
         if(this.dataset.type){
 
-            setType(this.dataset.type);
+            setSearchType(this.dataset.type);
 
-            document.querySelector(".search-box")
-                .scrollIntoView({
-                    behavior:"smooth"
-                });
+            document
+            .querySelector(".search-box")
+            .scrollIntoView({
+                behavior:"smooth"
+            });
 
         }else{
 
@@ -1270,21 +2050,23 @@ document.querySelectorAll("nav button").forEach(function(button){
 });
 
 
-/* ================= FILTER BUTTONS ================= */
+/* ================= FILTERS ================= */
 
-document.querySelectorAll(".filter").forEach(function(button){
+document.querySelectorAll(".filter")
+.forEach(function(button){
 
     button.addEventListener("click",function(){
 
-        const alreadyActive =
-            this.classList.contains("active");
+        const active=this.classList.contains("active");
 
         document.querySelectorAll(".filter")
-            .forEach(function(item){
-                item.classList.remove("active");
-            });
+        .forEach(function(item){
 
-        if(!alreadyActive){
+            item.classList.remove("active");
+
+        });
+
+        if(!active){
 
             this.classList.add("active");
 
@@ -1304,68 +2086,70 @@ document.getElementById("searchButton")
 
     filterProperties();
 
-    document.getElementById("propertyCards")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
-
-    showMessage("ძებნა შესრულდა.");
+    document
+    .getElementById("propertyCards")
+    .scrollIntoView({
+        behavior:"smooth"
+    });
 
 });
 
 
 function filterProperties(){
 
-    const location =
-        document.getElementById("locationInput")
+    const location=
+        document
+        .getElementById("locationInput")
         .value
         .toLowerCase()
         .trim();
 
-    const property =
+    const property=
         document.getElementById("propertyType").value;
 
-    const rooms =
+    const rooms=
         document.getElementById("rooms").value;
 
-    const activeFilter =
+    const activeFilter=
         document.querySelector(".filter.active");
 
-    const filter =
+    const filter=
         activeFilter
         ? activeFilter.dataset.filter
         : null;
 
-
-    let visible = 0;
+    let visible=0;
 
 
     document.querySelectorAll(".property-card")
     .forEach(function(card){
 
-        const typeMatch =
-            card.dataset.type === currentType;
+        const typeMatch=
+            card.dataset.type===searchType;
 
-        const propertyMatch =
-            property === "all" ||
-            card.dataset.property === property;
+        const propertyMatch=
+            property==="all" ||
+            card.dataset.property===property;
 
-        const roomMatch =
-            rooms === "all" ||
-            card.dataset.rooms === rooms ||
-            (rooms === "5" &&
-             Number(card.dataset.rooms) >= 5);
+        const roomMatch=
+            rooms==="all" ||
+            card.dataset.rooms===rooms ||
+            (
+                rooms==="5" &&
+                Number(card.dataset.rooms)>=5
+            );
 
-        const locationMatch =
+        const locationMatch=
             !location ||
             card.dataset.location
             .toLowerCase()
             .includes(location);
 
-        const filterMatch =
+        const filterMatch=
             !filter ||
-            card.dataset.property === filter ||
+            card.dataset.property===filter ||
             card.dataset.tags.includes(filter);
+
 
         if(
             typeMatch &&
@@ -1376,6 +2160,7 @@ function filterProperties(){
         ){
 
             card.classList.remove("hidden");
+
             visible++;
 
         }else{
@@ -1387,9 +2172,11 @@ function filterProperties(){
     });
 
 
-    if(visible === 0){
+    if(visible===0){
 
-        showMessage("ამ პირობებით განცხადება ვერ მოიძებნა.");
+        showMessage(
+            "ამ პირობებით განცხადება ვერ მოიძებნა."
+        );
 
     }
 
@@ -1406,16 +2193,18 @@ document.getElementById("showAll")
     document.getElementById("rooms").value="all";
 
     document.querySelectorAll(".filter")
-        .forEach(function(item){
-            item.classList.remove("active");
-        });
+    .forEach(function(item){
+
+        item.classList.remove("active");
+
+    });
 
     document.querySelectorAll(".property-card")
-        .forEach(function(card){
-            card.classList.remove("hidden");
-        });
+    .forEach(function(card){
 
-    showMessage("ყველა განცხადება გამოჩნდა.");
+        card.classList.remove("hidden");
+
+    });
 
 });
 
@@ -1432,12 +2221,18 @@ document.querySelectorAll(".favorite")
         if(this.classList.contains("saved")){
 
             this.textContent="♥";
-            showMessage("განცხადება რჩეულებში დაემატა.");
+
+            showMessage(
+                "განცხადება რჩეულებში დაემატა."
+            );
 
         }else{
 
             this.textContent="♡";
-            showMessage("განცხადება რჩეულებიდან წაიშალა.");
+
+            showMessage(
+                "განცხადება რჩეულებიდან წაიშალა."
+            );
 
         }
 
@@ -1451,32 +2246,85 @@ document.querySelectorAll(".favorite")
 document.getElementById("loginButton")
 .addEventListener("click",function(){
 
-    showMessage("შესვლა და რეგისტრაცია შემდეგ ეტაპზე დაემატება.");
+    showMessage(
+        "შესვლა და რეგისტრაცია შემდეგ ეტაპზე დაემატება."
+    );
 
 });
 
 
-/* ================= ADD PROPERTY ================= */
+/* ================= PUBLISH ================= */
 
-document.getElementById("addButton")
+document.getElementById("publishButton")
 .addEventListener("click",function(){
 
-    showMessage("განცხადების დამატების ფორმას შემდეგ ეტაპზე გავაკეთებთ.");
+    const property=
+        document.getElementById("listingProperty").value;
 
-});
+    const city=
+        document.getElementById("city").value.trim();
+
+    const price=
+        document.getElementById("listingPrice").value.trim();
+
+    const phone=
+        document.getElementById("phone").value.trim();
 
 
-document.getElementById("ctaButton")
-.addEventListener("click",function(){
+    if(!property){
 
-    showMessage("განცხადების დამატების ფორმას შემდეგ ეტაპზე გავაკეთებთ.");
+        showMessage(
+            "გთხოვთ აირჩიოთ ქონების ტიპი."
+        );
+
+        return;
+
+    }
+
+
+    if(!city){
+
+        showMessage(
+            "გთხოვთ მიუთითოთ ქალაქი."
+        );
+
+        return;
+
+    }
+
+
+    if(!price){
+
+        showMessage(
+            "გთხოვთ მიუთითოთ ფასი."
+        );
+
+        return;
+
+    }
+
+
+    if(!phone){
+
+        showMessage(
+            "გთხოვთ მიუთითოთ ტელეფონის ნომერი."
+        );
+
+        return;
+
+    }
+
+
+    showMessage(
+        "ფორმა მზად არის! შემდეგ ეტაპზე განცხადების რეალურ გამოქვეყნებას დავამატებთ."
+    );
 
 });
 
 
 /* ================= LANGUAGE ================= */
 
-const translations = {
+const translations={
 
     ka:{
         title:"იპოვე უძრავი ქონება საქართველოში",
@@ -1546,71 +2394,56 @@ const translations = {
 
 function changeLanguage(lang){
 
-    const t = translations[lang];
+    const t=translations[lang];
 
-    document.documentElement.lang = lang;
+    document.documentElement.lang=lang;
 
-    document.getElementById("heroTitle")
-        .textContent=t.title;
+    document.getElementById("heroTitle").textContent=t.title;
 
-    document.getElementById("heroSubtitle")
-        .textContent=t.subtitle;
+    document.getElementById("heroSubtitle").textContent=t.subtitle;
 
-    document.getElementById("locationLabel")
-        .textContent=t.location;
+    document.getElementById("locationLabel").textContent=t.location;
 
-    document.getElementById("locationInput")
-        .placeholder=t.locationPlaceholder;
+    document.getElementById("locationInput").placeholder=
+        t.locationPlaceholder;
 
-    document.getElementById("typeLabel")
-        .textContent=t.property;
+    document.getElementById("typeLabel").textContent=t.property;
 
-    document.getElementById("roomsLabel")
-        .textContent=t.rooms;
+    document.getElementById("roomsLabel").textContent=t.rooms;
 
-    document.getElementById("priceLabel")
-        .textContent=t.price;
+    document.getElementById("priceLabel").textContent=t.price;
 
-    document.getElementById("priceInput")
-        .placeholder=t.pricePlaceholder;
+    document.getElementById("priceInput").placeholder=
+        t.pricePlaceholder;
 
-    document.getElementById("searchButton")
-        .textContent=t.search;
+    document.getElementById("searchButton").textContent=t.search;
 
-    document.getElementById("popularTitle")
-        .textContent=t.popular;
+    document.getElementById("popularTitle").textContent=t.popular;
 
-    document.getElementById("showAll")
-        .textContent=t.all;
+    document.getElementById("showAll").textContent=t.all;
 
-    document.getElementById("ctaTitle")
-        .textContent=t.ctaTitle;
+    document.getElementById("ctaTitle").textContent=t.ctaTitle;
 
-    document.getElementById("ctaText")
-        .textContent=t.ctaText;
+    document.getElementById("ctaText").textContent=t.ctaText;
 
-    document.getElementById("addButton")
-        .textContent=t.add;
+    document.getElementById("addButton").textContent=t.add;
 
-    document.getElementById("ctaButton")
-        .textContent=t.add;
+    document.getElementById("ctaButton").textContent=t.add;
 
-    document.getElementById("footerDescription")
-        .textContent=t.footerDescription;
+    document.getElementById("footerDescription").textContent=
+        t.footerDescription;
 
-    document.getElementById("footerProperty")
-        .textContent=t.propertyTitle;
+    document.getElementById("footerProperty").textContent=
+        t.propertyTitle;
 
-    document.getElementById("footerHelp")
-        .textContent=t.help;
+    document.getElementById("footerHelp").textContent=
+        t.help;
 
-    document.getElementById("footerContact")
-        .textContent=t.contact;
+    document.getElementById("footerContact").textContent=
+        t.contact;
 
 }
 
-
-/* ================= START ================= */
 
 document.getElementById("language")
 .addEventListener("change",function(){
@@ -1618,7 +2451,6 @@ document.getElementById("language")
     changeLanguage(this.value);
 
 });
-
 
 </script>
 
