@@ -979,11 +979,8 @@ footer a:hover{
 </style>
 </head>
 
-
 <body>
 
-
-<!-- HEADER -->
 
 <header>
 
@@ -1035,10 +1032,7 @@ footer a:hover{
 </header>
 
 
-<!-- HOME PAGE -->
-
 <main id="homePage" class="home-page">
-
 
 <section class="hero">
 
@@ -1155,8 +1149,6 @@ footer a:hover{
 </section>
 
 
-<!-- FILTERS -->
-
 <section class="filters">
 
     <div class="filter-list">
@@ -1180,8 +1172,6 @@ footer a:hover{
 
 </section>
 
-
-<!-- PROPERTIES -->
 
 <section class="section">
 
@@ -1479,8 +1469,6 @@ footer a:hover{
 </section>
 
 
-<!-- CTA -->
-
 <section class="cta">
 
     <div class="cta-box">
@@ -1508,8 +1496,6 @@ footer a:hover{
 </main>
 
 
-<!-- ADD LISTING PAGE -->
-
 <section class="add-page" id="addPage">
 
 
@@ -1525,8 +1511,6 @@ footer a:hover{
 
     </div>
 
-
-    <!-- DEAL TYPE -->
 
     <div class="form-card">
 
@@ -1553,8 +1537,6 @@ footer a:hover{
     </div>
 
 
-    <!-- PROPERTY -->
-
     <div class="form-card">
 
         <h2>
@@ -1576,31 +1558,31 @@ footer a:hover{
                         აირჩიეთ
                     </option>
 
-                    <option>
+                    <option value="apartment">
                         ბინა
                     </option>
 
-                    <option>
+                    <option value="house">
                         სახლი
                     </option>
 
-                    <option>
+                    <option value="commercial">
                         კომერციული ფართი
                     </option>
 
-                    <option>
+                    <option value="land">
                         მიწის ნაკვეთი
                     </option>
 
-                    <option>
+                    <option value="cottage">
                         აგარაკი
                     </option>
 
-                    <option>
+                    <option value="hotel">
                         სასტუმრო
                     </option>
 
-                    <option>
+                    <option value="other">
                         სხვა
                     </option>
 
@@ -1792,8 +1774,6 @@ footer a:hover{
     </div>
 
 
-    <!-- LOCATION -->
-
     <div class="form-card">
 
         <h2>
@@ -1848,8 +1828,6 @@ footer a:hover{
     </div>
 
 
-    <!-- PRICE -->
-
     <div class="form-card">
 
         <h2>
@@ -1901,8 +1879,6 @@ footer a:hover{
     </div>
 
 
-    <!-- OWNER -->
-
     <div class="form-card">
 
         <h2>
@@ -1923,8 +1899,6 @@ footer a:hover{
 
     </div>
 
-
-    <!-- PHOTOS -->
 
     <div class="form-card">
 
@@ -1963,8 +1937,6 @@ footer a:hover{
 
     </div>
 
-
-    <!-- CONTACT -->
 
     <div class="form-card">
 
@@ -2037,8 +2009,6 @@ footer a:hover{
     </div>
 
 
-    <!-- DESCRIPTION -->
-
     <div class="form-card">
 
         <h2>
@@ -2059,8 +2029,6 @@ footer a:hover{
 
     </div>
 
-
-    <!-- ACTIONS -->
 
     <div class="form-card">
 
@@ -2089,8 +2057,6 @@ footer a:hover{
 
 </section>
 
-
-<!-- FOOTER -->
 
 <footer>
 
@@ -2223,15 +2189,11 @@ footer a:hover{
 </footer>
 
 
-<!-- MESSAGE -->
-
 <div
     class="message"
     id="message">
 </div>
 
-
-<!-- LOGIN MODAL -->
 
 <div
     class="login-modal"
@@ -2291,8 +2253,6 @@ footer a:hover{
         </div>
 
 
-        <!-- LOGIN FORM -->
-
         <div
             class="login-form active"
             id="loginForm">
@@ -2335,8 +2295,6 @@ footer a:hover{
 
         </div>
 
-
-        <!-- REGISTER FORM -->
 
         <div
             class="login-form"
@@ -2423,7 +2381,6 @@ footer a:hover{
 
 <script>
 
-
 /* MESSAGE */
 
 function showMessage(text){
@@ -2479,26 +2436,6 @@ function closeAddPage(){
     });
 
 }
-
-
-document
-.getElementById("addButton")
-.addEventListener("click",openAddPage);
-
-
-document
-.getElementById("ctaButton")
-.addEventListener("click",openAddPage);
-
-
-document
-.getElementById("backButton")
-.addEventListener("click",closeAddPage);
-
-
-document
-.getElementById("cancelButton")
-.addEventListener("click",closeAddPage);
 
 
 /* DEAL TYPE */
@@ -2947,11 +2884,553 @@ document
 });
 
 
+/* LOGIN MODAL */
+
+const loginModal =
+    document.getElementById("loginModal");
+
+const loginButton =
+    document.getElementById("loginButton");
+
+const loginClose =
+    document.getElementById("loginClose");
+
+
+loginClose.addEventListener("click",function(){
+
+    loginModal.classList.remove("active");
+
+});
+
+
+loginModal.addEventListener("click",function(event){
+
+    if(event.target === loginModal){
+
+        loginModal.classList.remove("active");
+
+    }
+
+});
+
+
+/* LOGIN TABS */
+
+document
+.querySelectorAll(".login-tab")
+.forEach(function(tab){
+
+    tab.addEventListener("click",function(){
+
+        document
+        .querySelectorAll(".login-tab")
+        .forEach(function(item){
+
+            item.classList.remove("active");
+
+        });
+
+
+        document
+        .querySelectorAll(".login-form")
+        .forEach(function(form){
+
+            form.classList.remove("active");
+
+        });
+
+
+        this.classList.add("active");
+
+
+        const selected =
+            this.dataset.loginTab;
+
+
+        document
+        .getElementById(
+            selected === "login"
+            ? "loginForm"
+            : "registerForm"
+        )
+        .classList.add("active");
+
+    });
+
+});
+
+
+/* ACCOUNT STORAGE */
+
+let currentUser =
+    JSON.parse(
+        localStorage.getItem(
+            "yourHomeCurrentUser"
+        )
+    );
+
+
+function getUsers(){
+
+    return JSON.parse(
+        localStorage.getItem(
+            "yourHomeUsers"
+        ) || "[]"
+    );
+
+}
+
+
+function saveUsers(users){
+
+    localStorage.setItem(
+        "yourHomeUsers",
+        JSON.stringify(users)
+    );
+
+}
+
+
+/* ACCOUNT BUTTON */
+
+function updateAccountButton(){
+
+    const button =
+        document.getElementById(
+            "loginButton"
+        );
+
+
+    if(currentUser){
+
+        button.textContent =
+            "👤 " + currentUser.name;
+
+    }else{
+
+        button.textContent =
+            "შესვლა";
+
+    }
+
+}
+
+
+updateAccountButton();
+
+
+/* LOGIN / LOGOUT */
+
+loginButton.addEventListener("click",function(){
+
+    if(currentUser){
+
+        const logout =
+            confirm(
+                "გსურთ ანგარიშიდან გასვლა?"
+            );
+
+
+        if(logout){
+
+            currentUser = null;
+
+            localStorage.removeItem(
+                "yourHomeCurrentUser"
+            );
+
+            updateAccountButton();
+
+            showMessage(
+                "თქვენ გამოხვედით ანგარიშიდან."
+            );
+
+        }
+
+        return;
+
+    }
+
+
+    loginModal.classList.add("active");
+
+});
+
+
+/* REGISTER */
+
+document
+.getElementById("fakeRegister")
+.addEventListener("click",function(){
+
+    const inputs =
+        document
+        .getElementById("registerForm")
+        .querySelectorAll("input");
+
+
+    const name =
+        inputs[0].value.trim();
+
+    const email =
+        inputs[1].value.trim();
+
+    const phone =
+        inputs[2].value.trim();
+
+    const password =
+        inputs[3].value;
+
+    const repeatPassword =
+        inputs[4].value;
+
+
+    if(!name){
+
+        showMessage(
+            "გთხოვთ შეიყვანოთ სახელი და გვარი."
+        );
+
+        return;
+
+    }
+
+
+    if(!email){
+
+        showMessage(
+            "გთხოვთ შეიყვანოთ ელფოსტა."
+        );
+
+        return;
+
+    }
+
+
+    if(!phone){
+
+        showMessage(
+            "გთხოვთ შეიყვანოთ ტელეფონის ნომერი."
+        );
+
+        return;
+
+    }
+
+
+    if(password.length < 6){
+
+        showMessage(
+            "პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს."
+        );
+
+        return;
+
+    }
+
+
+    if(password !== repeatPassword){
+
+        showMessage(
+            "პაროლები ერთმანეთს არ ემთხვევა."
+        );
+
+        return;
+
+    }
+
+
+    const users =
+        getUsers();
+
+
+    const exists =
+        users.some(function(user){
+
+            return (
+                user.email.toLowerCase() ===
+                email.toLowerCase()
+            );
+
+        });
+
+
+    if(exists){
+
+        showMessage(
+            "ეს ელფოსტა უკვე რეგისტრირებულია."
+        );
+
+        return;
+
+    }
+
+
+    const newUser = {
+
+        id:Date.now(),
+
+        name:name,
+
+        email:email,
+
+        phone:phone,
+
+        password:password
+
+    };
+
+
+    users.push(newUser);
+
+    saveUsers(users);
+
+
+    currentUser = {
+
+        id:newUser.id,
+
+        name:newUser.name,
+
+        email:newUser.email,
+
+        phone:newUser.phone
+
+    };
+
+
+    localStorage.setItem(
+        "yourHomeCurrentUser",
+        JSON.stringify(currentUser)
+    );
+
+
+    updateAccountButton();
+
+
+    loginModal.classList.remove("active");
+
+
+    inputs.forEach(function(input){
+
+        input.value = "";
+
+    });
+
+
+    showMessage(
+        "🎉 ანგარიში წარმატებით შეიქმნა!"
+    );
+
+});
+
+
+/* LOGIN */
+
+document
+.getElementById("fakeLogin")
+.addEventListener("click",function(){
+
+    const inputs =
+        document
+        .getElementById("loginForm")
+        .querySelectorAll("input");
+
+
+    const login =
+        inputs[0].value.trim();
+
+    const password =
+        inputs[1].value;
+
+
+    if(!login || !password){
+
+        showMessage(
+            "გთხოვთ შეავსოთ ორივე ველი."
+        );
+
+        return;
+
+    }
+
+
+    const users =
+        getUsers();
+
+
+    const user =
+        users.find(function(item){
+
+            return (
+                item.email.toLowerCase() ===
+                login.toLowerCase() ||
+                item.phone === login
+            );
+
+        });
+
+
+    if(!user){
+
+        showMessage(
+            "მომხმარებელი ვერ მოიძებნა."
+        );
+
+        return;
+
+    }
+
+
+    if(user.password !== password){
+
+        showMessage(
+            "პაროლი არასწორია."
+        );
+
+        return;
+
+    }
+
+
+    currentUser = {
+
+        id:user.id,
+
+        name:user.name,
+
+        email:user.email,
+
+        phone:user.phone
+
+    };
+
+
+    localStorage.setItem(
+        "yourHomeCurrentUser",
+        JSON.stringify(currentUser)
+    );
+
+
+    updateAccountButton();
+
+
+    loginModal.classList.remove("active");
+
+
+    inputs.forEach(function(input){
+
+        input.value = "";
+
+    });
+
+
+    showMessage(
+        "👋 კეთილი იყოს თქვენი დაბრუნება, " +
+        user.name + "!"
+    );
+
+});
+
+
+/* ADD LISTING ONLY FOR LOGGED USERS */
+
+function openAddPageWithLogin(){
+
+    if(!currentUser){
+
+        loginModal.classList.add("active");
+
+        showMessage(
+            "განცხადების დასამატებლად ჯერ უნდა შეხვიდეთ ანგარიშში."
+        );
+
+        return;
+
+    }
+
+
+    openAddPage();
+
+}
+
+
+document
+.getElementById("addButton")
+.addEventListener(
+    "click",
+    openAddPageWithLogin
+);
+
+
+document
+.getElementById("ctaButton")
+.addEventListener(
+    "click",
+    openAddPageWithLogin
+);
+
+
+document
+.getElementById("backButton")
+.addEventListener(
+    "click",
+    closeAddPage
+);
+
+
+document
+.getElementById("cancelButton")
+.addEventListener(
+    "click",
+    closeAddPage
+);
+
+
+/* FORGOT PASSWORD */
+
+document
+.getElementById("forgotPassword")
+.addEventListener("click",function(){
+
+    showMessage(
+        "პაროლის აღდგენის ფუნქცია შემდეგ ეტაპზე დაემატება."
+    );
+
+});
+
+
+/* FACEBOOK */
+
+document
+.getElementById("fakeFacebook")
+.addEventListener("click",function(){
+
+    showMessage(
+        "Facebook-ით შესვლა შემდეგ ეტაპზე დაემატება."
+    );
+
+});
+
+
 /* PUBLISH */
 
 document
 .getElementById("publishButton")
 .addEventListener("click",function(){
+
+    if(!currentUser){
+
+        loginModal.classList.add("active");
+
+        showMessage(
+            "განცხადების დასამატებლად საჭიროა ანგარიშში შესვლა."
+        );
+
+        return;
+
+    }
+
 
     const property =
         document
@@ -3026,135 +3505,6 @@ document
 
     showMessage(
         "ფორმა მზად არის! რეალური გამოქვეყნება შემდეგ ეტაპზე დაემატება."
-    );
-
-});
-
-
-/* LOGIN MODAL */
-
-const loginModal =
-    document.getElementById("loginModal");
-
-const loginButton =
-    document.getElementById("loginButton");
-
-const loginClose =
-    document.getElementById("loginClose");
-
-
-loginButton.addEventListener("click",function(){
-
-    loginModal.classList.add("active");
-
-});
-
-
-loginClose.addEventListener("click",function(){
-
-    loginModal.classList.remove("active");
-
-});
-
-
-loginModal.addEventListener("click",function(event){
-
-    if(event.target === loginModal){
-
-        loginModal.classList.remove("active");
-
-    }
-
-});
-
-
-/* LOGIN / REGISTER TABS */
-
-document
-.querySelectorAll(".login-tab")
-.forEach(function(tab){
-
-    tab.addEventListener("click",function(){
-
-        document
-        .querySelectorAll(".login-tab")
-        .forEach(function(item){
-
-            item.classList.remove("active");
-
-        });
-
-
-        document
-        .querySelectorAll(".login-form")
-        .forEach(function(form){
-
-            form.classList.remove("active");
-
-        });
-
-
-        this.classList.add("active");
-
-
-        const selected =
-            this.dataset.loginTab;
-
-
-        document
-        .getElementById(
-            selected === "login"
-            ? "loginForm"
-            : "registerForm"
-        )
-        .classList.add("active");
-
-    });
-
-});
-
-
-/* DEMO LOGIN BUTTONS */
-
-document
-.getElementById("fakeLogin")
-.addEventListener("click",function(){
-
-    showMessage(
-        "შესვლის ფუნქცია შემდეგ ეტაპზე გააქტიურდება."
-    );
-
-});
-
-
-document
-.getElementById("fakeRegister")
-.addEventListener("click",function(){
-
-    showMessage(
-        "რეგისტრაციის ფუნქცია შემდეგ ეტაპზე გააქტიურდება."
-    );
-
-});
-
-
-document
-.getElementById("forgotPassword")
-.addEventListener("click",function(){
-
-    showMessage(
-        "პაროლის აღდგენა შემდეგ ეტაპზე დაემატება."
-    );
-
-});
-
-
-document
-.getElementById("fakeFacebook")
-.addEventListener("click",function(){
-
-    showMessage(
-        "Facebook-ით შესვლა შემდეგ ეტაპზე დაემატება."
     );
 
 });
