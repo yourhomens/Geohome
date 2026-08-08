@@ -169,3 +169,8 @@ document.addEventListener("DOMContentLoaded", function () {
    7. ავტომატურ წამოწევას
    8. ადმინისტრატორის პანელს
 */
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
