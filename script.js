@@ -1642,15 +1642,12 @@ function propertyLabel(type) {
 async function loadListings() {
 
     try {
-
+        // დროებით ამოღებულია .eq("status", "published") ფილტრი, 
+        // რომ ბაზაში არსებული ყველა განცხადება გამოჩნდეს და უსასრულო ჩატვირთვა არ ჰქონდეს
         const result =
             await supabaseClient
                 .from("listings")
                 .select("*")
-                .eq(
-                    "status",
-                    "published"
-                )
                 .order(
                     "created_at",
                     {
@@ -2890,4 +2887,5 @@ document.addEventListener(
 
     }
 );
+
 
