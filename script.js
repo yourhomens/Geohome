@@ -1642,8 +1642,6 @@ function propertyLabel(type) {
 async function loadListings() {
 
     try {
-        // დროებით ამოღებულია .eq("status", "published") ფილტრი, 
-        // რომ ბაზაში არსებული ყველა განცხადება გამოჩნდეს და უსასრულო ჩატვირთვა არ ჰქონდეს
         const result =
             await supabaseClient
                 .from("listings")
@@ -1662,10 +1660,6 @@ async function loadListings() {
                 result.error
             );
 
-            showMessage(
-                "განცხადებების ჩატვირთვა ვერ მოხერხდა."
-            );
-
             return;
         }
 
@@ -1677,10 +1671,6 @@ async function loadListings() {
     } catch (error) {
 
         console.error(error);
-
-        showMessage(
-            "განცხადებების ჩატვირთვა ვერ მოხერხდა."
-        );
 
     }
 }
@@ -2868,24 +2858,20 @@ document.addEventListener(
     "DOMContentLoaded",
     async function () {
 
-        await loadCurrentUser();
+        try {
+            await loadCurrentUser();
+        } catch (e) {
+            console.error("Auth error:", e);
+        }
 
-        await loadListings();
-
-        const searchBox =
-            document.querySelector(
-                ".search-box"
-            );
-
-        if (searchBox) {
-
-            searchBox.scrollIntoView({
-                behavior: "smooth"
-            });
-
+        try {
+            await loadListings();
+        } catch (e) {
+            console.error("Listings error:", e);
         }
 
     }
 );
+
 
 
