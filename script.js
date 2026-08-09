@@ -428,13 +428,6 @@ if (registerSubmit) {
 
             try {
 
-                /*
-                 * IMPORTANT:
-                 * ელფოსტის დადასტურების შემდეგ
-                 * მომხმარებელი დაბრუნდება პირდაპირ
-                 * Your Home-ის რეალურ მისამართზე.
-                 */
-
                 const result =
                     await supabaseClient.auth.signUp({
 
@@ -2882,5 +2875,19 @@ document.addEventListener(
 
         await loadListings();
 
+        const searchBox =
+            document.querySelector(
+                ".search-box"
+            );
+
+        if (searchBox) {
+
+            searchBox.scrollIntoView({
+                behavior: "smooth"
+            });
+
+        }
+
     }
 );
+
