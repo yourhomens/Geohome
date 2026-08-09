@@ -14,6 +14,9 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
     "sb_publishable__CQ1qg7_KizhMzPKDaD3tA_TQq6AzsM";
 
+const SUPABASE_SITE_URL =
+    "https://yourhomens.github.io/Geohome/";
+
 const supabaseClient =
     window.supabase.createClient(
         SUPABASE_URL,
@@ -425,6 +428,13 @@ if (registerSubmit) {
 
             try {
 
+                /*
+                 * IMPORTANT:
+                 * ელფოსტის დადასტურების შემდეგ
+                 * მომხმარებელი დაბრუნდება პირდაპირ
+                 * Your Home-ის რეალურ მისამართზე.
+                 */
+
                 const result =
                     await supabaseClient.auth.signUp({
 
@@ -433,6 +443,9 @@ if (registerSubmit) {
                         password: password,
 
                         options: {
+
+                            emailRedirectTo:
+                                SUPABASE_SITE_URL,
 
                             data: {
 
@@ -448,6 +461,11 @@ if (registerSubmit) {
 
 
                 if (result.error) {
+
+                    console.error(
+                        "REGISTER ERROR:",
+                        result.error
+                    );
 
                     showMessage(
                         result.error.message
@@ -641,7 +659,7 @@ if (googleLogin) {
                             options: {
 
                                 redirectTo:
-                                    window.location.origin
+                                    SUPABASE_SITE_URL
 
                             }
 
@@ -711,7 +729,7 @@ if (forgotPassword) {
                             email,
                             {
                                 redirectTo:
-                                    window.location.origin
+                                    SUPABASE_SITE_URL
                             }
                         );
 
