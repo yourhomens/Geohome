@@ -1,1 +1,145 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <title>განცხადების დამატება - Geohome</title>
+    <!-- Supabase კლიენტის ბიბლიოთეკა -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f9; padding: 20px; }
+        .form-container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background: #28a745; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
+        button:hover { background: #218838; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>ახალი განცხადების დამატება</h2>
+    <form id="listingForm">
+        <div class="form-group">
+            <label>გარიგების ტიპი</label>
+            <select id="dealType" required>
+                <option value="rent">ქირავდება</option>
+                <option value="sale">იყიდება</option>
+            </select>
+        </div>
+
+        <div class="form-group">ذ
+            <label>ქონების ტიპი</label>
+            <select id="propertyType" required>
+                <option value="apartment">ბინა</option>
+                <option value="house">სახლი</option>
+                <option value="commercial">კომერციული</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>ქალაქი / უბანი</label>
+            <input type="text" id="city" placeholder="მაგ: თბილისი, ვაკე" required>
+        </div>
+
+        <div class="form-group">
+            <label>მისამართი</label>
+            <input type="text" id="address" placeholder="ქუჩის სახელი და ნომერი">
+        </div>
+
+        <div class="form-group">
+            <label>ოთახების რაოდენობა</label>
+            <input type="number" id="rooms" placeholder="მაგ: 3">
+        </div>
+
+        <div class="form-group">
+            <label>ფასი</label>
+            <input type="number" id="price" placeholder="ფასი" required>
+        </div>
+
+        <div class="form-group">
+            <label>აღწერა</label>
+            <textarea id="description" rows="4" placeholder="დეტალური აღწერა..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>სურათები (შეგიძლია აირჩიო რამდენიმე)</label>
+            <input type="file" id="images" multiple accept="image/*">
+        </div>
+
+        <button type="submit">განცხადების გამოქვეყნება</button>
+    </form>
+</div>
+
+<script>
+    // ჩასვი შენი Supabase URL და Anon Key
+    const SUPABASE_URL = 'შენი_სუპაბეის_ურლი';
+    const SUPABASE_ANON_KEY = 'შენი_სუპაბეის_ანონ_ქეი';
+    
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    document.getElementById('listingForm').addEventListener('submit async', async (e) => {
+        e.preventDefault();
+
+        // 1. შევამოწმოთ არის თუ არა მომხმარებელი ავტორიზებული
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (!user) {
+            alert('გთხოვთ გაიაროთ ავტორიზაცია (სისტემაში შესვლა)!');
+            return;
+        }
+
+        const imageFiles = document.getElementById('images').files;
+        let imageUrls = [];
+
+        // 2. სურათების ატვირთვა Supabase Storage-ში
+        for (let i = 0; i < imageFiles.length; i++) {
+            const file = imageFiles[i];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${user.id}/${Math.random()}.${fileExt}`;
+
+            const { data, error } = await supabaseClient.storage
+                .from('listings')
+                .upload(fileName, file);
+
+            if (error) {
+                alert('შეცდომა სურათის ატვირთვისას: ' + error.message);
+                return;
+            }
+
+            // მივიღოთ ატვირთული ფოტოს საჯარო ლინკი
+            const { data: publicUrlData } = supabaseClient.storage
+                .from('listings')
+                .getPublicUrl(fileName);
+
+            imageUrls.push(publicUrlData.publicUrl);
+        }
+
+        // 3. მონაცემების შენახვა listings ცხრილში
+        const { error: insertError } = await supabaseClient
+            .from('listings')
+            .insert([
+                {
+                    user_id: user.id,
+                    deal_type: document.getElementById('dealType').value,
+                    property_type: document.getElementById('propertyType').value,
+                    city: document.getElementById('city').value,
+                    address: document.getElementById('address').value,
+                    rooms: parseInt(document.getElementById('rooms').value) || null,
+                    price: parseFloat(document.getElementById('price').value),
+                    description: document.getElementById('description').value,
+                    images: imageUrls
+                }
+            ]);
+
+        if (insertError) {
+            alert('შეცდომა განცხადების შენახვისას: ' + insertError.message);
+        } else {
+            alert('განცხადება წარმატებით გამოიცადა!');
+            document.getElementById('listingForm').reset();
+        }
+    });
+</script>
+
+</body>
+</html>
 
