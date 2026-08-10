@@ -2457,7 +2457,7 @@ document
 
                 options:{
                     redirectTo:
-                        window.location.origin
+                        window.location.origin + "/Geohome/"
                 }
 
             });
@@ -2475,6 +2475,60 @@ document
 );
 
 
+/* =========================
+   PASSWORD RESET
+========================= */
+
+document
+.getElementById("forgotPassword")
+.addEventListener(
+    "click",
+    async function(){
+
+        const email =
+            document.getElementById("loginEmail")
+            .value.trim()
+            .toLowerCase();
+
+
+        if(!email){
+
+            showMessage(
+                "ჯერ შეიყვანეთ ელფოსტა."
+            );
+
+            return;
+
+        }
+
+
+        const result =
+            await supabaseClient.auth.resetPasswordForEmail(
+                email,
+                {
+                    redirectTo:
+                        window.location.origin + "/Geohome/"
+                }
+            );
+
+
+        if(result.error){
+
+            showMessage(
+                result.error.message
+            );
+
+            return;
+
+        }
+
+
+        showMessage(
+            "პაროლის აღდგენის ბმული გამოგზავნილია ელფოსტაზე."
+        );
+
+    }
+);
 /* =========================
    PASSWORD RESET
 ========================= */
