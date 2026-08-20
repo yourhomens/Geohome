@@ -1079,6 +1079,10 @@ footer a{
     display:flex;
 }
 
+.password-reset-modal{
+    z-index:6000;
+}
+
 .login-box{
     width:100%;
     max-width:430px;
@@ -1160,7 +1164,8 @@ footer a{
     display:block;
 }
 
-.login-form label{
+.login-form label,
+.password-reset-form label{
     display:block;
     font-size:13px;
     font-weight:600;
@@ -1168,7 +1173,8 @@ footer a{
     margin-top:13px;
 }
 
-.login-form input{
+.login-form input,
+.password-reset-form input{
     width:100%;
     padding:12px 13px;
     border:1px solid var(--border);
@@ -2237,7 +2243,7 @@ id="listingCodeTop">
 
 <div class="login-box">
 
-<button class="login-close" id="loginClose">
+<button class="login-close" id="loginClose" type="button">
 ×
 </button>
 
@@ -2258,13 +2264,15 @@ id="listingCodeTop">
 
 <button
 class="login-tab active"
-data-login-tab="login">
+data-login-tab="login"
+type="button">
 ავტორიზაცია
 </button>
 
 <button
 class="login-tab"
-data-login-tab="register">
+data-login-tab="register"
+type="button">
 რეგისტრაცია
 </button>
 
@@ -2293,7 +2301,8 @@ placeholder="შეიყვანეთ პაროლი">
 
 <button
 class="login-submit"
-id="loginSubmit">
+id="loginSubmit"
+type="button">
 ავტორიზაცია
 </button>
 
@@ -2356,7 +2365,8 @@ placeholder="გაიმეორეთ პაროლი">
 
 <button
 class="login-submit"
-id="registerSubmit">
+id="registerSubmit"
+type="button">
 რეგისტრაცია
 </button>
 
@@ -2376,9 +2386,73 @@ type="button">
 
 <button
 class="social-login"
-id="googleLogin">
+id="googleLogin"
+type="button">
 Google-ით გაგრძელება
 </button>
+
+</div>
+
+</div>
+
+
+<!-- PASSWORD RESET MODAL -->
+
+<div
+class="login-modal password-reset-modal"
+id="passwordResetModal">
+
+<div class="login-box">
+
+<button
+class="login-close"
+id="passwordResetClose"
+type="button">
+×
+</button>
+
+<div class="login-logo">
+<span>YOUR</span> HOME
+</div>
+
+<h2>
+ახალი პაროლის შექმნა
+</h2>
+
+<p class="login-subtitle">
+შეიყვანეთ ახალი პაროლი თქვენი ანგარიშისთვის
+</p>
+
+<div class="password-reset-form">
+
+<label>
+ახალი პაროლი
+</label>
+
+<input
+type="password"
+id="newPassword"
+placeholder="მინიმუმ 6 სიმბოლო"
+autocomplete="new-password">
+
+<label>
+გაიმეორეთ ახალი პაროლი
+</label>
+
+<input
+type="password"
+id="newPassword2"
+placeholder="გაიმეორეთ პაროლი"
+autocomplete="new-password">
+
+<button
+class="login-submit"
+id="updatePasswordButton"
+type="button">
+პაროლის შეცვლა
+</button>
+
+</div>
 
 </div>
 
@@ -2423,6 +2497,7 @@ let editingListingId = null;
 let existingPhotoUrls = [];
 let removedPhotoUrls = [];
 let addPageOrigin = "home";
+let passwordRecoveryActive = false;
 
 
 /* =========================
@@ -2845,7 +2920,7 @@ function closeLogin(){
 
 function setLoginTab(type){
 
-    document
+    loginModal
     .querySelectorAll(
         ".login-tab"
     )
@@ -2860,7 +2935,7 @@ function setLoginTab(type){
     });
 
 
-    document
+    loginModal
     .querySelectorAll(
         ".login-form"
     )
@@ -2873,15 +2948,22 @@ function setLoginTab(type){
     });
 
 
-    document
-    .getElementById(
-        type === "login"
-        ? "loginForm"
-        : "registerForm"
-    )
-    .classList.add(
-        "active"
-    );
+    const targetForm =
+        loginModal
+        .querySelector(
+            type === "login"
+            ? "#loginForm"
+            : "#registerForm"
+        );
+
+
+    if(targetForm){
+
+        targetForm.classList.add(
+            "active"
+        );
+
+    }
 
 }
 
@@ -2913,7 +2995,7 @@ loginModal.addEventListener(
 );
 
 
-document
+loginModal
 .querySelectorAll(
     ".login-tab"
 )
@@ -3423,7 +3505,7 @@ document
 
 
 /* =========================
-   PASSWORD RESET
+   PASSWORD RESET EMAIL
 ========================= */
 
 document
@@ -3444,15 +3526,30 @@ document
             .toLowerCase();
 
 
-        if(!email){
+        if(
+            !email ||
+            !email.includes("@")
+        ){
 
             showMessage(
-                "ჯერ შეიყვანეთ ელფოსტა."
+                "ჯერ შეიყვანეთ სწორი ელფოსტა."
             );
 
             return;
 
         }
+
+
+        const button =
+            this;
+
+
+        button.disabled =
+            true;
+
+
+        button.textContent =
+            "იგზავნება...";
 
 
         const result =
@@ -3467,11 +3564,42 @@ document
             );
 
 
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "დაგავიწყდათ პაროლი?";
+
+
         if(result.error){
 
-            showMessage(
-                result.error.message
+            console.error(
+                result.error
             );
+
+
+            if(
+                result.error.message
+                .toLowerCase()
+                .includes(
+                    "rate"
+                )
+            ){
+
+                showMessage(
+                    "აღდგენის წერილი ცოტა ხნის წინ უკვე გაიგზავნა. ცოტა ხანი მოიცადეთ და ისევ სცადეთ."
+                );
+
+            }else{
+
+                showMessage(
+                    "შეცდომა: " +
+                    result.error.message
+                );
+
+            }
+
 
             return;
 
@@ -3479,7 +3607,323 @@ document
 
 
         showMessage(
-            "პაროლის აღდგენის ბმული გამოგზავნილია ელფოსტაზე."
+            "✅ პაროლის აღდგენის ბმული გამოგზავნილია ელფოსტაზე. შეამოწმეთ Inbox და Spam."
+        );
+
+    }
+);
+
+
+/* =========================
+   NEW PASSWORD MODAL
+========================= */
+
+const passwordResetModal =
+    document.getElementById(
+        "passwordResetModal"
+    );
+
+
+function openPasswordResetModal(){
+
+    closeLogin();
+
+    passwordResetModal
+    .classList
+    .add(
+        "active"
+    );
+
+
+    document.body
+    .style
+    .overflow =
+        "hidden";
+
+
+    setTimeout(
+        function(){
+
+            document
+            .getElementById(
+                "newPassword"
+            )
+            .focus();
+
+        },
+        100
+    );
+
+}
+
+
+function closePasswordResetModal(){
+
+    passwordResetModal
+    .classList
+    .remove(
+        "active"
+    );
+
+
+    document.body
+    .style
+    .overflow =
+        "";
+
+}
+
+
+function clearPasswordResetFields(){
+
+    document
+    .getElementById(
+        "newPassword"
+    )
+    .value = "";
+
+
+    document
+    .getElementById(
+        "newPassword2"
+    )
+    .value = "";
+
+}
+
+
+function cleanAuthUrl(){
+
+    try{
+
+        window.history
+        .replaceState(
+            {},
+            document.title,
+            APP_URL
+        );
+
+    }catch(error){
+
+        console.log(
+            error
+        );
+
+    }
+
+}
+
+
+document
+.getElementById(
+    "passwordResetClose"
+)
+.addEventListener(
+    "click",
+    async function(){
+
+        if(
+            passwordRecoveryActive
+        ){
+
+            const answer =
+                confirm(
+                    "გსურთ პაროლის შეცვლის გაუქმება?"
+                );
+
+
+            if(!answer){
+
+                return;
+
+            }
+
+
+            passwordRecoveryActive =
+                false;
+
+
+            closePasswordResetModal();
+
+            clearPasswordResetFields();
+
+            cleanAuthUrl();
+
+
+            await supabaseClient
+            .auth
+            .signOut();
+
+
+            showMessage(
+                "პაროლის შეცვლა გაუქმდა."
+            );
+
+            return;
+
+        }
+
+
+        closePasswordResetModal();
+
+    }
+);
+
+
+document
+.getElementById(
+    "updatePasswordButton"
+)
+.addEventListener(
+    "click",
+    async function(){
+
+        const password =
+            document
+            .getElementById(
+                "newPassword"
+            )
+            .value;
+
+
+        const password2 =
+            document
+            .getElementById(
+                "newPassword2"
+            )
+            .value;
+
+
+        if(
+            password.length <
+            6
+        ){
+
+            showMessage(
+                "ახალი პაროლი მინიმუმ 6 სიმბოლოს უნდა შეიცავდეს."
+            );
+
+            return;
+
+        }
+
+
+        if(
+            password !==
+            password2
+        ){
+
+            showMessage(
+                "პაროლები ერთმანეთს არ ემთხვევა."
+            );
+
+            return;
+
+        }
+
+
+        const button =
+            this;
+
+
+        button.disabled =
+            true;
+
+
+        button.textContent =
+            "ინახება...";
+
+
+        const result =
+            await supabaseClient
+            .auth
+            .updateUser({
+
+                password:
+                    password
+
+            });
+
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "პაროლის შეცვლა";
+
+
+        if(result.error){
+
+            console.error(
+                result.error
+            );
+
+
+            showMessage(
+                "პაროლის შეცვლა ვერ მოხერხდა: " +
+                result.error.message
+            );
+
+
+            return;
+
+        }
+
+
+        passwordRecoveryActive =
+            false;
+
+
+        clearPasswordResetFields();
+
+        closePasswordResetModal();
+
+        cleanAuthUrl();
+
+
+        const signOutResult =
+            await supabaseClient
+            .auth
+            .signOut();
+
+
+        if(
+            signOutResult.error
+        ){
+
+            console.error(
+                signOutResult.error
+            );
+
+        }
+
+
+        currentUser =
+            null;
+
+
+        updateLoginButton();
+
+        showHomePage();
+
+
+        setTimeout(
+            function(){
+
+                openLogin();
+
+                setLoginTab(
+                    "login"
+                );
+
+            },
+            200
+        );
+
+
+        showMessage(
+            "✅ პაროლი წარმატებით შეიცვალა. ახლა შედით ახალი პაროლით."
         );
 
     }
@@ -3508,8 +3952,25 @@ supabaseClient
 
         if(
             event ===
+            "PASSWORD_RECOVERY"
+        ){
+
+            passwordRecoveryActive =
+                true;
+
+
+            openPasswordResetModal();
+
+            return;
+
+        }
+
+
+        if(
+            event ===
             "SIGNED_IN" &&
-            currentUser
+            currentUser &&
+            !passwordRecoveryActive
         ){
 
             closeLogin();
@@ -3521,6 +3982,12 @@ supabaseClient
             event ===
             "SIGNED_OUT"
         ){
+
+            currentUser =
+                null;
+
+
+            updateLoginButton();
 
             showHomePage();
 
