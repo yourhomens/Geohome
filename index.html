@@ -116,11 +116,51 @@ nav button{
     border-radius:8px;
 }
 
+.account-wrap{
+    position:relative;
+}
+
 .login{
     border:0;
     background:none;
     font-weight:600;
     padding:10px;
+}
+
+.account-menu{
+    display:none;
+    position:absolute;
+    right:0;
+    top:46px;
+    width:210px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:7px;
+    box-shadow:0 12px 30px rgba(0,0,0,.13);
+    z-index:2000;
+}
+
+.account-menu.active{
+    display:block;
+}
+
+.account-menu button{
+    width:100%;
+    border:0;
+    background:#fff;
+    text-align:left;
+    padding:12px;
+    border-radius:8px;
+    font-size:14px;
+}
+
+.account-menu button:hover{
+    background:var(--olive-light);
+}
+
+.account-menu .logout-menu-button{
+    color:var(--danger);
 }
 
 .add-button{
@@ -609,6 +649,86 @@ nav button{
     padding:13px 25px;
     border-radius:8px;
     font-weight:700;
+}
+
+
+/* =========================
+   MY LISTINGS
+========================= */
+
+.my-listings-page{
+    display:none;
+    max-width:1200px;
+    margin:45px auto;
+    padding:0 25px 70px;
+}
+
+.my-listings-page.active{
+    display:block;
+}
+
+.my-listings-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:26px;
+}
+
+.my-listings-header h1{
+    font-size:31px;
+}
+
+.my-listings-header-actions{
+    display:flex;
+    gap:8px;
+}
+
+.my-new-listing{
+    border:0;
+    background:var(--olive);
+    color:#fff;
+    padding:11px 15px;
+    border-radius:8px;
+    font-weight:700;
+}
+
+.my-listing-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:14px;
+    overflow:hidden;
+}
+
+.my-listing-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:7px;
+    padding:12px;
+    border-top:1px solid var(--border);
+}
+
+.my-listing-actions button{
+    border:1px solid var(--border);
+    background:#fff;
+    padding:10px 6px;
+    border-radius:8px;
+    font-weight:700;
+    font-size:13px;
+}
+
+.my-listing-actions .edit-listing{
+    color:var(--olive-dark);
+}
+
+.my-listing-actions .delete-listing{
+    color:var(--danger);
+}
+
+.my-code{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:8px;
 }
 
 
@@ -1189,6 +1309,14 @@ footer a{
     .login{
         padding:8px 4px;
         font-size:12px;
+        max-width:110px;
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+    }
+
+    .account-menu{
+        right:-40px;
     }
 
     .add-button{
@@ -1266,6 +1394,23 @@ footer a{
         font-size:12px;
     }
 
+    .my-listings-header{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .my-listings-header h1{
+        font-size:27px;
+    }
+
+    .my-listings-header-actions{
+        width:100%;
+    }
+
+    .my-listings-header-actions button{
+        flex:1;
+    }
+
 }
 
 </style>
@@ -1309,9 +1454,30 @@ YOUR <span>HOME</span>
 <option value="ru">🇷🇺 RU</option>
 </select>
 
+
+<div class="account-wrap" id="accountWrap">
+
 <button class="login" id="loginButton">
 შესვლა
 </button>
+
+<div class="account-menu" id="accountMenu">
+
+<button id="myListingsButton" type="button">
+🏠 ჩემი განცხადებები
+</button>
+
+<button
+class="logout-menu-button"
+id="logoutButton"
+type="button">
+გასვლა
+</button>
+
+</div>
+
+</div>
+
 
 <button class="add-button" id="addButton">
 + განცხადება
@@ -1509,7 +1675,7 @@ placeholder="მაგ. 100000">
 
 <div class="add-header">
 
-<h1>
+<h1 id="addPageTitle">
 განცხადების დამატება
 </h1>
 
@@ -1923,6 +2089,35 @@ placeholder="დაწერეთ დამატებითი ინფო�
 </section>
 
 
+<!-- MY LISTINGS -->
+
+<section class="my-listings-page" id="myListingsPage">
+
+<div class="my-listings-header">
+
+<h1>
+ჩემი განცხადებები
+</h1>
+
+<div class="my-listings-header-actions">
+
+<button class="back-button" id="myListingsBack">
+← მთავარი
+</button>
+
+<button class="my-new-listing" id="myNewListing">
++ განცხადება
+</button>
+
+</div>
+
+</div>
+
+<div class="cards" id="myListingsCards"></div>
+
+</section>
+
+
 <footer>
 
 <div class="footer-grid">
@@ -2222,6 +2417,12 @@ let currentUser = null;
 let searchType = "sale";
 let selectedFiles = [];
 let currentListings = [];
+let currentMyListings = [];
+
+let editingListingId = null;
+let existingPhotoUrls = [];
+let removedPhotoUrls = [];
+let addPageOrigin = "home";
 
 
 /* =========================
@@ -2256,12 +2457,54 @@ const homePage =
 const addPage =
     document.getElementById("addPage");
 
+const myListingsPage =
+    document.getElementById(
+        "myListingsPage"
+    );
 
-function openAddPage(){
 
-    homePage.classList.add("hidden");
+function showHomePage(){
 
-    addPage.classList.add("active");
+    addPage.classList.remove(
+        "active"
+    );
+
+    myListingsPage.classList.remove(
+        "active"
+    );
+
+    homePage.classList.remove(
+        "hidden"
+    );
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+function openAddPage(origin){
+
+    addPageOrigin =
+        origin || "home";
+
+
+    homePage.classList.add(
+        "hidden"
+    );
+
+
+    myListingsPage.classList.remove(
+        "active"
+    );
+
+
+    addPage.classList.add(
+        "active"
+    );
+
 
     window.scrollTo({
         top:0,
@@ -2273,9 +2516,71 @@ function openAddPage(){
 
 function closeAddPage(){
 
-    addPage.classList.remove("active");
+    addPage.classList.remove(
+        "active"
+    );
 
-    homePage.classList.remove("hidden");
+
+    if(
+        addPageOrigin ===
+        "my"
+    ){
+
+        homePage.classList.add(
+            "hidden"
+        );
+
+        myListingsPage.classList.add(
+            "active"
+        );
+
+        loadMyListings();
+
+    }else{
+
+        myListingsPage.classList.remove(
+            "active"
+        );
+
+        homePage.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+async function openMyListingsPage(){
+
+    if(!requireLogin()){
+
+        return;
+
+    }
+
+
+    homePage.classList.add(
+        "hidden"
+    );
+
+    addPage.classList.remove(
+        "active"
+    );
+
+    myListingsPage.classList.add(
+        "active"
+    );
+
+
+    await loadMyListings();
+
 
     window.scrollTo({
         top:0,
@@ -2292,20 +2597,27 @@ function closeAddPage(){
 async function loadCurrentUser(){
 
     const result =
-        await supabaseClient.auth.getUser();
+        await supabaseClient
+        .auth
+        .getUser();
+
 
     if(result.error){
 
-        console.error(result.error);
+        console.error(
+            result.error
+        );
 
         currentUser = null;
 
     }else{
 
         currentUser =
-            result.data.user || null;
+            result.data.user ||
+            null;
 
     }
+
 
     updateLoginButton();
 
@@ -2315,17 +2627,24 @@ async function loadCurrentUser(){
 function updateLoginButton(){
 
     const button =
-        document.getElementById("loginButton");
+        document.getElementById(
+            "loginButton"
+        );
+
 
     if(currentUser){
 
         const name =
-            currentUser.user_metadata?.name;
+            currentUser
+            .user_metadata
+            ?.name;
+
 
         button.textContent =
             name ||
             currentUser.email ||
             "ანგარიში";
+
 
         button.style.color =
             "var(--olive-dark)";
@@ -2338,108 +2657,49 @@ function updateLoginButton(){
         button.style.color =
             "";
 
+
+        document
+        .getElementById(
+            "accountMenu"
+        )
+        .classList
+        .remove(
+            "active"
+        );
+
     }
 
 }
 
 
 /* =========================
-   LOGIN MODAL
+   ACCOUNT MENU
 ========================= */
 
-const loginModal =
-    document.getElementById("loginModal");
-
-
-function openLogin(){
-
-    loginModal.classList.add("active");
-
-    setLoginTab("login");
-
-}
-
-
-function closeLogin(){
-
-    loginModal.classList.remove("active");
-
-}
-
-
-function setLoginTab(type){
-
-    document
-    .querySelectorAll(".login-tab")
-    .forEach(function(tab){
-
-        tab.classList.toggle(
-            "active",
-            tab.dataset.loginTab === type
-        );
-
-    });
-
-
-    document
-    .querySelectorAll(".login-form")
-    .forEach(function(form){
-
-        form.classList.remove("active");
-
-    });
-
-
-    document
-    .getElementById(
-        type === "login"
-        ? "loginForm"
-        : "registerForm"
-    )
-    .classList.add("active");
-
-}
+const accountMenu =
+    document.getElementById(
+        "accountMenu"
+    );
 
 
 document
-.getElementById("loginButton")
+.getElementById(
+    "loginButton"
+)
 .addEventListener(
     "click",
-    async function(){
+    function(event){
+
+        event.stopPropagation();
+
 
         if(currentUser){
 
-            const answer =
-                confirm(
-                    "გსურთ ანგარიშიდან გამოსვლა?"
-                );
-
-            if(answer){
-
-                const result =
-                    await supabaseClient
-                    .auth
-                    .signOut();
-
-                if(result.error){
-
-                    showMessage(
-                        result.error.message
-                    );
-
-                    return;
-
-                }
-
-                currentUser = null;
-
-                updateLoginButton();
-
-                showMessage(
-                    "ანგარიშიდან გამოხვედით."
-                );
-
-            }
+            accountMenu
+            .classList
+            .toggle(
+                "active"
+            );
 
         }else{
 
@@ -2452,7 +2712,184 @@ document
 
 
 document
-.getElementById("loginClose")
+.getElementById(
+    "accountMenu"
+)
+.addEventListener(
+    "click",
+    function(event){
+
+        event.stopPropagation();
+
+    }
+);
+
+
+document.addEventListener(
+    "click",
+    function(){
+
+        accountMenu
+        .classList
+        .remove(
+            "active"
+        );
+
+    }
+);
+
+
+document
+.getElementById(
+    "myListingsButton"
+)
+.addEventListener(
+    "click",
+    async function(){
+
+        accountMenu
+        .classList
+        .remove(
+            "active"
+        );
+
+
+        await openMyListingsPage();
+
+    }
+);
+
+
+document
+.getElementById(
+    "logoutButton"
+)
+.addEventListener(
+    "click",
+    async function(){
+
+        const answer =
+            confirm(
+                "გსურთ ანგარიშიდან გამოსვლა?"
+            );
+
+
+        if(!answer){
+
+            return;
+
+        }
+
+
+        const result =
+            await supabaseClient
+            .auth
+            .signOut();
+
+
+        if(result.error){
+
+            showMessage(
+                result.error.message
+            );
+
+            return;
+
+        }
+
+
+        currentUser = null;
+
+        updateLoginButton();
+
+        showHomePage();
+
+
+        showMessage(
+            "ანგარიშიდან გამოხვედით."
+        );
+
+    }
+);
+
+
+/* =========================
+   LOGIN MODAL
+========================= */
+
+const loginModal =
+    document.getElementById(
+        "loginModal"
+    );
+
+
+function openLogin(){
+
+    loginModal.classList.add(
+        "active"
+    );
+
+    setLoginTab("login");
+
+}
+
+
+function closeLogin(){
+
+    loginModal.classList.remove(
+        "active"
+    );
+
+}
+
+
+function setLoginTab(type){
+
+    document
+    .querySelectorAll(
+        ".login-tab"
+    )
+    .forEach(function(tab){
+
+        tab.classList.toggle(
+            "active",
+            tab.dataset.loginTab ===
+            type
+        );
+
+    });
+
+
+    document
+    .querySelectorAll(
+        ".login-form"
+    )
+    .forEach(function(form){
+
+        form.classList.remove(
+            "active"
+        );
+
+    });
+
+
+    document
+    .getElementById(
+        type === "login"
+        ? "loginForm"
+        : "registerForm"
+    )
+    .classList.add(
+        "active"
+    );
+
+}
+
+
+document
+.getElementById(
+    "loginClose"
+)
 .addEventListener(
     "click",
     closeLogin
@@ -2463,7 +2900,10 @@ loginModal.addEventListener(
     "click",
     function(event){
 
-        if(event.target === loginModal){
+        if(
+            event.target ===
+            loginModal
+        ){
 
             closeLogin();
 
@@ -2474,7 +2914,9 @@ loginModal.addEventListener(
 
 
 document
-.querySelectorAll(".login-tab")
+.querySelectorAll(
+    ".login-tab"
+)
 .forEach(function(tab){
 
     tab.addEventListener(
@@ -2496,38 +2938,54 @@ document
 ========================= */
 
 document
-.getElementById("registerSubmit")
+.getElementById(
+    "registerSubmit"
+)
 .addEventListener(
     "click",
     async function(){
 
         const name =
             document
-            .getElementById("registerName")
+            .getElementById(
+                "registerName"
+            )
             .value
             .trim();
 
+
         const email =
             document
-            .getElementById("registerEmail")
+            .getElementById(
+                "registerEmail"
+            )
             .value
             .trim()
             .toLowerCase();
 
+
         const phone =
             document
-            .getElementById("registerPhone")
+            .getElementById(
+                "registerPhone"
+            )
             .value
             .trim();
 
+
         const password =
             document
-            .getElementById("registerPassword")
+            .getElementById(
+                "registerPassword"
+            )
             .value;
+
 
         const password2 =
             document
-            .getElementById("registerPassword2")
+            .getElementById(
+                "registerPassword2"
+            )
             .value;
 
 
@@ -2567,7 +3025,10 @@ document
         }
 
 
-        if(password.length < 6){
+        if(
+            password.length <
+            6
+        ){
 
             showMessage(
                 "პაროლი მინიმუმ 6 სიმბოლოს უნდა შეიცავდეს."
@@ -2578,7 +3039,10 @@ document
         }
 
 
-        if(password !== password2){
+        if(
+            password !==
+            password2
+        ){
 
             showMessage(
                 "პაროლები ერთმანეთს არ ემთხვევა."
@@ -2589,9 +3053,13 @@ document
         }
 
 
-        const button = this;
+        const button =
+            this;
 
-        button.disabled = true;
+
+        button.disabled =
+            true;
+
 
         button.textContent =
             "რეგისტრაცია...";
@@ -2621,7 +3089,9 @@ document
             });
 
 
-        button.disabled = false;
+        button.disabled =
+            false;
+
 
         button.textContent =
             "რეგისტრაცია";
@@ -2646,9 +3116,11 @@ document
             currentUser =
                 result.data.session.user;
 
+
             updateLoginButton();
 
             closeLogin();
+
 
             showMessage(
                 "რეგისტრაცია წარმატებით დასრულდა ❤️"
@@ -2656,9 +3128,12 @@ document
 
         }else{
 
-            currentUser = null;
+            currentUser =
+                null;
+
 
             updateLoginButton();
+
 
             showMessage(
                 "რეგისტრაცია დასრულდა. გთხოვთ დაადასტუროთ ელფოსტა. თუ წერილი არ მოვიდა, დააჭირეთ „დადასტურების წერილის ხელახლა გაგზავნას“."
@@ -2675,14 +3150,18 @@ document
 ========================= */
 
 document
-.getElementById("resendConfirmation")
+.getElementById(
+    "resendConfirmation"
+)
 .addEventListener(
     "click",
     async function(){
 
         const email =
             document
-            .getElementById("registerEmail")
+            .getElementById(
+                "registerEmail"
+            )
             .value
             .trim()
             .toLowerCase();
@@ -2702,9 +3181,13 @@ document
         }
 
 
-        const button = this;
+        const button =
+            this;
 
-        button.disabled = true;
+
+        button.disabled =
+            true;
+
 
         button.textContent =
             "იგზავნება...";
@@ -2720,14 +3203,18 @@ document
                 email:email,
 
                 options:{
+
                     emailRedirectTo:
                         APP_URL
+
                 }
 
             });
 
 
-        button.disabled = false;
+        button.disabled =
+            false;
+
 
         button.textContent =
             "დადასტურების წერილის ხელახლა გაგზავნა";
@@ -2743,7 +3230,9 @@ document
             if(
                 result.error.message
                 .toLowerCase()
-                .includes("rate")
+                .includes(
+                    "rate"
+                )
             ){
 
                 showMessage(
@@ -2758,6 +3247,7 @@ document
                 );
 
             }
+
 
             return;
 
@@ -2777,25 +3267,35 @@ document
 ========================= */
 
 document
-.getElementById("loginSubmit")
+.getElementById(
+    "loginSubmit"
+)
 .addEventListener(
     "click",
     async function(){
 
         const email =
             document
-            .getElementById("loginEmail")
+            .getElementById(
+                "loginEmail"
+            )
             .value
             .trim()
             .toLowerCase();
 
+
         const password =
             document
-            .getElementById("loginPassword")
+            .getElementById(
+                "loginPassword"
+            )
             .value;
 
 
-        if(!email || !password){
+        if(
+            !email ||
+            !password
+        ){
 
             showMessage(
                 "გთხოვთ შეავსოთ ყველა ველი."
@@ -2806,9 +3306,13 @@ document
         }
 
 
-        const button = this;
+        const button =
+            this;
 
-        button.disabled = true;
+
+        button.disabled =
+            true;
+
 
         button.textContent =
             "შესვლა...";
@@ -2820,12 +3324,15 @@ document
             .signInWithPassword({
 
                 email:email,
+
                 password:password
 
             });
 
 
-        button.disabled = false;
+        button.disabled =
+            false;
+
 
         button.textContent =
             "ავტორიზაცია";
@@ -2845,17 +3352,23 @@ document
         currentUser =
             result.data.user;
 
+
         updateLoginButton();
 
         closeLogin();
 
 
         document
-        .getElementById("loginEmail")
+        .getElementById(
+            "loginEmail"
+        )
         .value = "";
 
+
         document
-        .getElementById("loginPassword")
+        .getElementById(
+            "loginPassword"
+        )
         .value = "";
 
 
@@ -2872,7 +3385,9 @@ document
 ========================= */
 
 document
-.getElementById("googleLogin")
+.getElementById(
+    "googleLogin"
+)
 .addEventListener(
     "click",
     async function(){
@@ -2882,11 +3397,14 @@ document
             .auth
             .signInWithOAuth({
 
-                provider:"google",
+                provider:
+                    "google",
 
                 options:{
+
                     redirectTo:
                         APP_URL
+
                 }
 
             });
@@ -2909,14 +3427,18 @@ document
 ========================= */
 
 document
-.getElementById("forgotPassword")
+.getElementById(
+    "forgotPassword"
+)
 .addEventListener(
     "click",
     async function(){
 
         const email =
             document
-            .getElementById("loginEmail")
+            .getElementById(
+                "loginEmail"
+            )
             .value
             .trim()
             .toLowerCase();
@@ -2980,15 +3502,27 @@ supabaseClient
             session?.user ||
             null;
 
+
         updateLoginButton();
 
 
         if(
-            event === "SIGNED_IN" &&
+            event ===
+            "SIGNED_IN" &&
             currentUser
         ){
 
             closeLogin();
+
+        }
+
+
+        if(
+            event ===
+            "SIGNED_OUT"
+        ){
+
+            showHomePage();
 
         }
 
@@ -3006,15 +3540,90 @@ function requireLogin(){
 
         openLogin();
 
+
         showMessage(
             "გაიარეთ ავტორიზაცია ან დარეგისტრირდით."
         );
+
 
         return false;
 
     }
 
+
     return true;
+
+}
+
+
+/* =========================
+   FORM HELPERS
+========================= */
+
+function setSelectedChoice(
+    selector,
+    value
+){
+
+    document
+    .querySelectorAll(
+        selector
+    )
+    .forEach(
+        function(button){
+
+            button
+            .classList
+            .toggle(
+                "selected",
+                button.dataset.value ===
+                value
+            );
+
+        }
+    );
+
+}
+
+
+function startNewListing(
+    origin
+){
+
+    if(!requireLogin()){
+
+        return;
+
+    }
+
+
+    resetListingForm();
+
+
+    addPageOrigin =
+        origin ||
+        "home";
+
+
+    document
+    .getElementById(
+        "addPageTitle"
+    )
+    .textContent =
+        "განცხადების დამატება";
+
+
+    document
+    .getElementById(
+        "publishButton"
+    )
+    .textContent =
+        "გამოქვეყნება →";
+
+
+    openAddPage(
+        addPageOrigin
+    );
 
 }
 
@@ -3024,50 +3633,92 @@ function requireLogin(){
 ========================= */
 
 document
-.getElementById("addButton")
+.getElementById(
+    "addButton"
+)
 .addEventListener(
     "click",
     function(){
 
-        if(requireLogin()){
-
-            openAddPage();
-
-        }
+        startNewListing(
+            "home"
+        );
 
     }
 );
 
 
 document
-.getElementById("ctaButton")
+.getElementById(
+    "ctaButton"
+)
 .addEventListener(
     "click",
     function(){
 
-        if(requireLogin()){
-
-            openAddPage();
-
-        }
+        startNewListing(
+            "home"
+        );
 
     }
 );
 
 
 document
-.getElementById("backButton")
+.getElementById(
+    "myNewListing"
+)
 .addEventListener(
     "click",
-    closeAddPage
+    function(){
+
+        startNewListing(
+            "my"
+        );
+
+    }
 );
 
 
 document
-.getElementById("cancelButton")
+.getElementById(
+    "backButton"
+)
 .addEventListener(
     "click",
-    closeAddPage
+    function(){
+
+        resetListingForm();
+
+        closeAddPage();
+
+    }
+);
+
+
+document
+.getElementById(
+    "cancelButton"
+)
+.addEventListener(
+    "click",
+    function(){
+
+        resetListingForm();
+
+        closeAddPage();
+
+    }
+);
+
+
+document
+.getElementById(
+    "myListingsBack"
+)
+.addEventListener(
+    "click",
+    showHomePage
 );
 
 
@@ -3079,32 +3730,23 @@ document
 .querySelectorAll(
     "#dealChoices .choice"
 )
-.forEach(function(button){
+.forEach(
+    function(button){
 
-    button.addEventListener(
-        "click",
-        function(){
+        button.addEventListener(
+            "click",
+            function(){
 
-            document
-            .querySelectorAll(
-                "#dealChoices .choice"
-            )
-            .forEach(function(item){
-
-                item.classList.remove(
-                    "selected"
+                setSelectedChoice(
+                    "#dealChoices .choice",
+                    this.dataset.value
                 );
 
-            });
+            }
+        );
 
-            this.classList.add(
-                "selected"
-            );
-
-        }
-    );
-
-});
+    }
+);
 
 
 /* =========================
@@ -3115,32 +3757,23 @@ document
 .querySelectorAll(
     "#ownerChoices .choice"
 )
-.forEach(function(button){
+.forEach(
+    function(button){
 
-    button.addEventListener(
-        "click",
-        function(){
+        button.addEventListener(
+            "click",
+            function(){
 
-            document
-            .querySelectorAll(
-                "#ownerChoices .choice"
-            )
-            .forEach(function(item){
-
-                item.classList.remove(
-                    "selected"
+                setSelectedChoice(
+                    "#ownerChoices .choice",
+                    this.dataset.value
                 );
 
-            });
+            }
+        );
 
-            this.classList.add(
-                "selected"
-            );
-
-        }
-    );
-
-});
+    }
+);
 
 
 /* =========================
@@ -3151,20 +3784,22 @@ document
 .querySelectorAll(
     ".contact-choice"
 )
-.forEach(function(button){
+.forEach(
+    function(button){
 
-    button.addEventListener(
-        "click",
-        function(){
+        button.addEventListener(
+            "click",
+            function(){
 
-            this.classList.toggle(
-                "selected"
-            );
+                this.classList.toggle(
+                    "selected"
+                );
 
-        }
-    );
+            }
+        );
 
-});
+    }
+);
 
 
 /* =========================
@@ -3176,20 +3811,22 @@ const photoInput =
         "photoInput"
     );
 
+
 const photoPreview =
     document.getElementById(
         "photoPreview"
     );
 
 
-photoInput
-.addEventListener(
+photoInput.addEventListener(
     "change",
     function(){
 
         const newFiles =
             Array
-            .from(this.files)
+            .from(
+                this.files
+            )
             .filter(
                 function(file){
 
@@ -3203,6 +3840,7 @@ photoInput
 
 
         if(
+            existingPhotoUrls.length +
             selectedFiles.length +
             newFiles.length >
             10
@@ -3212,7 +3850,10 @@ photoInput
                 "მაქსიმუმ 10 ფოტოს დამატება შეგიძლიათ."
             );
 
-            this.value = "";
+
+            this.value =
+                "";
+
 
             return;
 
@@ -3227,7 +3868,9 @@ photoInput
 
         renderPhotos();
 
-        this.value = "";
+
+        this.value =
+            "";
 
     }
 );
@@ -3235,7 +3878,89 @@ photoInput
 
 function renderPhotos(){
 
-    photoPreview.innerHTML = "";
+    photoPreview.innerHTML =
+        "";
+
+
+    existingPhotoUrls
+    .forEach(
+        function(
+            url,
+            index
+        ){
+
+            const item =
+                document
+                .createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "preview-item";
+
+
+            item.innerHTML =
+            `
+            <img
+            src="${escapeHtml(url)}"
+            alt="ქონების ფოტო">
+
+            <span
+            data-existing-index="${index}">
+            ×
+            </span>
+            `;
+
+
+            photoPreview
+            .appendChild(
+                item
+            );
+
+
+            item
+            .querySelector("span")
+            .addEventListener(
+                "click",
+                function(){
+
+                    const photo =
+                        existingPhotoUrls[
+                            Number(
+                                this.dataset
+                                .existingIndex
+                            )
+                        ];
+
+
+                    if(photo){
+
+                        removedPhotoUrls
+                        .push(
+                            photo
+                        );
+
+                    }
+
+
+                    existingPhotoUrls
+                    .splice(
+                        Number(
+                            this.dataset
+                            .existingIndex
+                        ),
+                        1
+                    );
+
+
+                    renderPhotos();
+
+                }
+            );
+
+        }
+    );
 
 
     selectedFiles
@@ -3270,7 +3995,7 @@ function renderPhotos(){
                     alt="ქონების ფოტო">
 
                     <span
-                    data-index="${index}">
+                    data-new-index="${index}">
                     ×
                     </span>
                     `;
@@ -3291,10 +4016,12 @@ function renderPhotos(){
                             selectedFiles
                             .splice(
                                 Number(
-                                    this.dataset.index
+                                    this.dataset
+                                    .newIndex
                                 ),
                                 1
                             );
+
 
                             renderPhotos();
 
@@ -3304,7 +4031,8 @@ function renderPhotos(){
                 };
 
 
-            reader.readAsDataURL(
+            reader
+            .readAsDataURL(
                 file
             );
 
@@ -3320,23 +4048,27 @@ function renderPhotos(){
 
 function setSearchType(type){
 
-    searchType = type;
+    searchType =
+        type;
 
 
     document
     .querySelectorAll(
         ".tabs button"
     )
-    .forEach(function(button){
+    .forEach(
+        function(button){
 
-        button
-        .classList
-        .toggle(
-            "active",
-            button.dataset.type === type
-        );
+            button
+            .classList
+            .toggle(
+                "active",
+                button.dataset.type ===
+                type
+            );
 
-    });
+        }
+    );
 
 
     filterProperties();
@@ -3352,21 +4084,22 @@ document
 .querySelectorAll(
     ".tabs button"
 )
-.forEach(function(button){
+.forEach(
+    function(button){
 
-    button
-    .addEventListener(
-        "click",
-        function(){
+        button.addEventListener(
+            "click",
+            function(){
 
-            setSearchType(
-                this.dataset.type
-            );
+                setSearchType(
+                    this.dataset.type
+                );
 
-        }
-    );
+            }
+        );
 
-});
+    }
+);
 
 
 /* =========================
@@ -3377,40 +4110,54 @@ document
 .querySelectorAll(
     "nav button"
 )
-.forEach(function(button){
+.forEach(
+    function(button){
 
-    button
-    .addEventListener(
-        "click",
-        function(){
+        button.addEventListener(
+            "click",
+            function(){
 
-            if(this.dataset.type){
-
-                setSearchType(
+                if(
                     this.dataset.type
-                );
+                ){
+
+                    showHomePage();
 
 
-                document
-                .querySelector(
-                    ".search-box"
-                )
-                .scrollIntoView({
-                    behavior:"smooth"
-                });
+                    setSearchType(
+                        this.dataset.type
+                    );
 
-            }else{
 
-                showMessage(
-                    "ეს განყოფილება მალე დაემატება."
-                );
+                    setTimeout(
+                        function(){
+
+                            document
+                            .querySelector(
+                                ".search-box"
+                            )
+                            .scrollIntoView({
+                                behavior:
+                                    "smooth"
+                            });
+
+                        },
+                        50
+                    );
+
+                }else{
+
+                    showMessage(
+                        "ეს განყოფილება მალე დაემატება."
+                    );
+
+                }
 
             }
+        );
 
-        }
-    );
-
-});
+    }
+);
 
 
 /* =========================
@@ -3421,45 +4168,45 @@ document
 .querySelectorAll(
     "footer a[data-type]"
 )
-.forEach(function(link){
+.forEach(
+    function(link){
 
-    link.addEventListener(
-        "click",
-        function(event){
+        link.addEventListener(
+            "click",
+            function(event){
 
-            event.preventDefault();
-
-            setSearchType(
-                this.dataset.type
-            );
+                event.preventDefault();
 
 
-            homePage
-            .classList
-            .remove(
-                "hidden"
-            );
+                showHomePage();
 
 
-            addPage
-            .classList
-            .remove(
-                "active"
-            );
+                setSearchType(
+                    this.dataset.type
+                );
 
 
-            document
-            .querySelector(
-                ".search-box"
-            )
-            .scrollIntoView({
-                behavior:"smooth"
-            });
+                setTimeout(
+                    function(){
 
-        }
-    );
+                        document
+                        .querySelector(
+                            ".search-box"
+                        )
+                        .scrollIntoView({
+                            behavior:
+                                "smooth"
+                        });
 
-});
+                    },
+                    50
+                );
+
+            }
+        );
+
+    }
+);
 
 
 /* =========================
@@ -3470,51 +4217,56 @@ document
 .querySelectorAll(
     ".filter"
 )
-.forEach(function(button){
+.forEach(
+    function(button){
 
-    button.addEventListener(
-        "click",
-        function(){
+        button.addEventListener(
+            "click",
+            function(){
 
-            const active =
-                this
-                .classList
-                .contains(
-                    "active"
+                const active =
+                    this
+                    .classList
+                    .contains(
+                        "active"
+                    );
+
+
+                document
+                .querySelectorAll(
+                    ".filter"
+                )
+                .forEach(
+                    function(item){
+
+                        item
+                        .classList
+                        .remove(
+                            "active"
+                        );
+
+                    }
                 );
 
 
-            document
-            .querySelectorAll(
-                ".filter"
-            )
-            .forEach(function(item){
+                if(!active){
 
-                item
-                .classList
-                .remove(
-                    "active"
-                );
+                    this
+                    .classList
+                    .add(
+                        "active"
+                    );
 
-            });
+                }
 
 
-            if(!active){
-
-                this
-                .classList
-                .add(
-                    "active"
-                );
+                filterProperties();
 
             }
+        );
 
-            filterProperties();
-
-        }
-    );
-
-});
+    }
+);
 
 
 /* =========================
@@ -3599,7 +4351,8 @@ function filterProperties(){
         : null;
 
 
-    let visible = 0;
+    let visible =
+        0;
 
 
     const cards =
@@ -3609,106 +4362,111 @@ function filterProperties(){
         );
 
 
-    cards
-    .forEach(function(card){
+    cards.forEach(
+        function(card){
 
-        const typeMatch =
-            card.dataset.type ===
-            searchType;
-
-
-        const propertyMatch =
-            property === "all" ||
-            card.dataset.property ===
-            property;
+            const typeMatch =
+                card.dataset.type ===
+                searchType;
 
 
-        const cardRooms =
-            Number(
-                card.dataset.rooms ||
-                0
-            );
+            const propertyMatch =
+                property ===
+                "all" ||
+                card.dataset.property ===
+                property;
 
 
-        const roomMatch =
-            rooms === "all" ||
-            cardRooms ===
-            Number(rooms) ||
-            (
-                rooms === "5" &&
-                cardRooms >= 5
-            );
+            const cardRooms =
+                Number(
+                    card.dataset.rooms ||
+                    0
+                );
 
 
-        const locationText =
-            (
-                card.dataset.location ||
-                ""
-            )
-            .toLowerCase();
+            const roomMatch =
+                rooms === "all" ||
+                cardRooms ===
+                Number(rooms) ||
+                (
+                    rooms === "5" &&
+                    cardRooms >= 5
+                );
 
 
-        const locationMatch =
-            !location ||
-            locationText.includes(
-                location
-            );
+            const locationText =
+                (
+                    card.dataset.location ||
+                    ""
+                )
+                .toLowerCase();
 
 
-        const cardPrice =
-            Number(
-                card.dataset.price ||
-                0
-            );
+            const locationMatch =
+                !location ||
+                locationText
+                .includes(
+                    location
+                );
 
 
-        const priceMatch =
-            !price ||
-            cardPrice <= price;
+            const cardPrice =
+                Number(
+                    card.dataset.price ||
+                    0
+                );
 
 
-        const tags =
-            card.dataset.tags ||
-            "";
+            const priceMatch =
+                !price ||
+                cardPrice <=
+                price;
 
 
-        const filterMatch =
-            !filter ||
-            card.dataset.property ===
-            filter ||
-            tags.includes(
-                filter
-            );
+            const tags =
+                card.dataset.tags ||
+                "";
 
 
-        if(
-            typeMatch &&
-            propertyMatch &&
-            roomMatch &&
-            locationMatch &&
-            priceMatch &&
-            filterMatch
-        ){
+            const filterMatch =
+                !filter ||
+                card.dataset.property ===
+                filter ||
+                tags.includes(
+                    filter
+                );
 
-            card
-            .classList
-            .remove(
-                "hidden"
-            );
 
-            visible++;
+            if(
+                typeMatch &&
+                propertyMatch &&
+                roomMatch &&
+                locationMatch &&
+                priceMatch &&
+                filterMatch
+            ){
 
-        }else{
+                card
+                .classList
+                .remove(
+                    "hidden"
+                );
 
-            card
-            .classList
-            .add(
-                "hidden"
-            );
+
+                visible++;
+
+            }else{
+
+                card
+                .classList
+                .add(
+                    "hidden"
+                );
+
+            }
 
         }
-
-    });
+    );
 
 
     if(
@@ -3769,15 +4527,17 @@ document
         .querySelectorAll(
             ".filter"
         )
-        .forEach(function(item){
+        .forEach(
+            function(item){
 
-            item
-            .classList
-            .remove(
-                "active"
-            );
+                item
+                .classList
+                .remove(
+                    "active"
+                );
 
-        });
+            }
+        );
 
 
         filterProperties();
@@ -3868,35 +4628,50 @@ function formatPrice(
         );
 
 
-    if(currency === "GEL"){
+    if(
+        currency ===
+        "GEL"
+    ){
 
-        return number + " ₾";
-
-    }
-
-
-    if(currency === "EUR"){
-
-        return "€" + number;
+        return number +
+            " ₾";
 
     }
 
 
-    return "$" + number;
+    if(
+        currency ===
+        "EUR"
+    ){
+
+        return "€" +
+            number;
+
+    }
+
+
+    return "$" +
+        number;
 
 }
 
 
 function dealLabel(type){
 
-    if(type === "rent"){
+    if(
+        type ===
+        "rent"
+    ){
 
         return "ქირავდება";
 
     }
 
 
-    if(type === "pledge"){
+    if(
+        type ===
+        "pledge"
+    ){
 
         return "გირავდება";
 
@@ -3977,16 +4752,33 @@ function escapeHtml(value){
     return String(
         value || ""
     )
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
 
-function normalizePhoneDigits(phone){
+function normalizePhoneDigits(
+    phone
+){
 
     let digits =
         String(
@@ -3999,17 +4791,117 @@ function normalizePhoneDigits(phone){
 
 
     if(
-        digits.length === 9 &&
-        digits.startsWith("5")
+        digits.length ===
+        9 &&
+        digits.startsWith(
+            "5"
+        )
     ){
 
         digits =
-            "995" + digits;
+            "995" +
+            digits;
 
     }
 
 
     return digits;
+
+}
+
+
+/* =========================
+   STORAGE HELPERS
+========================= */
+
+function storagePathFromUrl(
+    url
+){
+
+    const marker =
+        "/storage/v1/object/public/listings/";
+
+
+    const position =
+        String(url)
+        .indexOf(
+            marker
+        );
+
+
+    if(
+        position ===
+        -1
+    ){
+
+        return null;
+
+    }
+
+
+    let path =
+        String(url)
+        .substring(
+            position +
+            marker.length
+        );
+
+
+    path =
+        path.split("?")[0];
+
+
+    try{
+
+        return decodeURIComponent(
+            path
+        );
+
+    }catch(error){
+
+        return path;
+
+    }
+
+}
+
+
+async function removePhotoUrls(
+    urls
+){
+
+    const paths =
+        (urls || [])
+        .map(
+            storagePathFromUrl
+        )
+        .filter(Boolean);
+
+
+    if(!paths.length){
+
+        return;
+
+    }
+
+
+    const result =
+        await supabaseClient
+        .storage
+        .from("listings")
+        .remove(
+            paths
+        );
+
+
+    if(result.error){
+
+        console.error(
+            "ფოტოების წაშლის შეცდომა:",
+            result.error
+        );
+
+    }
 
 }
 
@@ -4022,6 +4914,7 @@ const listingModal =
     document.getElementById(
         "listingModal"
     );
+
 
 const listingDetailContent =
     document.getElementById(
@@ -4101,7 +4994,9 @@ function openListing(listing){
     if(
         phone &&
         (
-            methods.includes("call") ||
+            methods.includes(
+                "call"
+            ) ||
             !methods.length
         )
     ){
@@ -4206,7 +5101,10 @@ function openListing(listing){
 
         ? photos
         .map(
-            function(photo,index){
+            function(
+                photo,
+                index
+            ){
 
                 return `
                 <img
@@ -4253,13 +5151,11 @@ function openListing(listing){
 
         ${
             thumbnails
-
             ? `
             <div class="listing-thumbnails">
                 ${thumbnails}
             </div>
             `
-
             : ""
         }
 
@@ -4280,9 +5176,7 @@ function openListing(listing){
                 ${
                     listing.deal_type ===
                     "rent"
-
                     ? " / თვე"
-
                     : ""
                 }
 
@@ -4304,13 +5198,11 @@ function openListing(listing){
             <div class="listing-detail-address">
 
                 📍
-                ${
-                    escapeHtml(
-                        address ||
-                        listing.city ||
-                        ""
-                    )
-                }
+                ${escapeHtml(
+                    address ||
+                    listing.city ||
+                    ""
+                )}
 
             </div>
 
@@ -4320,58 +5212,49 @@ function openListing(listing){
 
                 ${
                     listing.rooms
-
                     ? `
                     <div class="listing-feature">
                         <strong>ოთახები</strong>
                         ${escapeHtml(listing.rooms)}
                     </div>
                     `
-
                     : ""
                 }
 
 
                 ${
                     listing.bedrooms
-
                     ? `
                     <div class="listing-feature">
                         <strong>საძინებლები</strong>
                         ${
                             listing.bedrooms ===
                             "studio"
-
                             ? "სტუდიო"
-
                             : escapeHtml(
                                 listing.bedrooms
                             )
                         }
                     </div>
                     `
-
                     : ""
                 }
 
 
                 ${
                     listing.area
-
                     ? `
                     <div class="listing-feature">
                         <strong>ფართობი</strong>
                         ${escapeHtml(listing.area)} მ²
                     </div>
                     `
-
                     : ""
                 }
 
 
                 ${
                     listing.floor
-
                     ? `
                     <div class="listing-feature">
                         <strong>სართული</strong>
@@ -4386,14 +5269,12 @@ function openListing(listing){
                         }
                     </div>
                     `
-
                     : ""
                 }
 
 
                 ${
                     listing.condition
-
                     ? `
                     <div class="listing-feature">
                         <strong>მდგომარეობა</strong>
@@ -4404,7 +5285,6 @@ function openListing(listing){
                         )}
                     </div>
                     `
-
                     : ""
                 }
 
@@ -4416,32 +5296,24 @@ function openListing(listing){
                     undefined &&
                     listing.balconies !==
                     ""
-
                     ? `
                     <div class="listing-feature">
                         <strong>აივნები</strong>
-                        ${escapeHtml(
-                            listing.balconies
-                        )}
+                        ${escapeHtml(listing.balconies)}
                     </div>
                     `
-
                     : ""
                 }
 
 
                 ${
                     listing.balcony_area
-
                     ? `
                     <div class="listing-feature">
                         <strong>აივნის ფართობი</strong>
-                        ${escapeHtml(
-                            listing.balcony_area
-                        )} მ²
+                        ${escapeHtml(listing.balcony_area)} მ²
                     </div>
                     `
-
                     : ""
                 }
 
@@ -4499,32 +5371,26 @@ function openListing(listing){
 
             <div class="listing-contact-name">
 
-                ${
-                    escapeHtml(
-                        listing.contact_name ||
-                        seller
-                    )
-                }
+                ${escapeHtml(
+                    listing.contact_name ||
+                    seller
+                )}
 
             </div>
 
 
             <div class="listing-contact-role">
-
                 ${seller}
-
             </div>
 
 
             ${
                 phone
-
                 ? `
                 <div class="listing-contact-phone">
                     ${escapeHtml(phone)}
                 </div>
                 `
-
                 : ""
             }
 
@@ -4534,7 +5400,6 @@ function openListing(listing){
 
             ${
                 listing.listing_code
-
                 ? `
                 <div class="listing-code-bottom">
 
@@ -4548,7 +5413,6 @@ function openListing(listing){
 
                 </div>
                 `
-
                 : ""
             }
 
@@ -4572,8 +5436,7 @@ function openListing(listing){
         "hidden";
 
 
-    listingModal
-    .scrollTop =
+    listingModal.scrollTop =
         0;
 
 }
@@ -4634,9 +5497,7 @@ listingDetailContent
         if(mainPhoto){
 
             mainPhoto.src =
-                thumbnail
-                .dataset
-                .photo;
+                thumbnail.dataset.photo;
 
         }
 
@@ -4648,9 +5509,7 @@ listingDetailContent
         .forEach(
             function(item){
 
-                item
-                .classList
-                .remove(
+                item.classList.remove(
                     "active"
                 );
 
@@ -4728,8 +5587,7 @@ document
 );
 
 
-document
-.addEventListener(
+document.addEventListener(
     "keydown",
     function(event){
 
@@ -4759,7 +5617,9 @@ async function loadListings(){
 
     const result =
         await supabaseClient
-        .from("listings")
+        .from(
+            "listings"
+        )
         .select("*")
         .eq(
             "status",
@@ -4791,7 +5651,8 @@ async function loadListings(){
 
 
     currentListings =
-        result.data || [];
+        result.data ||
+        [];
 
 
     renderListings(
@@ -4843,8 +5704,7 @@ function renderListings(
     }
 
 
-    listings
-    .forEach(
+    listings.forEach(
         function(listing){
 
             const card =
@@ -4953,7 +5813,8 @@ function renderListings(
 
 
             card.dataset.price =
-                listing.price || 0;
+                listing.price ||
+                0;
 
 
             card.dataset.tags =
@@ -5070,8 +5931,7 @@ function renderListings(
             `;
 
 
-            container
-            .appendChild(
+            container.appendChild(
                 card
             );
 
@@ -5085,14 +5945,835 @@ function renderListings(
 
 
 /* =========================
+   MY LISTINGS
+========================= */
+
+async function loadMyListings(){
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+
+    const container =
+        document
+        .getElementById(
+            "myListingsCards"
+        );
+
+
+    container.innerHTML =
+    `
+    <div style="
+        grid-column:1/-1;
+        text-align:center;
+        padding:35px;
+        color:var(--muted);
+    ">
+        იტვირთება...
+    </div>
+    `;
+
+
+    const result =
+        await supabaseClient
+        .from(
+            "listings"
+        )
+        .select("*")
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
+
+    if(result.error){
+
+        console.error(
+            result.error
+        );
+
+
+        container.innerHTML =
+        `
+        <div style="
+            grid-column:1/-1;
+            text-align:center;
+            padding:35px;
+            color:var(--danger);
+        ">
+            განცხადებების ჩატვირთვა ვერ მოხერხდა.
+        </div>
+        `;
+
+
+        return;
+
+    }
+
+
+    currentMyListings =
+        result.data ||
+        [];
+
+
+    renderMyListings(
+        currentMyListings
+    );
+
+}
+
+
+function renderMyListings(
+    listings
+){
+
+    const container =
+        document
+        .getElementById(
+            "myListingsCards"
+        );
+
+
+    container.innerHTML =
+        "";
+
+
+    if(!listings.length){
+
+        container.innerHTML =
+        `
+        <div style="
+            grid-column:1/-1;
+            background:#fff;
+            border:1px solid var(--border);
+            border-radius:14px;
+            padding:45px 20px;
+            text-align:center;
+        ">
+
+            <div style="
+                font-size:36px;
+                margin-bottom:10px;
+            ">
+                🏠
+            </div>
+
+            <strong>
+                ჯერ განცხადებები არ გაქვთ
+            </strong>
+
+            <p style="
+                color:var(--muted);
+                margin-top:8px;
+            ">
+                დაამატეთ თქვენი პირველი განცხადება.
+            </p>
+
+        </div>
+        `;
+
+
+        return;
+
+    }
+
+
+    listings.forEach(
+        function(listing){
+
+            const photos =
+                Array.isArray(
+                    listing.photos
+                )
+                ? listing.photos
+                : [];
+
+
+            const firstPhoto =
+                photos.length
+                ? photos[0]
+                : "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80";
+
+
+            const address =
+                [
+                    listing.city,
+                    listing.district
+                ]
+                .filter(Boolean)
+                .join(", ");
+
+
+            const card =
+                document
+                .createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "my-listing-card";
+
+
+            card.dataset.id =
+                listing.id;
+
+
+            card.innerHTML =
+            `
+            <div
+            class="card-image"
+            style="
+                background-image:url('${escapeHtml(firstPhoto)}')
+            ">
+
+                <div class="badge">
+                    ${dealLabel(
+                        listing.deal_type
+                    )}
+                </div>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <div class="price">
+
+                    ${formatPrice(
+                        listing.price,
+                        listing.currency
+                    )}
+
+                </div>
+
+
+                <div class="address">
+
+                    ${escapeHtml(
+                        address
+                    )}
+
+                </div>
+
+
+                <div class="details">
+
+                    ${
+                        listing.rooms
+                        ? `<span>${escapeHtml(listing.rooms)} ოთახი</span>`
+                        : ""
+                    }
+
+                    ${
+                        listing.area
+                        ? `<span>${escapeHtml(listing.area)} მ²</span>`
+                        : ""
+                    }
+
+                    ${
+                        listing.floor
+                        ? `<span>${escapeHtml(listing.floor)} სართული</span>`
+                        : ""
+                    }
+
+                </div>
+
+
+                <div class="my-code">
+
+                    ${
+                        listing.listing_code
+                        ? "კოდი: " +
+                          escapeHtml(
+                              listing.listing_code
+                          )
+                        : ""
+                    }
+
+                    ${
+                        listing.views !==
+                        null &&
+                        listing.views !==
+                        undefined
+                        ? " · ნახვები: " +
+                          escapeHtml(
+                              listing.views
+                          )
+                        : ""
+                    }
+
+                </div>
+
+            </div>
+
+
+            <div class="my-listing-actions">
+
+                <button
+                class="view-listing"
+                data-id="${listing.id}"
+                type="button">
+                    👁 ნახვა
+                </button>
+
+                <button
+                class="edit-listing"
+                data-id="${listing.id}"
+                type="button">
+                    ✏️ რედაქტირება
+                </button>
+
+                <button
+                class="delete-listing"
+                data-id="${listing.id}"
+                type="button">
+                    🗑 წაშლა
+                </button>
+
+            </div>
+            `;
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+document
+.getElementById(
+    "myListingsCards"
+)
+.addEventListener(
+    "click",
+    async function(event){
+
+        const viewButton =
+            event.target.closest(
+                ".view-listing"
+            );
+
+
+        const editButton =
+            event.target.closest(
+                ".edit-listing"
+            );
+
+
+        const deleteButton =
+            event.target.closest(
+                ".delete-listing"
+            );
+
+
+        let id =
+            null;
+
+
+        if(viewButton){
+
+            id =
+                viewButton
+                .dataset
+                .id;
+
+
+            const listing =
+                currentMyListings
+                .find(
+                    function(item){
+
+                        return String(
+                            item.id
+                        ) ===
+                        String(id);
+
+                    }
+                );
+
+
+            if(listing){
+
+                openListing(
+                    listing
+                );
+
+            }
+
+
+            return;
+
+        }
+
+
+        if(editButton){
+
+            id =
+                editButton
+                .dataset
+                .id;
+
+
+            const listing =
+                currentMyListings
+                .find(
+                    function(item){
+
+                        return String(
+                            item.id
+                        ) ===
+                        String(id);
+
+                    }
+                );
+
+
+            if(listing){
+
+                editListing(
+                    listing
+                );
+
+            }
+
+
+            return;
+
+        }
+
+
+        if(deleteButton){
+
+            id =
+                deleteButton
+                .dataset
+                .id;
+
+
+            const listing =
+                currentMyListings
+                .find(
+                    function(item){
+
+                        return String(
+                            item.id
+                        ) ===
+                        String(id);
+
+                    }
+                );
+
+
+            if(listing){
+
+                await deleteListing(
+                    listing
+                );
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================
+   EDIT LISTING
+========================= */
+
+function editListing(
+    listing
+){
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+
+    editingListingId =
+        listing.id;
+
+
+    addPageOrigin =
+        "my";
+
+
+    selectedFiles =
+        [];
+
+
+    existingPhotoUrls =
+        Array.isArray(
+            listing.photos
+        )
+        ? [
+            ...listing.photos
+          ]
+        : [];
+
+
+    removedPhotoUrls =
+        [];
+
+
+    document
+    .getElementById(
+        "addPageTitle"
+    )
+    .textContent =
+        "განცხადების რედაქტირება";
+
+
+    document
+    .getElementById(
+        "publishButton"
+    )
+    .textContent =
+        "ცვლილებების შენახვა";
+
+
+    setSelectedChoice(
+        "#dealChoices .choice",
+        listing.deal_type ||
+        "sale"
+    );
+
+
+    setSelectedChoice(
+        "#ownerChoices .choice",
+        listing.owner_type ||
+        "owner"
+    );
+
+
+    document
+    .getElementById(
+        "listingProperty"
+    )
+    .value =
+        listing.property_type ||
+        "";
+
+
+    document
+    .getElementById(
+        "condition"
+    )
+    .value =
+        listing.condition ||
+        "";
+
+
+    document
+    .getElementById(
+        "listingRooms"
+    )
+    .value =
+        listing.rooms ||
+        "";
+
+
+    document
+    .getElementById(
+        "bedrooms"
+    )
+    .value =
+        listing.bedrooms ||
+        "";
+
+
+    document
+    .getElementById(
+        "floor"
+    )
+    .value =
+        listing.floor ??
+        "";
+
+
+    document
+    .getElementById(
+        "totalFloors"
+    )
+    .value =
+        listing.total_floors ??
+        "";
+
+
+    document
+    .getElementById(
+        "area"
+    )
+    .value =
+        listing.area ??
+        "";
+
+
+    document
+    .getElementById(
+        "balconies"
+    )
+    .value =
+        listing.balconies ??
+        "";
+
+
+    document
+    .getElementById(
+        "balconyArea"
+    )
+    .value =
+        listing.balcony_area ??
+        "";
+
+
+    document
+    .getElementById(
+        "city"
+    )
+    .value =
+        listing.city ||
+        "";
+
+
+    document
+    .getElementById(
+        "district"
+    )
+    .value =
+        listing.district ||
+        "";
+
+
+    document
+    .getElementById(
+        "address"
+    )
+    .value =
+        listing.address ||
+        "";
+
+
+    document
+    .getElementById(
+        "listingPrice"
+    )
+    .value =
+        listing.price ??
+        "";
+
+
+    document
+    .getElementById(
+        "currency"
+    )
+    .value =
+        listing.currency ||
+        "USD";
+
+
+    document
+    .getElementById(
+        "phone"
+    )
+    .value =
+        listing.phone ||
+        "";
+
+
+    document
+    .getElementById(
+        "contactName"
+    )
+    .value =
+        listing.contact_name ||
+        "";
+
+
+    document
+    .getElementById(
+        "description"
+    )
+    .value =
+        listing.description ||
+        "";
+
+
+    const methods =
+        Array.isArray(
+            listing.contact_methods
+        )
+        ? listing.contact_methods
+        : [];
+
+
+    document
+    .querySelectorAll(
+        ".contact-choice"
+    )
+    .forEach(
+        function(button){
+
+            button
+            .classList
+            .toggle(
+                "selected",
+                methods.includes(
+                    button.dataset.value
+                )
+            );
+
+        }
+    );
+
+
+    if(!methods.length){
+
+        const callButton =
+            document
+            .querySelector(
+                '.contact-choice[data-value="call"]'
+            );
+
+
+        if(callButton){
+
+            callButton
+            .classList
+            .add(
+                "selected"
+            );
+
+        }
+
+    }
+
+
+    renderPhotos();
+
+
+    openAddPage(
+        "my"
+    );
+
+}
+
+
+/* =========================
+   DELETE LISTING
+========================= */
+
+async function deleteListing(
+    listing
+){
+
+    const answer =
+        confirm(
+            "ნამდვილად გსურთ ამ განცხადების წაშლა?\n\n" +
+            (
+                listing.listing_code ||
+                ""
+            )
+        );
+
+
+    if(!answer){
+
+        return;
+
+    }
+
+
+    const result =
+        await supabaseClient
+        .from(
+            "listings"
+        )
+        .delete()
+        .eq(
+            "id",
+            listing.id
+        );
+
+
+    if(result.error){
+
+        console.error(
+            result.error
+        );
+
+
+        showMessage(
+            "განცხადების წაშლა ვერ მოხერხდა: " +
+            result.error.message
+        );
+
+
+        return;
+
+    }
+
+
+    if(
+        Array.isArray(
+            listing.photos
+        ) &&
+        listing.photos.length
+    ){
+
+        await removePhotoUrls(
+            listing.photos
+        );
+
+    }
+
+
+    showMessage(
+        "განცხადება წაიშალა."
+    );
+
+
+    await loadListings();
+
+    await loadMyListings();
+
+}
+
+
+/* =========================
    UPLOAD PHOTOS
 ========================= */
 
 async function uploadPhotos(){
 
-    if(!selectedFiles.length){
+    const urls =
+        [
+            ...existingPhotoUrls
+        ];
 
-        return [];
+
+    if(
+        !selectedFiles.length
+    ){
+
+        return urls;
 
     }
 
@@ -5106,12 +6787,10 @@ async function uploadPhotos(){
     }
 
 
-    const urls = [];
-
-
     for(
         let i = 0;
-        i < selectedFiles.length;
+        i <
+        selectedFiles.length;
         i++
     ){
 
@@ -5151,7 +6830,9 @@ async function uploadPhotos(){
         const result =
             await supabaseClient
             .storage
-            .from("listings")
+            .from(
+                "listings"
+            )
             .upload(
                 fileName,
                 file,
@@ -5187,7 +6868,9 @@ async function uploadPhotos(){
         const publicResult =
             supabaseClient
             .storage
-            .from("listings")
+            .from(
+                "listings"
+            )
             .getPublicUrl(
                 fileName
             );
@@ -5208,7 +6891,7 @@ async function uploadPhotos(){
 
 
 /* =========================
-   PUBLISH LISTING
+   PUBLISH / UPDATE LISTING
 ========================= */
 
 document
@@ -5228,6 +6911,15 @@ document
 
         const button =
             this;
+
+
+        const wasEditing =
+            editingListingId !==
+            null;
+
+
+        const editedId =
+            editingListingId;
 
 
         const dealButton =
@@ -5311,7 +7003,8 @@ document
 
         if(
             !price ||
-            Number(price) <= 0
+            Number(price) <=
+            0
         ){
 
             showMessage(
@@ -5339,7 +7032,9 @@ document
 
 
         button.textContent =
-            "იტვირთება...";
+            wasEditing
+            ? "ინახება..."
+            : "იტვირთება...";
 
 
         try{
@@ -5487,7 +7182,9 @@ document
 
 
                 price:
-                    Number(price),
+                    Number(
+                        price
+                    ),
 
 
                 currency:
@@ -5549,14 +7246,40 @@ document
             };
 
 
-            const result =
-                await supabaseClient
-                .from("listings")
-                .insert(
-                    listing
-                )
-                .select()
-                .single();
+            let result;
+
+
+            if(wasEditing){
+
+                result =
+                    await supabaseClient
+                    .from(
+                        "listings"
+                    )
+                    .update(
+                        listing
+                    )
+                    .eq(
+                        "id",
+                        editedId
+                    )
+                    .select()
+                    .single();
+
+            }else{
+
+                result =
+                    await supabaseClient
+                    .from(
+                        "listings"
+                    )
+                    .insert(
+                        listing
+                    )
+                    .select()
+                    .single();
+
+            }
 
 
             if(result.error){
@@ -5573,8 +7296,22 @@ document
             }
 
 
+            if(
+                wasEditing &&
+                removedPhotoUrls.length
+            ){
+
+                await removePhotoUrls(
+                    removedPhotoUrls
+                );
+
+            }
+
+
             showMessage(
-                "🎉 განცხადება წარმატებით გამოქვეყნდა!"
+                wasEditing
+                ? "✅ ცვლილებები წარმატებით შეინახა!"
+                : "🎉 განცხადება წარმატებით გამოქვეყნდა!"
             );
 
 
@@ -5584,9 +7321,19 @@ document
             await loadListings();
 
 
+            if(
+                addPageOrigin ===
+                "my"
+            ){
+
+                await loadMyListings();
+
+            }
+
+
             setTimeout(
                 closeAddPage,
-                1200
+                900
             );
 
         }catch(error){
@@ -5608,7 +7355,9 @@ document
 
 
             button.textContent =
-                "გამოქვეყნება →";
+                editingListingId
+                ? "ცვლილებების შენახვა"
+                : "გამოქვეყნება →";
 
         }
 
@@ -5644,8 +7393,7 @@ function resetListingForm(){
     ];
 
 
-    ids
-    .forEach(
+    ids.forEach(
         function(id){
 
             const element =
@@ -5674,53 +7422,15 @@ function resetListingForm(){
         "USD";
 
 
-    document
-    .querySelectorAll(
-        "#dealChoices .choice"
-    )
-    .forEach(function(button){
-
-        button
-        .classList
-        .remove(
-            "selected"
-        );
-
-    });
-
-
-    document
-    .querySelector(
-        '#dealChoices .choice[data-value="sale"]'
-    )
-    .classList
-    .add(
-        "selected"
+    setSelectedChoice(
+        "#dealChoices .choice",
+        "sale"
     );
 
 
-    document
-    .querySelectorAll(
-        "#ownerChoices .choice"
-    )
-    .forEach(function(button){
-
-        button
-        .classList
-        .remove(
-            "selected"
-        );
-
-    });
-
-
-    document
-    .querySelector(
-        '#ownerChoices .choice[data-value="owner"]'
-    )
-    .classList
-    .add(
-        "selected"
+    setSelectedChoice(
+        "#ownerChoices .choice",
+        "owner"
     );
 
 
@@ -5728,25 +7438,43 @@ function resetListingForm(){
     .querySelectorAll(
         ".contact-choice"
     )
-    .forEach(function(button){
+    .forEach(
+        function(button){
 
-        button
-        .classList
-        .remove(
+            button.classList.remove(
+                "selected"
+            );
+
+        }
+    );
+
+
+    const callButton =
+        document
+        .querySelector(
+            '.contact-choice[data-value="call"]'
+        );
+
+
+    if(callButton){
+
+        callButton.classList.add(
             "selected"
         );
 
-    });
+    }
 
 
-    document
-    .querySelector(
-        '.contact-choice[data-value="call"]'
-    )
-    .classList
-    .add(
-        "selected"
-    );
+    editingListingId =
+        null;
+
+
+    existingPhotoUrls =
+        [];
+
+
+    removedPhotoUrls =
+        [];
 
 
     selectedFiles =
@@ -5759,6 +7487,22 @@ function resetListingForm(){
 
     photoInput.value =
         "";
+
+
+    document
+    .getElementById(
+        "addPageTitle"
+    )
+    .textContent =
+        "განცხადების დამატება";
+
+
+    document
+    .getElementById(
+        "publishButton"
+    )
+    .textContent =
+        "გამოქვეყნება →";
 
 }
 
@@ -5925,9 +7669,7 @@ function changeLanguage(lang){
     }
 
 
-    document
-    .documentElement
-    .lang =
+    document.documentElement.lang =
         lang;
 
 
