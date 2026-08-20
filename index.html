@@ -1978,6 +1978,9 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable__CQ1qg7_KizhMzPKDaD3tA_TQq6AzsM";
 
+const APP_URL =
+"https://yourhomens.github.io/Geohome/";
+
 const supabaseClient =
 window.supabase.createClient(
     SUPABASE_URL,
@@ -2405,6 +2408,10 @@ document
                 password:password,
 
                 options:{
+
+                    emailRedirectTo:
+                        APP_URL,
+
                     data:{
                         name:name,
                         phone:phone
@@ -2583,8 +2590,7 @@ document
 
                 options:{
                     redirectTo:
-                        window.location.origin +
-                        "/Geohome/"
+                        APP_URL
                 }
 
             });
@@ -2638,8 +2644,7 @@ document
                 email,
                 {
                     redirectTo:
-                        window.location.origin +
-                        "/Geohome/"
+                        APP_URL
                 }
             );
 
@@ -2681,6 +2686,16 @@ supabaseClient
 
 
         updateLoginButton();
+
+
+        if(
+            event === "SIGNED_IN" &&
+            currentUser
+        ){
+
+            closeLogin();
+
+        }
 
     }
 );
