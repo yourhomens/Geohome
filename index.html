@@ -321,6 +321,10 @@ nav button{
     transition:.2s;
 }
 
+.property-card{
+    cursor:pointer;
+}
+
 .card.hidden{
     display:none;
 }
@@ -709,6 +713,233 @@ footer a{
 
 
 /* =========================
+   FULL LISTING
+========================= */
+
+.listing-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:4500;
+    background:var(--bg);
+    overflow-y:auto;
+}
+
+.listing-modal.active{
+    display:block;
+}
+
+.listing-detail-wrap{
+    width:100%;
+    max-width:1100px;
+    margin:0 auto;
+    padding:16px 20px 60px;
+}
+
+.listing-detail-top{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:var(--bg);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    padding:10px 0 14px;
+}
+
+.listing-detail-close{
+    border:1px solid var(--border);
+    background:#fff;
+    padding:11px 16px;
+    border-radius:9px;
+    font-weight:700;
+}
+
+.listing-code{
+    color:var(--muted);
+    font-size:14px;
+    font-weight:700;
+}
+
+.listing-gallery{
+    width:100%;
+}
+
+.listing-main-photo{
+    width:100%;
+    height:520px;
+    display:block;
+    object-fit:cover;
+    border-radius:18px;
+    background:#e9e9e9;
+}
+
+.listing-thumbnails{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding:12px 0 4px;
+}
+
+.listing-thumbnail{
+    width:105px;
+    height:78px;
+    flex:0 0 auto;
+    object-fit:cover;
+    border-radius:9px;
+    cursor:pointer;
+    border:2px solid transparent;
+}
+
+.listing-thumbnail.active{
+    border-color:var(--olive);
+}
+
+.listing-info-grid{
+    display:grid;
+    grid-template-columns:minmax(0,2fr) minmax(280px,1fr);
+    gap:24px;
+    margin-top:24px;
+}
+
+.listing-main-info,
+.listing-contact-box{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:24px;
+}
+
+.listing-detail-price{
+    font-size:33px;
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+.listing-detail-title{
+    font-size:26px;
+    line-height:1.3;
+    margin-bottom:9px;
+}
+
+.listing-detail-address{
+    color:var(--muted);
+    margin-bottom:22px;
+    line-height:1.5;
+}
+
+.listing-features{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin:20px 0;
+}
+
+.listing-feature{
+    background:#f7f8f4;
+    border:1px solid var(--border);
+    border-radius:9px;
+    padding:12px;
+}
+
+.listing-feature strong{
+    display:block;
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:5px;
+}
+
+.listing-description{
+    margin-top:25px;
+    padding-top:20px;
+    border-top:1px solid var(--border);
+}
+
+.listing-description h3{
+    margin-bottom:12px;
+}
+
+.listing-description p{
+    color:var(--text);
+    line-height:1.7;
+    white-space:pre-wrap;
+}
+
+.listing-contact-box{
+    height:max-content;
+}
+
+.listing-contact-box h3{
+    margin-bottom:18px;
+}
+
+.listing-contact-name{
+    font-size:17px;
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.listing-contact-role{
+    color:var(--muted);
+    font-size:14px;
+}
+
+.listing-contact-phone{
+    font-size:20px;
+    font-weight:800;
+    margin:16px 0 20px;
+    word-break:break-word;
+}
+
+.contact-action{
+    display:block;
+    width:100%;
+    text-align:center;
+    text-decoration:none;
+    border-radius:9px;
+    padding:13px;
+    margin-top:9px;
+    font-weight:700;
+}
+
+.contact-call{
+    background:var(--olive);
+    color:#fff;
+}
+
+.contact-whatsapp{
+    background:#edf6eb;
+    color:#355c35;
+    border:1px solid #cfe1c9;
+}
+
+.contact-telegram{
+    background:#edf4f8;
+    color:#315469;
+    border:1px solid #d0e0e9;
+}
+
+.contact-viber{
+    background:#f4eff8;
+    color:#65457c;
+    border:1px solid #ddd0e7;
+}
+
+.listing-code-bottom{
+    margin-top:22px;
+    padding-top:15px;
+    border-top:1px solid var(--border);
+    color:var(--muted);
+    font-size:13px;
+}
+
+.listing-code-bottom strong{
+    color:var(--dark);
+}
+
+
+/* =========================
    LOGIN
 ========================= */
 
@@ -902,6 +1133,41 @@ footer a{
 
 }
 
+@media(max-width:750px){
+
+    .listing-detail-wrap{
+        padding:10px 14px 50px;
+    }
+
+    .listing-main-photo{
+        height:310px;
+        border-radius:14px;
+    }
+
+    .listing-info-grid{
+        grid-template-columns:1fr;
+        gap:14px;
+    }
+
+    .listing-main-info,
+    .listing-contact-box{
+        padding:18px;
+    }
+
+    .listing-detail-price{
+        font-size:29px;
+    }
+
+    .listing-detail-title{
+        font-size:21px;
+    }
+
+    .listing-features{
+        grid-template-columns:1fr 1fr;
+    }
+
+}
+
 @media(max-width:600px){
 
     header{
@@ -988,11 +1254,25 @@ footer a{
         font-size:25px;
     }
 
+    .listing-features{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .listing-detail-top{
+        gap:8px;
+    }
+
+    .listing-code{
+        font-size:12px;
+    }
+
 }
+
 </style>
 </head>
 
 <body>
+
 
 <header>
 
@@ -1011,6 +1291,7 @@ YOUR <span>HOME</span>
 
 </div>
 
+
 <nav>
 <button data-type="sale">ყიდვა</button>
 <button data-type="rent">ქირავდება</button>
@@ -1018,6 +1299,7 @@ YOUR <span>HOME</span>
 <button>კომერციული</button>
 <button>ახალი პროექტები</button>
 </nav>
+
 
 <div class="header-right">
 
@@ -1042,6 +1324,7 @@ YOUR <span>HOME</span>
 
 <main id="homePage" class="home-page">
 
+
 <section class="hero">
 
 <div class="hero-content">
@@ -1053,6 +1336,7 @@ YOUR <span>HOME</span>
 <p id="heroSubtitle">
 იყიდე, იქირავე ან იგირავე — მოძებნე შენთვის სასურველი ქონება მარტივად.
 </p>
+
 
 <div class="search-box">
 
@@ -1072,6 +1356,7 @@ YOUR <span>HOME</span>
 
 </div>
 
+
 <div class="search-fields">
 
 <div class="field">
@@ -1084,6 +1369,7 @@ type="text"
 placeholder="ქალაქი, უბანი ან ქუჩა">
 
 </div>
+
 
 <div class="field">
 
@@ -1102,6 +1388,7 @@ placeholder="ქალაქი, უბანი ან ქუჩა">
 
 </div>
 
+
 <div class="field">
 
 <label>ოთახები</label>
@@ -1119,6 +1406,7 @@ placeholder="ქალაქი, უბანი ან ქუჩა">
 
 </div>
 
+
 <div class="field">
 
 <label>ფასი</label>
@@ -1129,6 +1417,7 @@ type="number"
 placeholder="მაგ. 100000">
 
 </div>
+
 
 <button class="search-button" id="searchButton">
 ძებნა
@@ -1358,6 +1647,7 @@ placeholder="მაგ. 100000">
 <input type="number" id="area" placeholder="მაგ. 82">
 </div>
 
+
 <div class="form-group">
 
 <label>აივნების რაოდენობა</label>
@@ -1374,6 +1664,7 @@ placeholder="მაგ. 100000">
 </select>
 
 </div>
+
 
 <div class="form-group">
 <label>აივნის ფართობი მ²</label>
@@ -1404,6 +1695,7 @@ placeholder="მაგ. თბილისი">
 
 </div>
 
+
 <div class="form-group">
 
 <label>უბანი</label>
@@ -1414,6 +1706,7 @@ id="district"
 placeholder="მაგ. საბურთალო">
 
 </div>
+
 
 <div class="form-group full">
 
@@ -1449,6 +1742,7 @@ id="listingPrice"
 placeholder="მაგ. 145000">
 
 </div>
+
 
 <div class="form-group">
 
@@ -1543,6 +1837,7 @@ id="phone"
 placeholder="+995 5XX XX XX XX">
 
 </div>
+
 
 <div class="form-group">
 
@@ -1712,6 +2007,35 @@ Facebook ჯგუფი
 <div class="message" id="message"></div>
 
 
+<!-- FULL LISTING -->
+
+<div class="listing-modal" id="listingModal">
+
+<div class="listing-detail-wrap">
+
+<div class="listing-detail-top">
+
+<button
+class="listing-detail-close"
+id="listingClose"
+type="button">
+← უკან
+</button>
+
+<div
+class="listing-code"
+id="listingCodeTop">
+</div>
+
+</div>
+
+<div id="listingDetailContent"></div>
+
+</div>
+
+</div>
+
+
 <!-- LOGIN MODAL -->
 
 <div class="login-modal" id="loginModal">
@@ -1733,6 +2057,7 @@ Facebook ჯგუფი
 <p class="login-subtitle">
 გაიარეთ ავტორიზაცია ან დარეგისტრირდით
 </p>
+
 
 <div class="login-tabs">
 
@@ -1840,7 +2165,6 @@ id="registerSubmit">
 რეგისტრაცია
 </button>
 
-<!-- ახალი ღილაკი -->
 <button
 class="forgot-password"
 id="resendConfirmation"
@@ -1897,6 +2221,7 @@ window.supabase.createClient(
 let currentUser = null;
 let searchType = "sale";
 let selectedFiles = [];
+let currentListings = [];
 
 
 /* =========================
@@ -3607,6 +3932,46 @@ function propertyLabel(type){
 }
 
 
+function conditionLabel(value){
+
+    const labels = {
+
+        building:
+            "მშენებარე",
+
+        new:
+            "ახალი აშენებული",
+
+        oldbuilding:
+            "ძველი აშენებული",
+
+        white:
+            "თეთრი კარკასი",
+
+        green:
+            "მწვანე კარკასი",
+
+        renovated:
+            "ახალი რემონტით",
+
+        old:
+            "ძველი რემონტით",
+
+        repair:
+            "სარემონტო"
+
+    };
+
+
+    return (
+        labels[value] ||
+        value ||
+        ""
+    );
+
+}
+
+
 function escapeHtml(value){
 
     return String(
@@ -3619,6 +3984,771 @@ function escapeHtml(value){
     .replace(/'/g,"&#039;");
 
 }
+
+
+function normalizePhoneDigits(phone){
+
+    let digits =
+        String(
+            phone || ""
+        )
+        .replace(
+            /\D/g,
+            ""
+        );
+
+
+    if(
+        digits.length === 9 &&
+        digits.startsWith("5")
+    ){
+
+        digits =
+            "995" + digits;
+
+    }
+
+
+    return digits;
+
+}
+
+
+/* =========================
+   FULL LISTING
+========================= */
+
+const listingModal =
+    document.getElementById(
+        "listingModal"
+    );
+
+const listingDetailContent =
+    document.getElementById(
+        "listingDetailContent"
+    );
+
+
+function openListing(listing){
+
+    const photos =
+        Array.isArray(
+            listing.photos
+        )
+        ? listing.photos
+        : [];
+
+
+    const fallbackPhoto =
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80";
+
+
+    const firstPhoto =
+        photos.length
+        ? photos[0]
+        : fallbackPhoto;
+
+
+    const address =
+        [
+            listing.city,
+            listing.district,
+            listing.address
+        ]
+        .filter(Boolean)
+        .join(", ");
+
+
+    const seller =
+        listing.owner_type ===
+        "agent"
+        ? "აგენტი"
+        : "მესაკუთრე";
+
+
+    const methods =
+        Array.isArray(
+            listing.contact_methods
+        )
+        ? listing.contact_methods
+        : [];
+
+
+    const phone =
+        String(
+            listing.phone ||
+            ""
+        );
+
+
+    const cleanPhone =
+        phone.replace(
+            /[^\d+]/g,
+            ""
+        );
+
+
+    const phoneDigits =
+        normalizePhoneDigits(
+            phone
+        );
+
+
+    let contactButtons =
+        "";
+
+
+    if(
+        phone &&
+        (
+            methods.includes("call") ||
+            !methods.length
+        )
+    ){
+
+        contactButtons +=
+        `
+        <a
+        class="contact-action contact-call"
+        href="tel:${escapeHtml(cleanPhone)}">
+        📞 დარეკვა
+        </a>
+        `;
+
+    }
+
+
+    if(
+        phoneDigits &&
+        methods.includes(
+            "whatsapp"
+        )
+    ){
+
+        contactButtons +=
+        `
+        <a
+        class="contact-action contact-whatsapp"
+        href="https://wa.me/${phoneDigits}"
+        target="_blank"
+        rel="noopener">
+        WhatsApp
+        </a>
+        `;
+
+    }
+
+
+    if(
+        phoneDigits &&
+        methods.includes(
+            "telegram"
+        )
+    ){
+
+        contactButtons +=
+        `
+        <a
+        class="contact-action contact-telegram"
+        href="tg://resolve?phone=${phoneDigits}">
+        Telegram
+        </a>
+        `;
+
+    }
+
+
+    if(
+        phoneDigits &&
+        methods.includes(
+            "viber"
+        )
+    ){
+
+        const viberNumber =
+            encodeURIComponent(
+                "+" +
+                phoneDigits
+            );
+
+
+        contactButtons +=
+        `
+        <a
+        class="contact-action contact-viber"
+        href="viber://chat?number=${viberNumber}">
+        Viber
+        </a>
+        `;
+
+    }
+
+
+    if(
+        phone &&
+        !contactButtons
+    ){
+
+        contactButtons +=
+        `
+        <a
+        class="contact-action contact-call"
+        href="tel:${escapeHtml(cleanPhone)}">
+        📞 დარეკვა
+        </a>
+        `;
+
+    }
+
+
+    const thumbnails =
+        photos.length > 1
+
+        ? photos
+        .map(
+            function(photo,index){
+
+                return `
+                <img
+                class="listing-thumbnail ${
+                    index === 0
+                    ? "active"
+                    : ""
+                }"
+                src="${escapeHtml(photo)}"
+                data-photo="${escapeHtml(photo)}"
+                alt="ქონების ფოტო">
+                `;
+
+            }
+        )
+        .join("")
+
+        : "";
+
+
+    document
+    .getElementById(
+        "listingCodeTop"
+    )
+    .textContent =
+        listing.listing_code
+        ? "განცხადება: " +
+          listing.listing_code
+        : "";
+
+
+    listingDetailContent
+    .innerHTML =
+    `
+
+    <div class="listing-gallery">
+
+        <img
+        class="listing-main-photo"
+        id="listingMainPhoto"
+        src="${escapeHtml(firstPhoto)}"
+        alt="ქონების ფოტო">
+
+
+        ${
+            thumbnails
+
+            ? `
+            <div class="listing-thumbnails">
+                ${thumbnails}
+            </div>
+            `
+
+            : ""
+        }
+
+    </div>
+
+
+    <div class="listing-info-grid">
+
+        <div class="listing-main-info">
+
+            <div class="listing-detail-price">
+
+                ${formatPrice(
+                    listing.price,
+                    listing.currency
+                )}
+
+                ${
+                    listing.deal_type ===
+                    "rent"
+
+                    ? " / თვე"
+
+                    : ""
+                }
+
+            </div>
+
+
+            <h1 class="listing-detail-title">
+
+                ${escapeHtml(
+                    listing.title ||
+                    propertyLabel(
+                        listing.property_type
+                    )
+                )}
+
+            </h1>
+
+
+            <div class="listing-detail-address">
+
+                📍
+                ${
+                    escapeHtml(
+                        address ||
+                        listing.city ||
+                        ""
+                    )
+                }
+
+            </div>
+
+
+            <div class="listing-features">
+
+
+                ${
+                    listing.rooms
+
+                    ? `
+                    <div class="listing-feature">
+                        <strong>ოთახები</strong>
+                        ${escapeHtml(listing.rooms)}
+                    </div>
+                    `
+
+                    : ""
+                }
+
+
+                ${
+                    listing.bedrooms
+
+                    ? `
+                    <div class="listing-feature">
+                        <strong>საძინებლები</strong>
+                        ${
+                            listing.bedrooms ===
+                            "studio"
+
+                            ? "სტუდიო"
+
+                            : escapeHtml(
+                                listing.bedrooms
+                            )
+                        }
+                    </div>
+                    `
+
+                    : ""
+                }
+
+
+                ${
+                    listing.area
+
+                    ? `
+                    <div class="listing-feature">
+                        <strong>ფართობი</strong>
+                        ${escapeHtml(listing.area)} მ²
+                    </div>
+                    `
+
+                    : ""
+                }
+
+
+                ${
+                    listing.floor
+
+                    ? `
+                    <div class="listing-feature">
+                        <strong>სართული</strong>
+                        ${escapeHtml(listing.floor)}
+                        ${
+                            listing.total_floors
+                            ? "/" +
+                              escapeHtml(
+                                  listing.total_floors
+                              )
+                            : ""
+                        }
+                    </div>
+                    `
+
+                    : ""
+                }
+
+
+                ${
+                    listing.condition
+
+                    ? `
+                    <div class="listing-feature">
+                        <strong>მდგომარეობა</strong>
+                        ${escapeHtml(
+                            conditionLabel(
+                                listing.condition
+                            )
+                        )}
+                    </div>
+                    `
+
+                    : ""
+                }
+
+
+                ${
+                    listing.balconies !==
+                    null &&
+                    listing.balconies !==
+                    undefined &&
+                    listing.balconies !==
+                    ""
+
+                    ? `
+                    <div class="listing-feature">
+                        <strong>აივნები</strong>
+                        ${escapeHtml(
+                            listing.balconies
+                        )}
+                    </div>
+                    `
+
+                    : ""
+                }
+
+
+                ${
+                    listing.balcony_area
+
+                    ? `
+                    <div class="listing-feature">
+                        <strong>აივნის ფართობი</strong>
+                        ${escapeHtml(
+                            listing.balcony_area
+                        )} მ²
+                    </div>
+                    `
+
+                    : ""
+                }
+
+
+                <div class="listing-feature">
+                    <strong>ქონების ტიპი</strong>
+                    ${escapeHtml(
+                        propertyLabel(
+                            listing.property_type
+                        )
+                    )}
+                </div>
+
+
+                <div class="listing-feature">
+                    <strong>გარიგება</strong>
+                    ${escapeHtml(
+                        dealLabel(
+                            listing.deal_type
+                        )
+                    )}
+                </div>
+
+
+                <div class="listing-feature">
+                    <strong>განმცხადებელი</strong>
+                    ${seller}
+                </div>
+
+            </div>
+
+
+            <div class="listing-description">
+
+                <h3>
+                    აღწერა
+                </h3>
+
+                <p>${escapeHtml(
+                    listing.description ||
+                    "აღწერა არ არის დამატებული."
+                )}</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="listing-contact-box">
+
+            <h3>
+                საკონტაქტო ინფორმაცია
+            </h3>
+
+
+            <div class="listing-contact-name">
+
+                ${
+                    escapeHtml(
+                        listing.contact_name ||
+                        seller
+                    )
+                }
+
+            </div>
+
+
+            <div class="listing-contact-role">
+
+                ${seller}
+
+            </div>
+
+
+            ${
+                phone
+
+                ? `
+                <div class="listing-contact-phone">
+                    ${escapeHtml(phone)}
+                </div>
+                `
+
+                : ""
+            }
+
+
+            ${contactButtons}
+
+
+            ${
+                listing.listing_code
+
+                ? `
+                <div class="listing-code-bottom">
+
+                    განცხადების კოდი:
+
+                    <strong>
+                        ${escapeHtml(
+                            listing.listing_code
+                        )}
+                    </strong>
+
+                </div>
+                `
+
+                : ""
+            }
+
+        </div>
+
+    </div>
+
+    `;
+
+
+    listingModal
+    .classList
+    .add(
+        "active"
+    );
+
+
+    document.body
+    .style
+    .overflow =
+        "hidden";
+
+
+    listingModal
+    .scrollTop =
+        0;
+
+}
+
+
+function closeListing(){
+
+    listingModal
+    .classList
+    .remove(
+        "active"
+    );
+
+
+    document.body
+    .style
+    .overflow =
+        "";
+
+}
+
+
+document
+.getElementById(
+    "listingClose"
+)
+.addEventListener(
+    "click",
+    closeListing
+);
+
+
+listingDetailContent
+.addEventListener(
+    "click",
+    function(event){
+
+        const thumbnail =
+            event.target.closest(
+                ".listing-thumbnail"
+            );
+
+
+        if(!thumbnail){
+
+            return;
+
+        }
+
+
+        const mainPhoto =
+            document
+            .getElementById(
+                "listingMainPhoto"
+            );
+
+
+        if(mainPhoto){
+
+            mainPhoto.src =
+                thumbnail
+                .dataset
+                .photo;
+
+        }
+
+
+        document
+        .querySelectorAll(
+            ".listing-thumbnail"
+        )
+        .forEach(
+            function(item){
+
+                item
+                .classList
+                .remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+        thumbnail
+        .classList
+        .add(
+            "active"
+        );
+
+    }
+);
+
+
+document
+.getElementById(
+    "propertyCards"
+)
+.addEventListener(
+    "click",
+    function(event){
+
+        if(
+            event.target.closest(
+                ".favorite"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        const card =
+            event.target.closest(
+                ".property-card"
+            );
+
+
+        if(!card){
+
+            return;
+
+        }
+
+
+        const listing =
+            currentListings
+            .find(
+                function(item){
+
+                    return String(
+                        item.id
+                    ) ===
+                    String(
+                        card.dataset.id
+                    );
+
+                }
+            );
+
+
+        if(listing){
+
+            openListing(
+                listing
+            );
+
+        }
+
+    }
+);
+
+
+document
+.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key ===
+            "Escape" &&
+            listingModal
+            .classList
+            .contains(
+                "active"
+            )
+        ){
+
+            closeListing();
+
+        }
+
+    }
+);
 
 
 /* =========================
@@ -3660,8 +4790,12 @@ async function loadListings(){
     }
 
 
+    currentListings =
+        result.data || [];
+
+
     renderListings(
-        result.data || []
+        currentListings
     );
 
 }
@@ -3722,6 +4856,10 @@ function renderListings(
 
             card.className =
                 "card property-card";
+
+
+            card.dataset.id =
+                listing.id;
 
 
             const photos =
@@ -3889,7 +5027,15 @@ function renderListings(
 
                     ${
                         listing.bedrooms
-                        ? `<span>${escapeHtml(listing.bedrooms)} საძინებელი</span>`
+                        ? `<span>${
+                            listing.bedrooms ===
+                            "studio"
+                            ? "სტუდიო"
+                            : escapeHtml(
+                                listing.bedrooms
+                            ) +
+                              " საძინებელი"
+                        }</span>`
                         : ""
                     }
 
