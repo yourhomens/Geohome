@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="ka">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Your Home — უძრავი ქონება საქართველოში</title>
 
 <style>
-
 :root{
     --olive:#7d8b45;
     --olive-dark:#5d6933;
@@ -1366,7 +1363,10 @@ placeholder="მაგ. 100000">
 
 <label>სართული</label>
 
-<input type="number" id="floor" placeholder="მაგ. 7">
+<input
+type="number"
+id="floor"
+placeholder="მაგ. 7">
 
 </div>
 
@@ -1375,7 +1375,10 @@ placeholder="მაგ. 100000">
 
 <label>სართულების რაოდენობა</label>
 
-<input type="number" id="totalFloors" placeholder="მაგ. 12">
+<input
+type="number"
+id="totalFloors"
+placeholder="მაგ. 12">
 
 </div>
 
@@ -1384,7 +1387,10 @@ placeholder="მაგ. 100000">
 
 <label>ფართობი მ²</label>
 
-<input type="number" id="area" placeholder="მაგ. 82">
+<input
+type="number"
+id="area"
+placeholder="მაგ. 82">
 
 </div>
 
@@ -1411,7 +1417,10 @@ placeholder="მაგ. 100000">
 
 <label>აივნის ფართობი მ²</label>
 
-<input type="number" id="balconyArea" placeholder="მაგ. 12">
+<input
+type="number"
+id="balconyArea"
+placeholder="მაგ. 12">
 
 </div>
 
@@ -1556,7 +1565,9 @@ multiple>
 
 </label>
 
-<div class="preview" id="photoPreview"></div>
+<div
+class="preview"
+id="photoPreview"></div>
 
 </div>
 
@@ -1685,11 +1696,15 @@ YOUR HOME
 
 <div class="social">
 
-<a href="https://www.facebook.com/share/1HtanV8Xwi/" target="_blank">
+<a
+href="https://www.facebook.com/share/1HtanV8Xwi/"
+target="_blank">
 Facebook
 </a>
 
-<a href="https://www.facebook.com/share/g/1EBUpigYYd/" target="_blank">
+<a
+href="https://www.facebook.com/share/g/1EBUpigYYd/"
+target="_blank">
 ჯგუფი
 </a>
 
@@ -1758,15 +1773,21 @@ yourhomensp@gmail.com
 +995 577 133 990
 </a>
 
-<a href="https://wa.me/995577133990" target="_blank">
+<a
+href="https://wa.me/995577133990"
+target="_blank">
 WhatsApp
 </a>
 
-<a href="https://www.facebook.com/share/1HtanV8Xwi/" target="_blank">
+<a
+href="https://www.facebook.com/share/1HtanV8Xwi/"
+target="_blank">
 Facebook გვერდი
 </a>
 
-<a href="https://www.facebook.com/share/g/1EBUpigYYd/" target="_blank">
+<a
+href="https://www.facebook.com/share/g/1EBUpigYYd/"
+target="_blank">
 Facebook ჯგუფი
 </a>
 
@@ -1808,18 +1829,24 @@ Facebook ჯგუფი
 
 <div class="login-tabs">
 
-<button class="login-tab active" data-login-tab="login">
+<button
+class="login-tab active"
+data-login-tab="login">
 ავტორიზაცია
 </button>
 
-<button class="login-tab" data-login-tab="register">
+<button
+class="login-tab"
+data-login-tab="register">
 რეგისტრაცია
 </button>
 
 </div>
 
 
-<div class="login-form active" id="loginForm">
+<div
+class="login-form active"
+id="loginForm">
 
 <label>
 ელფოსტა
@@ -1841,19 +1868,25 @@ id="loginPassword"
 placeholder="შეიყვანეთ პაროლი">
 
 
-<button class="login-submit" id="loginSubmit">
+<button
+class="login-submit"
+id="loginSubmit">
 ავტორიზაცია
 </button>
 
 
-<button class="forgot-password" id="forgotPassword">
+<button
+class="forgot-password"
+id="forgotPassword">
 დაგავიწყდათ პაროლი?
 </button>
 
 </div>
 
 
-<div class="login-form" id="registerForm">
+<div
+class="login-form"
+id="registerForm">
 
 <label>
 სახელი და გვარი
@@ -1905,7 +1938,9 @@ id="registerPassword2"
 placeholder="გაიმეორეთ პაროლი">
 
 
-<button class="login-submit" id="registerSubmit">
+<button
+class="login-submit"
+id="registerSubmit">
 რეგისტრაცია
 </button>
 
@@ -1917,7 +1952,9 @@ placeholder="გაიმეორეთ პაროლი">
 </div>
 
 
-<button class="social-login" id="googleLogin">
+<button
+class="social-login"
+id="googleLogin">
 Google-ით გაგრძელება
 </button>
 
@@ -1970,11 +2007,14 @@ function showMessage(text){
 
     message.classList.add("show");
 
-    setTimeout(function(){
+    setTimeout(
+        function(){
 
-        message.classList.remove("show");
+            message.classList.remove("show");
 
-    },3500);
+        },
+        3500
+    );
 
 }
 
@@ -2027,8 +2067,20 @@ async function loadCurrentUser(){
     const result =
         await supabaseClient.auth.getUser();
 
-    currentUser =
-        result.data.user || null;
+
+    if(result.error){
+
+        console.error(result.error);
+
+        currentUser = null;
+
+    }else{
+
+        currentUser =
+            result.data.user || null;
+
+    }
+
 
     updateLoginButton();
 
@@ -2038,15 +2090,24 @@ async function loadCurrentUser(){
 function updateLoginButton(){
 
     const button =
-        document.getElementById("loginButton");
+        document.getElementById(
+            "loginButton"
+        );
+
 
     if(currentUser){
 
         const name =
-            currentUser.user_metadata?.name;
+            currentUser
+            .user_metadata
+            ?.name;
+
 
         button.textContent =
-            name || currentUser.email || "ანგარიში";
+            name ||
+            currentUser.email ||
+            "ანგარიში";
+
 
         button.style.color =
             "var(--olive-dark)";
@@ -2069,12 +2130,16 @@ function updateLoginButton(){
 ========================= */
 
 const loginModal =
-    document.getElementById("loginModal");
+    document.getElementById(
+        "loginModal"
+    );
 
 
 function openLogin(){
 
-    loginModal.classList.add("active");
+    loginModal.classList.add(
+        "active"
+    );
 
     setLoginTab("login");
 
@@ -2083,7 +2148,9 @@ function openLogin(){
 
 function closeLogin(){
 
-    loginModal.classList.remove("active");
+    loginModal.classList.remove(
+        "active"
+    );
 
 }
 
@@ -2106,7 +2173,9 @@ function setLoginTab(type){
     .querySelectorAll(".login-form")
     .forEach(function(form){
 
-        form.classList.remove("active");
+        form.classList.remove(
+            "active"
+        );
 
     });
 
@@ -2124,36 +2193,56 @@ function setLoginTab(type){
 
 document
 .getElementById("loginButton")
-.addEventListener("click", async function(){
+.addEventListener(
+    "click",
+    async function(){
 
-    if(currentUser){
+        if(currentUser){
 
-        const answer =
-            confirm(
-                "გსურთ ანგარიშიდან გამოსვლა?"
-            );
+            const answer =
+                confirm(
+                    "გსურთ ანგარიშიდან გამოსვლა?"
+                );
 
-        if(answer){
 
-            await supabaseClient.auth.signOut();
+            if(answer){
 
-            currentUser = null;
+                const result =
+                    await supabaseClient
+                    .auth
+                    .signOut();
 
-            updateLoginButton();
 
-            showMessage(
-                "ანგარიშიდან გამოხვედით."
-            );
+                if(result.error){
+
+                    showMessage(
+                        result.error.message
+                    );
+
+                    return;
+
+                }
+
+
+                currentUser = null;
+
+                updateLoginButton();
+
+
+                showMessage(
+                    "ანგარიშიდან გამოხვედით."
+                );
+
+            }
+
+        }else{
+
+            openLogin();
 
         }
 
-    }else{
-
-        openLogin();
-
     }
-
-});
+);
 
 
 document
@@ -2207,24 +2296,36 @@ document
     async function(){
 
         const name =
-            document.getElementById("registerName")
-            .value.trim();
+            document
+            .getElementById("registerName")
+            .value
+            .trim();
+
 
         const email =
-            document.getElementById("registerEmail")
-            .value.trim()
+            document
+            .getElementById("registerEmail")
+            .value
+            .trim()
             .toLowerCase();
 
+
         const phone =
-            document.getElementById("registerPhone")
-            .value.trim();
+            document
+            .getElementById("registerPhone")
+            .value
+            .trim();
+
 
         const password =
-            document.getElementById("registerPassword")
+            document
+            .getElementById("registerPassword")
             .value;
 
+
         const password2 =
-            document.getElementById("registerPassword2")
+            document
+            .getElementById("registerPassword2")
             .value;
 
 
@@ -2239,7 +2340,10 @@ document
         }
 
 
-        if(!email || !email.includes("@")){
+        if(
+            !email ||
+            !email.includes("@")
+        ){
 
             showMessage(
                 "გთხოვთ შეიყვანოთ სწორი ელფოსტა."
@@ -2292,7 +2396,9 @@ document
 
 
         const result =
-            await supabaseClient.auth.signUp({
+            await supabaseClient
+            .auth
+            .signUp({
 
                 email:email,
 
@@ -2325,28 +2431,33 @@ document
         }
 
 
-        if(result.data.user){
+        if(
+            result.data.session &&
+            result.data.session.user
+        ){
 
             currentUser =
-                result.data.user;
+                result.data.session.user;
 
             updateLoginButton();
 
-            if(result.data.session){
+            closeLogin();
 
-                closeLogin();
 
-                showMessage(
-                    "რეგისტრაცია წარმატებით დასრულდა ❤️"
-                );
+            showMessage(
+                "რეგისტრაცია წარმატებით დასრულდა ❤️"
+            );
 
-            }else{
+        }else{
 
-                showMessage(
-                    "რეგისტრაცია დასრულდა. გთხოვთ დაადასტუროთ ელფოსტა."
-                );
+            currentUser = null;
 
-            }
+            updateLoginButton();
+
+
+            showMessage(
+                "რეგისტრაცია დასრულდა. გთხოვთ დაადასტუროთ ელფოსტა და შემდეგ შეხვიდეთ ანგარიშში."
+            );
 
         }
 
@@ -2365,12 +2476,16 @@ document
     async function(){
 
         const email =
-            document.getElementById("loginEmail")
-            .value.trim()
+            document
+            .getElementById("loginEmail")
+            .value
+            .trim()
             .toLowerCase();
 
+
         const password =
-            document.getElementById("loginPassword")
+            document
+            .getElementById("loginPassword")
             .value;
 
 
@@ -2394,7 +2509,9 @@ document
 
 
         const result =
-            await supabaseClient.auth.signInWithPassword({
+            await supabaseClient
+            .auth
+            .signInWithPassword({
 
                 email:email,
 
@@ -2412,7 +2529,7 @@ document
         if(result.error){
 
             showMessage(
-                "ელფოსტა ან პაროლი არასწორია."
+                "ელფოსტა ან პაროლი არასწორია, ან ელფოსტა ჯერ არ არის დადასტურებული."
             );
 
             return;
@@ -2423,13 +2540,20 @@ document
         currentUser =
             result.data.user;
 
+
         updateLoginButton();
 
         closeLogin();
 
 
-        document.getElementById("loginEmail").value = "";
-        document.getElementById("loginPassword").value = "";
+        document
+        .getElementById("loginEmail")
+        .value = "";
+
+
+        document
+        .getElementById("loginPassword")
+        .value = "";
 
 
         showMessage(
@@ -2451,13 +2575,16 @@ document
     async function(){
 
         const result =
-            await supabaseClient.auth.signInWithOAuth({
+            await supabaseClient
+            .auth
+            .signInWithOAuth({
 
                 provider:"google",
 
                 options:{
                     redirectTo:
-                        window.location.origin + "/Geohome/"
+                        window.location.origin +
+                        "/Geohome/"
                 }
 
             });
@@ -2486,8 +2613,10 @@ document
     async function(){
 
         const email =
-            document.getElementById("loginEmail")
-            .value.trim()
+            document
+            .getElementById("loginEmail")
+            .value
+            .trim()
             .toLowerCase();
 
 
@@ -2503,11 +2632,14 @@ document
 
 
         const result =
-            await supabaseClient.auth.resetPasswordForEmail(
+            await supabaseClient
+            .auth
+            .resetPasswordForEmail(
                 email,
                 {
                     redirectTo:
-                        window.location.origin + "/Geohome/"
+                        window.location.origin +
+                        "/Geohome/"
                 }
             );
 
@@ -2535,11 +2667,18 @@ document
    AUTH STATE
 ========================= */
 
-supabaseClient.auth.onAuthStateChange(
-    function(event,session){
+supabaseClient
+.auth
+.onAuthStateChange(
+    function(
+        event,
+        session
+    ){
 
         currentUser =
-            session?.user || null;
+            session?.user ||
+            null;
+
 
         updateLoginButton();
 
@@ -2564,6 +2703,7 @@ function requireLogin(){
         return false;
 
     }
+
 
     return true;
 
@@ -2627,7 +2767,9 @@ document
 ========================= */
 
 document
-.querySelectorAll("#dealChoices .choice")
+.querySelectorAll(
+    "#dealChoices .choice"
+)
 .forEach(function(button){
 
     button.addEventListener(
@@ -2635,14 +2777,21 @@ document
         function(){
 
             document
-            .querySelectorAll("#dealChoices .choice")
+            .querySelectorAll(
+                "#dealChoices .choice"
+            )
             .forEach(function(item){
 
-                item.classList.remove("selected");
+                item.classList.remove(
+                    "selected"
+                );
 
             });
 
-            this.classList.add("selected");
+
+            this.classList.add(
+                "selected"
+            );
 
         }
     );
@@ -2655,7 +2804,9 @@ document
 ========================= */
 
 document
-.querySelectorAll("#ownerChoices .choice")
+.querySelectorAll(
+    "#ownerChoices .choice"
+)
 .forEach(function(button){
 
     button.addEventListener(
@@ -2663,14 +2814,21 @@ document
         function(){
 
             document
-            .querySelectorAll("#ownerChoices .choice")
+            .querySelectorAll(
+                "#ownerChoices .choice"
+            )
             .forEach(function(item){
 
-                item.classList.remove("selected");
+                item.classList.remove(
+                    "selected"
+                );
 
             });
 
-            this.classList.add("selected");
+
+            this.classList.add(
+                "selected"
+            );
 
         }
     );
@@ -2683,14 +2841,18 @@ document
 ========================= */
 
 document
-.querySelectorAll(".contact-choice")
+.querySelectorAll(
+    ".contact-choice"
+)
 .forEach(function(button){
 
     button.addEventListener(
         "click",
         function(){
 
-            this.classList.toggle("selected");
+            this.classList.toggle(
+                "selected"
+            );
 
         }
     );
@@ -2703,18 +2865,36 @@ document
 ========================= */
 
 const photoInput =
-    document.getElementById("photoInput");
+    document.getElementById(
+        "photoInput"
+    );
+
 
 const photoPreview =
-    document.getElementById("photoPreview");
+    document.getElementById(
+        "photoPreview"
+    );
 
 
-photoInput.addEventListener(
+photoInput
+.addEventListener(
     "change",
     function(){
 
         const newFiles =
-            Array.from(this.files);
+            Array
+            .from(this.files)
+            .filter(
+                function(file){
+
+                    return file.type
+                    .startsWith(
+                        "image/"
+                    );
+
+                }
+            );
+
 
         if(
             selectedFiles.length +
@@ -2725,6 +2905,9 @@ photoInput.addEventListener(
             showMessage(
                 "მაქსიმუმ 10 ფოტოს დამატება შეგიძლიათ."
             );
+
+
+            this.value = "";
 
             return;
 
@@ -2750,8 +2933,12 @@ function renderPhotos(){
     photoPreview.innerHTML = "";
 
 
-    selectedFiles.forEach(
-        function(file,index){
+    selectedFiles
+    .forEach(
+        function(
+            file,
+            index
+        ){
 
             const reader =
                 new FileReader();
@@ -2761,7 +2948,11 @@ function renderPhotos(){
                 function(event){
 
                     const item =
-                        document.createElement("div");
+                        document
+                        .createElement(
+                            "div"
+                        );
+
 
                     item.className =
                         "preview-item";
@@ -2769,12 +2960,21 @@ function renderPhotos(){
 
                     item.innerHTML =
                     `
-                    <img src="${event.target.result}">
-                    <span data-index="${index}">×</span>
+                    <img
+                    src="${event.target.result}"
+                    alt="ქონების ფოტო">
+
+                    <span
+                    data-index="${index}">
+                    ×
+                    </span>
                     `;
 
 
-                    photoPreview.appendChild(item);
+                    photoPreview
+                    .appendChild(
+                        item
+                    );
 
 
                     item
@@ -2783,12 +2983,16 @@ function renderPhotos(){
                         "click",
                         function(){
 
-                            selectedFiles.splice(
+                            selectedFiles
+                            .splice(
                                 Number(
-                                    this.dataset.index
+                                    this
+                                    .dataset
+                                    .index
                                 ),
                                 1
                             );
+
 
                             renderPhotos();
 
@@ -2798,7 +3002,10 @@ function renderPhotos(){
                 };
 
 
-            reader.readAsDataURL(file);
+            reader
+            .readAsDataURL(
+                file
+            );
 
         }
     );
@@ -2816,10 +3023,14 @@ function setSearchType(type){
 
 
     document
-    .querySelectorAll(".tabs button")
+    .querySelectorAll(
+        ".tabs button"
+    )
     .forEach(function(button){
 
-        button.classList.toggle(
+        button
+        .classList
+        .toggle(
             "active",
             button.dataset.type === type
         );
@@ -2837,10 +3048,13 @@ function setSearchType(type){
 ========================= */
 
 document
-.querySelectorAll(".tabs button")
+.querySelectorAll(
+    ".tabs button"
+)
 .forEach(function(button){
 
-    button.addEventListener(
+    button
+    .addEventListener(
         "click",
         function(){
 
@@ -2859,10 +3073,13 @@ document
 ========================= */
 
 document
-.querySelectorAll("nav button")
+.querySelectorAll(
+    "nav button"
+)
 .forEach(function(button){
 
-    button.addEventListener(
+    button
+    .addEventListener(
         "click",
         function(){
 
@@ -2872,8 +3089,11 @@ document
                     this.dataset.type
                 );
 
+
                 document
-                .querySelector(".search-box")
+                .querySelector(
+                    ".search-box"
+                )
                 .scrollIntoView({
                     behavior:"smooth"
                 });
@@ -2893,11 +3113,63 @@ document
 
 
 /* =========================
+   FOOTER LINKS
+========================= */
+
+document
+.querySelectorAll(
+    "footer a[data-type]"
+)
+.forEach(function(link){
+
+    link.addEventListener(
+        "click",
+        function(event){
+
+            event.preventDefault();
+
+
+            setSearchType(
+                this.dataset.type
+            );
+
+
+            homePage
+            .classList
+            .remove(
+                "hidden"
+            );
+
+
+            addPage
+            .classList
+            .remove(
+                "active"
+            );
+
+
+            document
+            .querySelector(
+                ".search-box"
+            )
+            .scrollIntoView({
+                behavior:"smooth"
+            });
+
+        }
+    );
+
+});
+
+
+/* =========================
    FILTER BUTTONS
 ========================= */
 
 document
-.querySelectorAll(".filter")
+.querySelectorAll(
+    ".filter"
+)
 .forEach(function(button){
 
     button.addEventListener(
@@ -2905,21 +3177,35 @@ document
         function(){
 
             const active =
-                this.classList.contains("active");
+                this
+                .classList
+                .contains(
+                    "active"
+                );
 
 
             document
-            .querySelectorAll(".filter")
+            .querySelectorAll(
+                ".filter"
+            )
             .forEach(function(item){
 
-                item.classList.remove("active");
+                item
+                .classList
+                .remove(
+                    "active"
+                );
 
             });
 
 
             if(!active){
 
-                this.classList.add("active");
+                this
+                .classList
+                .add(
+                    "active"
+                );
 
             }
 
@@ -2937,7 +3223,9 @@ document
 ========================= */
 
 document
-.getElementById("searchButton")
+.getElementById(
+    "searchButton"
+)
 .addEventListener(
     "click",
     function(){
@@ -2946,7 +3234,9 @@ document
 
 
         document
-        .getElementById("propertyCards")
+        .getElementById(
+            "propertyCards"
+        )
         .scrollIntoView({
             behavior:"smooth"
         });
@@ -2963,7 +3253,9 @@ function filterProperties(){
 
     const location =
         document
-        .getElementById("locationInput")
+        .getElementById(
+            "locationInput"
+        )
         .value
         .toLowerCase()
         .trim();
@@ -2971,26 +3263,33 @@ function filterProperties(){
 
     const property =
         document
-        .getElementById("propertyType")
+        .getElementById(
+            "propertyType"
+        )
         .value;
 
 
     const rooms =
         document
-        .getElementById("rooms")
+        .getElementById(
+            "rooms"
+        )
         .value;
 
 
     const price =
         Number(
             document
-            .getElementById("priceInput")
+            .getElementById(
+                "priceInput"
+            )
             .value
         ) || 0;
 
 
     const activeFilter =
-        document.querySelector(
+        document
+        .querySelector(
             ".filter.active"
         );
 
@@ -3004,26 +3303,38 @@ function filterProperties(){
     let visible = 0;
 
 
-    document
-    .querySelectorAll(".property-card")
+    const cards =
+        document
+        .querySelectorAll(
+            ".property-card"
+        );
+
+
+    cards
     .forEach(function(card){
 
         const typeMatch =
-            card.dataset.type === searchType;
+            card.dataset.type ===
+            searchType;
 
 
         const propertyMatch =
             property === "all" ||
-            card.dataset.property === property;
+            card.dataset.property ===
+            property;
 
 
         const cardRooms =
-            Number(card.dataset.rooms || 0);
+            Number(
+                card.dataset.rooms ||
+                0
+            );
 
 
         const roomMatch =
             rooms === "all" ||
-            cardRooms === Number(rooms) ||
+            cardRooms ===
+            Number(rooms) ||
             (
                 rooms === "5" &&
                 cardRooms >= 5
@@ -3032,17 +3343,24 @@ function filterProperties(){
 
         const locationText =
             (
-                card.dataset.location || ""
-            ).toLowerCase();
+                card.dataset.location ||
+                ""
+            )
+            .toLowerCase();
 
 
         const locationMatch =
             !location ||
-            locationText.includes(location);
+            locationText.includes(
+                location
+            );
 
 
         const cardPrice =
-            Number(card.dataset.price || 0);
+            Number(
+                card.dataset.price ||
+                0
+            );
 
 
         const priceMatch =
@@ -3051,13 +3369,17 @@ function filterProperties(){
 
 
         const tags =
-            card.dataset.tags || "";
+            card.dataset.tags ||
+            "";
 
 
         const filterMatch =
             !filter ||
-            card.dataset.property === filter ||
-            tags.includes(filter);
+            card.dataset.property ===
+            filter ||
+            tags.includes(
+                filter
+            );
 
 
         if(
@@ -3069,20 +3391,32 @@ function filterProperties(){
             filterMatch
         ){
 
-            card.classList.remove("hidden");
+            card
+            .classList
+            .remove(
+                "hidden"
+            );
+
 
             visible++;
 
         }else{
 
-            card.classList.add("hidden");
+            card
+            .classList
+            .add(
+                "hidden"
+            );
 
         }
 
     });
 
 
-    if(visible === 0){
+    if(
+        cards.length &&
+        visible === 0
+    ){
 
         showMessage(
             "ამ პირობებით განცხადება ვერ მოიძებნა."
@@ -3098,36 +3432,52 @@ function filterProperties(){
 ========================= */
 
 document
-.getElementById("showAll")
+.getElementById(
+    "showAll"
+)
 .addEventListener(
     "click",
     function(){
 
         document
-        .getElementById("locationInput")
+        .getElementById(
+            "locationInput"
+        )
         .value = "";
 
 
         document
-        .getElementById("propertyType")
+        .getElementById(
+            "propertyType"
+        )
         .value = "all";
 
 
         document
-        .getElementById("rooms")
+        .getElementById(
+            "rooms"
+        )
+        .value = "all";
+
+
+        document
+        .getElementById(
+            "priceInput"
+        )
         .value = "";
 
 
         document
-        .getElementById("priceInput")
-        .value = "";
-
-
-        document
-        .querySelectorAll(".filter")
+        .querySelectorAll(
+            ".filter"
+        )
         .forEach(function(item){
 
-            item.classList.remove("active");
+            item
+            .classList
+            .remove(
+                "active"
+            );
 
         });
 
@@ -3143,7 +3493,9 @@ document
 ========================= */
 
 document
-.getElementById("propertyCards")
+.getElementById(
+    "propertyCards"
+)
 .addEventListener(
     "click",
     function(event){
@@ -3161,15 +3513,24 @@ document
         }
 
 
-        button.classList.toggle(
+        button
+        .classList
+        .toggle(
             "saved"
         );
 
 
-        if(button.classList.contains("saved")){
+        if(
+            button
+            .classList
+            .contains(
+                "saved"
+            )
+        ){
 
             button.textContent =
                 "♥";
+
 
             showMessage(
                 "განცხადება რჩეულებში დაემატა."
@@ -3179,6 +3540,7 @@ document
 
             button.textContent =
                 "♡";
+
 
             showMessage(
                 "განცხადება რჩეულებიდან წაიშალა."
@@ -3191,7 +3553,7 @@ document
 
 
 /* =========================
-   FORMAT PRICE
+   HELPERS
 ========================= */
 
 function formatPrice(
@@ -3200,62 +3562,109 @@ function formatPrice(
 ){
 
     const number =
-        Number(price || 0)
-        .toLocaleString("en-US");
+        Number(
+            price || 0
+        )
+        .toLocaleString(
+            "en-US"
+        );
 
 
     if(currency === "GEL"){
+
         return number + " ₾";
+
     }
 
+
     if(currency === "EUR"){
+
         return "€" + number;
+
     }
+
 
     return "$" + number;
 
 }
 
 
-/* =========================
-   DEAL LABEL
-========================= */
-
 function dealLabel(type){
 
     if(type === "rent"){
+
         return "ქირავდება";
+
     }
 
+
     if(type === "pledge"){
+
         return "გირავდება";
+
     }
+
 
     return "იყიდება";
 
 }
 
 
-/* =========================
-   PROPERTY LABEL
-========================= */
-
 function propertyLabel(type){
 
     const labels = {
 
         apartment:"ბინა",
+
         house:"სახლი",
+
         commercial:"კომერციული",
+
         land:"მიწა",
+
         cottage:"აგარაკი",
+
         hotel:"სასტუმრო",
+
         other:"სხვა"
 
     };
 
 
-    return labels[type] || type;
+    return (
+        labels[type] ||
+        type ||
+        "ქონება"
+    );
+
+}
+
+
+function escapeHtml(value){
+
+    return String(
+        value || ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
@@ -3270,7 +3679,10 @@ async function loadListings(){
         await supabaseClient
         .from("listings")
         .select("*")
-        .eq("status","published")
+        .eq(
+            "status",
+            "published"
+        )
         .order(
             "created_at",
             {
@@ -3285,9 +3697,11 @@ async function loadListings(){
             result.error
         );
 
+
         showMessage(
             "განცხადებების ჩატვირთვა ვერ მოხერხდა."
         );
+
 
         return;
 
@@ -3305,15 +3719,19 @@ async function loadListings(){
    RENDER LISTINGS
 ========================= */
 
-function renderListings(listings){
+function renderListings(
+    listings
+){
 
     const container =
-        document.getElementById(
+        document
+        .getElementById(
             "propertyCards"
         );
 
 
-    container.innerHTML = "";
+    container.innerHTML =
+        "";
 
 
     if(!listings.length){
@@ -3333,189 +3751,237 @@ function renderListings(listings){
         </div>
         `;
 
+
         return;
 
     }
 
 
-    listings.forEach(function(listing){
+    listings
+    .forEach(
+        function(listing){
 
-        const card =
-            document.createElement("div");
-
-
-        card.className =
-            "card property-card";
-
-
-        const firstPhoto =
-            listing.photos &&
-            listing.photos.length
-            ? listing.photos[0]
-            : "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80";
+            const card =
+                document
+                .createElement(
+                    "div"
+                );
 
 
-        const roomText =
-            listing.rooms
-            ? listing.rooms + " ოთახი"
-            : "";
+            card.className =
+                "card property-card";
 
 
-        const areaText =
-            listing.area
-            ? listing.area + " მ²"
-            : "";
+            const photos =
+                Array.isArray(
+                    listing.photos
+                )
+                ? listing.photos
+                : [];
 
 
-        const floorText =
-            listing.floor
-            ? listing.floor +
-              (
-                  listing.total_floors
-                  ? "/" + listing.total_floors
-                  : ""
-              ) +
-              " სართული"
-            : "";
+            const firstPhoto =
+                photos.length
+                ? photos[0]
+                : "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80";
 
 
-        const address =
-            [
-                listing.city,
-                listing.district
-            ]
-            .filter(Boolean)
-            .join(", ");
+            const roomText =
+                listing.rooms
+                ? listing.rooms +
+                  " ოთახი"
+                : "";
 
 
-        const seller =
-            listing.seller_type === "agent"
-            ? "აგენტი"
-            : "მესაკუთრე";
+            const areaText =
+                listing.area
+                ? listing.area +
+                  " მ²"
+                : "";
 
 
-        card.dataset.type =
-            listing.deal_type || "sale";
+            const floorText =
+                listing.floor
+                ? listing.floor +
+                  (
+                      listing.total_floors
+                      ? "/" +
+                        listing.total_floors
+                      : ""
+                  ) +
+                  " სართული"
+                : "";
 
 
-        card.dataset.property =
-            listing.property_type || "";
+            const address =
+                [
+                    listing.city,
+                    listing.district
+                ]
+                .filter(Boolean)
+                .join(", ");
 
 
-        card.dataset.rooms =
-            Number(
-                String(
-                    listing.rooms || "0"
-                ).replace("+","")
-            ) || 0;
+            const seller =
+                listing.owner_type ===
+                "agent"
+                ? "აგენტი"
+                : "მესაკუთრე";
 
 
-        card.dataset.location =
-            address;
+            card.dataset.type =
+                listing.deal_type ||
+                "sale";
 
 
-        card.dataset.price =
-            listing.price || 0;
+            card.dataset.property =
+                listing.property_type ||
+                "";
 
 
-        card.dataset.tags =
-            [
-                listing.condition || "",
-                listing.seller_type || ""
-            ].join(" ");
+            card.dataset.rooms =
+                Number(
+                    String(
+                        listing.rooms ||
+                        "0"
+                    )
+                    .replace(
+                        "+",
+                        ""
+                    )
+                ) || 0;
 
 
-        card.innerHTML =
-        `
-        <div class="card-image"
-             style="background-image:url('${escapeHtml(firstPhoto)}')">
+            card.dataset.location =
+                [
+                    listing.city,
+                    listing.district,
+                    listing.address
+                ]
+                .filter(Boolean)
+                .join(" ");
 
-            <div class="badge">
-                ${dealLabel(listing.deal_type)}
-            </div>
 
-            <button class="favorite">
-                ♡
-            </button>
+            card.dataset.price =
+                listing.price || 0;
 
-        </div>
 
-        <div class="card-body">
+            card.dataset.tags =
+                [
+                    listing.condition ||
+                    "",
 
-            <div class="price">
-                ${formatPrice(
-                    listing.price,
-                    listing.currency
-                )}
-                ${
-                    listing.deal_type === "rent"
-                    ? " / თვე"
-                    : ""
-                }
-            </div>
+                    listing.owner_type ||
+                    ""
+                ]
+                .join(" ");
 
-            <div class="address">
-                ${escapeHtml(address)}
-            </div>
 
-            <div class="details">
+            card.innerHTML =
+            `
+            <div
+            class="card-image"
+            style="background-image:url('${escapeHtml(firstPhoto)}')">
 
-                ${
-                    roomText
-                    ? `<span>${escapeHtml(roomText)}</span>`
-                    : ""
-                }
+                <div class="badge">
+                    ${dealLabel(
+                        listing.deal_type
+                    )}
+                </div>
 
-                ${
-                    listing.bedrooms
-                    ? `<span>${escapeHtml(listing.bedrooms)} საძინებელი</span>`
-                    : ""
-                }
-
-                ${
-                    areaText
-                    ? `<span>${escapeHtml(areaText)}</span>`
-                    : ""
-                }
-
-                ${
-                    floorText
-                    ? `<span>${escapeHtml(floorText)}</span>`
-                    : ""
-                }
+                <button
+                class="favorite"
+                type="button">
+                    ♡
+                </button>
 
             </div>
 
-            <div class="owner">
-                ${seller} · ${propertyLabel(listing.property_type)}
+
+            <div class="card-body">
+
+                <div class="price">
+
+                    ${formatPrice(
+                        listing.price,
+                        listing.currency
+                    )}
+
+                    ${
+                        listing.deal_type ===
+                        "rent"
+                        ? " / თვე"
+                        : ""
+                    }
+
+                </div>
+
+
+                <div class="address">
+
+                    ${escapeHtml(
+                        address
+                    )}
+
+                </div>
+
+
+                <div class="details">
+
+                    ${
+                        roomText
+                        ? `<span>${escapeHtml(roomText)}</span>`
+                        : ""
+                    }
+
+
+                    ${
+                        listing.bedrooms
+                        ? `<span>${escapeHtml(listing.bedrooms)} საძინებელი</span>`
+                        : ""
+                    }
+
+
+                    ${
+                        areaText
+                        ? `<span>${escapeHtml(areaText)}</span>`
+                        : ""
+                    }
+
+
+                    ${
+                        floorText
+                        ? `<span>${escapeHtml(floorText)}</span>`
+                        : ""
+                    }
+
+                </div>
+
+
+                <div class="owner">
+
+                    ${seller}
+                    ·
+                    ${propertyLabel(
+                        listing.property_type
+                    )}
+
+                </div>
+
             </div>
-
-        </div>
-        `;
+            `;
 
 
-        container.appendChild(card);
+            container
+            .appendChild(
+                card
+            );
 
-    });
+        }
+    );
 
 
     filterProperties();
-
-}
-
-
-/* =========================
-   HTML ESCAPE
-========================= */
-
-function escapeHtml(value){
-
-    return String(value || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
 
 }
 
@@ -3533,6 +3999,15 @@ async function uploadPhotos(){
     }
 
 
+    if(!currentUser){
+
+        throw new Error(
+            "ავტორიზაცია საჭიროა."
+        );
+
+    }
+
+
     const urls = [];
 
 
@@ -3546,11 +4021,23 @@ async function uploadPhotos(){
             selectedFiles[i];
 
 
-        const extension =
-            file.name
-            .split(".")
-            .pop()
+        const rawExtension =
+            (
+                file.name
+                .split(".")
+                .pop() ||
+                "jpg"
+            )
             .toLowerCase();
+
+
+        const extension =
+            rawExtension
+            .replace(
+                /[^a-z0-9]/g,
+                ""
+            ) ||
+            "jpg";
 
 
         const fileName =
@@ -3566,13 +4053,20 @@ async function uploadPhotos(){
         const result =
             await supabaseClient
             .storage
-            .from("property-images")
+            .from("listings")
             .upload(
                 fileName,
                 file,
                 {
-                    cacheControl:"3600",
-                    upsert:false
+                    cacheControl:
+                        "3600",
+
+                    upsert:
+                        false,
+
+                    contentType:
+                        file.type ||
+                        undefined
                 }
             );
 
@@ -3583,8 +4077,10 @@ async function uploadPhotos(){
                 result.error
             );
 
+
             throw new Error(
-                "ფოტოს ატვირთვა ვერ მოხერხდა."
+                "ფოტოს ატვირთვა ვერ მოხერხდა: " +
+                result.error.message
             );
 
         }
@@ -3593,14 +4089,16 @@ async function uploadPhotos(){
         const publicResult =
             supabaseClient
             .storage
-            .from("property-images")
+            .from("listings")
             .getPublicUrl(
                 fileName
             );
 
 
         urls.push(
-            publicResult.data.publicUrl
+            publicResult
+            .data
+            .publicUrl
         );
 
     }
@@ -3616,7 +4114,9 @@ async function uploadPhotos(){
 ========================= */
 
 document
-.getElementById("publishButton")
+.getElementById(
+    "publishButton"
+)
 .addEventListener(
     "click",
     async function(){
@@ -3628,51 +4128,65 @@ document
         }
 
 
-        const button = this;
+        const button =
+            this;
 
 
         const dealButton =
-            document.querySelector(
+            document
+            .querySelector(
                 "#dealChoices .choice.selected"
             );
 
 
         const ownerButton =
-            document.querySelector(
+            document
+            .querySelector(
                 "#ownerChoices .choice.selected"
             );
 
 
         const contactButtons =
             Array.from(
-                document.querySelectorAll(
+                document
+                .querySelectorAll(
                     ".contact-choice.selected"
                 )
             );
 
 
         const property =
-            document.getElementById(
+            document
+            .getElementById(
                 "listingProperty"
-            ).value;
+            )
+            .value;
 
 
         const city =
-            document.getElementById(
+            document
+            .getElementById(
                 "city"
-            ).value.trim();
+            )
+            .value
+            .trim();
 
 
         const price =
-            document.getElementById(
+            document
+            .getElementById(
                 "listingPrice"
-            ).value;
+            )
+            .value;
 
 
         const phone =
-            document.getElementById(
+            document
+            .getElementById(
                 "phone"
-            ).value.trim();
+            )
+            .value
+            .trim();
 
 
         if(!property){
@@ -3697,10 +4211,13 @@ document
         }
 
 
-        if(!price){
+        if(
+            !price ||
+            Number(price) <= 0
+        ){
 
             showMessage(
-                "გთხოვთ მიუთითოთ ფასი."
+                "გთხოვთ მიუთითოთ სწორი ფასი."
             );
 
             return;
@@ -3719,7 +4236,9 @@ document
         }
 
 
-        button.disabled = true;
+        button.disabled =
+            true;
+
 
         button.textContent =
             "იტვირთება...";
@@ -3731,115 +4250,200 @@ document
                 await uploadPhotos();
 
 
+            const ownerType =
+                ownerButton
+                ? ownerButton.dataset.value
+                : "owner";
+
+
+            const dealType =
+                dealButton
+                ? dealButton.dataset.value
+                : "sale";
+
+
             const listing = {
 
                 user_id:
                     currentUser.id,
 
+
+                title:
+                    propertyLabel(
+                        property
+                    ) +
+                    " — " +
+                    city,
+
+
                 deal_type:
-                    dealButton
-                    ? dealButton.dataset.value
-                    : "sale",
+                    dealType,
+
 
                 property_type:
                     property,
 
+
                 condition:
-                    document.getElementById(
+                    document
+                    .getElementById(
                         "condition"
-                    ).value || null,
+                    )
+                    .value ||
+                    null,
+
 
                 rooms:
-                    document.getElementById(
+                    document
+                    .getElementById(
                         "listingRooms"
-                    ).value || null,
+                    )
+                    .value ||
+                    null,
+
 
                 bedrooms:
-                    document.getElementById(
+                    document
+                    .getElementById(
                         "bedrooms"
-                    ).value || null,
+                    )
+                    .value ||
+                    null,
+
 
                 floor:
                     Number(
-                        document.getElementById(
+                        document
+                        .getElementById(
                             "floor"
-                        ).value
-                    ) || null,
+                        )
+                        .value
+                    ) ||
+                    null,
+
 
                 total_floors:
                     Number(
-                        document.getElementById(
+                        document
+                        .getElementById(
                             "totalFloors"
-                        ).value
-                    ) || null,
+                        )
+                        .value
+                    ) ||
+                    null,
+
 
                 area:
                     Number(
-                        document.getElementById(
+                        document
+                        .getElementById(
                             "area"
-                        ).value
-                    ) || null,
+                        )
+                        .value
+                    ) ||
+                    null,
+
 
                 balconies:
-                    document.getElementById(
+                    document
+                    .getElementById(
                         "balconies"
-                    ).value || null,
+                    )
+                    .value ||
+                    null,
+
 
                 balcony_area:
                     Number(
-                        document.getElementById(
+                        document
+                        .getElementById(
                             "balconyArea"
-                        ).value
-                    ) || null,
+                        )
+                        .value
+                    ) ||
+                    null,
+
 
                 city:
                     city,
 
+
                 district:
-                    document.getElementById(
+                    document
+                    .getElementById(
                         "district"
-                    ).value.trim() || null,
+                    )
+                    .value
+                    .trim() ||
+                    null,
+
 
                 address:
-                    document.getElementById(
+                    document
+                    .getElementById(
                         "address"
-                    ).value.trim() || null,
+                    )
+                    .value
+                    .trim() ||
+                    null,
+
 
                 price:
                     Number(price),
 
-                currency:
-                    document.getElementById(
-                        "currency"
-                    ).value,
 
-                seller_type:
-                    ownerButton
-                    ? ownerButton.dataset.value
-                    : "owner",
+                currency:
+                    document
+                    .getElementById(
+                        "currency"
+                    )
+                    .value,
+
+
+                owner_type:
+                    ownerType,
+
 
                 phone:
                     phone,
 
+
                 contact_name:
-                    document.getElementById(
+                    document
+                    .getElementById(
                         "contactName"
-                    ).value.trim() || null,
+                    )
+                    .value
+                    .trim() ||
+                    null,
+
 
                 contact_methods:
-                    contactButtons.map(
+                    contactButtons
+                    .map(
                         function(button){
-                            return button.dataset.value;
+
+                            return button
+                            .dataset
+                            .value;
+
                         }
                     ),
 
+
                 description:
-                    document.getElementById(
+                    document
+                    .getElementById(
                         "description"
-                    ).value.trim() || null,
+                    )
+                    .value
+                    .trim() ||
+                    null,
+
 
                 photos:
                     photoUrls,
+
 
                 status:
                     "published"
@@ -3850,7 +4454,9 @@ document
             const result =
                 await supabaseClient
                 .from("listings")
-                .insert(listing)
+                .insert(
+                    listing
+                )
                 .select()
                 .single();
 
@@ -3860,6 +4466,7 @@ document
                 console.error(
                     result.error
                 );
+
 
                 throw new Error(
                     result.error.message
@@ -3880,14 +4487,9 @@ document
 
 
             setTimeout(
-                function(){
-
-                    closeAddPage();
-
-                },
+                closeAddPage,
                 1200
             );
-
 
         }catch(error){
 
@@ -3901,10 +4503,11 @@ document
                 error.message
             );
 
-
         }finally{
 
-            button.disabled = false;
+            button.disabled =
+                false;
+
 
             button.textContent =
                 "გამოქვეყნება →";
@@ -3924,42 +4527,68 @@ function resetListingForm(){
     const ids = [
 
         "listingProperty",
+
         "condition",
+
         "listingRooms",
+
         "bedrooms",
+
         "floor",
+
         "totalFloors",
+
         "area",
+
         "balconies",
+
         "balconyArea",
+
         "city",
+
         "district",
+
         "address",
+
         "listingPrice",
+
         "phone",
+
         "contactName",
+
         "description"
 
     ];
 
 
-    ids.forEach(function(id){
+    ids
+    .forEach(
+        function(id){
 
-        const element =
-            document.getElementById(id);
+            const element =
+                document
+                .getElementById(
+                    id
+                );
 
-        if(element){
 
-            element.value = "";
+            if(element){
+
+                element.value =
+                    "";
+
+            }
 
         }
+    );
 
-    });
 
-
-    document.getElementById(
+    document
+    .getElementById(
         "currency"
-    ).value = "USD";
+    )
+    .value =
+        "USD";
 
 
     document
@@ -3968,7 +4597,9 @@ function resetListingForm(){
     )
     .forEach(function(button){
 
-        button.classList.remove(
+        button
+        .classList
+        .remove(
             "selected"
         );
 
@@ -3979,7 +4610,8 @@ function resetListingForm(){
     .querySelector(
         '#dealChoices .choice[data-value="sale"]'
     )
-    .classList.add(
+    .classList
+    .add(
         "selected"
     );
 
@@ -3990,7 +4622,9 @@ function resetListingForm(){
     )
     .forEach(function(button){
 
-        button.classList.remove(
+        button
+        .classList
+        .remove(
             "selected"
         );
 
@@ -4001,7 +4635,8 @@ function resetListingForm(){
     .querySelector(
         '#ownerChoices .choice[data-value="owner"]'
     )
-    .classList.add(
+    .classList
+    .add(
         "selected"
     );
 
@@ -4012,7 +4647,9 @@ function resetListingForm(){
     )
     .forEach(function(button){
 
-        button.classList.remove(
+        button
+        .classList
+        .remove(
             "selected"
         );
 
@@ -4023,16 +4660,22 @@ function resetListingForm(){
     .querySelector(
         '.contact-choice[data-value="call"]'
     )
-    .classList.add(
+    .classList
+    .add(
         "selected"
     );
 
 
-    selectedFiles = [];
+    selectedFiles =
+        [];
 
-    photoPreview.innerHTML = "";
 
-    photoInput.value = "";
+    photoPreview.innerHTML =
+        "";
+
+
+    photoInput.value =
+        "";
 
 }
 
@@ -4044,54 +4687,143 @@ function resetListingForm(){
 const translations = {
 
     ka:{
-        title:"იპოვე უძრავი ქონება საქართველოში",
-        subtitle:"იყიდე, იქირავე ან იგირავე — მოძებნე შენთვის სასურველი ქონება მარტივად.",
-        location:"მდებარეობა",
-        locationPlaceholder:"ქალაქი, უბანი ან ქუჩა",
-        property:"ქონების ტიპი",
-        rooms:"ოთახები",
-        price:"ფასი",
-        pricePlaceholder:"მაგ. 100000",
-        search:"ძებნა",
-        popular:"🔥 ყველაზე ნახვადი",
-        all:"ყველას ნახვა →",
-        ctaTitle:"გაქვს უძრავი ქონება?",
-        ctaText:"განათავსე განცხადება Your Home-ზე.",
-        add:"+ განცხადების დამატება"
+
+        title:
+            "იპოვე უძრავი ქონება საქართველოში",
+
+        subtitle:
+            "იყიდე, იქირავე ან იგირავე — მოძებნე შენთვის სასურველი ქონება მარტივად.",
+
+        location:
+            "მდებარეობა",
+
+        locationPlaceholder:
+            "ქალაქი, უბანი ან ქუჩა",
+
+        property:
+            "ქონების ტიპი",
+
+        rooms:
+            "ოთახები",
+
+        price:
+            "ფასი",
+
+        pricePlaceholder:
+            "მაგ. 100000",
+
+        search:
+            "ძებნა",
+
+        popular:
+            "🔥 ყველაზე ნახვადი",
+
+        all:
+            "ყველას ნახვა →",
+
+        ctaTitle:
+            "გაქვს უძრავი ქონება?",
+
+        ctaText:
+            "განათავსე განცხადება Your Home-ზე.",
+
+        add:
+            "+ განცხადების დამატება"
+
     },
+
 
     en:{
-        title:"Find real estate in Georgia",
-        subtitle:"Buy, rent or pledge — find the property that suits you.",
-        location:"Location",
-        locationPlaceholder:"City, district or street",
-        property:"Property type",
-        rooms:"Rooms",
-        price:"Price",
-        pricePlaceholder:"e.g. 100000",
-        search:"Search",
-        popular:"🔥 Most viewed",
-        all:"View all →",
-        ctaTitle:"Have a property?",
-        ctaText:"Post your property on Your Home.",
-        add:"+ Add listing"
+
+        title:
+            "Find real estate in Georgia",
+
+        subtitle:
+            "Buy, rent or pledge — find the property that suits you.",
+
+        location:
+            "Location",
+
+        locationPlaceholder:
+            "City, district or street",
+
+        property:
+            "Property type",
+
+        rooms:
+            "Rooms",
+
+        price:
+            "Price",
+
+        pricePlaceholder:
+            "e.g. 100000",
+
+        search:
+            "Search",
+
+        popular:
+            "🔥 Most viewed",
+
+        all:
+            "View all →",
+
+        ctaTitle:
+            "Have a property?",
+
+        ctaText:
+            "Post your property on Your Home.",
+
+        add:
+            "+ Add listing"
+
     },
 
+
     ru:{
-        title:"Найдите недвижимость в Грузии",
-        subtitle:"Купите, арендуйте или заложите — найдите подходящую недвижимость.",
-        location:"Местоположение",
-        locationPlaceholder:"Город, район или улица",
-        property:"Тип недвижимости",
-        rooms:"Комнаты",
-        price:"Цена",
-        pricePlaceholder:"например 100000",
-        search:"Поиск",
-        popular:"🔥 Самые просматриваемые",
-        all:"Посмотреть все →",
-        ctaTitle:"У вас есть недвижимость?",
-        ctaText:"Разместите объявление на Your Home.",
-        add:"+ Добавить объявление"
+
+        title:
+            "Найдите недвижимость в Грузии",
+
+        subtitle:
+            "Купите, арендуйте или заложите — найдите подходящую недвижимость.",
+
+        location:
+            "Местоположение",
+
+        locationPlaceholder:
+            "Город, район или улица",
+
+        property:
+            "Тип недвижимости",
+
+        rooms:
+            "Комнаты",
+
+        price:
+            "Цена",
+
+        pricePlaceholder:
+            "например 100000",
+
+        search:
+            "Поиск",
+
+        popular:
+            "🔥 Самые просматриваемые",
+
+        all:
+            "Посмотреть все →",
+
+        ctaTitle:
+            "У вас есть недвижимость?",
+
+        ctaText:
+            "Разместите объявление на Your Home.",
+
+        add:
+            "+ Добавить объявление"
+
     }
 
 };
@@ -4103,99 +4835,152 @@ function changeLanguage(lang){
         translations[lang];
 
 
-    document.documentElement.lang =
+    if(!t){
+
+        return;
+
+    }
+
+
+    document
+    .documentElement
+    .lang =
         lang;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "heroTitle"
-    ).textContent =
+    )
+    .textContent =
         t.title;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "heroSubtitle"
-    ).textContent =
+    )
+    .textContent =
         t.subtitle;
 
 
     const labels =
-        document.querySelectorAll(
+        document
+        .querySelectorAll(
             ".field label"
         );
 
 
-    labels[0].textContent =
-        t.location;
+    if(labels[0]){
 
-    labels[1].textContent =
-        t.property;
+        labels[0].textContent =
+            t.location;
 
-    labels[2].textContent =
-        t.rooms;
-
-    labels[3].textContent =
-        t.price;
+    }
 
 
-    document.getElementById(
+    if(labels[1]){
+
+        labels[1].textContent =
+            t.property;
+
+    }
+
+
+    if(labels[2]){
+
+        labels[2].textContent =
+            t.rooms;
+
+    }
+
+
+    if(labels[3]){
+
+        labels[3].textContent =
+            t.price;
+
+    }
+
+
+    document
+    .getElementById(
         "locationInput"
-    ).placeholder =
+    )
+    .placeholder =
         t.locationPlaceholder;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "priceInput"
-    ).placeholder =
+    )
+    .placeholder =
         t.pricePlaceholder;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "searchButton"
-    ).textContent =
+    )
+    .textContent =
         t.search;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "popularTitle"
-    ).textContent =
+    )
+    .textContent =
         t.popular;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "showAll"
-    ).textContent =
+    )
+    .textContent =
         t.all;
 
 
-    document.querySelector(
+    document
+    .querySelector(
         ".cta-box h2"
-    ).textContent =
+    )
+    .textContent =
         t.ctaTitle;
 
 
-    document.querySelector(
+    document
+    .querySelector(
         ".cta-box p"
-    ).textContent =
+    )
+    .textContent =
         t.ctaText;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "addButton"
-    ).textContent =
+    )
+    .textContent =
         t.add;
 
 
-    document.getElementById(
+    document
+    .getElementById(
         "ctaButton"
-    ).textContent =
+    )
+    .textContent =
         t.add;
 
 }
 
 
 document
-.getElementById("language")
+.getElementById(
+    "language"
+)
 .addEventListener(
     "change",
     function(){
