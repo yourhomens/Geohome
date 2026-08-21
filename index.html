@@ -14615,7 +14615,2895 @@ loadListings();
 })();
 
 </script>
+<!-- =========================================================
+     YOUR HOME — PREMIUM VIP SYSTEM UI
+     VIP / VIP+ / VIP+ PRO / BOOST
+========================================================= -->
 
+<script>
+
+(function(){
+
+    if(window.__YOUR_HOME_VIP_UI_LOADED__){
+        return;
+    }
+
+    window.__YOUR_HOME_VIP_UI_LOADED__ =
+    true;
+
+
+    /* =====================================================
+       VIP CONFIG
+    ===================================================== */
+
+    const VIP_PRIORITY = {
+        free:0,
+        vip:1,
+        vip_plus:2,
+        vip_pro:3
+    };
+
+
+    const VIP_NAMES = {
+        free:"FREE",
+        vip:"VIP",
+        vip_plus:"VIP+",
+        vip_pro:"VIP+ PRO"
+    };
+
+
+    let selectedPromotionPackage =
+    null;
+
+    let promotionListingId =
+    null;
+
+
+    /* =====================================================
+       HELPERS
+    ===================================================== */
+
+    function getPromotionListingById(id){
+
+        const fromPublic =
+        Array.isArray(currentListings)
+        ?
+        currentListings.find(
+            function(item){
+
+                return String(item.id) ===
+                String(id);
+
+            }
+        )
+        :
+        null;
+
+
+        if(fromPublic){
+            return fromPublic;
+        }
+
+
+        return Array.isArray(currentMyListings)
+        ?
+        currentMyListings.find(
+            function(item){
+
+                return String(item.id) ===
+                String(id);
+
+            }
+        )
+        :
+        null;
+
+    }
+
+
+    function normalizePromotionPlan(plan){
+
+        const value =
+        String(
+            plan ||
+            "free"
+        )
+        .toLowerCase();
+
+
+        if(
+            value === "vip" ||
+            value === "vip_plus" ||
+            value === "vip_pro"
+        ){
+
+            return value;
+
+        }
+
+
+        return "free";
+
+    }
+
+
+    function getEffectivePromotionPlan(
+        listing
+    ){
+
+        if(!listing){
+            return "free";
+        }
+
+
+        const plan =
+        normalizePromotionPlan(
+            listing.promotion_plan
+        );
+
+
+        if(plan === "free"){
+            return "free";
+        }
+
+
+        const expires =
+        listing.promotion_expires_at;
+
+
+        /*
+          თუ ვადა ჯერ საერთოდ არ აქვს,
+          ვთვლით აქტიურად.
+
+          მომავალში გადახდის Backend
+          ყოველთვის ჩაწერს ვადას.
+        */
+
+        if(!expires){
+            return plan;
+        }
+
+
+        const expiresTime =
+        new Date(
+            expires
+        )
+        .getTime();
+
+
+        if(
+            !Number.isFinite(
+                expiresTime
+            )
+        ){
+
+            return plan;
+
+        }
+
+
+        if(
+            expiresTime <=
+            Date.now()
+        ){
+
+            return "free";
+
+        }
+
+
+        return plan;
+
+    }
+
+
+    function getPromotionPriority(
+        listing
+    ){
+
+        return VIP_PRIORITY[
+            getEffectivePromotionPlan(
+                listing
+            )
+        ] ||
+        0;
+
+    }
+
+
+    function getBoostTimestamp(
+        listing
+    ){
+
+        if(
+            !listing ||
+            !listing.boosted_at
+        ){
+
+            return 0;
+
+        }
+
+
+        const value =
+        new Date(
+            listing.boosted_at
+        )
+        .getTime();
+
+
+        return Number.isFinite(
+            value
+        )
+        ?
+        value
+        :
+        0;
+
+    }
+
+
+    function formatPromotionDate(
+        value
+    ){
+
+        if(!value){
+            return "";
+        }
+
+
+        const date =
+        new Date(
+            value
+        );
+
+
+        if(
+            Number.isNaN(
+                date.getTime()
+            )
+        ){
+
+            return "";
+
+        }
+
+
+        try{
+
+            return date
+            .toLocaleDateString(
+                "ka-GE",
+                {
+                    day:"2-digit",
+                    month:"short",
+                    year:"numeric"
+                }
+            );
+
+        }catch(error){
+
+            return date
+            .toLocaleDateString();
+
+        }
+
+    }
+
+
+    function promotionClass(
+        plan
+    ){
+
+        if(plan === "vip_pro"){
+            return "yh-vip-pro";
+        }
+
+        if(plan === "vip_plus"){
+            return "yh-vip-plus";
+        }
+
+        if(plan === "vip"){
+            return "yh-vip";
+        }
+
+        return "";
+
+    }
+
+
+    /* =====================================================
+       PREMIUM STYLE
+    ===================================================== */
+
+    const vipStyle =
+    document.createElement(
+        "style"
+    );
+
+
+    vipStyle.textContent =
+    `
+
+    /* =================================
+       FEATURED SECTION
+    ================================= */
+
+    .yh-featured-section{
+        max-width:1200px;
+        margin:42px auto 10px;
+        padding:0 25px;
+    }
+
+    .yh-featured-head{
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-end;
+        gap:16px;
+        margin-bottom:18px;
+    }
+
+    .yh-featured-eyebrow{
+        display:inline-flex;
+        align-items:center;
+        gap:7px;
+        color:#8a6d2f;
+        font-size:12px;
+        font-weight:800;
+        letter-spacing:.5px;
+        text-transform:uppercase;
+        margin-bottom:7px;
+    }
+
+    .yh-featured-head h2{
+        font-size:27px;
+        line-height:1.2;
+    }
+
+    .yh-featured-head p{
+        color:var(--muted);
+        margin-top:7px;
+        line-height:1.5;
+        font-size:14px;
+    }
+
+    .yh-featured-note{
+        color:var(--muted);
+        font-size:12px;
+        white-space:nowrap;
+    }
+
+    .yh-featured-grid{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        gap:18px;
+    }
+
+    .yh-featured-card{
+        position:relative;
+        background:#fff;
+        border:1px solid #e4dfd0;
+        border-radius:16px;
+        overflow:hidden;
+        cursor:pointer;
+        transition:
+        transform .2s,
+        box-shadow .2s,
+        border-color .2s;
+    }
+
+    .yh-featured-card:hover{
+        transform:translateY(-3px);
+        box-shadow:0 13px 30px rgba(0,0,0,.09);
+    }
+
+    .yh-featured-card.yh-vip-pro{
+        border-color:#b8a168;
+    }
+
+    .yh-featured-card.yh-vip-plus{
+        border-color:#d9cba6;
+    }
+
+    .yh-featured-image{
+        height:210px;
+        background-size:cover;
+        background-position:center;
+        position:relative;
+    }
+
+    .yh-featured-overlay{
+        position:absolute;
+        inset:auto 0 0 0;
+        height:55%;
+        background:
+        linear-gradient(
+            transparent,
+            rgba(28,32,25,.58)
+        );
+    }
+
+    .yh-featured-badge{
+        position:absolute;
+        left:12px;
+        top:12px;
+        z-index:2;
+        border-radius:7px;
+        padding:7px 10px;
+        font-size:11px;
+        font-weight:900;
+        letter-spacing:.3px;
+        box-shadow:0 4px 14px rgba(0,0,0,.15);
+    }
+
+    .yh-featured-badge.yh-vip-plus{
+        background:#f3ead4;
+        color:#7b6125;
+        border:1px solid #ddc990;
+    }
+
+    .yh-featured-badge.yh-vip-pro{
+        background:#343a2e;
+        color:#f1db9e;
+        border:1px solid #6f745f;
+    }
+
+    .yh-featured-body{
+        padding:16px;
+    }
+
+    .yh-featured-price{
+        font-size:22px;
+        font-weight:900;
+        margin-bottom:5px;
+    }
+
+    .yh-featured-sqm{
+        color:var(--olive-dark);
+        font-size:12px;
+        font-weight:700;
+        margin-bottom:9px;
+    }
+
+    .yh-featured-location{
+        color:var(--muted);
+        font-size:14px;
+        margin-bottom:14px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+    .yh-featured-meta{
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px 13px;
+        border-top:1px solid var(--border);
+        padding-top:12px;
+        color:var(--text);
+        font-size:12px;
+    }
+
+
+    /* =================================
+       BADGES ON NORMAL CARDS
+    ================================= */
+
+    .yh-card-vip-badge{
+        position:absolute;
+        right:12px;
+        bottom:12px;
+        z-index:6;
+        padding:7px 10px;
+        border-radius:7px;
+        font-size:11px;
+        font-weight:900;
+        letter-spacing:.35px;
+        box-shadow:0 4px 15px rgba(0,0,0,.14);
+        backdrop-filter:blur(6px);
+    }
+
+    .yh-card-vip-badge.yh-vip{
+        background:rgba(239,243,226,.96);
+        color:#59662f;
+        border:1px solid #c8d1a6;
+    }
+
+    .yh-card-vip-badge.yh-vip-plus{
+        background:rgba(247,237,208,.97);
+        color:#75591e;
+        border:1px solid #ddc98d;
+    }
+
+    .yh-card-vip-badge.yh-vip-pro{
+        background:rgba(46,52,40,.97);
+        color:#f4d994;
+        border:1px solid #75795f;
+    }
+
+
+    /* =================================
+       MY LISTINGS VIP
+    ================================= */
+
+    .yh-my-promotion-status{
+        display:inline-flex;
+        align-items:center;
+        gap:5px;
+        padding:5px 8px;
+        border-radius:7px;
+        font-size:11px;
+        font-weight:800;
+    }
+
+    .yh-my-promotion-status.yh-vip{
+        background:#f0f3e6;
+        color:#5c6838;
+    }
+
+    .yh-my-promotion-status.yh-vip-plus{
+        background:#f7efd9;
+        color:#785d21;
+    }
+
+    .yh-my-promotion-status.yh-vip-pro{
+        background:#363c31;
+        color:#f0d795;
+    }
+
+    .my-listing-actions.yh-has-promotion{
+        grid-template-columns:
+        repeat(4,1fr);
+    }
+
+    .yh-promote-listing{
+        color:#6a5727!important;
+        border-color:#d8c894!important;
+        background:#fbf7ea!important;
+    }
+
+    .yh-promote-listing:hover{
+        background:#f4ebce!important;
+    }
+
+
+    /* =================================
+       MODAL
+    ================================= */
+
+    .yh-vip-modal{
+        display:none;
+        position:fixed;
+        inset:0;
+        z-index:7500;
+        background:rgba(24,28,22,.72);
+        backdrop-filter:blur(5px);
+        padding:20px;
+        overflow-y:auto;
+    }
+
+    .yh-vip-modal.active{
+        display:block;
+    }
+
+    .yh-vip-dialog{
+        width:100%;
+        max-width:980px;
+        margin:25px auto;
+        background:#f7f8f4;
+        border-radius:22px;
+        padding:26px;
+        position:relative;
+        box-shadow:
+        0 25px 80px
+        rgba(0,0,0,.28);
+    }
+
+    .yh-vip-close{
+        position:absolute;
+        right:18px;
+        top:16px;
+        width:38px;
+        height:38px;
+        border:0;
+        border-radius:50%;
+        background:#fff;
+        color:#555;
+        font-size:24px;
+        box-shadow:0 3px 12px rgba(0,0,0,.08);
+    }
+
+    .yh-vip-header{
+        padding-right:50px;
+        margin-bottom:20px;
+    }
+
+    .yh-vip-header-small{
+        display:inline-flex;
+        align-items:center;
+        gap:7px;
+        color:#836a32;
+        font-size:12px;
+        font-weight:900;
+        letter-spacing:.5px;
+        margin-bottom:8px;
+    }
+
+    .yh-vip-header h2{
+        font-size:30px;
+        line-height:1.2;
+        margin-bottom:8px;
+    }
+
+    .yh-vip-header p{
+        color:var(--muted);
+        line-height:1.55;
+        max-width:700px;
+    }
+
+    .yh-vip-listing-info{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:15px;
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:13px;
+        padding:14px 16px;
+        margin-bottom:20px;
+    }
+
+    .yh-vip-listing-title{
+        font-weight:800;
+        line-height:1.35;
+    }
+
+    .yh-vip-listing-code{
+        color:var(--muted);
+        font-size:12px;
+        margin-top:4px;
+    }
+
+    .yh-current-plan{
+        font-size:12px;
+        font-weight:800;
+        padding:7px 10px;
+        border-radius:7px;
+        background:var(--olive-light);
+        color:var(--olive-dark);
+        white-space:nowrap;
+    }
+
+
+    /* =================================
+       PLAN CARDS
+    ================================= */
+
+    .yh-vip-plans{
+        display:grid;
+        grid-template-columns:
+        repeat(3,1fr);
+        gap:14px;
+    }
+
+    .yh-vip-plan{
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:16px;
+        padding:18px;
+        position:relative;
+    }
+
+    .yh-vip-plan.vip{
+        border-color:#cbd3af;
+    }
+
+    .yh-vip-plan.vip-plus{
+        border-color:#dacb99;
+    }
+
+    .yh-vip-plan.vip-pro{
+        background:
+        linear-gradient(
+            145deg,
+            #30362c,
+            #404638
+        );
+        border-color:#777b61;
+        color:#fff;
+        box-shadow:
+        0 12px 30px
+        rgba(34,38,30,.16);
+    }
+
+    .yh-vip-plan-label{
+        display:inline-flex;
+        align-items:center;
+        gap:6px;
+        padding:6px 9px;
+        border-radius:6px;
+        font-size:12px;
+        font-weight:900;
+        margin-bottom:12px;
+    }
+
+    .yh-vip-plan.vip
+    .yh-vip-plan-label{
+        background:#eff3e4;
+        color:#5e6936;
+    }
+
+    .yh-vip-plan.vip-plus
+    .yh-vip-plan-label{
+        background:#f7efd9;
+        color:#795f24;
+    }
+
+    .yh-vip-plan.vip-pro
+    .yh-vip-plan-label{
+        background:#f2dca1;
+        color:#4e452c;
+    }
+
+    .yh-vip-plan h3{
+        font-size:21px;
+        margin-bottom:7px;
+    }
+
+    .yh-vip-plan-description{
+        min-height:42px;
+        color:var(--muted);
+        font-size:13px;
+        line-height:1.45;
+        margin-bottom:15px;
+    }
+
+    .yh-vip-plan.vip-pro
+    .yh-vip-plan-description{
+        color:#d4d8d0;
+    }
+
+    .yh-vip-options{
+        display:grid;
+        gap:7px;
+    }
+
+    .yh-vip-option{
+        width:100%;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        border:1px solid var(--border);
+        background:#fff;
+        padding:11px 12px;
+        border-radius:9px;
+        font-weight:700;
+        color:var(--text);
+        text-align:left;
+    }
+
+    .yh-vip-option strong{
+        font-size:16px;
+        color:var(--dark);
+    }
+
+    .yh-vip-option:hover{
+        border-color:var(--olive);
+    }
+
+    .yh-vip-option.selected{
+        border-color:var(--olive);
+        background:var(--olive-light);
+        box-shadow:
+        inset 0 0 0 1px
+        var(--olive);
+    }
+
+    .yh-vip-plan.vip-plus
+    .yh-vip-option.selected{
+        border-color:#b89c56;
+        background:#fbf3dc;
+        box-shadow:
+        inset 0 0 0 1px
+        #b89c56;
+    }
+
+    .yh-vip-plan.vip-pro
+    .yh-vip-option{
+        background:rgba(255,255,255,.08);
+        color:#fff;
+        border-color:rgba(255,255,255,.18);
+    }
+
+    .yh-vip-plan.vip-pro
+    .yh-vip-option strong{
+        color:#f5dda0;
+    }
+
+    .yh-vip-plan.vip-pro
+    .yh-vip-option.selected{
+        background:rgba(244,220,158,.14);
+        border-color:#e5c977;
+        box-shadow:
+        inset 0 0 0 1px
+        #e5c977;
+    }
+
+
+    /* =================================
+       BOOST
+    ================================= */
+
+    .yh-boost-box{
+        margin-top:14px;
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:15px;
+        padding:16px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:18px;
+    }
+
+    .yh-boost-left{
+        display:flex;
+        align-items:center;
+        gap:13px;
+    }
+
+    .yh-boost-icon{
+        width:42px;
+        height:42px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border-radius:11px;
+        background:var(--olive-light);
+        color:var(--olive-dark);
+        font-size:20px;
+        font-weight:900;
+    }
+
+    .yh-boost-title{
+        font-weight:900;
+        margin-bottom:4px;
+    }
+
+    .yh-boost-description{
+        color:var(--muted);
+        font-size:12px;
+        line-height:1.4;
+    }
+
+    .yh-boost-button{
+        border:1px solid var(--olive);
+        background:#fff;
+        color:var(--olive-dark);
+        padding:11px 16px;
+        border-radius:9px;
+        font-weight:800;
+        white-space:nowrap;
+    }
+
+    .yh-boost-button.selected{
+        background:var(--olive);
+        color:#fff;
+    }
+
+
+    /* =================================
+       CHECKOUT SUMMARY
+    ================================= */
+
+    .yh-vip-checkout{
+        margin-top:18px;
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:15px;
+        padding:17px;
+    }
+
+    .yh-vip-checkout-row{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:15px;
+    }
+
+    .yh-vip-selection-label{
+        color:var(--muted);
+        font-size:12px;
+        margin-bottom:4px;
+    }
+
+    .yh-vip-selection{
+        font-size:16px;
+        font-weight:900;
+    }
+
+    .yh-vip-payment-price{
+        font-size:24px;
+        font-weight:900;
+        white-space:nowrap;
+    }
+
+    .yh-vip-checkout-button{
+        width:100%;
+        border:0;
+        background:var(--olive);
+        color:#fff;
+        padding:14px;
+        border-radius:10px;
+        font-weight:900;
+        font-size:15px;
+        margin-top:14px;
+    }
+
+    .yh-vip-checkout-button:disabled{
+        background:#c8ccc2;
+    }
+
+    .yh-vip-payment-note{
+        color:var(--muted);
+        font-size:11px;
+        line-height:1.5;
+        margin-top:10px;
+        text-align:center;
+    }
+
+
+    @media(max-width:850px){
+
+        .yh-vip-plans{
+            grid-template-columns:1fr;
+        }
+
+        .yh-featured-grid{
+            grid-template-columns:
+            repeat(2,1fr);
+        }
+
+        .yh-vip-plan-description{
+            min-height:auto;
+        }
+
+    }
+
+
+    @media(max-width:600px){
+
+        .yh-featured-section{
+            padding:0 15px;
+            margin-top:30px;
+        }
+
+        .yh-featured-head{
+            flex-direction:column;
+            align-items:flex-start;
+        }
+
+        .yh-featured-grid{
+            grid-template-columns:1fr;
+        }
+
+        .yh-featured-image{
+            height:215px;
+        }
+
+        .yh-vip-modal{
+            padding:8px;
+        }
+
+        .yh-vip-dialog{
+            margin:8px auto;
+            border-radius:17px;
+            padding:18px;
+        }
+
+        .yh-vip-header h2{
+            font-size:25px;
+        }
+
+        .yh-vip-listing-info{
+            flex-direction:column;
+            align-items:flex-start;
+        }
+
+        .yh-boost-box{
+            flex-direction:column;
+            align-items:stretch;
+        }
+
+        .yh-boost-button{
+            width:100%;
+        }
+
+        .yh-vip-checkout-row{
+            align-items:flex-end;
+        }
+
+        .my-listing-actions.yh-has-promotion{
+            grid-template-columns:
+            repeat(2,1fr);
+        }
+
+    }
+
+    `;
+
+
+    document.head.appendChild(
+        vipStyle
+    );
+
+
+    /* =====================================================
+       FEATURED SECTION HTML
+    ===================================================== */
+
+    function createFeaturedSection(){
+
+        if(
+            document.getElementById(
+                "yhFeaturedSection"
+            )
+        ){
+
+            return;
+        }
+
+
+        const filters =
+        document.querySelector(
+            ".filters"
+        );
+
+
+        if(!filters){
+            return;
+        }
+
+
+        const section =
+        document.createElement(
+            "section"
+        );
+
+
+        section.id =
+        "yhFeaturedSection";
+
+        section.className =
+        "yh-featured-section";
+
+        section.hidden =
+        true;
+
+
+        section.innerHTML =
+        `
+
+        <div class="yh-featured-head">
+
+            <div>
+
+                <div class="yh-featured-eyebrow">
+                ✦ PREMIUM
+                </div>
+
+                <h2>
+                გამორჩეული განცხადებები
+                </h2>
+
+                <p>
+                VIP+ და VIP+ PRO განცხადებები
+                გაზრდილი ხილვადობით
+                </p>
+
+            </div>
+
+            <div class="yh-featured-note">
+            რეკომენდებული
+            </div>
+
+        </div>
+
+
+        <div
+        class="yh-featured-grid"
+        id="yhFeaturedGrid">
+        </div>
+
+        `;
+
+
+        filters.parentNode
+        .insertBefore(
+            section,
+            filters
+        );
+
+    }
+
+
+    /* =====================================================
+       FEATURED RENDER
+    ===================================================== */
+
+    function renderFeaturedListings(){
+
+        createFeaturedSection();
+
+
+        const section =
+        document.getElementById(
+            "yhFeaturedSection"
+        );
+
+        const container =
+        document.getElementById(
+            "yhFeaturedGrid"
+        );
+
+
+        if(
+            !section ||
+            !container
+        ){
+
+            return;
+        }
+
+
+        const listings =
+        Array.isArray(
+            currentListings
+        )
+        ?
+        currentListings
+        :
+        [];
+
+
+        const featured =
+        listings
+        .filter(
+            function(listing){
+
+                const plan =
+                getEffectivePromotionPlan(
+                    listing
+                );
+
+                return (
+                    plan === "vip_plus" ||
+                    plan === "vip_pro"
+                );
+
+            }
+        )
+        .sort(
+            function(a,b){
+
+                const planDifference =
+                getPromotionPriority(b) -
+                getPromotionPriority(a);
+
+
+                if(planDifference){
+                    return planDifference;
+                }
+
+
+                const boostDifference =
+                getBoostTimestamp(b) -
+                getBoostTimestamp(a);
+
+
+                if(boostDifference){
+                    return boostDifference;
+                }
+
+
+                return Number(
+                    b.views ||
+                    0
+                ) -
+                Number(
+                    a.views ||
+                    0
+                );
+
+            }
+        )
+        .slice(
+            0,
+            6
+        );
+
+
+        if(!featured.length){
+
+            section.hidden =
+            true;
+
+            container.innerHTML =
+            "";
+
+            return;
+
+        }
+
+
+        section.hidden =
+        false;
+
+        container.innerHTML =
+        "";
+
+
+        featured.forEach(
+            function(listing){
+
+                const plan =
+                getEffectivePromotionPlan(
+                    listing
+                );
+
+
+                const photos =
+                Array.isArray(
+                    listing.photos
+                )
+                ?
+                listing.photos
+                :
+                [];
+
+
+                const photo =
+                photos[0] ||
+                "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80";
+
+
+                const location =
+                [
+                    listing.city,
+                    listing.district
+                ]
+                .filter(Boolean)
+                .join(", ");
+
+
+                const sqm =
+                formatPricePerSqm(
+                    listing
+                );
+
+
+                const card =
+                document.createElement(
+                    "div"
+                );
+
+
+                card.className =
+                "yh-featured-card " +
+                promotionClass(
+                    plan
+                );
+
+
+                card.dataset.id =
+                listing.id;
+
+
+                card.innerHTML =
+                `
+
+                <div
+                class="yh-featured-image"
+                style="
+                background-image:url('${escapeHtml(photo)}');
+                ">
+
+                    <div class="yh-featured-overlay"></div>
+
+                    <div
+                    class="
+                    yh-featured-badge
+                    ${promotionClass(plan)}
+                    ">
+
+                    ${
+                        plan === "vip_pro"
+                        ?
+                        "✦ VIP+ PRO"
+                        :
+                        "VIP+"
+                    }
+
+                    </div>
+
+                </div>
+
+
+                <div class="yh-featured-body">
+
+                    <div class="yh-featured-price">
+
+                    ${escapeHtml(
+                        formatPrice(
+                            listing.price,
+                            listing.currency
+                        )
+                    )}
+
+                    ${
+                        listing.deal_type ===
+                        "rent"
+                        ?
+                        " / თვე"
+                        :
+                        ""
+                    }
+
+                    </div>
+
+
+                    ${
+                        sqm
+                        ?
+                        `
+                        <div class="yh-featured-sqm">
+                        ${escapeHtml(sqm)}
+                        </div>
+                        `
+                        :
+                        ""
+                    }
+
+
+                    <div class="yh-featured-location">
+
+                    📍
+                    ${escapeHtml(
+                        location ||
+                        "საქართველო"
+                    )}
+
+                    </div>
+
+
+                    <div class="yh-featured-meta">
+
+                        ${
+                            listing.rooms
+                            ?
+                            `
+                            <span>
+                            ${escapeHtml(listing.rooms)}
+                            ოთახი
+                            </span>
+                            `
+                            :
+                            ""
+                        }
+
+                        ${
+                            listing.area
+                            ?
+                            `
+                            <span>
+                            ${escapeHtml(listing.area)}
+                            მ²
+                            </span>
+                            `
+                            :
+                            ""
+                        }
+
+                        <span>
+                        👁
+                        ${formatViews(
+                            listing.views
+                        )}
+                        </span>
+
+                    </div>
+
+                </div>
+
+                `;
+
+
+                container.appendChild(
+                    card
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       VIP BADGES ON EXISTING CARDS
+    ===================================================== */
+
+    function decoratePromotionCards(){
+
+        document
+        .querySelectorAll(
+            ".yh-card-vip-badge"
+        )
+        .forEach(
+            function(element){
+
+                element.remove();
+
+            }
+        );
+
+
+        const selector =
+        [
+            ".property-card[data-id]",
+            ".project-card[data-id]",
+            ".my-listing-card[data-id]"
+        ]
+        .join(",");
+
+
+        document
+        .querySelectorAll(
+            selector
+        )
+        .forEach(
+            function(card){
+
+                const listing =
+                getPromotionListingById(
+                    card.dataset.id
+                );
+
+
+                if(!listing){
+                    return;
+                }
+
+
+                const plan =
+                getEffectivePromotionPlan(
+                    listing
+                );
+
+
+                if(plan === "free"){
+                    return;
+                }
+
+
+                const image =
+                card.querySelector(
+                    ".card-image"
+                );
+
+
+                if(!image){
+                    return;
+                }
+
+
+                const badge =
+                document.createElement(
+                    "div"
+                );
+
+
+                badge.className =
+                "yh-card-vip-badge " +
+                promotionClass(
+                    plan
+                );
+
+
+                badge.textContent =
+                plan === "vip_pro"
+                ?
+                "✦ VIP+ PRO"
+                :
+                plan === "vip_plus"
+                ?
+                "VIP+"
+                :
+                "VIP";
+
+
+                image.appendChild(
+                    badge
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       MY LISTINGS PROMOTION BUTTONS
+    ===================================================== */
+
+    function decorateMyListingPromotion(){
+
+        document
+        .querySelectorAll(
+            ".my-listing-card[data-id]"
+        )
+        .forEach(
+            function(card){
+
+                const id =
+                card.dataset.id;
+
+
+                const listing =
+                getPromotionListingById(
+                    id
+                );
+
+
+                if(!listing){
+                    return;
+                }
+
+
+                const plan =
+                getEffectivePromotionPlan(
+                    listing
+                );
+
+
+                const actions =
+                card.querySelector(
+                    ".my-listing-actions"
+                );
+
+
+                if(actions){
+
+                    actions.classList.add(
+                        "yh-has-promotion"
+                    );
+
+
+                    if(
+                        !actions.querySelector(
+                            ".yh-promote-listing"
+                        )
+                    ){
+
+                        const button =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                        button.type =
+                        "button";
+
+                        button.className =
+                        "yh-promote-listing";
+
+                        button.dataset.id =
+                        id;
+
+
+                        button.textContent =
+                        plan === "free"
+                        ?
+                        "✦ VIP"
+                        :
+                        "✦ VIP მართვა";
+
+
+                        actions.appendChild(
+                            button
+                        );
+
+                    }
+
+                }
+
+
+                const codeArea =
+                card.querySelector(
+                    ".my-code"
+                );
+
+
+                if(
+                    codeArea &&
+                    plan !== "free" &&
+                    !codeArea.querySelector(
+                        ".yh-my-promotion-status"
+                    )
+                ){
+
+                    const status =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                    status.className =
+                    "yh-my-promotion-status " +
+                    promotionClass(
+                        plan
+                    );
+
+
+                    let statusText =
+                    VIP_NAMES[
+                        plan
+                    ];
+
+
+                    const expires =
+                    formatPromotionDate(
+                        listing.promotion_expires_at
+                    );
+
+
+                    if(expires){
+
+                        statusText +=
+                        " · " +
+                        expires +
+                        "-მდე";
+
+                    }
+
+
+                    status.textContent =
+                    statusText;
+
+
+                    codeArea.appendChild(
+                        status
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       CREATE VIP MODAL
+    ===================================================== */
+
+    function createVipModal(){
+
+        if(
+            document.getElementById(
+                "yhVipModal"
+            )
+        ){
+
+            return;
+        }
+
+
+        const modal =
+        document.createElement(
+            "div"
+        );
+
+
+        modal.className =
+        "yh-vip-modal";
+
+        modal.id =
+        "yhVipModal";
+
+
+        modal.innerHTML =
+        `
+
+        <div class="yh-vip-dialog">
+
+            <button
+            type="button"
+            class="yh-vip-close"
+            id="yhVipClose">
+            ×
+            </button>
+
+
+            <div class="yh-vip-header">
+
+                <div class="yh-vip-header-small">
+                ✦ YOUR HOME PREMIUM
+                </div>
+
+                <h2>
+                გაზარდე განცხადების ხილვადობა
+                </h2>
+
+                <p>
+                აირჩიე შენთვის სასურველი პაკეტი.
+                VIP+ და VIP+ PRO ასევე გამოჩნდება
+                გამორჩეული განცხადებების ბლოკში.
+                </p>
+
+            </div>
+
+
+            <div
+            class="yh-vip-listing-info">
+
+                <div>
+
+                    <div
+                    class="yh-vip-listing-title"
+                    id="yhVipListingTitle">
+                    განცხადება
+                    </div>
+
+                    <div
+                    class="yh-vip-listing-code"
+                    id="yhVipListingCode">
+                    </div>
+
+                </div>
+
+
+                <div
+                class="yh-current-plan"
+                id="yhVipCurrentPlan">
+                FREE
+                </div>
+
+            </div>
+
+
+            <div class="yh-vip-plans">
+
+
+                <!-- VIP -->
+
+                <div class="yh-vip-plan vip">
+
+                    <div class="yh-vip-plan-label">
+                    VIP
+                    </div>
+
+                    <h3>
+                    მეტი ხილვადობა
+                    </h3>
+
+                    <div class="yh-vip-plan-description">
+                    განცხადება მიიღებს უპირატეს პოზიციას
+                    ჩვეულებრივ განცხადებებთან შედარებით.
+                    </div>
+
+
+                    <div class="yh-vip-options">
+
+                        <button
+                        type="button"
+                        class="yh-vip-option"
+                        data-plan="vip"
+                        data-days="7"
+                        data-price="5">
+
+                            <span>
+                            7 დღე
+                            </span>
+
+                            <strong>
+                            5 ₾
+                            </strong>
+
+                        </button>
+
+
+                        <button
+                        type="button"
+                        class="yh-vip-option"
+                        data-plan="vip"
+                        data-days="15"
+                        data-price="8">
+
+                            <span>
+                            15 დღე
+                            </span>
+
+                            <strong>
+                            8 ₾
+                            </strong>
+
+                        </button>
+
+
+                        <button
+                        type="button"
+                        class="yh-vip-option"
+                        data-plan="vip"
+                        data-days="30"
+                        data-price="12">
+
+                            <span>
+                            30 დღე
+                            </span>
+
+                            <strong>
+                            12 ₾
+                            </strong>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- VIP+ -->
+
+                <div class="yh-vip-plan vip-plus">
+
+                    <div class="yh-vip-plan-label">
+                    VIP+
+                    </div>
+
+                    <h3>
+                    გამორჩეული პოზიცია
+                    </h3>
+
+                    <div class="yh-vip-plan-description">
+                    უფრო მაღალი პრიორიტეტი და ადგილი
+                    გამორჩეული განცხადებების ბლოკში.
+                    </div>
+
+
+                    <div class="yh-vip-options">
+
+                        <button
+                        type="button"
+                        class="yh-vip-option"
+                        data-plan="vip_plus"
+                        data-days="3"
+                        data-price="5">
+
+                            <span>
+                            3 დღე
+                            </span>
+
+                            <strong>
+                            5 ₾
+                            </strong>
+
+                        </button>
+
+
+                        <button
+                        type="button"
+                        class="yh-vip-option"
+                        data-plan="vip_plus"
+                        data-days="7"
+                        data-price="9">
+
+                            <span>
+                            7 დღე
+                            </span>
+
+                            <strong>
+                            9 ₾
+                            </strong>
+
+                        </button>
+
+
+                        <button
+                        type="button"
+                        class="yh-vip-option"
+                        data-plan="vip_plus"
+                        data-days="15"
+                        data-price="15">
+
+                            <span>
+                            15 დღე
+                            </span>
+
+                            <strong>
+                            15 ₾
+                            </strong>
+
+                        </button>
+
+
+                        <button
+                        type="button"
+                        class="yh-vip-option"
+                        data-plan="vip_plus"
+                        data-days="30"
+                        data-price="25">
+
+                            <span>
+                            30 დღე
+                            </span>
+
+                            <strong>
+                            25 ₾
+                            </strong>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- VIP+ PRO -->
+
+                <div class="yh-vip-plan vip-pro">
+
+                    <div class="yh-vip-plan-label">
+                    ✦ VIP+ PRO
+                    </div>
+
+                    <h3>
+                    მაქსიმალური ხილვადობა
+                    </h3>
+
+                    <div class="yh-vip-plan-description">
+                    ყველაზე მაღალი პრიორიტეტი,
+                    პრემიუმ გამოყოფა და Featured პოზიცია.
+                    </div>
+
+
+                    <div class="yh-vip-options">
+
+                        <button
+                        type="button"
+                        class="yh-vip-option"
+                        data-plan="vip_pro"
+                        data-days="7"
+                        data-price="15">
+
+                            <span>
+                            7 დღე
+                            </span>
+
+                            <strong>
+                            15 ₾
+                            </strong>
+
+                        </button>
+
+
+                        <button
+                        type="button"
+                        class="yh-vip-option"
+                        data-plan="vip_pro"
+                        data-days="15"
+                        data-price="25">
+
+                            <span>
+                            15 დღე
+                            </span>
+
+                            <strong>
+                            25 ₾
+                            </strong>
+
+                        </button>
+
+
+                        <button
+                        type="button"
+                        class="yh-vip-option"
+                        data-plan="vip_pro"
+                        data-days="30"
+                        data-price="39">
+
+                            <span>
+                            30 დღე
+                            </span>
+
+                            <strong>
+                            39 ₾
+                            </strong>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BOOST -->
+
+            <div class="yh-boost-box">
+
+                <div class="yh-boost-left">
+
+                    <div class="yh-boost-icon">
+                    ↑
+                    </div>
+
+                    <div>
+
+                        <div class="yh-boost-title">
+                        Boost — განცხადების აწევა
+                        </div>
+
+                        <div class="yh-boost-description">
+                        განცხადება აიწევს თავის კატეგორიაში
+                        უფრო მაღალ პოზიციაზე.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                type="button"
+                class="yh-boost-button"
+                id="yhBoostSelect"
+                data-plan="boost"
+                data-days="0"
+                data-price="2">
+
+                Boost · 2 ₾
+
+                </button>
+
+            </div>
+
+
+            <!-- CHECKOUT -->
+
+            <div class="yh-vip-checkout">
+
+                <div class="yh-vip-checkout-row">
+
+                    <div>
+
+                        <div class="yh-vip-selection-label">
+                        არჩეული პაკეტი
+                        </div>
+
+                        <div
+                        class="yh-vip-selection"
+                        id="yhVipSelection">
+
+                        ჯერ არ არის არჩეული
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                    class="yh-vip-payment-price"
+                    id="yhVipPaymentPrice">
+
+                    —
+
+                    </div>
+
+                </div>
+
+
+                <button
+                type="button"
+                class="yh-vip-checkout-button"
+                id="yhVipCheckoutButton"
+                disabled>
+
+                გადახდაზე გადასვლა
+
+                </button>
+
+
+                <div class="yh-vip-payment-note">
+
+                VIP პაკეტების ოფიციალური ფასი არის ლარში (₾).
+                სტატუსი გააქტიურდება მხოლოდ წარმატებული
+                გადახდის დადასტურების შემდეგ.
+
+                </div>
+
+            </div>
+
+        </div>
+
+        `;
+
+
+        document.body.appendChild(
+            modal
+        );
+
+    }
+
+
+    /* =====================================================
+       OPEN / CLOSE VIP
+    ===================================================== */
+
+    function openVipModal(
+        listingId
+    ){
+
+        createVipModal();
+
+
+        const listing =
+        getPromotionListingById(
+            listingId
+        );
+
+
+        if(!listing){
+
+            showMessage(
+                "განცხადება ვერ მოიძებნა."
+            );
+
+            return;
+
+        }
+
+
+        promotionListingId =
+        listingId;
+
+        selectedPromotionPackage =
+        null;
+
+
+        document
+        .querySelectorAll(
+            ".yh-vip-option"
+        )
+        .forEach(
+            function(button){
+
+                button.classList.remove(
+                    "selected"
+                );
+
+            }
+        );
+
+
+        const boost =
+        document.getElementById(
+            "yhBoostSelect"
+        );
+
+
+        if(boost){
+
+            boost.classList.remove(
+                "selected"
+            );
+
+        }
+
+
+        const title =
+        listing.title ||
+        propertyLabel(
+            listing.property_type
+        );
+
+
+        document.getElementById(
+            "yhVipListingTitle"
+        )
+        .textContent =
+        title;
+
+
+        document.getElementById(
+            "yhVipListingCode"
+        )
+        .textContent =
+        listing.listing_code
+        ?
+        "განცხადება: " +
+        listing.listing_code
+        :
+        "";
+
+
+        const plan =
+        getEffectivePromotionPlan(
+            listing
+        );
+
+
+        const planElement =
+        document.getElementById(
+            "yhVipCurrentPlan"
+        );
+
+
+        let planText =
+        "სტატუსი: " +
+        VIP_NAMES[
+            plan
+        ];
+
+
+        const expires =
+        formatPromotionDate(
+            listing.promotion_expires_at
+        );
+
+
+        if(
+            plan !== "free" &&
+            expires
+        ){
+
+            planText +=
+            " · " +
+            expires +
+            "-მდე";
+
+        }
+
+
+        planElement.textContent =
+        planText;
+
+
+        document.getElementById(
+            "yhVipSelection"
+        )
+        .textContent =
+        "ჯერ არ არის არჩეული";
+
+
+        document.getElementById(
+            "yhVipPaymentPrice"
+        )
+        .textContent =
+        "—";
+
+
+        document.getElementById(
+            "yhVipCheckoutButton"
+        )
+        .disabled =
+        true;
+
+
+        const modal =
+        document.getElementById(
+            "yhVipModal"
+        );
+
+
+        modal.classList.add(
+            "active"
+        );
+
+
+        document.body.style.overflow =
+        "hidden";
+
+    }
+
+
+    function closeVipModal(){
+
+        const modal =
+        document.getElementById(
+            "yhVipModal"
+        );
+
+
+        if(modal){
+
+            modal.classList.remove(
+                "active"
+            );
+
+        }
+
+
+        promotionListingId =
+        null;
+
+        selectedPromotionPackage =
+        null;
+
+
+        if(
+            !listingModal.classList.contains(
+                "active"
+            )
+        ){
+
+            document.body.style.overflow =
+            "";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       SELECT PACKAGE
+    ===================================================== */
+
+    function selectPromotionPackage(
+        element
+    ){
+
+        const plan =
+        element.dataset.plan;
+
+        const days =
+        Number(
+            element.dataset.days ||
+            0
+        );
+
+        const price =
+        Number(
+            element.dataset.price ||
+            0
+        );
+
+
+        document
+        .querySelectorAll(
+            ".yh-vip-option"
+        )
+        .forEach(
+            function(button){
+
+                button.classList.remove(
+                    "selected"
+                );
+
+            }
+        );
+
+
+        const boost =
+        document.getElementById(
+            "yhBoostSelect"
+        );
+
+
+        if(boost){
+
+            boost.classList.remove(
+                "selected"
+            );
+
+        }
+
+
+        element.classList.add(
+            "selected"
+        );
+
+
+        selectedPromotionPackage = {
+            plan:plan,
+            days:days,
+            priceGel:price
+        };
+
+
+        let label;
+
+
+        if(plan === "boost"){
+
+            label =
+            "Boost — განცხადების აწევა";
+
+        }else{
+
+            label =
+            VIP_NAMES[
+                plan
+            ] +
+            " · " +
+            days +
+            " დღე";
+
+        }
+
+
+        document.getElementById(
+            "yhVipSelection"
+        )
+        .textContent =
+        label;
+
+
+        document.getElementById(
+            "yhVipPaymentPrice"
+        )
+        .textContent =
+        price +
+        " ₾";
+
+
+        document.getElementById(
+            "yhVipCheckoutButton"
+        )
+        .disabled =
+        false;
+
+    }
+
+
+    /* =====================================================
+       CHECKOUT PLACEHOLDER
+    ===================================================== */
+
+    function startPromotionCheckout(){
+
+        if(
+            !selectedPromotionPackage ||
+            !promotionListingId
+        ){
+
+            showMessage(
+                "ჯერ აირჩიეთ VIP პაკეტი."
+            );
+
+            return;
+
+        }
+
+
+        const pending = {
+
+            listingId:
+            promotionListingId,
+
+            plan:
+            selectedPromotionPackage.plan,
+
+            days:
+            selectedPromotionPackage.days,
+
+            priceGel:
+            selectedPromotionPackage.priceGel,
+
+            createdAt:
+            new Date()
+            .toISOString()
+
+        };
+
+
+        try{
+
+            localStorage
+            .setItem(
+                "yourHomePendingPromotion",
+                JSON.stringify(
+                    pending
+                )
+            );
+
+        }catch(error){
+
+            console.log(
+                error
+            );
+
+        }
+
+
+        closeVipModal();
+
+
+        showMessage(
+            "✅ პაკეტი არჩეულია. შემდეგ ეტაპზე ამ ღილაკს Bank of Georgia-ს გადახდას მივაბამთ."
+        );
+
+    }
+
+
+    /* =====================================================
+       SORT PRIORITY
+       PRO > VIP+ > VIP > FREE
+    ===================================================== */
+
+    if(
+        typeof getSortedListings ===
+        "function"
+    ){
+
+        const baseGetSortedListings =
+        getSortedListings;
+
+
+        getSortedListings =
+        function(listings){
+
+            const base =
+            baseGetSortedListings(
+                listings
+            );
+
+
+            return base
+            .map(
+                function(item,index){
+
+                    return {
+                        item:item,
+                        originalIndex:index
+                    };
+
+                }
+            )
+            .sort(
+                function(a,b){
+
+                    const priorityDifference =
+                    getPromotionPriority(
+                        b.item
+                    ) -
+                    getPromotionPriority(
+                        a.item
+                    );
+
+
+                    if(priorityDifference){
+
+                        return priorityDifference;
+
+                    }
+
+
+                    const boostDifference =
+                    getBoostTimestamp(
+                        b.item
+                    ) -
+                    getBoostTimestamp(
+                        a.item
+                    );
+
+
+                    if(boostDifference){
+
+                        return boostDifference;
+
+                    }
+
+
+                    return (
+                        a.originalIndex -
+                        b.originalIndex
+                    );
+
+                }
+            )
+            .map(
+                function(entry){
+
+                    return entry.item;
+
+                }
+            );
+
+        };
+
+    }
+
+
+    /* =====================================================
+       WRAP EXISTING RENDER FUNCTIONS
+    ===================================================== */
+
+    function refreshVipUi(){
+
+        renderFeaturedListings();
+
+        decoratePromotionCards();
+
+        decorateMyListingPromotion();
+
+    }
+
+
+    if(
+        typeof renderListings ===
+        "function"
+    ){
+
+        const baseRenderListings =
+        renderListings;
+
+
+        renderListings =
+        function(listings){
+
+            baseRenderListings(
+                listings
+            );
+
+            refreshVipUi();
+
+        };
+
+    }
+
+
+    if(
+        typeof renderMyListings ===
+        "function"
+    ){
+
+        const baseRenderMyListings =
+        renderMyListings;
+
+
+        renderMyListings =
+        function(listings){
+
+            baseRenderMyListings(
+                listings
+            );
+
+            decoratePromotionCards();
+
+            decorateMyListingPromotion();
+
+        };
+
+    }
+
+
+    if(
+        typeof renderNewProjects ===
+        "function"
+    ){
+
+        const baseRenderNewProjects =
+        renderNewProjects;
+
+
+        renderNewProjects =
+        function(){
+
+            baseRenderNewProjects();
+
+            decoratePromotionCards();
+
+        };
+
+    }
+
+
+    /* =====================================================
+       EVENTS
+    ===================================================== */
+
+    document
+    .addEventListener(
+        "click",
+        function(event){
+
+
+            /* MY LISTING VIP */
+
+            const promote =
+            event.target.closest(
+                ".yh-promote-listing"
+            );
+
+
+            if(promote){
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+                openVipModal(
+                    promote.dataset.id
+                );
+
+                return;
+
+            }
+
+
+            /* FEATURED LISTING */
+
+            const featured =
+            event.target.closest(
+                ".yh-featured-card[data-id]"
+            );
+
+
+            if(featured){
+
+                openListingById(
+                    featured.dataset.id
+                );
+
+                return;
+
+            }
+
+
+            /* PACKAGE */
+
+            const option =
+            event.target.closest(
+                ".yh-vip-option"
+            );
+
+
+            if(option){
+
+                selectPromotionPackage(
+                    option
+                );
+
+                return;
+
+            }
+
+
+            /* BOOST */
+
+            const boost =
+            event.target.closest(
+                "#yhBoostSelect"
+            );
+
+
+            if(boost){
+
+                selectPromotionPackage(
+                    boost
+                );
+
+                return;
+
+            }
+
+
+            /* CLOSE */
+
+            if(
+                event.target.closest(
+                    "#yhVipClose"
+                )
+            ){
+
+                closeVipModal();
+
+                return;
+
+            }
+
+
+            /* PAYMENT */
+
+            if(
+                event.target.closest(
+                    "#yhVipCheckoutButton"
+                )
+            ){
+
+                startPromotionCheckout();
+
+                return;
+
+            }
+
+
+            /* OUTSIDE CLICK */
+
+            const modal =
+            document.getElementById(
+                "yhVipModal"
+            );
+
+
+            if(
+                modal &&
+                event.target ===
+                modal
+            ){
+
+                closeVipModal();
+
+            }
+
+        }
+    );
+
+
+    document
+    .addEventListener(
+        "keydown",
+        function(event){
+
+            if(
+                event.key ===
+                "Escape"
+            ){
+
+                const modal =
+                document.getElementById(
+                    "yhVipModal"
+                );
+
+
+                if(
+                    modal &&
+                    modal.classList.contains(
+                        "active"
+                    )
+                ){
+
+                    closeVipModal();
+
+                }
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       INITIALIZE
+    ===================================================== */
+
+    createFeaturedSection();
+
+    createVipModal();
+
+
+    /*
+      თუ განცხადებები უკვე ჩაიტვირთა,
+      მაშინვე გადავხატოთ.
+    */
+
+    setTimeout(
+        refreshVipUi,
+        100
+    );
+
+
+    setTimeout(
+        refreshVipUi,
+        1200
+    );
+
+
+})();
+
+</script>
 </body>
 </html>
 
