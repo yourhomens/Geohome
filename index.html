@@ -12315,17 +12315,2313 @@ if(
         "",
         window.location.href
     );
-
-}
-
-
 loadCurrentUser();
 
 loadListings();
 
 </script>
 
+
+<!-- =========================
+     CURRENCY ₾ / $ / €
+========================= -->
+
+<script>
+
+(function(){
+
+    const YH_ALLOWED_CURRENCIES =
+    [
+        "GEL",
+        "USD",
+        "EUR"
+    ];
+
+    const YH_CURRENCY_SYMBOLS = {
+        GEL:"₾",
+        USD:"$",
+        EUR:"€"
+    };
+
+    /*
+       სარეზერვო კურსები.
+       საიტის გახსნისას პროგრამა ცდილობს
+       საქართველოს ეროვნული ბანკიდან
+       ახალი კურსების მიღებას.
+
+       1 USD = GEL
+       1 EUR = GEL
+    */
+
+    let yhCurrencyRates = {
+        GEL:1,
+        USD:2.6130,
+        EUR:3.0575
+    };
+
+
+    const YH_CURRENCY_STORAGE =
+    "yourHomeDisplayCurrency";
+
+    const YH_RATES_STORAGE =
+    "yourHomeNbgRates";
+
+
+    let yhDisplayCurrency =
+    "USD";
+
+
+    /* =========================
+       CACHE
+    ========================= */
+
+    function loadCachedRates(){
+
+        try{
+
+            const saved =
+            JSON.parse(
+                localStorage.getItem(
+                    YH_RATES_STORAGE
+                )
+            );
+
+            if(
+                saved &&
+                Number(saved.USD) > 0 &&
+                Number(saved.EUR) > 0
+            ){
+
+                yhCurrencyRates = {
+
+                    GEL:1,
+
+                    USD:
+                    Number(
+                        saved.USD
+                    ),
+
+                    EUR:
+                    Number(
+                        saved.EUR
+                    )
+
+                };
+
+            }
+
+        }catch(error){
+
+            console.log(
+                "ვალუტის cache ვერ ჩაიტვირთა:",
+                error
+            );
+
+        }
+
+    }
+
+
+    loadCachedRates();
+
+
+    /* =========================
+       CURRENCY HELPERS
+    ========================= */
+
+    function normalizeCurrency(
+        currency
+    ){
+
+        const value =
+        String(
+            currency ||
+            "USD"
+        )
+        .toUpperCase();
+
+        return YH_ALLOWED_CURRENCIES
+        .includes(
+            value
+        )
+        ?
+        value
+        :
+        "USD";
+
+    }
+
+
+    function getCurrencyRate(
+        currency
+    ){
+
+        const code =
+        normalizeCurrency(
+            currency
+        );
+
+        return Number(
+            yhCurrencyRates[
+                code
+            ] ||
+            1
+        );
+
+    }
+
+
+    function convertCurrency(
+        amount,
+        fromCurrency,
+        toCurrency =
+        yhDisplayCurrency
+    ){
+
+        const number =
+        Number(
+            amount
+        );
+
+        if(
+            !Number.isFinite(
+                number
+            )
+        ){
+
+            return 0;
+
+        }
+
+        const from =
+        normalizeCurrency(
+            fromCurrency
+        );
+
+        const to =
+        normalizeCurrency(
+            toCurrency
+        );
+
+
+        if(from === to){
+
+            return number;
+
+        }
+
+
+        /*
+          ჯერ თანხას ვაქცევთ GEL-ში,
+          შემდეგ არჩეულ ვალუტაში.
+        */
+
+        const gelValue =
+        number *
+        getCurrencyRate(
+            from
+        );
+
+
+        return gelValue /
+        getCurrencyRate(
+            to
+        );
+
+    }
+
+
+    function formatDisplayCurrency(
+        amount,
+        currency =
+        yhDisplayCurrency
+    ){
+
+        const code =
+        normalizeCurrency(
+            currency
+        );
+
+        const rounded =
+        Math.round(
+            Number(
+                amount ||
+                0
+            )
+        );
+
+        const number =
+        rounded
+        .toLocaleString(
+            "en-US"
+        );
+
+
+        if(code === "GEL"){
+
+            return number +
+            " ₾";
+
+        }
+
+
+        if(code === "EUR"){
+
+            return "€" +
+            number;
+
+        }
+
+
+        return "$" +
+        number;
+
+    }
+
+
+    /* =========================
+       REPLACE OLD formatPrice
+    ========================= */
+
+    formatPrice =
+    function(
+        price,
+        originalCurrency
+    ){
+
+        const converted =
+        convertCurrency(
+            Number(
+                price ||
+                0
+            ),
+            originalCurrency ||
+            "USD",
+            yhDisplayCurrency
+        );
+
+        return formatDisplayCurrency(
+            converted,
+            yhDisplayCurrency
+        );
+
+    };
+
+
+    /* =========================
+       SORT — CORRECT BETWEEN
+       DIFFERENT CURRENCIES
+    ========================= */
+
+    getSortedListings =
+    function(
+        listings
+    ){
+
+        const sort =
+        document
+        .getElementById(
+            "sortListings"
+        )
+        .value;
+
+
+        const result =
+        [
+            ...listings
+        ];
+
+
+        result.sort(
+            function(a,b){
+
+
+                if(
+                    sort ===
+                    "newest"
+                ){
+
+                    return new Date(
+                        b.created_at ||
+                        0
+                    ) -
+                    new Date(
+                        a.created_at ||
+                        0
+                    );
+
+                }
+
+
+                if(
+                    sort ===
+                    "price_asc" ||
+                    sort ===
+                    "price_desc"
+                ){
+
+                    const aPrice =
+                    convertCurrency(
+                        Number(
+                            a.price ||
+                            0
+                        ),
+                        a.currency ||
+                        "USD"
+                    );
+
+
+                    const bPrice =
+                    convertCurrency(
+                        Number(
+                            b.price ||
+                            0
+                        ),
+                        b.currency ||
+                        "USD"
+                    );
+
+
+                    return sort ===
+                    "price_asc"
+                    ?
+                    aPrice -
+                    bPrice
+                    :
+                    bPrice -
+                    aPrice;
+
+                }
+
+
+                if(
+                    sort ===
+                    "area_desc"
+                ){
+
+                    return Number(
+                        b.area ||
+                        0
+                    ) -
+                    Number(
+                        a.area ||
+                        0
+                    );
+
+                }
+
+
+                if(
+                    sort ===
+                    "sqm_asc" ||
+                    sort ===
+                    "sqm_desc"
+                ){
+
+                    const rawA =
+                    getPricePerSqm(
+                        a
+                    );
+
+                    const rawB =
+                    getPricePerSqm(
+                        b
+                    );
+
+
+                    const aSqm =
+                    rawA === null
+                    ?
+                    null
+                    :
+                    convertCurrency(
+                        rawA,
+                        a.currency ||
+                        "USD"
+                    );
+
+
+                    const bSqm =
+                    rawB === null
+                    ?
+                    null
+                    :
+                    convertCurrency(
+                        rawB,
+                        b.currency ||
+                        "USD"
+                    );
+
+
+                    if(
+                        aSqm === null &&
+                        bSqm === null
+                    ){
+
+                        return 0;
+
+                    }
+
+
+                    if(
+                        aSqm === null
+                    ){
+
+                        return 1;
+
+                    }
+
+
+                    if(
+                        bSqm === null
+                    ){
+
+                        return -1;
+
+                    }
+
+
+                    return sort ===
+                    "sqm_asc"
+                    ?
+                    aSqm -
+                    bSqm
+                    :
+                    bSqm -
+                    aSqm;
+
+                }
+
+
+                return Number(
+                    b.views ||
+                    0
+                ) -
+                Number(
+                    a.views ||
+                    0
+                );
+
+            }
+        );
+
+
+        return result;
+
+    };
+
+
+    /* =========================
+       MAIN FILTERS
+       PRICE CONVERSION
+    ========================= */
+
+    const oldListingMatchesCurrentFilters =
+    listingMatchesCurrentFilters;
+
+
+    listingMatchesCurrentFilters =
+    function(
+        listing
+    ){
+
+        const ids = [
+
+            "minPriceInput",
+            "maxPriceInput",
+            "minSqmPrice",
+            "maxSqmPrice"
+
+        ];
+
+
+        const elements =
+        ids.map(
+            function(id){
+
+                return document
+                .getElementById(
+                    id
+                );
+
+            }
+        );
+
+
+        const oldValues =
+        elements.map(
+            function(element){
+
+                return element
+                ?
+                element.value
+                :
+                "";
+
+            }
+        );
+
+
+        const originalCurrency =
+        normalizeCurrency(
+            listing.currency ||
+            "USD"
+        );
+
+
+        try{
+
+            elements.forEach(
+                function(
+                    element,
+                    index
+                ){
+
+                    if(
+                        !element ||
+                        oldValues[
+                            index
+                        ] ===
+                        ""
+                    ){
+
+                        return;
+
+                    }
+
+
+                    const number =
+                    Number(
+                        oldValues[
+                            index
+                        ]
+                    );
+
+
+                    if(
+                        !Number.isFinite(
+                            number
+                        )
+                    ){
+
+                        return;
+
+                    }
+
+
+                    element.value =
+                    convertCurrency(
+                        number,
+                        yhDisplayCurrency,
+                        originalCurrency
+                    );
+
+                }
+            );
+
+
+            return oldListingMatchesCurrentFilters(
+                listing
+            );
+
+
+        }finally{
+
+
+            elements.forEach(
+                function(
+                    element,
+                    index
+                ){
+
+                    if(element){
+
+                        element.value =
+                        oldValues[
+                            index
+                        ];
+
+                    }
+
+                }
+            );
+
+        }
+
+    };
+
+
+    /* =========================
+       NEW PROJECT FILTER
+    ========================= */
+
+    getFilteredProjects =
+    function(){
+
+        const location =
+        document
+        .getElementById(
+            "projectLocationFilter"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+
+        const developer =
+        document
+        .getElementById(
+            "projectDeveloperFilter"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+
+        const minPrice =
+        Number(
+            document
+            .getElementById(
+                "projectMinPrice"
+            )
+            .value
+        ) ||
+        0;
+
+
+        const maxPrice =
+        Number(
+            document
+            .getElementById(
+                "projectMaxPrice"
+            )
+            .value
+        ) ||
+        0;
+
+
+        return currentListings
+        .filter(
+            function(listing){
+
+
+                if(
+                    listing.owner_type !==
+                    "developer"
+                ){
+
+                    return false;
+
+                }
+
+
+                const locationText =
+                [
+                    listing.city,
+                    listing.district,
+                    listing.address
+                ]
+                .filter(Boolean)
+                .join(" ")
+                .toLowerCase();
+
+
+                const developerText =
+                String(
+                    listing.contact_name ||
+                    ""
+                )
+                .toLowerCase();
+
+
+                const price =
+                convertCurrency(
+                    Number(
+                        listing.price ||
+                        0
+                    ),
+                    listing.currency ||
+                    "USD",
+                    yhDisplayCurrency
+                );
+
+
+                if(
+                    location &&
+                    !locationText.includes(
+                        location
+                    )
+                ){
+
+                    return false;
+
+                }
+
+
+                if(
+                    developer &&
+                    !developerText.includes(
+                        developer
+                    )
+                ){
+
+                    return false;
+
+                }
+
+
+                if(
+                    minPrice &&
+                    price <
+                    minPrice
+                ){
+
+                    return false;
+
+                }
+
+
+                if(
+                    maxPrice &&
+                    price >
+                    maxPrice
+                ){
+
+                    return false;
+
+                }
+
+
+                return true;
+
+            }
+        )
+        .sort(
+            function(a,b){
+
+                return new Date(
+                    b.created_at ||
+                    0
+                ) -
+                new Date(
+                    a.created_at ||
+                    0
+                );
+
+            }
+        );
+
+    };
+
+
+    /* =========================
+       DEVELOPERS
+    ========================= */
+
+    if(
+        typeof renderDevelopers ===
+        "function"
+    ){
+
+        renderDevelopers =
+        function(){
+
+            const container =
+            document
+            .getElementById(
+                "developersCards"
+            );
+
+
+            if(!container){
+
+                return;
+
+            }
+
+
+            container.innerHTML =
+            "";
+
+
+            const developerListings =
+            currentListings
+            .filter(
+                function(listing){
+
+                    return (
+                        listing.owner_type ===
+                        "developer"
+                    );
+
+                }
+            );
+
+
+            const developers =
+            new Map();
+
+
+            developerListings
+            .forEach(
+                function(listing){
+
+
+                    const developerName =
+                    String(
+                        listing.contact_name ||
+                        "დეველოპერი"
+                    )
+                    .trim();
+
+
+                    const key =
+                    developerName
+                    .toLowerCase();
+
+
+                    if(
+                        !developers.has(
+                            key
+                        )
+                    ){
+
+                        developers.set(
+                            key,
+                            {
+                                name:
+                                developerName,
+
+                                listings:
+                                []
+                            }
+                        );
+
+                    }
+
+
+                    developers
+                    .get(
+                        key
+                    )
+                    .listings
+                    .push(
+                        listing
+                    );
+
+                }
+            );
+
+
+            if(
+                !developers.size
+            ){
+
+                container.innerHTML =
+                `
+                <div class="projects-empty">
+
+                    <div style="
+                    font-size:42px;
+                    margin-bottom:12px;
+                    ">
+                    🏢
+                    </div>
+
+                    <strong>
+                    დეველოპერები ჯერ არ არიან დამატებული
+                    </strong>
+
+                    <p style="
+                    margin-top:8px;
+                    line-height:1.6;
+                    ">
+                    როდესაც განცხადება გამოქვეყნდება
+                    დეველოპერის სახელით, კომპანია აქ
+                    ავტომატურად გამოჩნდება.
+                    </p>
+
+                </div>
+                `;
+
+                return;
+
+            }
+
+
+            developers
+            .forEach(
+                function(developer){
+
+
+                    const listings =
+                    developer.listings;
+
+
+                    const firstListing =
+                    listings[0];
+
+
+                    const photos =
+                    Array.isArray(
+                        firstListing.photos
+                    )
+                    ?
+                    firstListing.photos
+                    :
+                    [];
+
+
+                    const firstPhoto =
+                    photos.length
+                    ?
+                    photos[0]
+                    :
+                    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80";
+
+
+                    const locations =
+                    [
+                        ...new Set(
+
+                            listings
+                            .map(
+                                function(item){
+
+                                    return item.city;
+
+                                }
+                            )
+                            .filter(Boolean)
+
+                        )
+                    ];
+
+
+                    const pricedListings =
+                    listings
+                    .filter(
+                        function(item){
+
+                            return Number(
+                                item.price ||
+                                0
+                            ) >
+                            0;
+
+                        }
+                    );
+
+
+                    let minListing =
+                    null;
+
+
+                    if(
+                        pricedListings.length
+                    ){
+
+                        minListing =
+                        [
+                            ...pricedListings
+                        ]
+                        .sort(
+                            function(a,b){
+
+
+                                const priceA =
+                                convertCurrency(
+                                    a.price,
+                                    a.currency ||
+                                    "USD"
+                                );
+
+
+                                const priceB =
+                                convertCurrency(
+                                    b.price,
+                                    b.currency ||
+                                    "USD"
+                                );
+
+
+                                return priceA -
+                                priceB;
+
+                            }
+                        )[0];
+
+                    }
+
+
+                    const card =
+                    document
+                    .createElement(
+                        "div"
+                    );
+
+
+                    card.className =
+                    "developer-card";
+
+
+                    card.innerHTML =
+                    `
+                    <div
+                    class="card-image"
+                    style="background-image:url('${escapeHtml(firstPhoto)}')">
+
+                        <div class="badge">
+                        🏢 დეველოპერი
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-body">
+
+                        <div class="price">
+
+                        ${escapeHtml(
+                            developer.name
+                        )}
+
+                        </div>
+
+
+                        <div class="address">
+
+                        ${
+                            locations.length
+                            ?
+                            "📍 " +
+                            escapeHtml(
+                                locations.join(
+                                    ", "
+                                )
+                            )
+                            :
+                            "📍 საქართველო"
+                        }
+
+                        </div>
+
+
+                        <div class="details">
+
+                            <span>
+
+                            🏗️
+                            ${listings.length}
+                            პროექტი / განცხადება
+
+                            </span>
+
+
+                            ${
+                                minListing
+                                ?
+                                `
+                                <span>
+
+                                ფასი:
+                                ${escapeHtml(
+                                    formatPrice(
+                                        minListing.price,
+                                        minListing.currency
+                                    )
+                                )}-დან
+
+                                </span>
+                                `
+                                :
+                                ""
+                            }
+
+                        </div>
+
+
+                        <div
+                        class="owner"
+                        style="margin-top:17px;">
+
+                            <button
+                            type="button"
+                            class="developer-projects-button"
+                            data-developer="${escapeHtml(
+                                developer.name
+                            )}">
+
+                            პროექტების ნახვა →
+
+                            </button>
+
+                        </div>
+
+                    </div>
+                    `;
+
+
+                    container
+                    .appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        };
+
+    }
+
+
+    /* =========================
+       MIN PRICE DEAL TYPE
+    ========================= */
+
+    updateMinPriceForDealType =
+    function(){
+
+        const input =
+        document
+        .getElementById(
+            "minPriceInput"
+        );
+
+
+        const defaultSalePrice =
+        Math.round(
+            convertCurrency(
+                20000,
+                "USD",
+                yhDisplayCurrency
+            )
+        );
+
+
+        if(
+            searchType ===
+            "rent"
+        ){
+
+            const value =
+            Number(
+                input.value
+            );
+
+
+            /*
+              თუ სისტემის ავტომატური
+              20 000$ მინიმუმი იყო,
+              ქირაზე ვასუფთავებთ.
+            */
+
+            if(
+                Math.abs(
+                    value -
+                    defaultSalePrice
+                ) <
+                3
+            ){
+
+                input.value =
+                "";
+
+            }
+
+
+            if(
+                yhDisplayCurrency ===
+                "GEL"
+            ){
+
+                input.placeholder =
+                "მაგ. 1 300 ₾";
+
+            }else if(
+                yhDisplayCurrency ===
+                "EUR"
+            ){
+
+                input.placeholder =
+                "მაგ. €450";
+
+            }else{
+
+                input.placeholder =
+                "მაგ. $500";
+
+            }
+
+
+        }else{
+
+
+            if(!input.value){
+
+                input.value =
+                defaultSalePrice;
+
+            }
+
+
+            input.placeholder =
+            "მინ. ფასი " +
+            YH_CURRENCY_SYMBOLS[
+                yhDisplayCurrency
+            ];
+
+        }
+
+    };
+
+
+    /* =========================
+       CONVERT FILTER INPUTS
+       WHEN SWITCHING CURRENCY
+    ========================= */
+
+    function convertPriceInputs(
+        fromCurrency,
+        toCurrency
+    ){
+
+        const ids = [
+
+            "minPriceInput",
+            "maxPriceInput",
+
+            "minSqmPrice",
+            "maxSqmPrice",
+
+            "projectMinPrice",
+            "projectMaxPrice"
+
+        ];
+
+
+        ids.forEach(
+            function(id){
+
+                const input =
+                document
+                .getElementById(
+                    id
+                );
+
+
+                if(
+                    !input ||
+                    input.value ===
+                    ""
+                ){
+
+                    return;
+
+                }
+
+
+                const value =
+                Number(
+                    input.value
+                );
+
+
+                if(
+                    !Number.isFinite(
+                        value
+                    )
+                ){
+
+                    return;
+
+                }
+
+
+                input.value =
+                Math.round(
+                    convertCurrency(
+                        value,
+                        fromCurrency,
+                        toCurrency
+                    )
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================
+       UI
+    ========================= */
+
+    const currencyStyle =
+    document
+    .createElement(
+        "style"
+    );
+
+
+    currencyStyle.textContent =
+    `
+
+    .yh-currency-switcher{
+        display:flex;
+        align-items:center;
+        gap:3px;
+        padding:3px;
+        border:1px solid var(--border);
+        background:#fff;
+        border-radius:9px;
+        white-space:nowrap;
+    }
+
+    .yh-currency-button{
+        min-width:37px;
+        border:0;
+        background:transparent;
+        color:var(--muted);
+        padding:7px 8px;
+        border-radius:6px;
+        font-size:13px;
+        font-weight:800;
+    }
+
+    .yh-currency-button:hover{
+        background:var(--olive-light);
+        color:var(--olive-dark);
+    }
+
+    .yh-currency-button.active{
+        background:var(--olive);
+        color:#fff;
+    }
+
+    .yh-detail-currency{
+        margin-left:auto;
+    }
+
+    @media(max-width:600px){
+
+        .header-right{
+            display:flex!important;
+            flex-wrap:wrap!important;
+        }
+
+        .yh-header-currency{
+            width:100%;
+            order:10;
+            justify-content:flex-start;
+        }
+
+        .yh-detail-currency{
+            margin-left:0;
+        }
+
+        .listing-detail-top{
+            gap:8px;
+        }
+
+    }
+
+    `;
+
+
+    document.head.appendChild(
+        currencyStyle
+    );
+
+
+    function createCurrencySwitcher(
+        extraClass
+    ){
+
+        const wrapper =
+        document
+        .createElement(
+            "div"
+        );
+
+
+        wrapper.className =
+        "yh-currency-switcher " +
+        (
+            extraClass ||
+            ""
+        );
+
+
+        wrapper.innerHTML =
+        `
+
+        <button
+        type="button"
+        class="yh-currency-button"
+        data-yh-currency="GEL"
+        title="ლარი">
+        ₾
+        </button>
+
+        <button
+        type="button"
+        class="yh-currency-button"
+        data-yh-currency="USD"
+        title="აშშ დოლარი">
+        $
+        </button>
+
+        <button
+        type="button"
+        class="yh-currency-button"
+        data-yh-currency="EUR"
+        title="ევრო">
+        €
+        </button>
+
+        `;
+
+
+        return wrapper;
+
+    }
+
+
+    /* HEADER */
+
+    const headerRight =
+    document
+    .querySelector(
+        ".header-right"
+    );
+
+
+    const languageSelect =
+    document
+    .getElementById(
+        "language"
+    );
+
+
+    if(
+        headerRight &&
+        languageSelect &&
+        !document
+        .querySelector(
+            ".yh-header-currency"
+        )
+    ){
+
+        const switcher =
+        createCurrencySwitcher(
+            "yh-header-currency"
+        );
+
+
+        headerRight
+        .insertBefore(
+            switcher,
+            languageSelect
+        );
+
+    }
+
+
+    /* FULL LISTING */
+
+    const detailTop =
+    document
+    .querySelector(
+        ".listing-detail-top"
+    );
+
+
+    const listingCode =
+    document
+    .getElementById(
+        "listingCodeTop"
+    );
+
+
+    if(
+        detailTop &&
+        listingCode &&
+        !document
+        .querySelector(
+            ".yh-detail-currency"
+        )
+    ){
+
+        const detailSwitcher =
+        createCurrencySwitcher(
+            "yh-detail-currency"
+        );
+
+
+        detailTop
+        .insertBefore(
+            detailSwitcher,
+            listingCode
+        );
+
+    }
+
+
+    /* =========================
+       UPDATE BUTTONS
+    ========================= */
+
+    function updateCurrencyButtons(){
+
+        document
+        .querySelectorAll(
+            ".yh-currency-button"
+        )
+        .forEach(
+            function(button){
+
+                const active =
+                button.dataset
+                .yhCurrency ===
+                yhDisplayCurrency;
+
+
+                button.classList.toggle(
+                    "active",
+                    active
+                );
+
+
+                button.setAttribute(
+                    "aria-pressed",
+                    active
+                    ?
+                    "true"
+                    :
+                    "false"
+                );
+
+            }
+        );
+
+
+        const rateText =
+        "საქართველოს ეროვნული ბანკის კურსი · " +
+        "1 USD = " +
+        Number(
+            yhCurrencyRates.USD
+        )
+        .toFixed(
+            4
+        ) +
+        " ₾ · 1 EUR = " +
+        Number(
+            yhCurrencyRates.EUR
+        )
+        .toFixed(
+            4
+        ) +
+        " ₾";
+
+
+        document
+        .querySelectorAll(
+            ".yh-currency-switcher"
+        )
+        .forEach(
+            function(element){
+
+                element.title =
+                rateText;
+
+            }
+        );
+
+    }
+
+
+    /* =========================
+       PLACEHOLDERS
+    ========================= */
+
+    function updateCurrencyPlaceholders(){
+
+        const symbol =
+        YH_CURRENCY_SYMBOLS[
+            yhDisplayCurrency
+        ];
+
+
+        const maxPrice =
+        document
+        .getElementById(
+            "maxPriceInput"
+        );
+
+
+        const minSqm =
+        document
+        .getElementById(
+            "minSqmPrice"
+        );
+
+
+        const maxSqm =
+        document
+        .getElementById(
+            "maxSqmPrice"
+        );
+
+
+        const projectMin =
+        document
+        .getElementById(
+            "projectMinPrice"
+        );
+
+
+        const projectMax =
+        document
+        .getElementById(
+            "projectMaxPrice"
+        );
+
+
+        if(maxPrice){
+
+            maxPrice.placeholder =
+            "მაქს. ფასი " +
+            symbol;
+
+        }
+
+
+        if(minSqm){
+
+            minSqm.placeholder =
+            "მინ. " +
+            symbol +
+            " / მ²";
+
+        }
+
+
+        if(maxSqm){
+
+            maxSqm.placeholder =
+            "მაქს. " +
+            symbol +
+            " / მ²";
+
+        }
+
+
+        if(projectMin){
+
+            projectMin.placeholder =
+            "მინ. ფასი " +
+            symbol;
+
+        }
+
+
+        if(projectMax){
+
+            projectMax.placeholder =
+            "მაქს. ფასი " +
+            symbol;
+
+        }
+
+
+        updateMinPriceForDealType();
+
+    }
+
+
+    /* =========================
+       VIEW REFRESH
+    ========================= */
+
+    function refreshCurrencyViews(){
+
+        updateCurrencyButtons();
+
+        updateCurrencyPlaceholders();
+
+
+        if(
+            Array.isArray(
+                currentListings
+            ) &&
+            currentListings.length
+        ){
+
+            renderListings(
+                currentListings
+            );
+
+        }
+
+
+        if(
+            typeof developersPage !==
+            "undefined" &&
+            developersPage &&
+            developersPage
+            .classList
+            .contains(
+                "active"
+            ) &&
+            typeof renderDevelopers ===
+            "function"
+        ){
+
+            renderDevelopers();
+
+        }
+
+
+        if(
+            newProjectsPage &&
+            newProjectsPage
+            .classList
+            .contains(
+                "active"
+            )
+        ){
+
+            renderNewProjects();
+
+        }
+
+
+        if(
+            myListingsPage &&
+            myListingsPage
+            .classList
+            .contains(
+                "active"
+            ) &&
+            Array.isArray(
+                currentMyListings
+            )
+        ){
+
+            renderMyListings(
+                currentMyListings
+            );
+
+        }
+
+
+        /*
+          თუ განცხადება გახსნილია,
+          მისი ფასიც მაშინვე შეიცვლება.
+        */
+
+        if(
+            listingModal &&
+            listingModal
+            .classList
+            .contains(
+                "active"
+            )
+        ){
+
+            const state =
+            window
+            .history
+            .state;
+
+
+            const listingId =
+            state
+            ?.listingId;
+
+
+            if(listingId){
+
+                const listing =
+                currentListings
+                .find(
+                    function(item){
+
+                        return String(
+                            item.id
+                        ) ===
+                        String(
+                            listingId
+                        );
+
+                    }
+                )
+                ||
+                currentMyListings
+                .find(
+                    function(item){
+
+                        return String(
+                            item.id
+                        ) ===
+                        String(
+                            listingId
+                        );
+
+                    }
+                );
+
+
+                if(listing){
+
+                    const scrollPosition =
+                    listingModal.scrollTop;
+
+
+                    /*
+                      ვალუტის შეცვლამ
+                      ნახვების რაოდენობა
+                      ხელახლა არ უნდა გაზარდოს.
+                    */
+
+                    const oldIncrement =
+                    incrementListingViews;
+
+
+                    incrementListingViews =
+                    function(){
+
+                        return Promise
+                        .resolve();
+
+                    };
+
+
+                    openListing(
+                        listing,
+                        false
+                    );
+
+
+                    incrementListingViews =
+                    oldIncrement;
+
+
+                    listingModal.scrollTop =
+                    scrollPosition;
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    /* =========================
+       SET CURRENCY
+    ========================= */
+
+    function setDisplayCurrency(
+        currency,
+        options = {}
+    ){
+
+        const newCurrency =
+        normalizeCurrency(
+            currency
+        );
+
+
+        const oldCurrency =
+        options.oldCurrency
+        ?
+        normalizeCurrency(
+            options.oldCurrency
+        )
+        :
+        yhDisplayCurrency;
+
+
+        if(
+            options.convertInputs &&
+            oldCurrency !==
+            newCurrency
+        ){
+
+            convertPriceInputs(
+                oldCurrency,
+                newCurrency
+            );
+
+        }
+
+
+        yhDisplayCurrency =
+        newCurrency;
+
+
+        try{
+
+            localStorage
+            .setItem(
+                YH_CURRENCY_STORAGE,
+                yhDisplayCurrency
+            );
+
+        }catch(error){
+
+            console.log(
+                error
+            );
+
+        }
+
+
+        updateCurrencyButtons();
+
+        updateCurrencyPlaceholders();
+
+
+        if(
+            options.refresh !==
+            false
+        ){
+
+            refreshCurrencyViews();
+
+        }
+
+    }
+
+
+    /* =========================
+       SWITCH CLICK
+    ========================= */
+
+    document
+    .addEventListener(
+        "click",
+        function(event){
+
+            const button =
+            event.target
+            .closest(
+                ".yh-currency-button"
+            );
+
+
+            if(!button){
+
+                return;
+
+            }
+
+
+            const currency =
+            button.dataset
+            .yhCurrency;
+
+
+            if(
+                currency ===
+                yhDisplayCurrency
+            ){
+
+                return;
+
+            }
+
+
+            setDisplayCurrency(
+                currency,
+                {
+                    oldCurrency:
+                    yhDisplayCurrency,
+
+                    convertInputs:
+                    true,
+
+                    refresh:
+                    true
+                }
+            );
+
+        }
+    );
+
+
+    /* =========================
+       SAVED CURRENCY
+    ========================= */
+
+    let savedCurrency =
+    "USD";
+
+
+    try{
+
+        const value =
+        localStorage
+        .getItem(
+            YH_CURRENCY_STORAGE
+        );
+
+
+        if(
+            YH_ALLOWED_CURRENCIES
+            .includes(
+                value
+            )
+        ){
+
+            savedCurrency =
+            value;
+
+        }
+
+    }catch(error){
+
+        console.log(
+            error
+        );
+
+    }
+
+
+    /*
+      HTML-ის საწყისი ფასი
+      20 000 USD იყო.
+
+      თუ მომხმარებელს წინა ვიზიტიდან
+      GEL ან EUR აქვს არჩეული,
+      ეს ველიც შესაბამის ვალუტაში
+      გადავიყვანოთ.
+    */
+
+    setDisplayCurrency(
+        savedCurrency,
+        {
+            oldCurrency:
+            "USD",
+
+            convertInputs:
+            savedCurrency !==
+            "USD",
+
+            refresh:
+            false
+        }
+    );
+
+
+    /* =========================
+       NATIONAL BANK OF GEORGIA
+    ========================= */
+
+    async function loadNbgCurrencyRates(){
+
+        try{
+
+            const response =
+            await fetch(
+                "https://nbg.gov.ge/gw/api/ct/monetarypolicy/currencies/ka/json/",
+                {
+                    cache:
+                    "no-store"
+                }
+            );
+
+
+            if(!response.ok){
+
+                throw new Error(
+                    "NBG HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            const data =
+            await response
+            .json();
+
+
+            const currencies =
+            Array.isArray(
+                data
+            ) &&
+            data.length
+            ?
+            data[0]
+            .currencies
+            :
+            [];
+
+
+            const usd =
+            currencies
+            .find(
+                function(item){
+
+                    return item.code ===
+                    "USD";
+
+                }
+            );
+
+
+            const eur =
+            currencies
+            .find(
+                function(item){
+
+                    return item.code ===
+                    "EUR";
+
+                }
+            );
+
+
+            if(
+                !usd ||
+                !eur
+            ){
+
+                throw new Error(
+                    "USD/EUR ვერ მოიძებნა."
+                );
+
+            }
+
+
+            const usdRate =
+            Number(
+                usd.rate
+            ) /
+            Number(
+                usd.quantity ||
+                1
+            );
+
+
+            const eurRate =
+            Number(
+                eur.rate
+            ) /
+            Number(
+                eur.quantity ||
+                1
+            );
+
+
+            if(
+                !Number.isFinite(
+                    usdRate
+                ) ||
+                !Number.isFinite(
+                    eurRate
+                ) ||
+                usdRate <= 0 ||
+                eurRate <= 0
+            ){
+
+                throw new Error(
+                    "არასწორი კურსი."
+                );
+
+            }
+
+
+            yhCurrencyRates = {
+
+                GEL:1,
+
+                USD:
+                usdRate,
+
+                EUR:
+                eurRate
+
+            };
+
+
+            try{
+
+                localStorage
+                .setItem(
+                    YH_RATES_STORAGE,
+                    JSON.stringify({
+
+                        USD:
+                        usdRate,
+
+                        EUR:
+                        eurRate,
+
+                        updatedAt:
+                        Date.now()
+
+                    })
+                );
+
+            }catch(error){
+
+                console.log(
+                    error
+                );
+
+            }
+
+
+            refreshCurrencyViews();
+
+
+            console.log(
+                "Your Home — NBG კურსები:",
+                yhCurrencyRates
+            );
+
+
+        }catch(error){
+
+
+            /*
+              თუ NBG დროებით მიუწვდომელია,
+              გამოიყენება ბოლოს შენახული
+              ან სარეზერვო კურსი.
+            */
+
+            console.warn(
+                "NBG კურსის ჩატვირთვა ვერ მოხერხდა. გამოყენებულია cache/fallback.",
+                error
+            );
+
+
+            refreshCurrencyViews();
+
+        }
+
+    }
+
+
+    updateCurrencyButtons();
+
+    updateCurrencyPlaceholders();
+
+    loadNbgCurrencyRates();
+
+
+})();
+
+</script>
+
 </body>
 </html>
+
+
 
 
