@@ -20074,6 +20074,52 @@ loadListings();
 
 
     createAccountButtons();
+    /* ACCOUNT EXTRA BUTTONS — DIRECT CLICK */
+
+const yhFavoritesMenuButton =
+document.getElementById(
+    "yhFavoritesMenuButton"
+);
+
+if(yhFavoritesMenuButton){
+
+    yhFavoritesMenuButton
+    .addEventListener(
+        "click",
+        function(event){
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            openFavoritesPage();
+
+        }
+    );
+
+}
+
+
+const yhAgentMenuButton =
+document.getElementById(
+    "yhAgentMenuButton"
+);
+
+if(yhAgentMenuButton){
+
+    yhAgentMenuButton
+    .addEventListener(
+        "click",
+        function(event){
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            openAgentEditor();
+
+        }
+    );
+
+}
 
 
     /* =========================================================
