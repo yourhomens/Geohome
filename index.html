@@ -12302,19 +12302,16 @@ window
    START
 ========================= */
 
-if(
-    !window.history.state ||
-    !window.history.state.yourHomeView
-){
-
     window.history.replaceState(
-        {
-            yourHomeView:
-            "home"
-        },
-        "",
-        window.location.href
-    );
+    {
+        yourHomeView:
+        "home"
+    },
+    "",
+    window.location.href
+);
+
+
 loadCurrentUser();
 
 loadListings();
