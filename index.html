@@ -3,9 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Your Home — უძრავი ქონება საქართველოში</title>
 
+<!-- LEAFLET MAP -->
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
 <style>
+
 :root{
     --olive:#7d8b45;
     --olive-dark:#5d6933;
@@ -328,6 +336,7 @@ nav button{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    gap:15px;
     margin-bottom:22px;
 }
 
@@ -335,11 +344,140 @@ nav button{
     font-size:27px;
 }
 
+.section-title-actions{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    gap:8px;
+}
+
 .section-title button{
     border:0;
     background:none;
     color:var(--olive-dark);
     font-weight:600;
+}
+
+
+/* =========================
+   LIST / MAP SWITCH
+========================= */
+
+.view-switch{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    padding:4px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:10px;
+}
+
+.view-switch button{
+    border:0;
+    background:transparent;
+    padding:9px 13px;
+    border-radius:7px;
+    color:var(--muted);
+    font-weight:700;
+}
+
+.view-switch button.active{
+    background:var(--olive-light);
+    color:var(--olive-dark);
+}
+
+#propertyCards.view-hidden{
+    display:none;
+}
+
+
+/* =========================
+   MAP
+========================= */
+
+.map-panel{
+    display:none;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+}
+
+.map-panel.active{
+    display:block;
+}
+
+#listingsMap{
+    width:100%;
+    height:620px;
+    background:#e9ece6;
+}
+
+.map-note{
+    padding:12px 16px;
+    border-top:1px solid var(--border);
+    color:var(--muted);
+    font-size:13px;
+}
+
+.map-price-marker{
+    background:transparent !important;
+    border:0 !important;
+}
+
+.map-price-pin{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    min-width:78px;
+    height:34px;
+    padding:0 10px;
+    background:var(--olive);
+    color:#fff;
+    border:3px solid #fff;
+    border-radius:17px;
+    box-shadow:0 3px 10px rgba(0,0,0,.25);
+    font-size:13px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.map-popup{
+    width:220px;
+}
+
+.map-popup-image{
+    width:100%;
+    height:125px;
+    object-fit:cover;
+    border-radius:9px;
+    display:block;
+    margin-bottom:9px;
+}
+
+.map-popup-price{
+    font-size:19px;
+    font-weight:800;
+    margin-bottom:5px;
+}
+
+.map-popup-address{
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.4;
+    margin-bottom:9px;
+}
+
+.map-popup-button{
+    width:100%;
+    border:0;
+    background:var(--olive);
+    color:#fff;
+    padding:9px 10px;
+    border-radius:7px;
+    font-weight:700;
 }
 
 
@@ -560,6 +698,57 @@ nav button{
     border-color:var(--olive);
     color:var(--olive-dark);
     font-weight:700;
+}
+
+
+/* =========================
+   LOCATION PICKER
+========================= */
+
+.location-map-help{
+    background:var(--olive-light);
+    color:var(--olive-dark);
+    border-radius:9px;
+    padding:12px;
+    font-size:13px;
+    line-height:1.5;
+    margin-bottom:10px;
+}
+
+#listingLocationPicker{
+    width:100%;
+    height:390px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    background:#e9ece6;
+}
+
+.location-map-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:10px;
+}
+
+.location-map-actions button{
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:8px;
+    padding:10px 13px;
+    font-weight:700;
+}
+
+.location-map-actions .my-location-button{
+    background:var(--olive-light);
+    border-color:var(--olive);
+    color:var(--olive-dark);
+}
+
+.selected-coordinates{
+    margin-top:9px;
+    font-size:12px;
+    color:var(--muted);
 }
 
 
@@ -1006,6 +1195,21 @@ footer a{
     white-space:pre-wrap;
 }
 
+#listingDetailMap{
+    width:100%;
+    height:320px;
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid var(--border);
+    margin-top:12px;
+}
+
+.listing-map-hint{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:9px;
+}
+
 .listing-contact-box{
     height:max-content;
 }
@@ -1279,6 +1483,7 @@ footer a{
 
 }
 
+
 @media(max-width:750px){
 
     .listing-detail-wrap{
@@ -1312,7 +1517,16 @@ footer a{
         grid-template-columns:1fr 1fr;
     }
 
+    #listingsMap{
+        height:500px;
+    }
+
+    #listingLocationPicker{
+        height:330px;
+    }
+
 }
+
 
 @media(max-width:600px){
 
@@ -1437,12 +1651,35 @@ footer a{
         flex:1;
     }
 
+    .section-title{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .section-title-actions{
+        width:100%;
+        justify-content:space-between;
+    }
+
+    .view-switch{
+        margin-left:auto;
+    }
+
+    #listingsMap{
+        height:480px;
+    }
+
+    #listingLocationPicker{
+        height:300px;
+    }
+
 }
 
 </style>
 </head>
 
 <body>
+
 
 <header>
 
@@ -1461,21 +1698,50 @@ YOUR <span>HOME</span>
 
 </div>
 
+
 <nav>
-<button data-type="sale">ყიდვა</button>
-<button data-type="rent">ქირავდება</button>
-<button data-type="pledge">გირავდება</button>
-<button>კომერციული</button>
-<button>ახალი პროექტები</button>
+
+<button data-type="sale">
+ყიდვა
+</button>
+
+<button data-type="rent">
+ქირავდება
+</button>
+
+<button data-type="pledge">
+გირავდება
+</button>
+
+<button>
+კომერციული
+</button>
+
+<button>
+ახალი პროექტები
+</button>
+
 </nav>
+
 
 <div class="header-right">
 
 <select class="language" id="language">
-<option value="ka">🇬🇪 GE</option>
-<option value="en">🇬🇧 EN</option>
-<option value="ru">🇷🇺 RU</option>
+
+<option value="ka">
+🇬🇪 GE
+</option>
+
+<option value="en">
+🇬🇧 EN
+</option>
+
+<option value="ru">
+🇷🇺 RU
+</option>
+
 </select>
+
 
 <div class="account-wrap" id="accountWrap">
 
@@ -1500,6 +1766,7 @@ type="button">
 
 </div>
 
+
 <button class="add-button" id="addButton">
 + განცხადება
 </button>
@@ -1509,7 +1776,9 @@ type="button">
 </header>
 
 
+
 <main id="homePage" class="home-page">
+
 
 <section class="hero">
 
@@ -1522,6 +1791,7 @@ type="button">
 <p id="heroSubtitle">
 იყიდე, იქირავე ან იგირავე — მოძებნე შენთვის სასურველი ქონება მარტივად.
 </p>
+
 
 <div class="search-box">
 
@@ -1541,11 +1811,14 @@ type="button">
 
 </div>
 
+
 <div class="search-fields">
 
 <div class="field">
 
-<label>მდებარეობა</label>
+<label>
+მდებარეობა
+</label>
 
 <input
 id="locationInput"
@@ -1554,43 +1827,86 @@ placeholder="ქალაქი, უბანი ან ქუჩა">
 
 </div>
 
+
 <div class="field">
 
-<label>ქონების ტიპი</label>
+<label>
+ქონების ტიპი
+</label>
 
 <select id="propertyType">
 
-<option value="all">ყველა</option>
-<option value="apartment">ბინა</option>
-<option value="house">სახლი</option>
-<option value="commercial">კომერციული</option>
-<option value="land">მიწა</option>
-<option value="cottage">აგარაკი</option>
+<option value="all">
+ყველა
+</option>
+
+<option value="apartment">
+ბინა
+</option>
+
+<option value="house">
+სახლი
+</option>
+
+<option value="commercial">
+კომერციული
+</option>
+
+<option value="land">
+მიწა
+</option>
+
+<option value="cottage">
+აგარაკი
+</option>
 
 </select>
 
 </div>
 
+
 <div class="field">
 
-<label>ოთახები</label>
+<label>
+ოთახები
+</label>
 
 <select id="rooms">
 
-<option value="all">ნებისმიერი</option>
-<option value="1">1 ოთახი</option>
-<option value="2">2 ოთახი</option>
-<option value="3">3 ოთახი</option>
-<option value="4">4 ოთახი</option>
-<option value="5">5+ ოთახი</option>
+<option value="all">
+ნებისმიერი
+</option>
+
+<option value="1">
+1 ოთახი
+</option>
+
+<option value="2">
+2 ოთახი
+</option>
+
+<option value="3">
+3 ოთახი
+</option>
+
+<option value="4">
+4 ოთახი
+</option>
+
+<option value="5">
+5+ ოთახი
+</option>
 
 </select>
 
 </div>
 
+
 <div class="field">
 
-<label>ფასი</label>
+<label>
+ფასი
+</label>
 
 <input
 id="priceInput"
@@ -1599,7 +1915,10 @@ placeholder="მაგ. 100000">
 
 </div>
 
-<button class="search-button" id="searchButton">
+
+<button
+class="search-button"
+id="searchButton">
 ძებნა
 </button>
 
@@ -1612,29 +1931,75 @@ placeholder="მაგ. 100000">
 </section>
 
 
+
 <section class="filters">
 
 <div class="filter-list">
 
-<button class="filter" data-filter="apartment">ბინა</button>
-<button class="filter" data-filter="house">სახლი</button>
-<button class="filter" data-filter="land">მიწა</button>
-<button class="filter" data-filter="commercial">კომერციული</button>
-<button class="filter" data-filter="cottage">აგარაკი</button>
-<button class="filter" data-filter="new">ახალი აშენებული</button>
-<button class="filter" data-filter="building">მშენებარე</button>
-<button class="filter" data-filter="oldbuilding">ძველი აშენებული</button>
-<button class="filter" data-filter="white">თეთრი კარკასი</button>
-<button class="filter" data-filter="green">მწვანე კარკასი</button>
-<button class="filter" data-filter="renovated">ახალი რემონტით</button>
-<button class="filter" data-filter="old">ძველი რემონტით</button>
-<button class="filter" data-filter="furnished">ავეჯით</button>
-<button class="filter" data-filter="owner">მესაკუთრე</button>
-<button class="filter" data-filter="agent">აგენტი</button>
+<button class="filter" data-filter="apartment">
+ბინა
+</button>
+
+<button class="filter" data-filter="house">
+სახლი
+</button>
+
+<button class="filter" data-filter="land">
+მიწა
+</button>
+
+<button class="filter" data-filter="commercial">
+კომერციული
+</button>
+
+<button class="filter" data-filter="cottage">
+აგარაკი
+</button>
+
+<button class="filter" data-filter="new">
+ახალი აშენებული
+</button>
+
+<button class="filter" data-filter="building">
+მშენებარე
+</button>
+
+<button class="filter" data-filter="oldbuilding">
+ძველი აშენებული
+</button>
+
+<button class="filter" data-filter="white">
+თეთრი კარკასი
+</button>
+
+<button class="filter" data-filter="green">
+მწვანე კარკასი
+</button>
+
+<button class="filter" data-filter="renovated">
+ახალი რემონტით
+</button>
+
+<button class="filter" data-filter="old">
+ძველი რემონტით
+</button>
+
+<button class="filter" data-filter="furnished">
+ავეჯით
+</button>
+
+<button class="filter" data-filter="owner">
+მესაკუთრე
+</button>
+
+<button class="filter" data-filter="agent">
+აგენტი
+</button>
 
 </div>
 
 </section>
+
 
 
 <section class="section">
@@ -1645,15 +2010,63 @@ placeholder="მაგ. 100000">
 🔥 ყველაზე ნახვადი
 </h2>
 
+<div class="section-title-actions">
+
 <button id="showAll">
 ყველას ნახვა →
 </button>
 
+<div class="view-switch">
+
+<button
+id="listViewButton"
+class="active"
+type="button">
+☰ სია
+</button>
+
+<button
+id="mapViewButton"
+type="button">
+🗺️ რუკა
+</button>
+
 </div>
 
-<div class="cards" id="propertyCards"></div>
+</div>
+
+</div>
+
+
+<div
+class="cards"
+id="propertyCards">
+</div>
+
+
+<div
+class="map-panel"
+id="mapPanel">
+
+<div id="listingsMap"></div>
+
+<div class="map-note">
+
+<span id="mapResultCount">
+რუკაზე იტვირთება განცხადებები...
+</span>
+
+<br>
+
+რუკაზე გამოჩნდება მხოლოდ ის განცხადებები,
+რომლებსაც ადგილმდებარეობა მონიშნული აქვთ.
+
+</div>
+
+</div>
 
 </section>
+
 
 
 <section class="cta">
@@ -1672,7 +2085,9 @@ placeholder="მაგ. 100000">
 
 </div>
 
-<button class="cta-button" id="ctaButton">
+<button
+class="cta-button"
+id="ctaButton">
 + განცხადების დამატება
 </button>
 
@@ -1683,9 +2098,14 @@ placeholder="მაგ. 100000">
 </main>
 
 
-<!-- ADD PAGE -->
 
-<section class="add-page" id="addPage">
+<!-- =========================
+     ADD PAGE
+========================= -->
+
+<section
+class="add-page"
+id="addPage">
 
 <div class="add-header">
 
@@ -1693,11 +2113,14 @@ placeholder="მაგ. 100000">
 განცხადების დამატება
 </h1>
 
-<button class="back-button" id="backButton">
+<button
+class="back-button"
+id="backButton">
 ← უკან
 </button>
 
 </div>
+
 
 
 <div class="form-card">
@@ -1706,23 +2129,32 @@ placeholder="მაგ. 100000">
 რა გსურთ გააკეთოთ?
 </h2>
 
-<div class="choice-group" id="dealChoices">
+<div
+class="choice-group"
+id="dealChoices">
 
-<button class="choice selected" data-value="sale">
+<button
+class="choice selected"
+data-value="sale">
 იყიდება
 </button>
 
-<button class="choice" data-value="rent">
+<button
+class="choice"
+data-value="rent">
 ქირავდება
 </button>
 
-<button class="choice" data-value="pledge">
+<button
+class="choice"
+data-value="pledge">
 გირავდება
 </button>
 
 </div>
 
 </div>
+
 
 
 <div class="form-card">
@@ -1733,54 +2165,115 @@ placeholder="მაგ. 100000">
 
 <div class="form-grid">
 
+
 <div class="form-group">
 
-<label>ქონების ტიპი *</label>
+<label>
+ქონების ტიპი *
+</label>
 
 <select id="listingProperty">
 
-<option value="">აირჩიეთ</option>
-<option value="apartment">ბინა</option>
-<option value="house">სახლი</option>
-<option value="commercial">კომერციული ფართი</option>
-<option value="land">მიწის ნაკვეთი</option>
-<option value="cottage">აგარაკი</option>
-<option value="hotel">სასტუმრო</option>
-<option value="other">სხვა</option>
+<option value="">
+აირჩიეთ
+</option>
+
+<option value="apartment">
+ბინა
+</option>
+
+<option value="house">
+სახლი
+</option>
+
+<option value="commercial">
+კომერციული ფართი
+</option>
+
+<option value="land">
+მიწის ნაკვეთი
+</option>
+
+<option value="cottage">
+აგარაკი
+</option>
+
+<option value="hotel">
+სასტუმრო
+</option>
+
+<option value="other">
+სხვა
+</option>
 
 </select>
 
 </div>
 
 
+
 <div class="form-group">
 
-<label>მდგომარეობა</label>
+<label>
+მდგომარეობა
+</label>
 
 <select id="condition">
 
-<option value="">აირჩიეთ</option>
-<option value="building">მშენებარე</option>
-<option value="new">ახალი აშენებული</option>
-<option value="oldbuilding">ძველი აშენებული</option>
-<option value="white">თეთრი კარკასი</option>
-<option value="green">მწვანე კარკასი</option>
-<option value="renovated">ახალი რემონტით</option>
-<option value="old">ძველი რემონტით</option>
-<option value="repair">სარემონტო</option>
+<option value="">
+აირჩიეთ
+</option>
+
+<option value="building">
+მშენებარე
+</option>
+
+<option value="new">
+ახალი აშენებული
+</option>
+
+<option value="oldbuilding">
+ძველი აშენებული
+</option>
+
+<option value="white">
+თეთრი კარკასი
+</option>
+
+<option value="green">
+მწვანე კარკასი
+</option>
+
+<option value="renovated">
+ახალი რემონტით
+</option>
+
+<option value="old">
+ძველი რემონტით
+</option>
+
+<option value="repair">
+სარემონტო
+</option>
 
 </select>
 
 </div>
 
 
+
 <div class="form-group">
 
-<label>ოთახების რაოდენობა</label>
+<label>
+ოთახების რაოდენობა
+</label>
 
 <select id="listingRooms">
 
-<option value="">აირჩიეთ</option>
+<option value="">
+აირჩიეთ
+</option>
+
 <option value="1">1</option>
 <option value="2">2</option>
 <option value="3">3</option>
@@ -1793,14 +2286,23 @@ placeholder="მაგ. 100000">
 </div>
 
 
+
 <div class="form-group">
 
-<label>საძინებლების რაოდენობა</label>
+<label>
+საძინებლების რაოდენობა
+</label>
 
 <select id="bedrooms">
 
-<option value="">აირჩიეთ</option>
-<option value="studio">სტუდიო</option>
+<option value="">
+აირჩიეთ
+</option>
+
+<option value="studio">
+სტუდიო
+</option>
+
 <option value="1">1</option>
 <option value="2">2</option>
 <option value="3">3</option>
@@ -1812,29 +2314,64 @@ placeholder="მაგ. 100000">
 </div>
 
 
+
 <div class="form-group">
-<label>სართული</label>
-<input type="number" id="floor" placeholder="მაგ. 7">
+
+<label>
+სართული
+</label>
+
+<input
+type="number"
+id="floor"
+placeholder="მაგ. 7">
+
 </div>
 
+
+
 <div class="form-group">
-<label>სართულების რაოდენობა</label>
-<input type="number" id="totalFloors" placeholder="მაგ. 12">
+
+<label>
+სართულების რაოდენობა
+</label>
+
+<input
+type="number"
+id="totalFloors"
+placeholder="მაგ. 12">
+
 </div>
 
+
+
 <div class="form-group">
-<label>ფართობი მ²</label>
-<input type="number" id="area" placeholder="მაგ. 82">
+
+<label>
+ფართობი მ²
+</label>
+
+<input
+type="number"
+id="area"
+placeholder="მაგ. 82">
+
 </div>
 
 
+
 <div class="form-group">
 
-<label>აივნების რაოდენობა</label>
+<label>
+აივნების რაოდენობა
+</label>
 
 <select id="balconies">
 
-<option value="">აირჩიეთ</option>
+<option value="">
+აირჩიეთ
+</option>
+
 <option value="0">0</option>
 <option value="1">1</option>
 <option value="2">2</option>
@@ -1846,14 +2383,24 @@ placeholder="მაგ. 100000">
 </div>
 
 
+
 <div class="form-group">
-<label>აივნის ფართობი მ²</label>
-<input type="number" id="balconyArea" placeholder="მაგ. 12">
-</div>
+
+<label>
+აივნის ფართობი მ²
+</label>
+
+<input
+type="number"
+id="balconyArea"
+placeholder="მაგ. 12">
 
 </div>
 
 </div>
+
+</div>
+
 
 
 <div class="form-card">
@@ -1864,9 +2411,12 @@ placeholder="მაგ. 100000">
 
 <div class="form-grid">
 
+
 <div class="form-group">
 
-<label>ქალაქი *</label>
+<label>
+ქალაქი *
+</label>
 
 <input
 type="text"
@@ -1878,7 +2428,9 @@ placeholder="მაგ. თბილისი">
 
 <div class="form-group">
 
-<label>უბანი</label>
+<label>
+უბანი
+</label>
 
 <input
 type="text"
@@ -1890,7 +2442,9 @@ placeholder="მაგ. საბურთალო">
 
 <div class="form-group full">
 
-<label>მისამართი</label>
+<label>
+მისამართი
+</label>
 
 <input
 type="text"
@@ -1899,9 +2453,49 @@ placeholder="ქუჩა, ნომერი">
 
 </div>
 
+
+<div class="form-group full">
+
+<label>
+📍 მონიშნეთ ქონება რუკაზე
+</label>
+
+<div class="location-map-help">
+რუკაზე დააჭირეთ იმ ადგილს, სადაც ქონება მდებარეობს.
+ნიშნული შეგიძლიათ გადაადგილოთ თითითაც.
+</div>
+
+<div id="listingLocationPicker"></div>
+
+<div class="location-map-actions">
+
+<button
+type="button"
+class="my-location-button"
+id="useMyLocation">
+📍 ჩემი მდებარეობა
+</button>
+
+<button
+type="button"
+id="clearLocation">
+მონიშვნის წაშლა
+</button>
+
+</div>
+
+<div
+class="selected-coordinates"
+id="selectedCoordinates">
+ადგილმდებარეობა ჯერ არ არის მონიშნული.
 </div>
 
 </div>
+
+</div>
+
+</div>
+
 
 
 <div class="form-card">
@@ -1914,7 +2508,9 @@ placeholder="ქუჩა, ნომერი">
 
 <div class="form-group">
 
-<label>ფასი *</label>
+<label>
+ფასი *
+</label>
 
 <input
 type="number"
@@ -1926,12 +2522,24 @@ placeholder="მაგ. 145000">
 
 <div class="form-group">
 
-<label>ვალუტა</label>
+<label>
+ვალუტა
+</label>
 
 <select id="currency">
-<option value="USD">$ USD</option>
-<option value="GEL">₾ GEL</option>
-<option value="EUR">€ EUR</option>
+
+<option value="USD">
+$ USD
+</option>
+
+<option value="GEL">
+₾ GEL
+</option>
+
+<option value="EUR">
+€ EUR
+</option>
+
 </select>
 
 </div>
@@ -1941,25 +2549,33 @@ placeholder="მაგ. 145000">
 </div>
 
 
+
 <div class="form-card">
 
 <h2>
 ვინ აქვეყნებს განცხადებას?
 </h2>
 
-<div class="choice-group" id="ownerChoices">
+<div
+class="choice-group"
+id="ownerChoices">
 
-<button class="choice selected" data-value="owner">
+<button
+class="choice selected"
+data-value="owner">
 👤 მესაკუთრე
 </button>
 
-<button class="choice" data-value="agent">
+<button
+class="choice"
+data-value="agent">
 🏢 აგენტი
 </button>
 
 </div>
 
 </div>
+
 
 
 <div class="form-card">
@@ -1990,11 +2606,15 @@ multiple>
 
 </label>
 
-<div class="preview" id="photoPreview"></div>
-
+<div
+class="preview"
+id="photoPreview">
 </div>
 
 </div>
+
+</div>
+
 
 
 <div class="form-card">
@@ -2034,33 +2654,49 @@ placeholder="სახელი">
 
 </div>
 
+
 <br>
 
-<label style="display:block;margin-bottom:10px;font-weight:600;">
+
+<label style="
+display:block;
+margin-bottom:10px;
+font-weight:600;
+">
 რომელ აპში დაგიკავშირდნენ?
 </label>
 
+
 <div class="contact-options">
 
-<button class="contact-choice selected" data-value="call">
+<button
+class="contact-choice selected"
+data-value="call">
 📞 ზარი
 </button>
 
-<button class="contact-choice" data-value="whatsapp">
+<button
+class="contact-choice"
+data-value="whatsapp">
 WhatsApp
 </button>
 
-<button class="contact-choice" data-value="telegram">
+<button
+class="contact-choice"
+data-value="telegram">
 Telegram
 </button>
 
-<button class="contact-choice" data-value="viber">
+<button
+class="contact-choice"
+data-value="viber">
 Viber
 </button>
 
 </div>
 
 </div>
+
 
 
 <div class="form-card">
@@ -2084,15 +2720,20 @@ placeholder="დაწერეთ დამატებითი ინფო�
 </div>
 
 
+
 <div class="form-card">
 
 <div class="form-actions">
 
-<button class="cancel-button" id="cancelButton">
+<button
+class="cancel-button"
+id="cancelButton">
 გაუქმება
 </button>
 
-<button class="publish-button" id="publishButton">
+<button
+class="publish-button"
+id="publishButton">
 გამოქვეყნება →
 </button>
 
@@ -2103,9 +2744,14 @@ placeholder="დაწერეთ დამატებითი ინფო�
 </section>
 
 
-<!-- MY LISTINGS -->
 
-<section class="my-listings-page" id="myListingsPage">
+<!-- =========================
+     MY LISTINGS
+========================= -->
+
+<section
+class="my-listings-page"
+id="myListingsPage">
 
 <div class="my-listings-header">
 
@@ -2115,11 +2761,15 @@ placeholder="დაწერეთ დამატებითი ინფო�
 
 <div class="my-listings-header-actions">
 
-<button class="back-button" id="myListingsBack">
+<button
+class="back-button"
+id="myListingsBack">
 ← მთავარი
 </button>
 
-<button class="my-new-listing" id="myNewListing">
+<button
+class="my-new-listing"
+id="myNewListing">
 + განცხადება
 </button>
 
@@ -2127,10 +2777,18 @@ placeholder="დაწერეთ დამატებითი ინფო�
 
 </div>
 
-<div class="cards" id="myListingsCards"></div>
+<div
+class="cards"
+id="myListingsCards">
+</div>
 
 </section>
 
+
+
+<!-- =========================
+     FOOTER
+========================= -->
 
 <footer>
 
@@ -2138,7 +2796,9 @@ placeholder="დაწერეთ დამატებითი ინფო�
 
 <div>
 
-<h3>YOUR HOME</h3>
+<h3>
+YOUR HOME
+</h3>
 
 <p>
 იპოვე უძრავი ქონება საქართველოში.
@@ -2146,11 +2806,15 @@ placeholder="დაწერეთ დამატებითი ინფო�
 
 <div class="social">
 
-<a href="https://www.facebook.com/share/1HtanV8Xwi/" target="_blank">
+<a
+href="https://www.facebook.com/share/1HtanV8Xwi/"
+target="_blank">
 Facebook
 </a>
 
-<a href="https://www.facebook.com/share/g/1EBUpigYYd/" target="_blank">
+<a
+href="https://www.facebook.com/share/g/1EBUpigYYd/"
+target="_blank">
 ჯგუფი
 </a>
 
@@ -2161,30 +2825,55 @@ Facebook
 
 <div>
 
-<h3>ქონება</h3>
+<h3>
+ქონება
+</h3>
 
-<a href="#" data-type="sale">იყიდება</a>
-<a href="#" data-type="rent">ქირავდება</a>
-<a href="#" data-type="pledge">გირავდება</a>
-<a href="#">კომერციული</a>
+<a href="#" data-type="sale">
+იყიდება
+</a>
+
+<a href="#" data-type="rent">
+ქირავდება
+</a>
+
+<a href="#" data-type="pledge">
+გირავდება
+</a>
+
+<a href="#">
+კომერციული
+</a>
 
 </div>
 
 
 <div>
 
-<h3>დახმარება</h3>
+<h3>
+დახმარება
+</h3>
 
-<a href="#">ჩვენ შესახებ</a>
-<a href="#">დახმარება</a>
-<a href="#">წესები და პირობები</a>
+<a href="#">
+ჩვენ შესახებ
+</a>
+
+<a href="#">
+დახმარება
+</a>
+
+<a href="#">
+წესები და პირობები
+</a>
 
 </div>
 
 
 <div>
 
-<h3>დაგვიკავშირდით</h3>
+<h3>
+დაგვიკავშირდით
+</h3>
 
 <p>
 yourhomensp@gmail.com
@@ -2194,15 +2883,21 @@ yourhomensp@gmail.com
 +995 577 133 990
 </a>
 
-<a href="https://wa.me/995577133990" target="_blank">
+<a
+href="https://wa.me/995577133990"
+target="_blank">
 WhatsApp
 </a>
 
-<a href="https://www.facebook.com/share/1HtanV8Xwi/" target="_blank">
+<a
+href="https://www.facebook.com/share/1HtanV8Xwi/"
+target="_blank">
 Facebook გვერდი
 </a>
 
-<a href="https://www.facebook.com/share/g/1EBUpigYYd/" target="_blank">
+<a
+href="https://www.facebook.com/share/g/1EBUpigYYd/"
+target="_blank">
 Facebook ჯგუფი
 </a>
 
@@ -2213,12 +2908,21 @@ Facebook ჯგუფი
 </footer>
 
 
-<div class="message" id="message"></div>
+
+<div
+class="message"
+id="message">
+</div>
 
 
-<!-- FULL LISTING -->
 
-<div class="listing-modal" id="listingModal">
+<!-- =========================
+     FULL LISTING
+========================= -->
+
+<div
+class="listing-modal"
+id="listingModal">
 
 <div class="listing-detail-wrap">
 
@@ -2245,13 +2949,21 @@ id="listingCodeTop">
 </div>
 
 
-<!-- LOGIN MODAL -->
 
-<div class="login-modal" id="loginModal">
+<!-- =========================
+     LOGIN MODAL
+========================= -->
+
+<div
+class="login-modal"
+id="loginModal">
 
 <div class="login-box">
 
-<button class="login-close" id="loginClose" type="button">
+<button
+class="login-close"
+id="loginClose"
+type="button">
 ×
 </button>
 
@@ -2287,7 +2999,9 @@ type="button">
 </div>
 
 
-<div class="login-form active" id="loginForm">
+<div
+class="login-form active"
+id="loginForm">
 
 <label>
 ელფოსტა
@@ -2324,7 +3038,10 @@ type="button">
 </div>
 
 
-<div class="login-form" id="registerForm">
+
+<div
+class="login-form"
+id="registerForm">
 
 <label>
 სახელი და გვარი
@@ -2404,7 +3121,10 @@ Google-ით გაგრძელება
 </div>
 
 
-<!-- PASSWORD RESET MODAL -->
+
+<!-- =========================
+     PASSWORD RESET MODAL
+========================= -->
 
 <div
 class="login-modal password-reset-modal"
@@ -2467,9 +3187,20 @@ type="button">
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- LEAFLET -->
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+<!-- SUPABASE -->
+<script
+src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
+
 
 <script>
+
 
 /* =========================
    SUPABASE
@@ -2481,6 +3212,7 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable__CQ1qg7_KizhMzPKDaD3tA_TQq6AzsM";
 
+/* ახალი მთავარი დომენი */
 const APP_URL =
 "https://yourhome24.ge/";
 
@@ -2491,21 +3223,73 @@ window.supabase.createClient(
 );
 
 
+
 /* =========================
    GLOBAL
 ========================= */
 
 let currentUser = null;
-let searchType = "sale";
-let selectedFiles = [];
-let currentListings = [];
-let currentMyListings = [];
 
-let editingListingId = null;
-let existingPhotoUrls = [];
-let removedPhotoUrls = [];
-let addPageOrigin = "home";
-let passwordRecoveryActive = false;
+let searchType =
+    "sale";
+
+let selectedFiles =
+    [];
+
+let currentListings =
+    [];
+
+let currentMyListings =
+    [];
+
+let editingListingId =
+    null;
+
+let existingPhotoUrls =
+    [];
+
+let removedPhotoUrls =
+    [];
+
+let addPageOrigin =
+    "home";
+
+let passwordRecoveryActive =
+    false;
+
+
+/* MAP */
+
+let listingsMap =
+    null;
+
+let mapMarkersLayer =
+    null;
+
+let currentViewMode =
+    "list";
+
+let locationPickerMap =
+    null;
+
+let locationPickerMarker =
+    null;
+
+let selectedLatitude =
+    null;
+
+let selectedLongitude =
+    null;
+
+let detailMap =
+    null;
+
+
+/* Georgia default center */
+
+const GEORGIA_CENTER =
+    [42.10,43.50];
+
 
 
 /* =========================
@@ -2515,19 +3299,35 @@ let passwordRecoveryActive = false;
 function showMessage(text){
 
     const message =
-        document.getElementById("message");
+        document
+        .getElementById(
+            "message"
+        );
 
-    message.textContent = text;
+    message.textContent =
+        text;
 
-    message.classList.add("show");
+    message
+    .classList
+    .add(
+        "show"
+    );
 
-    setTimeout(function(){
+    setTimeout(
+        function(){
 
-        message.classList.remove("show");
+            message
+            .classList
+            .remove(
+                "show"
+            );
 
-    },5000);
+        },
+        5000
+    );
 
 }
+
 
 
 /* =========================
@@ -2535,28 +3335,41 @@ function showMessage(text){
 ========================= */
 
 const homePage =
-    document.getElementById("homePage");
+    document
+    .getElementById(
+        "homePage"
+    );
 
 const addPage =
-    document.getElementById("addPage");
+    document
+    .getElementById(
+        "addPage"
+    );
 
 const myListingsPage =
-    document.getElementById(
+    document
+    .getElementById(
         "myListingsPage"
     );
 
 
 function showHomePage(){
 
-    addPage.classList.remove(
+    addPage
+    .classList
+    .remove(
         "active"
     );
 
-    myListingsPage.classList.remove(
+    myListingsPage
+    .classList
+    .remove(
         "active"
     );
 
-    homePage.classList.remove(
+    homePage
+    .classList
+    .remove(
         "hidden"
     );
 
@@ -2571,17 +3384,24 @@ function showHomePage(){
 function openAddPage(origin){
 
     addPageOrigin =
-        origin || "home";
+        origin ||
+        "home";
 
-    homePage.classList.add(
+    homePage
+    .classList
+    .add(
         "hidden"
     );
 
-    myListingsPage.classList.remove(
+    myListingsPage
+    .classList
+    .remove(
         "active"
     );
 
-    addPage.classList.add(
+    addPage
+    .classList
+    .add(
         "active"
     );
 
@@ -2590,12 +3410,45 @@ function openAddPage(origin){
         behavior:"smooth"
     });
 
+
+    setTimeout(
+        function(){
+
+            initLocationPicker();
+
+            if(
+                locationPickerMap
+            ){
+
+                locationPickerMap
+                .invalidateSize();
+
+            }
+
+            if(
+                hasSelectedCoordinates()
+            ){
+
+                setLocationPickerMarker(
+                    selectedLatitude,
+                    selectedLongitude,
+                    true
+                );
+
+            }
+
+        },
+        250
+    );
+
 }
 
 
 function closeAddPage(){
 
-    addPage.classList.remove(
+    addPage
+    .classList
+    .remove(
         "active"
     );
 
@@ -2604,11 +3457,15 @@ function closeAddPage(){
         "my"
     ){
 
-        homePage.classList.add(
+        homePage
+        .classList
+        .add(
             "hidden"
         );
 
-        myListingsPage.classList.add(
+        myListingsPage
+        .classList
+        .add(
             "active"
         );
 
@@ -2616,11 +3473,15 @@ function closeAddPage(){
 
     }else{
 
-        myListingsPage.classList.remove(
+        myListingsPage
+        .classList
+        .remove(
             "active"
         );
 
-        homePage.classList.remove(
+        homePage
+        .classList
+        .remove(
             "hidden"
         );
 
@@ -2636,19 +3497,27 @@ function closeAddPage(){
 
 async function openMyListingsPage(){
 
-    if(!requireLogin()){
+    if(
+        !requireLogin()
+    ){
         return;
     }
 
-    homePage.classList.add(
+    homePage
+    .classList
+    .add(
         "hidden"
     );
 
-    addPage.classList.remove(
+    addPage
+    .classList
+    .remove(
         "active"
     );
 
-    myListingsPage.classList.add(
+    myListingsPage
+    .classList
+    .add(
         "active"
     );
 
@@ -2662,6 +3531,7 @@ async function openMyListingsPage(){
 }
 
 
+
 /* =========================
    USER
 ========================= */
@@ -2673,13 +3543,16 @@ async function loadCurrentUser(){
         .auth
         .getUser();
 
-    if(result.error){
+    if(
+        result.error
+    ){
 
         console.error(
             result.error
         );
 
-        currentUser = null;
+        currentUser =
+            null;
 
     }else{
 
@@ -2697,11 +3570,14 @@ async function loadCurrentUser(){
 function updateLoginButton(){
 
     const button =
-        document.getElementById(
+        document
+        .getElementById(
             "loginButton"
         );
 
-    if(currentUser){
+    if(
+        currentUser
+    ){
 
         const name =
             currentUser
@@ -2738,12 +3614,14 @@ function updateLoginButton(){
 }
 
 
+
 /* =========================
    ACCOUNT MENU
 ========================= */
 
 const accountMenu =
-    document.getElementById(
+    document
+    .getElementById(
         "accountMenu"
     );
 
@@ -2756,9 +3634,12 @@ document
     "click",
     function(event){
 
-        event.stopPropagation();
+        event
+        .stopPropagation();
 
-        if(currentUser){
+        if(
+            currentUser
+        ){
 
             accountMenu
             .classList
@@ -2784,7 +3665,8 @@ document
     "click",
     function(event){
 
-        event.stopPropagation();
+        event
+        .stopPropagation();
 
     }
 );
@@ -2837,7 +3719,9 @@ document
                 "გსურთ ანგარიშიდან გამოსვლა?"
             );
 
-        if(!answer){
+        if(
+            !answer
+        ){
             return;
         }
 
@@ -2846,7 +3730,9 @@ document
             .auth
             .signOut();
 
-        if(result.error){
+        if(
+            result.error
+        ){
 
             showMessage(
                 result.error.message
@@ -2856,7 +3742,8 @@ document
 
         }
 
-        currentUser = null;
+        currentUser =
+            null;
 
         updateLoginButton();
 
@@ -2870,30 +3757,38 @@ document
 );
 
 
+
 /* =========================
    LOGIN MODAL
 ========================= */
 
 const loginModal =
-    document.getElementById(
+    document
+    .getElementById(
         "loginModal"
     );
 
 
 function openLogin(){
 
-    loginModal.classList.add(
+    loginModal
+    .classList
+    .add(
         "active"
     );
 
-    setLoginTab("login");
+    setLoginTab(
+        "login"
+    );
 
 }
 
 
 function closeLogin(){
 
-    loginModal.classList.remove(
+    loginModal
+    .classList
+    .remove(
         "active"
     );
 
@@ -2906,27 +3801,35 @@ function setLoginTab(type){
     .querySelectorAll(
         ".login-tab"
     )
-    .forEach(function(tab){
+    .forEach(
+        function(tab){
 
-        tab.classList.toggle(
-            "active",
-            tab.dataset.loginTab ===
-            type
-        );
+            tab
+            .classList
+            .toggle(
+                "active",
+                tab.dataset.loginTab ===
+                type
+            );
 
-    });
+        }
+    );
 
     loginModal
     .querySelectorAll(
         ".login-form"
     )
-    .forEach(function(form){
+    .forEach(
+        function(form){
 
-        form.classList.remove(
-            "active"
-        );
+            form
+            .classList
+            .remove(
+                "active"
+            );
 
-    });
+        }
+    );
 
     const targetForm =
         loginModal
@@ -2936,9 +3839,13 @@ function setLoginTab(type){
             : "#registerForm"
         );
 
-    if(targetForm){
+    if(
+        targetForm
+    ){
 
-        targetForm.classList.add(
+        targetForm
+        .classList
+        .add(
             "active"
         );
 
@@ -2957,7 +3864,8 @@ document
 );
 
 
-loginModal.addEventListener(
+loginModal
+.addEventListener(
     "click",
     function(event){
 
@@ -2978,20 +3886,23 @@ loginModal
 .querySelectorAll(
     ".login-tab"
 )
-.forEach(function(tab){
+.forEach(
+    function(tab){
 
-    tab.addEventListener(
-        "click",
-        function(){
+        tab.addEventListener(
+            "click",
+            function(){
 
-            setLoginTab(
-                this.dataset.loginTab
-            );
+                setLoginTab(
+                    this.dataset.loginTab
+                );
 
-        }
-    );
+            }
+        );
 
-});
+    }
+);
+
 
 
 /* =========================
@@ -3045,7 +3956,10 @@ document
             )
             .value;
 
-        if(!name){
+
+        if(
+            !name
+        ){
 
             showMessage(
                 "გთხოვთ შეიყვანოთ სახელი და გვარი."
@@ -3054,6 +3968,7 @@ document
             return;
 
         }
+
 
         if(
             !email ||
@@ -3068,7 +3983,10 @@ document
 
         }
 
-        if(!phone){
+
+        if(
+            !phone
+        ){
 
             showMessage(
                 "გთხოვთ შეიყვანოთ ტელეფონის ნომერი."
@@ -3077,6 +3995,7 @@ document
             return;
 
         }
+
 
         if(
             password.length <
@@ -3091,6 +4010,7 @@ document
 
         }
 
+
         if(
             password !==
             password2
@@ -3104,20 +4024,27 @@ document
 
         }
 
-        const button = this;
 
-        button.disabled = true;
+        const button =
+            this;
+
+        button.disabled =
+            true;
+
         button.textContent =
             "რეგისტრაცია...";
+
 
         const result =
             await supabaseClient
             .auth
             .signUp({
 
-                email:email,
+                email:
+                    email,
 
-                password:password,
+                password:
+                    password,
 
                 options:{
 
@@ -3133,11 +4060,17 @@ document
 
             });
 
-        button.disabled = false;
+
+        button.disabled =
+            false;
+
         button.textContent =
             "რეგისტრაცია";
 
-        if(result.error){
+
+        if(
+            result.error
+        ){
 
             showMessage(
                 result.error.message
@@ -3146,6 +4079,7 @@ document
             return;
 
         }
+
 
         if(
             result.data.session &&
@@ -3165,18 +4099,20 @@ document
 
         }else{
 
-            currentUser = null;
+            currentUser =
+                null;
 
             updateLoginButton();
 
             showMessage(
-                "რეგისტრაცია დასრულდა. გთხოვთ დაადასტუროთ ელფოსტა. თუ წერილი არ მოვიდა, დააჭირეთ „დადასტურების წერილის ხელახლა გაგზავნას“."
+                "რეგისტრაცია დასრულდა. გთხოვთ დაადასტუროთ ელფოსტა."
             );
 
         }
 
     }
 );
+
 
 
 /* =========================
@@ -3200,6 +4136,7 @@ document
             .trim()
             .toLowerCase();
 
+
         if(
             !email ||
             !email.includes("@")
@@ -3213,35 +4150,48 @@ document
 
         }
 
-        const button = this;
 
-        button.disabled = true;
+        const button =
+            this;
+
+        button.disabled =
+            true;
 
         button.textContent =
             "იგზავნება...";
+
 
         const result =
             await supabaseClient
             .auth
             .resend({
 
-                type:"signup",
+                type:
+                    "signup",
 
-                email:email,
+                email:
+                    email,
 
                 options:{
+
                     emailRedirectTo:
                         APP_URL
+
                 }
 
             });
 
-        button.disabled = false;
+
+        button.disabled =
+            false;
 
         button.textContent =
             "დადასტურების წერილის ხელახლა გაგზავნა";
 
-        if(result.error){
+
+        if(
+            result.error
+        ){
 
             console.error(
                 result.error
@@ -3256,7 +4206,7 @@ document
             ){
 
                 showMessage(
-                    "წერილი ცოტა ხნის წინ უკვე გაიგზავნა. ცოტა ხანი მოიცადეთ და შემდეგ ხელახლა სცადეთ."
+                    "წერილი ცოტა ხნის წინ უკვე გაიგზავნა. ცოტა ხანი მოიცადეთ."
                 );
 
             }else{
@@ -3272,12 +4222,14 @@ document
 
         }
 
+
         showMessage(
-            "✅ ახალი დადასტურების წერილი გამოგზავნილია. შეამოწმეთ Inbox და Spam საქაღალდეც."
+            "✅ ახალი დადასტურების წერილი გამოგზავნილია."
         );
 
     }
 );
+
 
 
 /* =========================
@@ -3308,6 +4260,7 @@ document
             )
             .value;
 
+
         if(
             !email ||
             !password
@@ -3321,29 +4274,41 @@ document
 
         }
 
-        const button = this;
 
-        button.disabled = true;
+        const button =
+            this;
+
+        button.disabled =
+            true;
 
         button.textContent =
             "შესვლა...";
+
 
         const result =
             await supabaseClient
             .auth
             .signInWithPassword({
 
-                email:email,
-                password:password
+                email:
+                    email,
+
+                password:
+                    password
 
             });
 
-        button.disabled = false;
+
+        button.disabled =
+            false;
 
         button.textContent =
             "ავტორიზაცია";
 
-        if(result.error){
+
+        if(
+            result.error
+        ){
 
             showMessage(
                 "ელფოსტა ან პაროლი არასწორია, ან ელფოსტა ჯერ არ არის დადასტურებული."
@@ -3352,6 +4317,7 @@ document
             return;
 
         }
+
 
         currentUser =
             result.data.user;
@@ -3364,13 +4330,15 @@ document
         .getElementById(
             "loginEmail"
         )
-        .value = "";
+        .value =
+            "";
 
         document
         .getElementById(
             "loginPassword"
         )
-        .value = "";
+        .value =
+            "";
 
         showMessage(
             "კეთილი იყოს თქვენი დაბრუნება ❤️"
@@ -3380,8 +4348,9 @@ document
 );
 
 
+
 /* =========================
-   GOOGLE
+   GOOGLE LOGIN
 ========================= */
 
 document
@@ -3401,13 +4370,18 @@ document
                     "google",
 
                 options:{
+
                     redirectTo:
                         APP_URL
+
                 }
 
             });
 
-        if(result.error){
+
+        if(
+            result.error
+        ){
 
             showMessage(
                 result.error.message
@@ -3417,6 +4391,7 @@ document
 
     }
 );
+
 
 
 /* =========================
@@ -3440,6 +4415,7 @@ document
             .trim()
             .toLowerCase();
 
+
         if(
             !email ||
             !email.includes("@")
@@ -3453,12 +4429,16 @@ document
 
         }
 
-        const button = this;
 
-        button.disabled = true;
+        const button =
+            this;
+
+        button.disabled =
+            true;
 
         button.textContent =
             "იგზავნება...";
+
 
         const result =
             await supabaseClient
@@ -3471,12 +4451,17 @@ document
                 }
             );
 
-        button.disabled = false;
+
+        button.disabled =
+            false;
 
         button.textContent =
             "დაგავიწყდათ პაროლი?";
 
-        if(result.error){
+
+        if(
+            result.error
+        ){
 
             console.error(
                 result.error
@@ -3491,7 +4476,7 @@ document
             ){
 
                 showMessage(
-                    "აღდგენის წერილი ცოტა ხნის წინ უკვე გაიგზავნა. ცოტა ხანი მოიცადეთ და ისევ სცადეთ."
+                    "აღდგენის წერილი ცოტა ხნის წინ უკვე გაიგზავნა."
                 );
 
             }else{
@@ -3507,12 +4492,14 @@ document
 
         }
 
+
         showMessage(
-            "✅ პაროლის აღდგენის ბმული გამოგზავნილია ელფოსტაზე. შეამოწმეთ Inbox და Spam."
+            "✅ პაროლის აღდგენის ბმული გამოგზავნილია ელფოსტაზე."
         );
 
     }
 );
+
 
 
 /* =========================
@@ -3520,7 +4507,8 @@ document
 ========================= */
 
 const passwordResetModal =
-    document.getElementById(
+    document
+    .getElementById(
         "passwordResetModal"
     );
 
@@ -3578,13 +4566,15 @@ function clearPasswordResetFields(){
     .getElementById(
         "newPassword"
     )
-    .value = "";
+    .value =
+        "";
 
     document
     .getElementById(
         "newPassword2"
     )
-    .value = "";
+    .value =
+        "";
 
 }
 
@@ -3628,7 +4618,9 @@ document
                     "გსურთ პაროლის შეცვლის გაუქმება?"
                 );
 
-            if(!answer){
+            if(
+                !answer
+            ){
                 return;
             }
 
@@ -3681,6 +4673,7 @@ document
             )
             .value;
 
+
         if(
             password.length <
             6
@@ -3693,6 +4686,7 @@ document
             return;
 
         }
+
 
         if(
             password !==
@@ -3707,26 +4701,38 @@ document
 
         }
 
-        const button = this;
 
-        button.disabled = true;
+        const button =
+            this;
+
+        button.disabled =
+            true;
 
         button.textContent =
             "ინახება...";
+
 
         const result =
             await supabaseClient
             .auth
             .updateUser({
-                password:password
+
+                password:
+                    password
+
             });
 
-        button.disabled = false;
+
+        button.disabled =
+            false;
 
         button.textContent =
             "პაროლის შეცვლა";
 
-        if(result.error){
+
+        if(
+            result.error
+        ){
 
             console.error(
                 result.error
@@ -3741,6 +4747,7 @@ document
 
         }
 
+
         passwordRecoveryActive =
             false;
 
@@ -3750,10 +4757,12 @@ document
 
         cleanAuthUrl();
 
+
         const signOutResult =
             await supabaseClient
             .auth
             .signOut();
+
 
         if(
             signOutResult.error
@@ -3765,11 +4774,14 @@ document
 
         }
 
-        currentUser = null;
+
+        currentUser =
+            null;
 
         updateLoginButton();
 
         showHomePage();
+
 
         setTimeout(
             function(){
@@ -3784,12 +4796,14 @@ document
             200
         );
 
+
         showMessage(
             "✅ პაროლი წარმატებით შეიცვალა. ახლა შედით ახალი პაროლით."
         );
 
     }
 );
+
 
 
 /* =========================
@@ -3810,6 +4824,7 @@ supabaseClient
 
         updateLoginButton();
 
+
         if(
             event ===
             "PASSWORD_RECOVERY"
@@ -3824,6 +4839,7 @@ supabaseClient
 
         }
 
+
         if(
             event ===
             "SIGNED_IN" &&
@@ -3834,6 +4850,7 @@ supabaseClient
             closeLogin();
 
         }
+
 
         if(
             event ===
@@ -3853,13 +4870,16 @@ supabaseClient
 );
 
 
+
 /* =========================
    REQUIRE LOGIN
 ========================= */
 
 function requireLogin(){
 
-    if(!currentUser){
+    if(
+        !currentUser
+    ){
 
         openLogin();
 
@@ -3874,6 +4894,7 @@ function requireLogin(){
     return true;
 
 }
+
 
 
 /* =========================
@@ -3910,7 +4931,9 @@ function startNewListing(
     origin
 ){
 
-    if(!requireLogin()){
+    if(
+        !requireLogin()
+    ){
         return;
     }
 
@@ -3939,6 +4962,7 @@ function startNewListing(
     );
 
 }
+
 
 
 /* =========================
@@ -4035,6 +5059,7 @@ document
 );
 
 
+
 /* =========================
    DEAL TYPE
 ========================= */
@@ -4060,6 +5085,7 @@ document
 
     }
 );
+
 
 
 /* =========================
@@ -4089,6 +5115,7 @@ document
 );
 
 
+
 /* =========================
    CONTACT METHODS
 ========================= */
@@ -4104,7 +5131,9 @@ document
             "click",
             function(){
 
-                this.classList.toggle(
+                this
+                .classList
+                .toggle(
                     "selected"
                 );
 
@@ -4115,22 +5144,26 @@ document
 );
 
 
+
 /* =========================
    PHOTOS
 ========================= */
 
 const photoInput =
-    document.getElementById(
+    document
+    .getElementById(
         "photoInput"
     );
 
 const photoPreview =
-    document.getElementById(
+    document
+    .getElementById(
         "photoPreview"
     );
 
 
-photoInput.addEventListener(
+photoInput
+.addEventListener(
     "change",
     function(){
 
@@ -4150,6 +5183,7 @@ photoInput.addEventListener(
                 }
             );
 
+
         if(
             existingPhotoUrls.length +
             selectedFiles.length +
@@ -4161,20 +5195,24 @@ photoInput.addEventListener(
                 "მაქსიმუმ 10 ფოტოს დამატება შეგიძლიათ."
             );
 
-            this.value = "";
+            this.value =
+                "";
 
             return;
 
         }
 
+
         selectedFiles =
-            selectedFiles.concat(
+            selectedFiles
+            .concat(
                 newFiles
             );
 
         renderPhotos();
 
-        this.value = "";
+        this.value =
+            "";
 
     }
 );
@@ -4184,6 +5222,7 @@ function renderPhotos(){
 
     photoPreview.innerHTML =
         "";
+
 
     existingPhotoUrls
     .forEach(
@@ -4218,8 +5257,11 @@ function renderPhotos(){
                 item
             );
 
+
             item
-            .querySelector("span")
+            .querySelector(
+                "span"
+            )
             .addEventListener(
                 "click",
                 function(){
@@ -4232,7 +5274,10 @@ function renderPhotos(){
                             )
                         ];
 
-                    if(photo){
+
+                    if(
+                        photo
+                    ){
 
                         removedPhotoUrls
                         .push(
@@ -4240,6 +5285,7 @@ function renderPhotos(){
                         );
 
                     }
+
 
                     existingPhotoUrls
                     .splice(
@@ -4257,6 +5303,7 @@ function renderPhotos(){
 
         }
     );
+
 
     selectedFiles
     .forEach(
@@ -4297,8 +5344,11 @@ function renderPhotos(){
                         item
                     );
 
+
                     item
-                    .querySelector("span")
+                    .querySelector(
+                        "span"
+                    )
                     .addEventListener(
                         "click",
                         function(){
@@ -4319,6 +5369,7 @@ function renderPhotos(){
 
                 };
 
+
             reader
             .readAsDataURL(
                 file
@@ -4330,13 +5381,845 @@ function renderPhotos(){
 }
 
 
+
+/* =========================
+   MAP HELPERS
+========================= */
+
+function hasValidCoordinates(
+    listing
+){
+
+    if(
+        !listing
+    ){
+        return false;
+    }
+
+    const lat =
+        Number(
+            listing.latitude
+        );
+
+    const lng =
+        Number(
+            listing.longitude
+        );
+
+    return (
+        Number.isFinite(lat) &&
+        Number.isFinite(lng) &&
+        lat >= -90 &&
+        lat <= 90 &&
+        lng >= -180 &&
+        lng <= 180
+    );
+
+}
+
+
+function hasSelectedCoordinates(){
+
+    return (
+        Number.isFinite(
+            Number(
+                selectedLatitude
+            )
+        ) &&
+        Number.isFinite(
+            Number(
+                selectedLongitude
+            )
+        )
+    );
+
+}
+
+
+
+/* =========================
+   LISTINGS MAP
+========================= */
+
+function initListingsMap(){
+
+    if(
+        listingsMap
+    ){
+        return;
+    }
+
+    listingsMap =
+        L.map(
+            "listingsMap"
+        )
+        .setView(
+            GEORGIA_CENTER,
+            7
+        );
+
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom:19,
+            attribution:
+                '&copy; OpenStreetMap contributors'
+        }
+    )
+    .addTo(
+        listingsMap
+    );
+
+
+    mapMarkersLayer =
+        L.layerGroup()
+        .addTo(
+            listingsMap
+        );
+
+}
+
+
+function createPriceMapIcon(
+    listing
+){
+
+    return L.divIcon({
+
+        className:
+            "map-price-marker",
+
+        html:
+        `
+        <div class="map-price-pin">
+
+            ${escapeHtml(
+                formatPrice(
+                    listing.price,
+                    listing.currency
+                )
+            )}
+
+        </div>
+        `,
+
+        iconSize:
+            [100,34],
+
+        iconAnchor:
+            [50,17]
+
+    });
+
+}
+
+
+function renderListingsMap(
+    listings
+){
+
+    initListingsMap();
+
+
+    if(
+        !mapMarkersLayer
+    ){
+        return;
+    }
+
+
+    mapMarkersLayer
+    .clearLayers();
+
+
+    const mappedListings =
+        (listings || [])
+        .filter(
+            hasValidCoordinates
+        );
+
+
+    const countElement =
+        document
+        .getElementById(
+            "mapResultCount"
+        );
+
+
+    if(
+        countElement
+    ){
+
+        countElement.textContent =
+            "რუკაზე ნაჩვენებია " +
+            mappedListings.length +
+            " განცხადება.";
+
+    }
+
+
+    if(
+        !mappedListings.length
+    ){
+
+        listingsMap
+        .setView(
+            GEORGIA_CENTER,
+            7
+        );
+
+        return;
+
+    }
+
+
+    const bounds =
+        [];
+
+
+    mappedListings
+    .forEach(
+        function(listing){
+
+            const lat =
+                Number(
+                    listing.latitude
+                );
+
+            const lng =
+                Number(
+                    listing.longitude
+                );
+
+
+            const photos =
+                Array.isArray(
+                    listing.photos
+                )
+                ? listing.photos
+                : [];
+
+
+            const firstPhoto =
+                photos.length
+                ? photos[0]
+                : "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=500&q=80";
+
+
+            const address =
+                [
+                    listing.city,
+                    listing.district,
+                    listing.address
+                ]
+                .filter(Boolean)
+                .join(", ");
+
+
+            const marker =
+                L.marker(
+                    [lat,lng],
+                    {
+                        icon:
+                            createPriceMapIcon(
+                                listing
+                            )
+                    }
+                );
+
+
+            marker
+            .bindPopup(
+            `
+            <div class="map-popup">
+
+                <img
+                class="map-popup-image"
+                src="${escapeHtml(firstPhoto)}"
+                alt="ქონების ფოტო">
+
+                <div class="map-popup-price">
+
+                    ${formatPrice(
+                        listing.price,
+                        listing.currency
+                    )}
+
+                    ${
+                        listing.deal_type ===
+                        "rent"
+                        ? " / თვე"
+                        : ""
+                    }
+
+                </div>
+
+                <div class="map-popup-address">
+
+                    📍
+                    ${escapeHtml(
+                        address ||
+                        "საქართველო"
+                    )}
+
+                </div>
+
+                <button
+                class="map-popup-button"
+                type="button"
+                onclick="openListingById('${String(listing.id)}')">
+
+                    განცხადების ნახვა
+
+                </button>
+
+            </div>
+            `
+            );
+
+
+            marker
+            .addTo(
+                mapMarkersLayer
+            );
+
+
+            bounds.push(
+                [lat,lng]
+            );
+
+        }
+    );
+
+
+    if(
+        bounds.length ===
+        1
+    ){
+
+        listingsMap
+        .setView(
+            bounds[0],
+            14
+        );
+
+    }else{
+
+        listingsMap
+        .fitBounds(
+            bounds,
+            {
+                padding:
+                    [35,35],
+                maxZoom:
+                    14
+            }
+        );
+
+    }
+
+}
+
+
+
+/* =========================
+   LIST / MAP VIEW
+========================= */
+
+function setListingsView(
+    mode
+){
+
+    currentViewMode =
+        mode;
+
+
+    const propertyCards =
+        document
+        .getElementById(
+            "propertyCards"
+        );
+
+    const mapPanel =
+        document
+        .getElementById(
+            "mapPanel"
+        );
+
+    const listButton =
+        document
+        .getElementById(
+            "listViewButton"
+        );
+
+    const mapButton =
+        document
+        .getElementById(
+            "mapViewButton"
+        );
+
+
+    if(
+        mode ===
+        "map"
+    ){
+
+        propertyCards
+        .classList
+        .add(
+            "view-hidden"
+        );
+
+        mapPanel
+        .classList
+        .add(
+            "active"
+        );
+
+        listButton
+        .classList
+        .remove(
+            "active"
+        );
+
+        mapButton
+        .classList
+        .add(
+            "active"
+        );
+
+
+        setTimeout(
+            function(){
+
+                initListingsMap();
+
+                listingsMap
+                .invalidateSize();
+
+                filterProperties();
+
+            },
+            100
+        );
+
+
+    }else{
+
+        propertyCards
+        .classList
+        .remove(
+            "view-hidden"
+        );
+
+        mapPanel
+        .classList
+        .remove(
+            "active"
+        );
+
+        mapButton
+        .classList
+        .remove(
+            "active"
+        );
+
+        listButton
+        .classList
+        .add(
+            "active"
+        );
+
+    }
+
+}
+
+
+document
+.getElementById(
+    "listViewButton"
+)
+.addEventListener(
+    "click",
+    function(){
+
+        setListingsView(
+            "list"
+        );
+
+    }
+);
+
+
+document
+.getElementById(
+    "mapViewButton"
+)
+.addEventListener(
+    "click",
+    function(){
+
+        setListingsView(
+            "map"
+        );
+
+    }
+);
+
+
+
+/* =========================
+   LOCATION PICKER
+========================= */
+
+function initLocationPicker(){
+
+    if(
+        locationPickerMap
+    ){
+        return;
+    }
+
+
+    locationPickerMap =
+        L.map(
+            "listingLocationPicker"
+        )
+        .setView(
+            GEORGIA_CENTER,
+            7
+        );
+
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom:19,
+            attribution:
+                '&copy; OpenStreetMap contributors'
+        }
+    )
+    .addTo(
+        locationPickerMap
+    );
+
+
+    locationPickerMap
+    .on(
+        "click",
+        function(event){
+
+            setLocationPickerMarker(
+                event.latlng.lat,
+                event.latlng.lng,
+                false
+            );
+
+        }
+    );
+
+}
+
+
+function updateCoordinatesText(){
+
+    const element =
+        document
+        .getElementById(
+            "selectedCoordinates"
+        );
+
+
+    if(
+        !element
+    ){
+        return;
+    }
+
+
+    if(
+        hasSelectedCoordinates()
+    ){
+
+        element.textContent =
+            "✅ ადგილმდებარეობა მონიშნულია.";
+
+    }else{
+
+        element.textContent =
+            "ადგილმდებარეობა ჯერ არ არის მონიშნული.";
+
+    }
+
+}
+
+
+function setLocationPickerMarker(
+    latitude,
+    longitude,
+    centerMap
+){
+
+    const lat =
+        Number(
+            latitude
+        );
+
+    const lng =
+        Number(
+            longitude
+        );
+
+
+    if(
+        !Number.isFinite(lat) ||
+        !Number.isFinite(lng)
+    ){
+        return;
+    }
+
+
+    selectedLatitude =
+        lat;
+
+    selectedLongitude =
+        lng;
+
+
+    initLocationPicker();
+
+
+    if(
+        locationPickerMarker
+    ){
+
+        locationPickerMarker
+        .setLatLng(
+            [lat,lng]
+        );
+
+    }else{
+
+        locationPickerMarker =
+            L.marker(
+                [lat,lng],
+                {
+                    draggable:
+                        true
+                }
+            )
+            .addTo(
+                locationPickerMap
+            );
+
+
+        locationPickerMarker
+        .on(
+            "dragend",
+            function(){
+
+                const position =
+                    locationPickerMarker
+                    .getLatLng();
+
+                selectedLatitude =
+                    position.lat;
+
+                selectedLongitude =
+                    position.lng;
+
+                updateCoordinatesText();
+
+            }
+        );
+
+    }
+
+
+    if(
+        centerMap !==
+        false
+    ){
+
+        locationPickerMap
+        .setView(
+            [lat,lng],
+            16
+        );
+
+    }
+
+
+    updateCoordinatesText();
+
+}
+
+
+function clearLocationPicker(){
+
+    selectedLatitude =
+        null;
+
+    selectedLongitude =
+        null;
+
+
+    if(
+        locationPickerMap &&
+        locationPickerMarker
+    ){
+
+        locationPickerMap
+        .removeLayer(
+            locationPickerMarker
+        );
+
+        locationPickerMarker =
+            null;
+
+    }
+
+
+    if(
+        locationPickerMap
+    ){
+
+        locationPickerMap
+        .setView(
+            GEORGIA_CENTER,
+            7
+        );
+
+    }
+
+
+    updateCoordinatesText();
+
+}
+
+
+document
+.getElementById(
+    "clearLocation"
+)
+.addEventListener(
+    "click",
+    function(){
+
+        clearLocationPicker();
+
+        showMessage(
+            "რუკის მონიშვნა წაიშალა."
+        );
+
+    }
+);
+
+
+document
+.getElementById(
+    "useMyLocation"
+)
+.addEventListener(
+    "click",
+    function(){
+
+        if(
+            !navigator.geolocation
+        ){
+
+            showMessage(
+                "ამ მოწყობილობაზე მდებარეობის განსაზღვრა არ არის ხელმისაწვდომი."
+            );
+
+            return;
+
+        }
+
+
+        const button =
+            this;
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            "📍 ვეძებ...";
+
+
+        navigator.geolocation
+        .getCurrentPosition(
+
+            function(position){
+
+                button.disabled =
+                    false;
+
+                button.textContent =
+                    "📍 ჩემი მდებარეობა";
+
+
+                const lat =
+                    position.coords.latitude;
+
+                const lng =
+                    position.coords.longitude;
+
+
+                setLocationPickerMarker(
+                    lat,
+                    lng,
+                    true
+                );
+
+
+                showMessage(
+                    "✅ თქვენი მდებარეობა მონიშნულია. საჭიროების შემთხვევაში ნიშნული გადაადგილეთ."
+                );
+
+            },
+
+
+            function(){
+
+                button.disabled =
+                    false;
+
+                button.textContent =
+                    "📍 ჩემი მდებარეობა";
+
+                showMessage(
+                    "მდებარეობის მიღება ვერ მოხერხდა. შეგიძლიათ რუკაზე ხელით მონიშნოთ."
+                );
+
+            },
+
+
+            {
+                enableHighAccuracy:
+                    true,
+
+                timeout:
+                    10000
+            }
+
+        );
+
+    }
+);
+
+
+
 /* =========================
    SEARCH TYPE
 ========================= */
 
 function setSearchType(type){
 
-    searchType = type;
+    searchType =
+        type;
+
 
     document
     .querySelectorAll(
@@ -4356,9 +6239,11 @@ function setSearchType(type){
         }
     );
 
+
     filterProperties();
 
 }
+
 
 
 /* =========================
@@ -4372,7 +6257,8 @@ document
 .forEach(
     function(button){
 
-        button.addEventListener(
+        button
+        .addEventListener(
             "click",
             function(){
 
@@ -4387,6 +6273,7 @@ document
 );
 
 
+
 /* =========================
    NAV
 ========================= */
@@ -4398,7 +6285,8 @@ document
 .forEach(
     function(button){
 
-        button.addEventListener(
+        button
+        .addEventListener(
             "click",
             function(){
 
@@ -4411,6 +6299,7 @@ document
                     setSearchType(
                         this.dataset.type
                     );
+
 
                     setTimeout(
                         function(){
@@ -4443,6 +6332,7 @@ document
 );
 
 
+
 /* =========================
    FOOTER LINKS
 ========================= */
@@ -4454,7 +6344,8 @@ document
 .forEach(
     function(link){
 
-        link.addEventListener(
+        link
+        .addEventListener(
             "click",
             function(event){
 
@@ -4465,6 +6356,7 @@ document
                 setSearchType(
                     this.dataset.type
                 );
+
 
                 setTimeout(
                     function(){
@@ -4489,6 +6381,7 @@ document
 );
 
 
+
 /* =========================
    FILTER BUTTONS
 ========================= */
@@ -4500,7 +6393,8 @@ document
 .forEach(
     function(button){
 
-        button.addEventListener(
+        button
+        .addEventListener(
             "click",
             function(){
 
@@ -4510,6 +6404,7 @@ document
                     .contains(
                         "active"
                     );
+
 
                 document
                 .querySelectorAll(
@@ -4527,7 +6422,10 @@ document
                     }
                 );
 
-                if(!active){
+
+                if(
+                    !active
+                ){
 
                     this
                     .classList
@@ -4537,6 +6435,7 @@ document
 
                 }
 
+
                 filterProperties();
 
             }
@@ -4544,6 +6443,7 @@ document
 
     }
 );
+
 
 
 /* =========================
@@ -4560,23 +6460,46 @@ document
 
         filterProperties();
 
-        document
-        .getElementById(
-            "propertyCards"
-        )
-        .scrollIntoView({
-            behavior:"smooth"
-        });
+
+        if(
+            currentViewMode ===
+            "map"
+        ){
+
+            document
+            .getElementById(
+                "mapPanel"
+            )
+            .scrollIntoView({
+                behavior:
+                    "smooth"
+            });
+
+        }else{
+
+            document
+            .getElementById(
+                "propertyCards"
+            )
+            .scrollIntoView({
+                behavior:
+                    "smooth"
+            });
+
+        }
 
     }
 );
 
 
+
 /* =========================
-   FILTER
+   LISTING FILTER MATCH
 ========================= */
 
-function filterProperties(){
+function listingMatchesCurrentFilters(
+    listing
+){
 
     const location =
         document
@@ -4587,12 +6510,14 @@ function filterProperties(){
         .toLowerCase()
         .trim();
 
+
     const property =
         document
         .getElementById(
             "propertyType"
         )
         .value;
+
 
     const rooms =
         document
@@ -4601,6 +6526,7 @@ function filterProperties(){
         )
         .value;
 
+
     const price =
         Number(
             document
@@ -4608,7 +6534,9 @@ function filterProperties(){
                 "priceInput"
             )
             .value
-        ) || 0;
+        ) ||
+        0;
+
 
     const activeFilter =
         document
@@ -4616,12 +6544,148 @@ function filterProperties(){
             ".filter.active"
         );
 
+
     const filter =
         activeFilter
         ? activeFilter.dataset.filter
         : null;
 
-    let visible = 0;
+
+    const typeMatch =
+        (
+            listing.deal_type ||
+            "sale"
+        ) ===
+        searchType;
+
+
+    const propertyMatch =
+        property ===
+        "all" ||
+        listing.property_type ===
+        property;
+
+
+    const listingRooms =
+        Number(
+            String(
+                listing.rooms ||
+                "0"
+            )
+            .replace(
+                "+",
+                ""
+            )
+        ) ||
+        0;
+
+
+    const roomMatch =
+        rooms ===
+        "all" ||
+        listingRooms ===
+        Number(
+            rooms
+        ) ||
+        (
+            rooms ===
+            "5" &&
+            listingRooms >=
+            5
+        );
+
+
+    const locationText =
+        [
+            listing.city,
+            listing.district,
+            listing.address
+        ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+
+    const locationMatch =
+        !location ||
+        locationText
+        .includes(
+            location
+        );
+
+
+    const listingPrice =
+        Number(
+            listing.price ||
+            0
+        );
+
+
+    const priceMatch =
+        !price ||
+        listingPrice <=
+        price;
+
+
+    const tags =
+        [
+            listing.condition ||
+            "",
+            listing.owner_type ||
+            ""
+        ]
+        .join(" ");
+
+
+    const filterMatch =
+        !filter ||
+        listing.property_type ===
+        filter ||
+        tags.includes(
+            filter
+        );
+
+
+    return (
+        typeMatch &&
+        propertyMatch &&
+        roomMatch &&
+        locationMatch &&
+        priceMatch &&
+        filterMatch
+    );
+
+}
+
+
+
+/* =========================
+   FILTER
+========================= */
+
+function filterProperties(){
+
+    const filteredListings =
+        currentListings
+        .filter(
+            listingMatchesCurrentFilters
+        );
+
+
+    const visibleIds =
+        new Set(
+            filteredListings
+            .map(
+                function(item){
+
+                    return String(
+                        item.id
+                    );
+
+                }
+            )
+        );
+
 
     const cards =
         document
@@ -4629,78 +6693,17 @@ function filterProperties(){
             ".property-card"
         );
 
-    cards.forEach(
+
+    cards
+    .forEach(
         function(card){
 
-            const typeMatch =
-                card.dataset.type ===
-                searchType;
-
-            const propertyMatch =
-                property ===
-                "all" ||
-                card.dataset.property ===
-                property;
-
-            const cardRooms =
-                Number(
-                    card.dataset.rooms ||
-                    0
-                );
-
-            const roomMatch =
-                rooms === "all" ||
-                cardRooms ===
-                Number(rooms) ||
-                (
-                    rooms === "5" &&
-                    cardRooms >= 5
-                );
-
-            const locationText =
-                (
-                    card.dataset.location ||
-                    ""
-                )
-                .toLowerCase();
-
-            const locationMatch =
-                !location ||
-                locationText
-                .includes(
-                    location
-                );
-
-            const cardPrice =
-                Number(
-                    card.dataset.price ||
-                    0
-                );
-
-            const priceMatch =
-                !price ||
-                cardPrice <=
-                price;
-
-            const tags =
-                card.dataset.tags ||
-                "";
-
-            const filterMatch =
-                !filter ||
-                card.dataset.property ===
-                filter ||
-                tags.includes(
-                    filter
-                );
-
             if(
-                typeMatch &&
-                propertyMatch &&
-                roomMatch &&
-                locationMatch &&
-                priceMatch &&
-                filterMatch
+                visibleIds.has(
+                    String(
+                        card.dataset.id
+                    )
+                )
             ){
 
                 card
@@ -4708,8 +6711,6 @@ function filterProperties(){
                 .remove(
                     "hidden"
                 );
-
-                visible++;
 
             }else{
 
@@ -4724,9 +6725,23 @@ function filterProperties(){
         }
     );
 
+
     if(
-        cards.length &&
-        visible === 0
+        currentViewMode ===
+        "map"
+    ){
+
+        renderListingsMap(
+            filteredListings
+        );
+
+    }
+
+
+    if(
+        currentListings.length &&
+        filteredListings.length ===
+        0
     ){
 
         showMessage(
@@ -4736,6 +6751,7 @@ function filterProperties(){
     }
 
 }
+
 
 
 /* =========================
@@ -4754,25 +6770,30 @@ document
         .getElementById(
             "locationInput"
         )
-        .value = "";
+        .value =
+            "";
 
         document
         .getElementById(
             "propertyType"
         )
-        .value = "all";
+        .value =
+            "all";
 
         document
         .getElementById(
             "rooms"
         )
-        .value = "all";
+        .value =
+            "all";
 
         document
         .getElementById(
             "priceInput"
         )
-        .value = "";
+        .value =
+            "";
+
 
         document
         .querySelectorAll(
@@ -4790,10 +6811,12 @@ document
             }
         );
 
+
         filterProperties();
 
     }
 );
+
 
 
 /* =========================
@@ -4809,19 +6832,25 @@ document
     function(event){
 
         const button =
-            event.target.closest(
+            event.target
+            .closest(
                 ".favorite"
             );
 
-        if(!button){
+
+        if(
+            !button
+        ){
             return;
         }
+
 
         button
         .classList
         .toggle(
             "saved"
         );
+
 
         if(
             button
@@ -4853,6 +6882,7 @@ document
 );
 
 
+
 /* =========================
    HELPERS
 ========================= */
@@ -4864,11 +6894,13 @@ function formatPrice(
 
     const number =
         Number(
-            price || 0
+            price ||
+            0
         )
         .toLocaleString(
             "en-US"
         );
+
 
     if(
         currency ===
@@ -4880,6 +6912,7 @@ function formatPrice(
 
     }
 
+
     if(
         currency ===
         "EUR"
@@ -4889,6 +6922,7 @@ function formatPrice(
             number;
 
     }
+
 
     return "$" +
         number;
@@ -4901,7 +6935,8 @@ function formatViews(
 ){
 
     return Number(
-        views || 0
+        views ||
+        0
     )
     .toLocaleString(
         "en-US"
@@ -4921,6 +6956,7 @@ function dealLabel(type){
 
     }
 
+
     if(
         type ===
         "pledge"
@@ -4929,6 +6965,7 @@ function dealLabel(type){
         return "გირავდება";
 
     }
+
 
     return "იყიდება";
 
@@ -4939,15 +6976,29 @@ function propertyLabel(type){
 
     const labels = {
 
-        apartment:"ბინა",
-        house:"სახლი",
-        commercial:"კომერციული",
-        land:"მიწა",
-        cottage:"აგარაკი",
-        hotel:"სასტუმრო",
-        other:"სხვა"
+        apartment:
+            "ბინა",
+
+        house:
+            "სახლი",
+
+        commercial:
+            "კომერციული",
+
+        land:
+            "მიწა",
+
+        cottage:
+            "აგარაკი",
+
+        hotel:
+            "სასტუმრო",
+
+        other:
+            "სხვა"
 
     };
+
 
     return (
         labels[type] ||
@@ -4988,6 +7039,7 @@ function conditionLabel(value){
 
     };
 
+
     return (
         labels[value] ||
         value ||
@@ -5000,7 +7052,8 @@ function conditionLabel(value){
 function escapeHtml(value){
 
     return String(
-        value || ""
+        value ||
+        ""
     )
     .replace(
         /&/g,
@@ -5032,12 +7085,14 @@ function normalizePhoneDigits(
 
     let digits =
         String(
-            phone || ""
+            phone ||
+            ""
         )
         .replace(
             /\D/g,
             ""
         );
+
 
     if(
         digits.length ===
@@ -5053,9 +7108,11 @@ function normalizePhoneDigits(
 
     }
 
+
     return digits;
 
 }
+
 
 
 /* =========================
@@ -5069,11 +7126,15 @@ function storagePathFromUrl(
     const marker =
         "/storage/v1/object/public/listings/";
 
+
     const position =
-        String(url)
+        String(
+            url
+        )
         .indexOf(
             marker
         );
+
 
     if(
         position ===
@@ -5084,15 +7145,21 @@ function storagePathFromUrl(
 
     }
 
+
     let path =
-        String(url)
+        String(
+            url
+        )
         .substring(
             position +
             marker.length
         );
 
+
     path =
-        path.split("?")[0];
+        path
+        .split("?")[0];
+
 
     try{
 
@@ -5120,19 +7187,28 @@ async function removePhotoUrls(
         )
         .filter(Boolean);
 
-    if(!paths.length){
+
+    if(
+        !paths.length
+    ){
         return;
     }
+
 
     const result =
         await supabaseClient
         .storage
-        .from("listings")
+        .from(
+            "listings"
+        )
         .remove(
             paths
         );
 
-    if(result.error){
+
+    if(
+        result.error
+    ){
 
         console.error(
             "ფოტოების წაშლის შეცდომა:",
@@ -5142,6 +7218,7 @@ async function removePhotoUrls(
     }
 
 }
+
 
 
 /* =========================
@@ -5155,16 +7232,22 @@ function updateLocalViews(
 
     const views =
         Number(
-            newViews || 0
+            newViews ||
+            0
         );
+
 
     currentListings
     .forEach(
         function(item){
 
             if(
-                String(item.id) ===
-                String(listingId)
+                String(
+                    item.id
+                ) ===
+                String(
+                    listingId
+                )
             ){
 
                 item.views =
@@ -5174,14 +7257,19 @@ function updateLocalViews(
 
         }
     );
+
 
     currentMyListings
     .forEach(
         function(item){
 
             if(
-                String(item.id) ===
-                String(listingId)
+                String(
+                    item.id
+                ) ===
+                String(
+                    listingId
+                )
             ){
 
                 item.views =
@@ -5192,10 +7280,13 @@ function updateLocalViews(
         }
     );
 
+
     document
     .querySelectorAll(
         '.listing-views[data-id="' +
-        String(listingId) +
+        String(
+            listingId
+        ) +
         '"]'
     )
     .forEach(
@@ -5230,6 +7321,7 @@ async function incrementListingViews(
 
     }
 
+
     const result =
         await supabaseClient
         .rpc(
@@ -5242,7 +7334,10 @@ async function incrementListingViews(
             }
         );
 
-    if(result.error){
+
+    if(
+        result.error
+    ){
 
         console.error(
             "ნახვების დათვლის შეცდომა:",
@@ -5253,10 +7348,12 @@ async function incrementListingViews(
 
     }
 
+
     const newViews =
         Number(
             result.data
         );
+
 
     if(
         Number.isFinite(
@@ -5277,22 +7374,82 @@ async function incrementListingViews(
 }
 
 
+
+/* =========================
+   OPEN LISTING BY ID
+========================= */
+
+function openListingById(
+    listingId
+){
+
+    const listing =
+        currentListings
+        .find(
+            function(item){
+
+                return String(
+                    item.id
+                ) ===
+                String(
+                    listingId
+                );
+
+            }
+        ) ||
+        currentMyListings
+        .find(
+            function(item){
+
+                return String(
+                    item.id
+                ) ===
+                String(
+                    listingId
+                );
+
+            }
+        );
+
+
+    if(
+        listing
+    ){
+
+        openListing(
+            listing
+        );
+
+    }
+
+}
+
+
+window.openListingById =
+    openListingById;
+
+
+
 /* =========================
    FULL LISTING
 ========================= */
 
 const listingModal =
-    document.getElementById(
+    document
+    .getElementById(
         "listingModal"
     );
 
 const listingDetailContent =
-    document.getElementById(
+    document
+    .getElementById(
         "listingDetailContent"
     );
 
 
-function openListing(listing){
+function openListing(
+    listing
+){
 
     const photos =
         Array.isArray(
@@ -5301,13 +7458,16 @@ function openListing(listing){
         ? listing.photos
         : [];
 
+
     const fallbackPhoto =
         "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80";
+
 
     const firstPhoto =
         photos.length
         ? photos[0]
         : fallbackPhoto;
+
 
     const address =
         [
@@ -5318,11 +7478,13 @@ function openListing(listing){
         .filter(Boolean)
         .join(", ");
 
+
     const seller =
         listing.owner_type ===
         "agent"
         ? "აგენტი"
         : "მესაკუთრე";
+
 
     const methods =
         Array.isArray(
@@ -5331,25 +7493,31 @@ function openListing(listing){
         ? listing.contact_methods
         : [];
 
+
     const phone =
         String(
             listing.phone ||
             ""
         );
 
+
     const cleanPhone =
-        phone.replace(
+        phone
+        .replace(
             /[^\d+]/g,
             ""
         );
+
 
     const phoneDigits =
         normalizePhoneDigits(
             phone
         );
 
+
     let contactButtons =
         "";
+
 
     if(
         phone &&
@@ -5366,11 +7534,14 @@ function openListing(listing){
         <a
         class="contact-action contact-call"
         href="tel:${escapeHtml(cleanPhone)}">
+
         📞 დარეკვა
+
         </a>
         `;
 
     }
+
 
     if(
         phoneDigits &&
@@ -5386,11 +7557,14 @@ function openListing(listing){
         href="https://wa.me/${phoneDigits}"
         target="_blank"
         rel="noopener">
+
         WhatsApp
+
         </a>
         `;
 
     }
+
 
     if(
         phoneDigits &&
@@ -5404,11 +7578,14 @@ function openListing(listing){
         <a
         class="contact-action contact-telegram"
         href="tg://resolve?phone=${phoneDigits}">
+
         Telegram
+
         </a>
         `;
 
     }
+
 
     if(
         phoneDigits &&
@@ -5423,16 +7600,20 @@ function openListing(listing){
                 phoneDigits
             );
 
+
         contactButtons +=
         `
         <a
         class="contact-action contact-viber"
         href="viber://chat?number=${viberNumber}">
+
         Viber
+
         </a>
         `;
 
     }
+
 
     if(
         phone &&
@@ -5444,14 +7625,18 @@ function openListing(listing){
         <a
         class="contact-action contact-call"
         href="tel:${escapeHtml(cleanPhone)}">
+
         📞 დარეკვა
+
         </a>
         `;
 
     }
 
+
     const thumbnails =
-        photos.length > 1
+        photos.length >
+        1
 
         ? photos
         .map(
@@ -5463,7 +7648,8 @@ function openListing(listing){
                 return `
                 <img
                 class="listing-thumbnail ${
-                    index === 0
+                    index ===
+                    0
                     ? "active"
                     : ""
                 }"
@@ -5476,7 +7662,9 @@ function openListing(listing){
         )
         .join("")
 
-        : "";
+        :
+        "";
+
 
     document
     .getElementById(
@@ -5486,7 +7674,33 @@ function openListing(listing){
         listing.listing_code
         ? "განცხადება: " +
           listing.listing_code
-        : "";
+        :
+        "";
+
+
+    const mapSection =
+        hasValidCoordinates(
+            listing
+        )
+        ?
+        `
+        <div class="listing-description">
+
+            <h3>
+            📍 მდებარეობა რუკაზე
+            </h3>
+
+            <div id="listingDetailMap"></div>
+
+            <div class="listing-map-hint">
+            ქონების მდებარეობა მითითებულია განცხადების ავტორის მიერ.
+            </div>
+
+        </div>
+        `
+        :
+        "";
+
 
     listingDetailContent
     .innerHTML =
@@ -5502,15 +7716,18 @@ function openListing(listing){
 
         ${
             thumbnails
-            ? `
+            ?
+            `
             <div class="listing-thumbnails">
                 ${thumbnails}
             </div>
             `
-            : ""
+            :
+            ""
         }
 
     </div>
+
 
     <div class="listing-info-grid">
 
@@ -5532,6 +7749,7 @@ function openListing(listing){
 
             </div>
 
+
             <h1 class="listing-detail-title">
 
                 ${escapeHtml(
@@ -5543,9 +7761,11 @@ function openListing(listing){
 
             </h1>
 
+
             <div class="listing-detail-address">
 
                 📍
+
                 ${escapeHtml(
                     address ||
                     listing.city ||
@@ -5553,6 +7773,7 @@ function openListing(listing){
                 )}
 
             </div>
+
 
             <div
             class="listing-detail-views listing-views"
@@ -5566,81 +7787,135 @@ function openListing(listing){
 
             </div>
 
+
             <div class="listing-features">
+
 
                 ${
                     listing.rooms
-                    ? `
+                    ?
+                    `
                     <div class="listing-feature">
-                        <strong>ოთახები</strong>
-                        ${escapeHtml(listing.rooms)}
+
+                        <strong>
+                        ოთახები
+                        </strong>
+
+                        ${escapeHtml(
+                            listing.rooms
+                        )}
+
                     </div>
                     `
-                    : ""
+                    :
+                    ""
                 }
+
 
                 ${
                     listing.bedrooms
-                    ? `
+                    ?
+                    `
                     <div class="listing-feature">
-                        <strong>საძინებლები</strong>
+
+                        <strong>
+                        საძინებლები
+                        </strong>
+
                         ${
                             listing.bedrooms ===
                             "studio"
-                            ? "სტუდიო"
-                            : escapeHtml(
+                            ?
+                            "სტუდიო"
+                            :
+                            escapeHtml(
                                 listing.bedrooms
                             )
                         }
+
                     </div>
                     `
-                    : ""
+                    :
+                    ""
                 }
+
 
                 ${
                     listing.area
-                    ? `
+                    ?
+                    `
                     <div class="listing-feature">
-                        <strong>ფართობი</strong>
-                        ${escapeHtml(listing.area)} მ²
+
+                        <strong>
+                        ფართობი
+                        </strong>
+
+                        ${escapeHtml(
+                            listing.area
+                        )}
+                        მ²
+
                     </div>
                     `
-                    : ""
+                    :
+                    ""
                 }
+
 
                 ${
                     listing.floor
-                    ? `
+                    ?
+                    `
                     <div class="listing-feature">
-                        <strong>სართული</strong>
-                        ${escapeHtml(listing.floor)}
+
+                        <strong>
+                        სართული
+                        </strong>
+
+                        ${escapeHtml(
+                            listing.floor
+                        )}
+
                         ${
                             listing.total_floors
-                            ? "/" +
-                              escapeHtml(
-                                  listing.total_floors
-                              )
-                            : ""
+                            ?
+                            "/" +
+                            escapeHtml(
+                                listing.total_floors
+                            )
+                            :
+                            ""
                         }
+
                     </div>
                     `
-                    : ""
+                    :
+                    ""
                 }
+
 
                 ${
                     listing.condition
-                    ? `
+                    ?
+                    `
                     <div class="listing-feature">
-                        <strong>მდგომარეობა</strong>
+
+                        <strong>
+                        მდგომარეობა
+                        </strong>
+
                         ${escapeHtml(
                             conditionLabel(
                                 listing.condition
                             )
                         )}
+
                     </div>
                     `
-                    : ""
+                    :
+                    ""
                 }
+
 
                 ${
                     listing.balconies !==
@@ -5649,55 +7924,94 @@ function openListing(listing){
                     undefined &&
                     listing.balconies !==
                     ""
-                    ? `
+                    ?
+                    `
                     <div class="listing-feature">
-                        <strong>აივნები</strong>
-                        ${escapeHtml(listing.balconies)}
+
+                        <strong>
+                        აივნები
+                        </strong>
+
+                        ${escapeHtml(
+                            listing.balconies
+                        )}
+
                     </div>
                     `
-                    : ""
+                    :
+                    ""
                 }
+
 
                 ${
                     listing.balcony_area
-                    ? `
+                    ?
+                    `
                     <div class="listing-feature">
-                        <strong>აივნის ფართობი</strong>
-                        ${escapeHtml(listing.balcony_area)} მ²
+
+                        <strong>
+                        აივნის ფართობი
+                        </strong>
+
+                        ${escapeHtml(
+                            listing.balcony_area
+                        )}
+                        მ²
+
                     </div>
                     `
-                    : ""
+                    :
+                    ""
                 }
 
+
                 <div class="listing-feature">
-                    <strong>ქონების ტიპი</strong>
+
+                    <strong>
+                    ქონების ტიპი
+                    </strong>
+
                     ${escapeHtml(
                         propertyLabel(
                             listing.property_type
                         )
                     )}
+
                 </div>
 
+
                 <div class="listing-feature">
-                    <strong>გარიგება</strong>
+
+                    <strong>
+                    გარიგება
+                    </strong>
+
                     ${escapeHtml(
                         dealLabel(
                             listing.deal_type
                         )
                     )}
+
                 </div>
 
+
                 <div class="listing-feature">
-                    <strong>განმცხადებელი</strong>
+
+                    <strong>
+                    განმცხადებელი
+                    </strong>
+
                     ${seller}
+
                 </div>
 
             </div>
 
+
             <div class="listing-description">
 
                 <h3>
-                    აღწერა
+                აღწერა
                 </h3>
 
                 <p>${escapeHtml(
@@ -5707,13 +8021,18 @@ function openListing(listing){
 
             </div>
 
+
+            ${mapSection}
+
         </div>
+
 
         <div class="listing-contact-box">
 
             <h3>
-                საკონტაქტო ინფორმაცია
+            საკონტაქტო ინფორმაცია
             </h3>
+
 
             <div class="listing-contact-name">
 
@@ -5724,38 +8043,54 @@ function openListing(listing){
 
             </div>
 
+
             <div class="listing-contact-role">
+
                 ${seller}
+
             </div>
+
 
             ${
                 phone
-                ? `
+                ?
+                `
                 <div class="listing-contact-phone">
-                    ${escapeHtml(phone)}
+
+                    ${escapeHtml(
+                        phone
+                    )}
+
                 </div>
                 `
-                : ""
+                :
+                ""
             }
+
 
             ${contactButtons}
 
+
             ${
                 listing.listing_code
-                ? `
+                ?
+                `
                 <div class="listing-code-bottom">
 
                     განცხადების კოდი:
 
                     <strong>
+
                         ${escapeHtml(
                             listing.listing_code
                         )}
+
                     </strong>
 
                 </div>
                 `
-                : ""
+                :
+                ""
             }
 
         </div>
@@ -5764,25 +8099,153 @@ function openListing(listing){
 
     `;
 
+
     listingModal
     .classList
     .add(
         "active"
     );
 
+
     document.body
     .style
     .overflow =
         "hidden";
 
+
     listingModal.scrollTop =
         0;
+
+
+    if(
+        hasValidCoordinates(
+            listing
+        )
+    ){
+
+        setTimeout(
+            function(){
+
+                initDetailMap(
+                    listing
+                );
+
+            },
+            150
+        );
+
+    }
+
 
     incrementListingViews(
         listing
     );
 
 }
+
+
+
+/* =========================
+   DETAIL MAP
+========================= */
+
+function initDetailMap(
+    listing
+){
+
+    const container =
+        document
+        .getElementById(
+            "listingDetailMap"
+        );
+
+
+    if(
+        !container ||
+        !hasValidCoordinates(
+            listing
+        )
+    ){
+        return;
+    }
+
+
+    if(
+        detailMap
+    ){
+
+        detailMap.remove();
+
+        detailMap =
+            null;
+
+    }
+
+
+    const lat =
+        Number(
+            listing.latitude
+        );
+
+    const lng =
+        Number(
+            listing.longitude
+        );
+
+
+    detailMap =
+        L.map(
+            container,
+            {
+                scrollWheelZoom:
+                    false
+            }
+        )
+        .setView(
+            [lat,lng],
+            16
+        );
+
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom:19,
+            attribution:
+                '&copy; OpenStreetMap contributors'
+        }
+    )
+    .addTo(
+        detailMap
+    );
+
+
+    L.marker(
+        [lat,lng]
+    )
+    .addTo(
+        detailMap
+    );
+
+
+    setTimeout(
+        function(){
+
+            if(
+                detailMap
+            ){
+
+                detailMap
+                .invalidateSize();
+
+            }
+
+        },
+        150
+    );
+
+}
+
 
 
 function closeListing(){
@@ -5798,6 +8261,18 @@ function closeListing(){
     .overflow =
         "";
 
+
+    if(
+        detailMap
+    ){
+
+        detailMap.remove();
+
+        detailMap =
+            null;
+
+    }
+
 }
 
 
@@ -5811,19 +8286,25 @@ document
 );
 
 
+
 listingDetailContent
 .addEventListener(
     "click",
     function(event){
 
         const thumbnail =
-            event.target.closest(
+            event.target
+            .closest(
                 ".listing-thumbnail"
             );
 
-        if(!thumbnail){
+
+        if(
+            !thumbnail
+        ){
             return;
         }
+
 
         const mainPhoto =
             document
@@ -5831,12 +8312,16 @@ listingDetailContent
                 "listingMainPhoto"
             );
 
-        if(mainPhoto){
+
+        if(
+            mainPhoto
+        ){
 
             mainPhoto.src =
                 thumbnail.dataset.photo;
 
         }
+
 
         document
         .querySelectorAll(
@@ -5845,12 +8330,15 @@ listingDetailContent
         .forEach(
             function(item){
 
-                item.classList.remove(
+                item
+                .classList
+                .remove(
                     "active"
                 );
 
             }
         );
+
 
         thumbnail
         .classList
@@ -5862,6 +8350,7 @@ listingDetailContent
 );
 
 
+
 document
 .getElementById(
     "propertyCards"
@@ -5871,50 +8360,40 @@ document
     function(event){
 
         if(
-            event.target.closest(
+            event.target
+            .closest(
                 ".favorite"
             )
         ){
             return;
         }
 
+
         const card =
-            event.target.closest(
+            event.target
+            .closest(
                 ".property-card"
             );
 
-        if(!card){
+
+        if(
+            !card
+        ){
             return;
         }
 
-        const listing =
-            currentListings
-            .find(
-                function(item){
 
-                    return String(
-                        item.id
-                    ) ===
-                    String(
-                        card.dataset.id
-                    );
-
-                }
-            );
-
-        if(listing){
-
-            openListing(
-                listing
-            );
-
-        }
+        openListingById(
+            card.dataset.id
+        );
 
     }
 );
 
 
-document.addEventListener(
+
+document
+.addEventListener(
     "keydown",
     function(event){
 
@@ -5934,6 +8413,7 @@ document.addEventListener(
 
     }
 );
+
 
 
 /* =========================
@@ -5965,7 +8445,10 @@ async function loadListings(){
             }
         );
 
-    if(result.error){
+
+    if(
+        result.error
+    ){
 
         console.error(
             result.error
@@ -5979,15 +8462,28 @@ async function loadListings(){
 
     }
 
+
     currentListings =
         result.data ||
         [];
+
 
     renderListings(
         currentListings
     );
 
+
+    if(
+        currentViewMode ===
+        "map"
+    ){
+
+        filterProperties();
+
+    }
+
 }
+
 
 
 /* =========================
@@ -6004,23 +8500,29 @@ function renderListings(
             "propertyCards"
         );
 
+
     container.innerHTML =
         "";
 
-    if(!listings.length){
+
+    if(
+        !listings.length
+    ){
 
         container.innerHTML =
         `
         <div style="
-            grid-column:1/-1;
-            background:#fff;
-            border:1px solid var(--border);
-            border-radius:14px;
-            padding:40px;
-            text-align:center;
-            color:var(--muted);
+        grid-column:1/-1;
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:14px;
+        padding:40px;
+        text-align:center;
+        color:var(--muted);
         ">
-            ჯერ განცხადებები არ არის.
+
+        ჯერ განცხადებები არ არის.
+
         </div>
         `;
 
@@ -6028,7 +8530,9 @@ function renderListings(
 
     }
 
-    listings.forEach(
+
+    listings
+    .forEach(
         function(listing){
 
             const card =
@@ -6037,47 +8541,67 @@ function renderListings(
                     "div"
                 );
 
+
             card.className =
                 "card property-card";
 
+
             card.dataset.id =
                 listing.id;
+
 
             const photos =
                 Array.isArray(
                     listing.photos
                 )
-                ? listing.photos
-                : [];
+                ?
+                listing.photos
+                :
+                [];
+
 
             const firstPhoto =
                 photos.length
-                ? photos[0]
-                : "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80";
+                ?
+                photos[0]
+                :
+                "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80";
+
 
             const roomText =
                 listing.rooms
-                ? listing.rooms +
-                  " ოთახი"
-                : "";
+                ?
+                listing.rooms +
+                " ოთახი"
+                :
+                "";
+
 
             const areaText =
                 listing.area
-                ? listing.area +
-                  " მ²"
-                : "";
+                ?
+                listing.area +
+                " მ²"
+                :
+                "";
+
 
             const floorText =
                 listing.floor
-                ? listing.floor +
-                  (
-                      listing.total_floors
-                      ? "/" +
-                        listing.total_floors
-                      : ""
-                  ) +
-                  " სართული"
-                : "";
+                ?
+                listing.floor +
+                (
+                    listing.total_floors
+                    ?
+                    "/" +
+                    listing.total_floors
+                    :
+                    ""
+                ) +
+                " სართული"
+                :
+                "";
+
 
             const address =
                 [
@@ -6087,74 +8611,40 @@ function renderListings(
                 .filter(Boolean)
                 .join(", ");
 
+
             const seller =
                 listing.owner_type ===
                 "agent"
-                ? "აგენტი"
-                : "მესაკუთრე";
+                ?
+                "აგენტი"
+                :
+                "მესაკუთრე";
 
-            card.dataset.type =
-                listing.deal_type ||
-                "sale";
-
-            card.dataset.property =
-                listing.property_type ||
-                "";
-
-            card.dataset.rooms =
-                Number(
-                    String(
-                        listing.rooms ||
-                        "0"
-                    )
-                    .replace(
-                        "+",
-                        ""
-                    )
-                ) || 0;
-
-            card.dataset.location =
-                [
-                    listing.city,
-                    listing.district,
-                    listing.address
-                ]
-                .filter(Boolean)
-                .join(" ");
-
-            card.dataset.price =
-                listing.price ||
-                0;
-
-            card.dataset.tags =
-                [
-                    listing.condition ||
-                    "",
-
-                    listing.owner_type ||
-                    ""
-                ]
-                .join(" ");
 
             card.innerHTML =
             `
             <div
             class="card-image"
-            style="background-image:url('${escapeHtml(firstPhoto)}')">
+            style="
+            background-image:url('${escapeHtml(firstPhoto)}')
+            ">
 
                 <div class="badge">
+
                     ${dealLabel(
                         listing.deal_type
                     )}
+
                 </div>
 
                 <button
                 class="favorite"
                 type="button">
-                    ♡
+                ♡
                 </button>
 
             </div>
+
 
             <div class="card-body">
 
@@ -6168,11 +8658,14 @@ function renderListings(
                     ${
                         listing.deal_type ===
                         "rent"
-                        ? " / თვე"
-                        : ""
+                        ?
+                        " / თვე"
+                        :
+                        ""
                     }
 
                 </div>
+
 
                 <div class="address">
 
@@ -6182,41 +8675,58 @@ function renderListings(
 
                 </div>
 
+
                 <div class="details">
+
 
                     ${
                         roomText
-                        ? `<span>${escapeHtml(roomText)}</span>`
-                        : ""
+                        ?
+                        `<span>${escapeHtml(roomText)}</span>`
+                        :
+                        ""
                     }
+
 
                     ${
                         listing.bedrooms
-                        ? `<span>${
+                        ?
+                        `<span>${
                             listing.bedrooms ===
                             "studio"
-                            ? "სტუდიო"
-                            : escapeHtml(
+                            ?
+                            "სტუდიო"
+                            :
+                            escapeHtml(
                                 listing.bedrooms
                             ) +
-                              " საძინებელი"
+                            " საძინებელი"
                         }</span>`
-                        : ""
+                        :
+                        ""
                     }
+
 
                     ${
                         areaText
-                        ? `<span>${escapeHtml(areaText)}</span>`
-                        : ""
+                        ?
+                        `<span>${escapeHtml(areaText)}</span>`
+                        :
+                        ""
                     }
+
 
                     ${
                         floorText
-                        ? `<span>${escapeHtml(floorText)}</span>`
-                        : ""
+                        ?
+                        `<span>${escapeHtml(floorText)}</span>`
+                        :
+                        ""
                     }
 
+
                 </div>
+
 
                 <div class="owner">
 
@@ -6247,16 +8757,20 @@ function renderListings(
             </div>
             `;
 
-            container.appendChild(
+
+            container
+            .appendChild(
                 card
             );
 
         }
     );
 
+
     filterProperties();
 
 }
+
 
 
 /* =========================
@@ -6265,9 +8779,12 @@ function renderListings(
 
 async function loadMyListings(){
 
-    if(!currentUser){
+    if(
+        !currentUser
+    ){
         return;
     }
+
 
     const container =
         document
@@ -6275,17 +8792,19 @@ async function loadMyListings(){
             "myListingsCards"
         );
 
+
     container.innerHTML =
     `
     <div style="
-        grid-column:1/-1;
-        text-align:center;
-        padding:35px;
-        color:var(--muted);
+    grid-column:1/-1;
+    text-align:center;
+    padding:35px;
+    color:var(--muted);
     ">
-        იტვირთება...
+    იტვირთება...
     </div>
     `;
+
 
     const result =
         await supabaseClient
@@ -6304,21 +8823,25 @@ async function loadMyListings(){
             }
         );
 
-    if(result.error){
+
+    if(
+        result.error
+    ){
 
         console.error(
             result.error
         );
 
+
         container.innerHTML =
         `
         <div style="
-            grid-column:1/-1;
-            text-align:center;
-            padding:35px;
-            color:var(--danger);
+        grid-column:1/-1;
+        text-align:center;
+        padding:35px;
+        color:var(--danger);
         ">
-            განცხადებების ჩატვირთვა ვერ მოხერხდა.
+        განცხადებების ჩატვირთვა ვერ მოხერხდა.
         </div>
         `;
 
@@ -6326,15 +8849,18 @@ async function loadMyListings(){
 
     }
 
+
     currentMyListings =
         result.data ||
         [];
+
 
     renderMyListings(
         currentMyListings
     );
 
 }
+
 
 
 function renderMyListings(
@@ -6347,38 +8873,42 @@ function renderMyListings(
             "myListingsCards"
         );
 
+
     container.innerHTML =
         "";
 
-    if(!listings.length){
+
+    if(
+        !listings.length
+    ){
 
         container.innerHTML =
         `
         <div style="
-            grid-column:1/-1;
-            background:#fff;
-            border:1px solid var(--border);
-            border-radius:14px;
-            padding:45px 20px;
-            text-align:center;
+        grid-column:1/-1;
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:14px;
+        padding:45px 20px;
+        text-align:center;
         ">
 
             <div style="
-                font-size:36px;
-                margin-bottom:10px;
+            font-size:36px;
+            margin-bottom:10px;
             ">
-                🏠
+            🏠
             </div>
 
             <strong>
-                ჯერ განცხადებები არ გაქვთ
+            ჯერ განცხადებები არ გაქვთ
             </strong>
 
             <p style="
-                color:var(--muted);
-                margin-top:8px;
+            color:var(--muted);
+            margin-top:8px;
             ">
-                დაამატეთ თქვენი პირველი განცხადება.
+            დაამატეთ თქვენი პირველი განცხადება.
             </p>
 
         </div>
@@ -6388,20 +8918,28 @@ function renderMyListings(
 
     }
 
-    listings.forEach(
+
+    listings
+    .forEach(
         function(listing){
 
             const photos =
                 Array.isArray(
                     listing.photos
                 )
-                ? listing.photos
-                : [];
+                ?
+                listing.photos
+                :
+                [];
+
 
             const firstPhoto =
                 photos.length
-                ? photos[0]
-                : "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80";
+                ?
+                photos[0]
+                :
+                "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80";
+
 
             const address =
                 [
@@ -6411,33 +8949,40 @@ function renderMyListings(
                 .filter(Boolean)
                 .join(", ");
 
+
             const card =
                 document
                 .createElement(
                     "div"
                 );
 
+
             card.className =
                 "my-listing-card";
 
+
             card.dataset.id =
                 listing.id;
+
 
             card.innerHTML =
             `
             <div
             class="card-image"
             style="
-                background-image:url('${escapeHtml(firstPhoto)}')
+            background-image:url('${escapeHtml(firstPhoto)}')
             ">
 
                 <div class="badge">
+
                     ${dealLabel(
                         listing.deal_type
                     )}
+
                 </div>
 
             </div>
+
 
             <div class="card-body">
 
@@ -6450,6 +8995,7 @@ function renderMyListings(
 
                 </div>
 
+
                 <div class="address">
 
                     ${escapeHtml(
@@ -6458,56 +9004,82 @@ function renderMyListings(
 
                 </div>
 
+
                 <div class="details">
 
                     ${
                         listing.rooms
-                        ? `<span>${escapeHtml(listing.rooms)} ოთახი</span>`
-                        : ""
+                        ?
+                        `<span>${escapeHtml(listing.rooms)} ოთახი</span>`
+                        :
+                        ""
                     }
 
                     ${
                         listing.area
-                        ? `<span>${escapeHtml(listing.area)} მ²</span>`
-                        : ""
+                        ?
+                        `<span>${escapeHtml(listing.area)} მ²</span>`
+                        :
+                        ""
                     }
 
                     ${
                         listing.floor
-                        ? `<span>${escapeHtml(listing.floor)} სართული</span>`
-                        : ""
+                        ?
+                        `<span>${escapeHtml(listing.floor)} სართული</span>`
+                        :
+                        ""
+                    }
+
+                    ${
+                        hasValidCoordinates(
+                            listing
+                        )
+                        ?
+                        `<span>📍 რუკაზე მონიშნულია</span>`
+                        :
+                        ""
                     }
 
                 </div>
+
 
                 <div class="my-code">
 
                     ${
                         listing.listing_code
-                        ? `
+                        ?
+                        `
                         <span>
-                            კოდი:
-                            ${escapeHtml(
-                                listing.listing_code
-                            )}
+
+                        კოდი:
+                        ${escapeHtml(
+                            listing.listing_code
+                        )}
+
                         </span>
                         `
-                        : ""
+                        :
+                        ""
                     }
+
 
                     <span
                     class="listing-views"
                     data-id="${listing.id}">
+
                         👁
                         ${formatViews(
                             listing.views
                         )}
                         ნახვა
+
                     </span>
 
                 </div>
 
             </div>
+
 
             <div class="my-listing-actions">
 
@@ -6515,27 +9087,29 @@ function renderMyListings(
                 class="view-listing"
                 data-id="${listing.id}"
                 type="button">
-                    👁 გახსნა
+                👁 გახსნა
                 </button>
 
                 <button
                 class="edit-listing"
                 data-id="${listing.id}"
                 type="button">
-                    ✏️ რედაქტირება
+                ✏️ რედაქტირება
                 </button>
 
                 <button
                 class="delete-listing"
                 data-id="${listing.id}"
                 type="button">
-                    🗑 წაშლა
+                🗑 წაშლა
                 </button>
 
             </div>
             `;
 
-            container.appendChild(
+
+            container
+            .appendChild(
                 card
             );
 
@@ -6543,6 +9117,7 @@ function renderMyListings(
     );
 
 }
+
 
 
 document
@@ -6554,28 +9129,39 @@ document
     async function(event){
 
         const viewButton =
-            event.target.closest(
+            event.target
+            .closest(
                 ".view-listing"
             );
 
+
         const editButton =
-            event.target.closest(
+            event.target
+            .closest(
                 ".edit-listing"
             );
 
+
         const deleteButton =
-            event.target.closest(
+            event.target
+            .closest(
                 ".delete-listing"
             );
 
-        let id = null;
 
-        if(viewButton){
+        let id =
+            null;
+
+
+        if(
+            viewButton
+        ){
 
             id =
                 viewButton
                 .dataset
                 .id;
+
 
             const listing =
                 currentMyListings
@@ -6585,12 +9171,17 @@ document
                         return String(
                             item.id
                         ) ===
-                        String(id);
+                        String(
+                            id
+                        );
 
                     }
                 );
 
-            if(listing){
+
+            if(
+                listing
+            ){
 
                 openListing(
                     listing
@@ -6602,12 +9193,16 @@ document
 
         }
 
-        if(editButton){
+
+        if(
+            editButton
+        ){
 
             id =
                 editButton
                 .dataset
                 .id;
+
 
             const listing =
                 currentMyListings
@@ -6617,12 +9212,17 @@ document
                         return String(
                             item.id
                         ) ===
-                        String(id);
+                        String(
+                            id
+                        );
 
                     }
                 );
 
-            if(listing){
+
+            if(
+                listing
+            ){
 
                 editListing(
                     listing
@@ -6634,12 +9234,16 @@ document
 
         }
 
-        if(deleteButton){
+
+        if(
+            deleteButton
+        ){
 
             id =
                 deleteButton
                 .dataset
                 .id;
+
 
             const listing =
                 currentMyListings
@@ -6649,12 +9253,17 @@ document
                         return String(
                             item.id
                         ) ===
-                        String(id);
+                        String(
+                            id
+                        );
 
                     }
                 );
 
-            if(listing){
+
+            if(
+                listing
+            ){
 
                 await deleteListing(
                     listing
@@ -6668,6 +9277,7 @@ document
 );
 
 
+
 /* =========================
    EDIT LISTING
 ========================= */
@@ -6676,30 +9286,67 @@ function editListing(
     listing
 ){
 
-    if(!currentUser){
+    if(
+        !currentUser
+    ){
         return;
     }
+
 
     editingListingId =
         listing.id;
 
+
     addPageOrigin =
         "my";
 
+
     selectedFiles =
         [];
+
 
     existingPhotoUrls =
         Array.isArray(
             listing.photos
         )
-        ? [
+        ?
+        [
             ...listing.photos
-          ]
-        : [];
+        ]
+        :
+        [];
+
 
     removedPhotoUrls =
         [];
+
+
+    if(
+        hasValidCoordinates(
+            listing
+        )
+    ){
+
+        selectedLatitude =
+            Number(
+                listing.latitude
+            );
+
+        selectedLongitude =
+            Number(
+                listing.longitude
+            );
+
+    }else{
+
+        selectedLatitude =
+            null;
+
+        selectedLongitude =
+            null;
+
+    }
+
 
     document
     .getElementById(
@@ -6708,6 +9355,7 @@ function editListing(
     .textContent =
         "განცხადების რედაქტირება";
 
+
     document
     .getElementById(
         "publishButton"
@@ -6715,11 +9363,13 @@ function editListing(
     .textContent =
         "ცვლილებების შენახვა";
 
+
     setSelectedChoice(
         "#dealChoices .choice",
         listing.deal_type ||
         "sale"
     );
+
 
     setSelectedChoice(
         "#ownerChoices .choice",
@@ -6727,63 +9377,169 @@ function editListing(
         "owner"
     );
 
-    document.getElementById("listingProperty").value =
-        listing.property_type || "";
 
-    document.getElementById("condition").value =
-        listing.condition || "";
+    document
+    .getElementById(
+        "listingProperty"
+    )
+    .value =
+        listing.property_type ||
+        "";
 
-    document.getElementById("listingRooms").value =
-        listing.rooms || "";
 
-    document.getElementById("bedrooms").value =
-        listing.bedrooms || "";
+    document
+    .getElementById(
+        "condition"
+    )
+    .value =
+        listing.condition ||
+        "";
 
-    document.getElementById("floor").value =
-        listing.floor ?? "";
 
-    document.getElementById("totalFloors").value =
-        listing.total_floors ?? "";
+    document
+    .getElementById(
+        "listingRooms"
+    )
+    .value =
+        listing.rooms ||
+        "";
 
-    document.getElementById("area").value =
-        listing.area ?? "";
 
-    document.getElementById("balconies").value =
-        listing.balconies ?? "";
+    document
+    .getElementById(
+        "bedrooms"
+    )
+    .value =
+        listing.bedrooms ||
+        "";
 
-    document.getElementById("balconyArea").value =
-        listing.balcony_area ?? "";
 
-    document.getElementById("city").value =
-        listing.city || "";
+    document
+    .getElementById(
+        "floor"
+    )
+    .value =
+        listing.floor ??
+        "";
 
-    document.getElementById("district").value =
-        listing.district || "";
 
-    document.getElementById("address").value =
-        listing.address || "";
+    document
+    .getElementById(
+        "totalFloors"
+    )
+    .value =
+        listing.total_floors ??
+        "";
 
-    document.getElementById("listingPrice").value =
-        listing.price ?? "";
 
-    document.getElementById("currency").value =
-        listing.currency || "USD";
+    document
+    .getElementById(
+        "area"
+    )
+    .value =
+        listing.area ??
+        "";
 
-    document.getElementById("phone").value =
-        listing.phone || "";
 
-    document.getElementById("contactName").value =
-        listing.contact_name || "";
+    document
+    .getElementById(
+        "balconies"
+    )
+    .value =
+        listing.balconies ??
+        "";
 
-    document.getElementById("description").value =
-        listing.description || "";
+
+    document
+    .getElementById(
+        "balconyArea"
+    )
+    .value =
+        listing.balcony_area ??
+        "";
+
+
+    document
+    .getElementById(
+        "city"
+    )
+    .value =
+        listing.city ||
+        "";
+
+
+    document
+    .getElementById(
+        "district"
+    )
+    .value =
+        listing.district ||
+        "";
+
+
+    document
+    .getElementById(
+        "address"
+    )
+    .value =
+        listing.address ||
+        "";
+
+
+    document
+    .getElementById(
+        "listingPrice"
+    )
+    .value =
+        listing.price ??
+        "";
+
+
+    document
+    .getElementById(
+        "currency"
+    )
+    .value =
+        listing.currency ||
+        "USD";
+
+
+    document
+    .getElementById(
+        "phone"
+    )
+    .value =
+        listing.phone ||
+        "";
+
+
+    document
+    .getElementById(
+        "contactName"
+    )
+    .value =
+        listing.contact_name ||
+        "";
+
+
+    document
+    .getElementById(
+        "description"
+    )
+    .value =
+        listing.description ||
+        "";
+
 
     const methods =
         Array.isArray(
             listing.contact_methods
         )
-        ? listing.contact_methods
-        : [];
+        ?
+        listing.contact_methods
+        :
+        [];
+
 
     document
     .querySelectorAll(
@@ -6804,7 +9560,10 @@ function editListing(
         }
     );
 
-    if(!methods.length){
+
+    if(
+        !methods.length
+    ){
 
         const callButton =
             document
@@ -6812,7 +9571,10 @@ function editListing(
                 '.contact-choice[data-value="call"]'
             );
 
-        if(callButton){
+
+        if(
+            callButton
+        ){
 
             callButton
             .classList
@@ -6824,13 +9586,17 @@ function editListing(
 
     }
 
+
     renderPhotos();
+
+    updateCoordinatesText();
 
     openAddPage(
         "my"
     );
 
 }
+
 
 
 /* =========================
@@ -6850,9 +9616,13 @@ async function deleteListing(
             )
         );
 
-    if(!answer){
+
+    if(
+        !answer
+    ){
         return;
     }
+
 
     const result =
         await supabaseClient
@@ -6865,7 +9635,10 @@ async function deleteListing(
             listing.id
         );
 
-    if(result.error){
+
+    if(
+        result.error
+    ){
 
         console.error(
             result.error
@@ -6880,6 +9653,7 @@ async function deleteListing(
 
     }
 
+
     if(
         Array.isArray(
             listing.photos
@@ -6893,15 +9667,18 @@ async function deleteListing(
 
     }
 
+
     showMessage(
         "განცხადება წაიშალა."
     );
+
 
     await loadListings();
 
     await loadMyListings();
 
 }
+
 
 
 /* =========================
@@ -6915,6 +9692,7 @@ async function uploadPhotos(){
             ...existingPhotoUrls
         ];
 
+
     if(
         !selectedFiles.length
     ){
@@ -6923,13 +9701,17 @@ async function uploadPhotos(){
 
     }
 
-    if(!currentUser){
+
+    if(
+        !currentUser
+    ){
 
         throw new Error(
             "ავტორიზაცია საჭიროა."
         );
 
     }
+
 
     for(
         let i = 0;
@@ -6941,6 +9723,7 @@ async function uploadPhotos(){
         const file =
             selectedFiles[i];
 
+
         const rawExtension =
             (
                 file.name
@@ -6950,13 +9733,16 @@ async function uploadPhotos(){
             )
             .toLowerCase();
 
+
         const extension =
             rawExtension
             .replace(
                 /[^a-z0-9]/g,
                 ""
-            ) ||
+            )
+            ||
             "jpg";
+
 
         const fileName =
             currentUser.id +
@@ -6966,6 +9752,7 @@ async function uploadPhotos(){
             i +
             "." +
             extension;
+
 
         const result =
             await supabaseClient
@@ -6989,7 +9776,10 @@ async function uploadPhotos(){
                 }
             );
 
-        if(result.error){
+
+        if(
+            result.error
+        ){
 
             console.error(
                 result.error
@@ -7002,6 +9792,7 @@ async function uploadPhotos(){
 
         }
 
+
         const publicResult =
             supabaseClient
             .storage
@@ -7012,6 +9803,7 @@ async function uploadPhotos(){
                 fileName
             );
 
+
         urls.push(
             publicResult
             .data
@@ -7020,9 +9812,11 @@ async function uploadPhotos(){
 
     }
 
+
     return urls;
 
 }
+
 
 
 /* =========================
@@ -7037,18 +9831,25 @@ document
     "click",
     async function(){
 
-        if(!requireLogin()){
+        if(
+            !requireLogin()
+        ){
             return;
         }
 
-        const button = this;
+
+        const button =
+            this;
+
 
         const wasEditing =
             editingListingId !==
             null;
 
+
         const editedId =
             editingListingId;
+
 
         const dealButton =
             document
@@ -7056,19 +9857,23 @@ document
                 "#dealChoices .choice.selected"
             );
 
+
         const ownerButton =
             document
             .querySelector(
                 "#ownerChoices .choice.selected"
             );
 
+
         const contactButtons =
-            Array.from(
+            Array
+            .from(
                 document
                 .querySelectorAll(
                     ".contact-choice.selected"
                 )
             );
+
 
         const property =
             document
@@ -7076,6 +9881,7 @@ document
                 "listingProperty"
             )
             .value;
+
 
         const city =
             document
@@ -7085,12 +9891,14 @@ document
             .value
             .trim();
 
+
         const price =
             document
             .getElementById(
                 "listingPrice"
             )
             .value;
+
 
         const phone =
             document
@@ -7100,7 +9908,10 @@ document
             .value
             .trim();
 
-        if(!property){
+
+        if(
+            !property
+        ){
 
             showMessage(
                 "გთხოვთ აირჩიოთ ქონების ტიპი."
@@ -7110,7 +9921,10 @@ document
 
         }
 
-        if(!city){
+
+        if(
+            !city
+        ){
 
             showMessage(
                 "გთხოვთ მიუთითოთ ქალაქი."
@@ -7120,9 +9934,12 @@ document
 
         }
 
+
         if(
             !price ||
-            Number(price) <=
+            Number(
+                price
+            ) <=
             0
         ){
 
@@ -7134,7 +9951,10 @@ document
 
         }
 
-        if(!phone){
+
+        if(
+            !phone
+        ){
 
             showMessage(
                 "გთხოვთ მიუთითოთ ტელეფონის ნომერი."
@@ -7144,28 +9964,40 @@ document
 
         }
 
+
         button.disabled =
             true;
 
+
         button.textContent =
             wasEditing
-            ? "ინახება..."
-            : "იტვირთება...";
+            ?
+            "ინახება..."
+            :
+            "იტვირთება...";
+
 
         try{
 
             const photoUrls =
                 await uploadPhotos();
 
+
             const ownerType =
                 ownerButton
-                ? ownerButton.dataset.value
-                : "owner";
+                ?
+                ownerButton.dataset.value
+                :
+                "owner";
+
 
             const dealType =
                 dealButton
-                ? dealButton.dataset.value
-                : "sale";
+                ?
+                dealButton.dataset.value
+                :
+                "sale";
+
 
             const listing = {
 
@@ -7278,6 +10110,26 @@ document
                     .trim() ||
                     null,
 
+                /* MAP */
+
+                latitude:
+                    hasSelectedCoordinates()
+                    ?
+                    Number(
+                        selectedLatitude
+                    )
+                    :
+                    null,
+
+                longitude:
+                    hasSelectedCoordinates()
+                    ?
+                    Number(
+                        selectedLongitude
+                    )
+                    :
+                    null,
+
                 price:
                     Number(
                         price
@@ -7334,9 +10186,13 @@ document
 
             };
 
+
             let result;
 
-            if(wasEditing){
+
+            if(
+                wasEditing
+            ){
 
                 result =
                     await supabaseClient
@@ -7368,7 +10224,10 @@ document
 
             }
 
-            if(result.error){
+
+            if(
+                result.error
+            ){
 
                 console.error(
                     result.error
@@ -7379,6 +10238,7 @@ document
                 );
 
             }
+
 
             if(
                 wasEditing &&
@@ -7391,15 +10251,21 @@ document
 
             }
 
+
             showMessage(
                 wasEditing
-                ? "✅ ცვლილებები წარმატებით შეინახა!"
-                : "🎉 განცხადება წარმატებით გამოქვეყნდა!"
+                ?
+                "✅ ცვლილებები წარმატებით შეინახა!"
+                :
+                "🎉 განცხადება წარმატებით გამოქვეყნდა!"
             );
+
 
             resetListingForm();
 
+
             await loadListings();
+
 
             if(
                 addPageOrigin ===
@@ -7410,10 +10276,12 @@ document
 
             }
 
+
             setTimeout(
                 closeAddPage,
                 900
             );
+
 
         }catch(error){
 
@@ -7421,25 +10289,31 @@ document
                 error
             );
 
+
             showMessage(
                 "შეცდომა: " +
                 error.message
             );
+
 
         }finally{
 
             button.disabled =
                 false;
 
+
             button.textContent =
                 wasEditing
-                ? "ცვლილებების შენახვა"
-                : "გამოქვეყნება →";
+                ?
+                "ცვლილებების შენახვა"
+                :
+                "გამოქვეყნება →";
 
         }
 
     }
 );
+
 
 
 /* =========================
@@ -7469,7 +10343,9 @@ function resetListingForm(){
 
     ];
 
-    ids.forEach(
+
+    ids
+    .forEach(
         function(id){
 
             const element =
@@ -7478,7 +10354,10 @@ function resetListingForm(){
                     id
                 );
 
-            if(element){
+
+            if(
+                element
+            ){
 
                 element.value =
                     "";
@@ -7488,6 +10367,7 @@ function resetListingForm(){
         }
     );
 
+
     document
     .getElementById(
         "currency"
@@ -7495,15 +10375,18 @@ function resetListingForm(){
     .value =
         "USD";
 
+
     setSelectedChoice(
         "#dealChoices .choice",
         "sale"
     );
 
+
     setSelectedChoice(
         "#ownerChoices .choice",
         "owner"
     );
+
 
     document
     .querySelectorAll(
@@ -7512,12 +10395,15 @@ function resetListingForm(){
     .forEach(
         function(button){
 
-            button.classList.remove(
+            button
+            .classList
+            .remove(
                 "selected"
             );
 
         }
     );
+
 
     const callButton =
         document
@@ -7525,31 +10411,83 @@ function resetListingForm(){
             '.contact-choice[data-value="call"]'
         );
 
-    if(callButton){
 
-        callButton.classList.add(
+    if(
+        callButton
+    ){
+
+        callButton
+        .classList
+        .add(
             "selected"
         );
 
     }
 
+
     editingListingId =
         null;
+
 
     existingPhotoUrls =
         [];
 
+
     removedPhotoUrls =
         [];
+
 
     selectedFiles =
         [];
 
+
+    selectedLatitude =
+        null;
+
+
+    selectedLongitude =
+        null;
+
+
+    if(
+        locationPickerMap &&
+        locationPickerMarker
+    ){
+
+        locationPickerMap
+        .removeLayer(
+            locationPickerMarker
+        );
+
+        locationPickerMarker =
+            null;
+
+    }
+
+
+    if(
+        locationPickerMap
+    ){
+
+        locationPickerMap
+        .setView(
+            GEORGIA_CENTER,
+            7
+        );
+
+    }
+
+
+    updateCoordinatesText();
+
+
     photoPreview.innerHTML =
         "";
 
+
     photoInput.value =
         "";
+
 
     document
     .getElementById(
@@ -7557,6 +10495,7 @@ function resetListingForm(){
     )
     .textContent =
         "განცხადების დამატება";
+
 
     document
     .getElementById(
@@ -7566,6 +10505,7 @@ function resetListingForm(){
         "გამოქვეყნება →";
 
 }
+
 
 
 /* =========================
@@ -7717,17 +10657,29 @@ const translations = {
 };
 
 
-function changeLanguage(lang){
+
+function changeLanguage(
+    lang
+){
 
     const t =
-        translations[lang];
+        translations[
+            lang
+        ];
 
-    if(!t){
+
+    if(
+        !t
+    ){
         return;
     }
 
-    document.documentElement.lang =
+
+    document
+    .documentElement
+    .lang =
         lang;
+
 
     document
     .getElementById(
@@ -7736,6 +10688,7 @@ function changeLanguage(lang){
     .textContent =
         t.title;
 
+
     document
     .getElementById(
         "heroSubtitle"
@@ -7743,31 +10696,57 @@ function changeLanguage(lang){
     .textContent =
         t.subtitle;
 
+
     const labels =
         document
         .querySelectorAll(
             ".field label"
         );
 
-    if(labels[0]){
-        labels[0].textContent =
+
+    if(
+        labels[0]
+    ){
+
+        labels[0]
+        .textContent =
             t.location;
+
     }
 
-    if(labels[1]){
-        labels[1].textContent =
+
+    if(
+        labels[1]
+    ){
+
+        labels[1]
+        .textContent =
             t.property;
+
     }
 
-    if(labels[2]){
-        labels[2].textContent =
+
+    if(
+        labels[2]
+    ){
+
+        labels[2]
+        .textContent =
             t.rooms;
+
     }
 
-    if(labels[3]){
-        labels[3].textContent =
+
+    if(
+        labels[3]
+    ){
+
+        labels[3]
+        .textContent =
             t.price;
+
     }
+
 
     document
     .getElementById(
@@ -7776,12 +10755,14 @@ function changeLanguage(lang){
     .placeholder =
         t.locationPlaceholder;
 
+
     document
     .getElementById(
         "priceInput"
     )
     .placeholder =
         t.pricePlaceholder;
+
 
     document
     .getElementById(
@@ -7790,12 +10771,14 @@ function changeLanguage(lang){
     .textContent =
         t.search;
 
+
     document
     .getElementById(
         "popularTitle"
     )
     .textContent =
         t.popular;
+
 
     document
     .getElementById(
@@ -7804,12 +10787,14 @@ function changeLanguage(lang){
     .textContent =
         t.all;
 
+
     document
     .querySelector(
         ".cta-box h2"
     )
     .textContent =
         t.ctaTitle;
+
 
     document
     .querySelector(
@@ -7818,12 +10803,14 @@ function changeLanguage(lang){
     .textContent =
         t.ctaText;
 
+
     document
     .getElementById(
         "addButton"
     )
     .textContent =
         t.add;
+
 
     document
     .getElementById(
@@ -7833,6 +10820,7 @@ function changeLanguage(lang){
         t.add;
 
 }
+
 
 
 document
@@ -7849,6 +10837,7 @@ document
 
     }
 );
+
 
 
 /* =========================
