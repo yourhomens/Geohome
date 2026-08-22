@@ -23876,6 +23876,2308 @@ if(yhAgentMenuButton){
 })();
 
 </script>
+    <!-- =========================================================
+     YOUR HOME — SAVED SEARCHES / ALERTS UI
+========================================================= -->
+
+<script>
+
+(function(){
+
+    if(
+        window.__YOUR_HOME_SAVED_SEARCHES_V1__
+    ){
+        return;
+    }
+
+    window.__YOUR_HOME_SAVED_SEARCHES_V1__ =
+    true;
+
+
+    /* =====================================================
+       LANGUAGE
+    ===================================================== */
+
+    function yhSavedSearchLang(){
+
+        const value =
+        document
+        .getElementById(
+            "language"
+        )
+        ?.value;
+
+        if(
+            value === "en" ||
+            value === "ru"
+        ){
+            return value;
+        }
+
+        return "ka";
+
+    }
+
+
+    function yhSavedSearchText(){
+
+        const lang =
+        yhSavedSearchLang();
+
+
+        if(lang === "en"){
+
+            return {
+
+                menu:
+                "🔔 Saved searches",
+
+                save:
+                "🔔 Save search",
+
+                title:
+                "🔔 Saved searches",
+
+                intro:
+                "Save your filters and quickly return to them later.",
+
+                back:
+                "← 🏠 Home",
+
+                empty:
+                "You have no saved searches yet.",
+
+                apply:
+                "🔍 Search",
+
+                alertsOn:
+                "🔔 Alerts on",
+
+                alertsOff:
+                "🔕 Alerts off",
+
+                delete:
+                "🗑 Delete",
+
+                prompt:
+                "Name this search:",
+
+                saved:
+                "✅ Search saved.",
+
+                saveError:
+                "Search could not be saved.",
+
+                loadError:
+                "Saved searches could not be loaded.",
+
+                deleteConfirm:
+                "Delete this saved search?",
+
+                deleted:
+                "Saved search deleted.",
+
+                deleteError:
+                "Saved search could not be deleted.",
+
+                updateError:
+                "Alert setting could not be changed.",
+
+                sale:
+                "For sale",
+
+                rent:
+                "For rent",
+
+                pledge:
+                "For pledge",
+
+                any:
+                "Any property",
+
+                rooms:
+                "rooms",
+
+                location:
+                "Location",
+
+                price:
+                "Price",
+
+                area:
+                "Area",
+
+                owner:
+                "Advertiser",
+
+                condition:
+                "Condition"
+
+            };
+
+        }
+
+
+        if(lang === "ru"){
+
+            return {
+
+                menu:
+                "🔔 Сохраненные поиски",
+
+                save:
+                "🔔 Сохранить поиск",
+
+                title:
+                "🔔 Сохраненные поиски",
+
+                intro:
+                "Сохраняйте фильтры и быстро возвращайтесь к ним позже.",
+
+                back:
+                "← 🏠 Главная",
+
+                empty:
+                "У вас пока нет сохраненных поисков.",
+
+                apply:
+                "🔍 Искать",
+
+                alertsOn:
+                "🔔 Уведомления включены",
+
+                alertsOff:
+                "🔕 Уведомления выключены",
+
+                delete:
+                "🗑 Удалить",
+
+                prompt:
+                "Название поиска:",
+
+                saved:
+                "✅ Поиск сохранен.",
+
+                saveError:
+                "Не удалось сохранить поиск.",
+
+                loadError:
+                "Не удалось загрузить сохраненные поиски.",
+
+                deleteConfirm:
+                "Удалить сохраненный поиск?",
+
+                deleted:
+                "Сохраненный поиск удален.",
+
+                deleteError:
+                "Не удалось удалить поиск.",
+
+                updateError:
+                "Не удалось изменить уведомления.",
+
+                sale:
+                "Продажа",
+
+                rent:
+                "Аренда",
+
+                pledge:
+                "Залог",
+
+                any:
+                "Любая недвижимость",
+
+                rooms:
+                "комн.",
+
+                location:
+                "Местоположение",
+
+                price:
+                "Цена",
+
+                area:
+                "Площадь",
+
+                owner:
+                "Автор",
+
+                condition:
+                "Состояние"
+
+            };
+
+        }
+
+
+        return {
+
+            menu:
+            "🔔 შენახული ძებნები",
+
+            save:
+            "🔔 ძებნის შენახვა",
+
+            title:
+            "🔔 შენახული ძებნები",
+
+            intro:
+            "შეინახეთ არჩეული ფილტრები და მოგვიანებით ერთი დაჭერით დაუბრუნდით ძებნას.",
+
+            back:
+            "← 🏠 მთავარი",
+
+            empty:
+            "ჯერ შენახული ძებნები არ გაქვთ.",
+
+            apply:
+            "🔍 მოძებნა",
+
+            alertsOn:
+            "🔔 შეტყობინებები ჩართულია",
+
+            alertsOff:
+            "🔕 შეტყობინებები გამორთულია",
+
+            delete:
+            "🗑 წაშლა",
+
+            prompt:
+            "დაარქვით ამ ძებნას სახელი:",
+
+            saved:
+            "✅ ძებნა შენახულია.",
+
+            saveError:
+            "ძებნის შენახვა ვერ მოხერხდა.",
+
+            loadError:
+            "შენახული ძებნების ჩატვირთვა ვერ მოხერხდა.",
+
+            deleteConfirm:
+            "ნამდვილად გსურთ ამ შენახული ძებნის წაშლა?",
+
+            deleted:
+            "შენახული ძებნა წაიშალა.",
+
+            deleteError:
+            "ძებნის წაშლა ვერ მოხერხდა.",
+
+            updateError:
+            "შეტყობინების პარამეტრის შეცვლა ვერ მოხერხდა.",
+
+            sale:
+            "იყიდება",
+
+            rent:
+            "ქირავდება",
+
+            pledge:
+            "გირავდება",
+
+            any:
+            "ნებისმიერი ქონება",
+
+            rooms:
+            "ოთახი",
+
+            location:
+            "მდებარეობა",
+
+            price:
+            "ფასი",
+
+            area:
+            "ფართობი",
+
+            owner:
+            "განმცხადებელი",
+
+            condition:
+            "მდგომარეობა"
+
+        };
+
+    }
+
+
+    /* =====================================================
+       STYLE
+    ===================================================== */
+
+    const yhSavedStyle =
+    document.createElement(
+        "style"
+    );
+
+
+    yhSavedStyle.textContent =
+    `
+
+    .yh-save-search-button{
+        border:1px solid var(--olive);
+        background:var(--olive-light);
+        color:var(--olive-dark);
+        padding:10px 13px;
+        border-radius:9px;
+        font-weight:800;
+        white-space:nowrap;
+    }
+
+    .yh-save-search-button:hover{
+        background:var(--olive);
+        color:#fff;
+    }
+
+
+    .yh-saved-searches-page{
+        display:none;
+        max-width:1200px;
+        margin:45px auto;
+        padding:0 25px 70px;
+    }
+
+    .yh-saved-searches-page.active{
+        display:block;
+    }
+
+    .yh-saved-searches-grid{
+        display:grid;
+        grid-template-columns:
+        repeat(2,1fr);
+        gap:16px;
+    }
+
+    .yh-saved-search-card{
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:16px;
+        padding:20px;
+    }
+
+    .yh-saved-search-top{
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:12px;
+        margin-bottom:14px;
+    }
+
+    .yh-saved-search-name{
+        font-size:18px;
+        font-weight:900;
+        line-height:1.35;
+    }
+
+    .yh-saved-search-deal{
+        display:inline-flex;
+        margin-top:6px;
+        padding:5px 8px;
+        border-radius:7px;
+        background:var(--olive-light);
+        color:var(--olive-dark);
+        font-size:11px;
+        font-weight:800;
+    }
+
+    .yh-saved-search-date{
+        color:var(--muted);
+        font-size:11px;
+        white-space:nowrap;
+    }
+
+    .yh-saved-search-summary{
+        color:var(--text);
+        font-size:13px;
+        line-height:1.7;
+        min-height:46px;
+    }
+
+    .yh-saved-search-actions{
+        display:grid;
+        grid-template-columns:
+        1fr 1fr;
+        gap:8px;
+        margin-top:17px;
+        padding-top:15px;
+        border-top:1px solid var(--border);
+    }
+
+    .yh-saved-search-actions button{
+        border:1px solid var(--border);
+        background:#fff;
+        border-radius:9px;
+        padding:11px 8px;
+        font-weight:800;
+        font-size:12px;
+    }
+
+    .yh-saved-search-apply{
+        background:var(--olive)!important;
+        border-color:var(--olive)!important;
+        color:#fff;
+    }
+
+    .yh-saved-search-alert.active{
+        border-color:var(--olive);
+        background:var(--olive-light);
+        color:var(--olive-dark);
+    }
+
+    .yh-saved-search-delete{
+        color:var(--danger);
+    }
+
+    .yh-saved-search-empty{
+        grid-column:1/-1;
+        padding:45px 20px;
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:16px;
+        text-align:center;
+        color:var(--muted);
+    }
+
+    @media(max-width:700px){
+
+        .yh-saved-searches-page{
+            margin-top:28px;
+            padding:0 15px 55px;
+        }
+
+        .yh-saved-searches-grid{
+            grid-template-columns:1fr;
+        }
+
+        .yh-saved-search-actions{
+            grid-template-columns:1fr;
+        }
+
+    }
+
+    `;
+
+
+    document.head.appendChild(
+        yhSavedStyle
+    );
+
+
+    /* =====================================================
+       PAGE
+    ===================================================== */
+
+    function createSavedSearchPage(){
+
+        if(
+            document.getElementById(
+                "yhSavedSearchesPage"
+            )
+        ){
+            return;
+        }
+
+
+        const footer =
+        document.querySelector(
+            "footer"
+        );
+
+
+        if(!footer){
+            return;
+        }
+
+
+        const page =
+        document.createElement(
+            "section"
+        );
+
+
+        page.id =
+        "yhSavedSearchesPage";
+
+        page.className =
+        "yh-saved-searches-page";
+
+
+        page.innerHTML =
+        `
+
+        <div class="yh-page-header">
+
+            <div>
+
+                <h1 id="yhSavedSearchesTitle">
+                🔔 შენახული ძებნები
+                </h1>
+
+                <p
+                class="yh-page-intro"
+                id="yhSavedSearchesIntro">
+
+                შეინახეთ არჩეული ფილტრები და მოგვიანებით ერთი დაჭერით დაუბრუნდით ძებნას.
+
+                </p>
+
+            </div>
+
+
+            <button
+            class="back-button"
+            id="yhSavedSearchesBack"
+            type="button">
+
+            ← 🏠 მთავარი
+
+            </button>
+
+        </div>
+
+
+        <div
+        class="yh-saved-searches-grid"
+        id="yhSavedSearchesGrid">
+        </div>
+
+        `;
+
+
+        footer.parentNode.insertBefore(
+            page,
+            footer
+        );
+
+    }
+
+
+    createSavedSearchPage();
+
+
+    /* =====================================================
+       ACCOUNT MENU BUTTON
+    ===================================================== */
+
+    function createSavedSearchMenuButton(){
+
+        if(
+            document.getElementById(
+                "yhSavedSearchesMenuButton"
+            )
+        ){
+            return;
+        }
+
+
+        const logout =
+        document.getElementById(
+            "logoutButton"
+        );
+
+
+        if(!logout){
+            return;
+        }
+
+
+        const button =
+        document.createElement(
+            "button"
+        );
+
+
+        button.id =
+        "yhSavedSearchesMenuButton";
+
+        button.type =
+        "button";
+
+        button.className =
+        "yh-account-extra";
+
+
+        logout.parentNode.insertBefore(
+            button,
+            logout
+        );
+
+
+        button.addEventListener(
+            "click",
+            function(event){
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                openSavedSearchesPage();
+
+            }
+        );
+
+    }
+
+
+    createSavedSearchMenuButton();
+
+
+    /* =====================================================
+       SAVE SEARCH BUTTON
+    ===================================================== */
+
+    function createSaveSearchButton(){
+
+        if(
+            document.getElementById(
+                "yhSaveSearchButton"
+            )
+        ){
+            return;
+        }
+
+
+        const actions =
+        document.querySelector(
+            ".section-title-actions"
+        );
+
+
+        const showAll =
+        document.getElementById(
+            "showAll"
+        );
+
+
+        if(
+            !actions ||
+            !showAll
+        ){
+            return;
+        }
+
+
+        const button =
+        document.createElement(
+            "button"
+        );
+
+
+        button.id =
+        "yhSaveSearchButton";
+
+        button.type =
+        "button";
+
+        button.className =
+        "yh-save-search-button";
+
+
+        actions.insertBefore(
+            button,
+            showAll
+        );
+
+
+        button.addEventListener(
+            "click",
+            saveCurrentSearch
+        );
+
+    }
+
+
+    createSaveSearchButton();
+
+
+    /* =====================================================
+       HIDE PAGE
+    ===================================================== */
+
+    if(
+        typeof hideAllPages ===
+        "function"
+    ){
+
+        const oldHideAllPages =
+        hideAllPages;
+
+
+        hideAllPages =
+        function(){
+
+            oldHideAllPages();
+
+
+            document
+            .getElementById(
+                "yhSavedSearchesPage"
+            )
+            ?.classList
+            .remove(
+                "active"
+            );
+
+        };
+
+    }
+
+
+    if(
+        typeof showHomePage ===
+        "function"
+    ){
+
+        const oldShowHomePage =
+        showHomePage;
+
+
+        showHomePage =
+        function(
+            pushHistory = false
+        ){
+
+            document
+            .getElementById(
+                "yhSavedSearchesPage"
+            )
+            ?.classList
+            .remove(
+                "active"
+            );
+
+
+            return oldShowHomePage(
+                pushHistory
+            );
+
+        };
+
+    }
+
+
+    /* =====================================================
+       FILTER HELPERS
+    ===================================================== */
+
+    function getValue(id){
+
+        return document
+        .getElementById(
+            id
+        )
+        ?.value ??
+        "";
+
+    }
+
+
+    function getCurrentDisplayCurrency(){
+
+        const active =
+        document.querySelector(
+            ".yh-currency-button.active"
+        );
+
+
+        return active
+        ?.dataset
+        ?.yhCurrency ||
+        "USD";
+
+    }
+
+
+    function collectCurrentFilters(){
+
+        const quick =
+        document.querySelector(
+            ".filter.active"
+        );
+
+
+        return {
+
+            display_currency:
+            getCurrentDisplayCurrency(),
+
+            location:
+            getValue(
+                "locationInput"
+            ),
+
+            property_type:
+            getValue(
+                "propertyType"
+            ),
+
+            rooms:
+            getValue(
+                "rooms"
+            ),
+
+            min_price:
+            getValue(
+                "minPriceInput"
+            ),
+
+            max_price:
+            getValue(
+                "maxPriceInput"
+            ),
+
+            min_area:
+            getValue(
+                "minArea"
+            ),
+
+            max_area:
+            getValue(
+                "maxArea"
+            ),
+
+            bedrooms:
+            getValue(
+                "filterBedrooms"
+            ),
+
+            min_floor:
+            getValue(
+                "minFloor"
+            ),
+
+            max_floor:
+            getValue(
+                "maxFloor"
+            ),
+
+            condition:
+            getValue(
+                "filterCondition"
+            ),
+
+            owner_type:
+            getValue(
+                "filterOwnerType"
+            ),
+
+            min_sqm_price:
+            getValue(
+                "minSqmPrice"
+            ),
+
+            max_sqm_price:
+            getValue(
+                "maxSqmPrice"
+            ),
+
+            quick_filter:
+            quick
+            ?
+            quick.dataset.filter
+            :
+            ""
+
+        };
+
+    }
+
+
+    function savedSearchDefaultName(
+        filters,
+        dealType
+    ){
+
+        const t =
+        yhSavedSearchText();
+
+
+        const parts =
+        [];
+
+
+        if(filters.location){
+
+            parts.push(
+                filters.location
+            );
+
+        }
+
+
+        if(
+            filters.property_type &&
+            filters.property_type !==
+            "all"
+        ){
+
+            parts.push(
+                propertyLabel(
+                    filters.property_type
+                )
+            );
+
+        }
+
+
+        if(
+            filters.rooms &&
+            filters.rooms !==
+            "all"
+        ){
+
+            parts.push(
+                filters.rooms +
+                " " +
+                t.rooms
+            );
+
+        }
+
+
+        if(!parts.length){
+
+            if(dealType === "rent"){
+                parts.push(t.rent);
+            }else if(
+                dealType ===
+                "pledge"
+            ){
+                parts.push(t.pledge);
+            }else{
+                parts.push(t.sale);
+            }
+
+        }
+
+
+        return parts.join(
+            " · "
+        );
+
+    }
+
+
+    /* =====================================================
+       SAVE
+    ===================================================== */
+
+    async function saveCurrentSearch(){
+
+        if(!requireLogin()){
+            return;
+        }
+
+
+        const t =
+        yhSavedSearchText();
+
+
+        const filters =
+        collectCurrentFilters();
+
+
+        const defaultName =
+        savedSearchDefaultName(
+            filters,
+            searchType
+        );
+
+
+        const name =
+        window.prompt(
+            t.prompt,
+            defaultName
+        );
+
+
+        if(name === null){
+            return;
+        }
+
+
+        const finalName =
+        name.trim() ||
+        defaultName;
+
+
+        const button =
+        document.getElementById(
+            "yhSaveSearchButton"
+        );
+
+
+        if(button){
+            button.disabled = true;
+        }
+
+
+        const result =
+        await supabaseClient
+        .from(
+            "saved_searches"
+        )
+        .insert({
+
+            user_id:
+            currentUser.id,
+
+            name:
+            finalName,
+
+            deal_type:
+            searchType,
+
+            filters:
+            filters,
+
+            alerts_enabled:
+            true
+
+        });
+
+
+        if(button){
+            button.disabled = false;
+        }
+
+
+        if(result.error){
+
+            console.error(
+                result.error
+            );
+
+
+            showMessage(
+                t.saveError
+            );
+
+            return;
+
+        }
+
+
+        showMessage(
+            t.saved
+        );
+
+    }
+
+
+    /* =====================================================
+       SUMMARY
+    ===================================================== */
+
+    function getDealText(
+        dealType
+    ){
+
+        const t =
+        yhSavedSearchText();
+
+
+        if(dealType === "rent"){
+            return t.rent;
+        }
+
+
+        if(dealType === "pledge"){
+            return t.pledge;
+        }
+
+
+        return t.sale;
+
+    }
+
+
+    function getPropertyText(
+        value
+    ){
+
+        if(
+            !value ||
+            value === "all"
+        ){
+
+            return yhSavedSearchText()
+            .any;
+
+        }
+
+
+        return propertyLabel(
+            value
+        );
+
+    }
+
+
+    function savedSearchSummary(
+        item
+    ){
+
+        const t =
+        yhSavedSearchText();
+
+
+        const f =
+        item.filters ||
+        {};
+
+
+        const rows =
+        [];
+
+
+        if(f.location){
+
+            rows.push(
+                "📍 " +
+                t.location +
+                ": " +
+                escapeHtml(
+                    f.location
+                )
+            );
+
+        }
+
+
+        if(
+            f.property_type &&
+            f.property_type !==
+            "all"
+        ){
+
+            rows.push(
+                "🏠 " +
+                escapeHtml(
+                    getPropertyText(
+                        f.property_type
+                    )
+                )
+            );
+
+        }
+
+
+        if(
+            f.rooms &&
+            f.rooms !==
+            "all"
+        ){
+
+            rows.push(
+                "🚪 " +
+                escapeHtml(
+                    f.rooms
+                ) +
+                " " +
+                t.rooms
+            );
+
+        }
+
+
+        if(
+            f.min_price ||
+            f.max_price
+        ){
+
+            const symbol =
+            f.display_currency ===
+            "GEL"
+            ?
+            "₾"
+            :
+            f.display_currency ===
+            "EUR"
+            ?
+            "€"
+            :
+            "$";
+
+
+            let text =
+            "💰 " +
+            t.price +
+            ": ";
+
+
+            if(f.min_price){
+
+                text +=
+                escapeHtml(
+                    f.min_price
+                ) +
+                symbol;
+
+            }
+
+
+            if(
+                f.min_price &&
+                f.max_price
+            ){
+
+                text +=
+                " – ";
+
+            }
+
+
+            if(f.max_price){
+
+                text +=
+                escapeHtml(
+                    f.max_price
+                ) +
+                symbol;
+
+            }
+
+
+            rows.push(
+                text
+            );
+
+        }
+
+
+        if(
+            f.min_area ||
+            f.max_area
+        ){
+
+            let text =
+            "📐 " +
+            t.area +
+            ": ";
+
+
+            if(f.min_area){
+
+                text +=
+                escapeHtml(
+                    f.min_area
+                );
+
+            }
+
+
+            if(
+                f.min_area &&
+                f.max_area
+            ){
+
+                text +=
+                " – ";
+
+            }
+
+
+            if(f.max_area){
+
+                text +=
+                escapeHtml(
+                    f.max_area
+                );
+
+            }
+
+
+            text +=
+            " m²";
+
+
+            rows.push(
+                text
+            );
+
+        }
+
+
+        if(
+            f.condition &&
+            f.condition !==
+            "all"
+        ){
+
+            rows.push(
+                "🔧 " +
+                t.condition +
+                ": " +
+                escapeHtml(
+                    conditionLabel(
+                        f.condition
+                    )
+                )
+            );
+
+        }
+
+
+        if(
+            f.owner_type &&
+            f.owner_type !==
+            "all"
+        ){
+
+            rows.push(
+                "👤 " +
+                t.owner +
+                ": " +
+                escapeHtml(
+                    ownerLabel(
+                        f.owner_type
+                    )
+                )
+            );
+
+        }
+
+
+        if(!rows.length){
+
+            rows.push(
+                getDealText(
+                    item.deal_type
+                ) +
+                " · " +
+                t.any
+            );
+
+        }
+
+
+        return rows.join(
+            "<br>"
+        );
+
+    }
+
+
+    /* =====================================================
+       LOAD / RENDER
+    ===================================================== */
+
+    async function loadSavedSearches(){
+
+        if(!currentUser){
+            return;
+        }
+
+
+        const grid =
+        document.getElementById(
+            "yhSavedSearchesGrid"
+        );
+
+
+        if(!grid){
+            return;
+        }
+
+
+        grid.innerHTML =
+        `
+        <div class="yh-saved-search-empty">
+        ...
+        </div>
+        `;
+
+
+        const result =
+        await supabaseClient
+        .from(
+            "saved_searches"
+        )
+        .select("*")
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
+
+        if(result.error){
+
+            console.error(
+                result.error
+            );
+
+
+            grid.innerHTML =
+            `
+            <div class="yh-saved-search-empty">
+            ${escapeHtml(
+                yhSavedSearchText()
+                .loadError
+            )}
+            </div>
+            `;
+
+            return;
+
+        }
+
+
+        renderSavedSearches(
+            result.data ||
+            []
+        );
+
+    }
+
+
+    function renderSavedSearches(
+        searches
+    ){
+
+        const grid =
+        document.getElementById(
+            "yhSavedSearchesGrid"
+        );
+
+
+        if(!grid){
+            return;
+        }
+
+
+        const t =
+        yhSavedSearchText();
+
+
+        if(!searches.length){
+
+            grid.innerHTML =
+            `
+
+            <div class="yh-saved-search-empty">
+
+                <div style="
+                font-size:40px;
+                margin-bottom:10px;
+                ">
+                🔔
+                </div>
+
+                ${escapeHtml(
+                    t.empty
+                )}
+
+            </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        grid.innerHTML =
+        searches
+        .map(
+            function(item){
+
+                let date =
+                "";
+
+
+                try{
+
+                    date =
+                    new Date(
+                        item.created_at
+                    )
+                    .toLocaleDateString();
+
+                }catch(error){
+
+                    date =
+                    "";
+
+                }
+
+
+                return `
+
+                <div
+                class="yh-saved-search-card"
+                data-search-id="${escapeHtml(
+                    item.id
+                )}">
+
+                    <div class="yh-saved-search-top">
+
+                        <div>
+
+                            <div class="yh-saved-search-name">
+                            ${escapeHtml(
+                                item.name ||
+                                "Saved search"
+                            )}
+                            </div>
+
+                            <div class="yh-saved-search-deal">
+                            ${escapeHtml(
+                                getDealText(
+                                    item.deal_type
+                                )
+                            )}
+                            </div>
+
+                        </div>
+
+
+                        <div class="yh-saved-search-date">
+                        ${escapeHtml(date)}
+                        </div>
+
+                    </div>
+
+
+                    <div class="yh-saved-search-summary">
+
+                    ${savedSearchSummary(
+                        item
+                    )}
+
+                    </div>
+
+
+                    <div class="yh-saved-search-actions">
+
+                        <button
+                        type="button"
+                        class="yh-saved-search-apply"
+                        data-id="${escapeHtml(
+                            item.id
+                        )}">
+
+                        ${escapeHtml(
+                            t.apply
+                        )}
+
+                        </button>
+
+
+                        <button
+                        type="button"
+                        class="
+                        yh-saved-search-alert
+                        ${
+                            item.alerts_enabled
+                            ?
+                            "active"
+                            :
+                            ""
+                        }
+                        "
+                        data-id="${escapeHtml(
+                            item.id
+                        )}"
+                        data-enabled="${
+                            item.alerts_enabled
+                            ?
+                            "true"
+                            :
+                            "false"
+                        }">
+
+                        ${
+                            item.alerts_enabled
+                            ?
+                            escapeHtml(
+                                t.alertsOn
+                            )
+                            :
+                            escapeHtml(
+                                t.alertsOff
+                            )
+                        }
+
+                        </button>
+
+
+                        <button
+                        type="button"
+                        class="yh-saved-search-delete"
+                        data-id="${escapeHtml(
+                            item.id
+                        )}">
+
+                        ${escapeHtml(
+                            t.delete
+                        )}
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                `;
+
+            }
+        )
+        .join("");
+
+    }
+
+
+    /* =====================================================
+       OPEN PAGE
+    ===================================================== */
+
+    async function openSavedSearchesPage(){
+
+        if(!requireLogin()){
+            return;
+        }
+
+
+        hideAllPages();
+
+
+        document
+        .getElementById(
+            "yhSavedSearchesPage"
+        )
+        .classList
+        .add(
+            "active"
+        );
+
+
+        accountMenu
+        .classList
+        .remove(
+            "active"
+        );
+
+
+        updateSavedSearchStaticText();
+
+
+        await loadSavedSearches();
+
+
+        window.scrollTo({
+            top:0,
+            behavior:"smooth"
+        });
+
+    }
+
+
+    /* =====================================================
+       APPLY SEARCH
+    ===================================================== */
+
+    async function getSavedSearchById(
+        id
+    ){
+
+        if(!currentUser){
+            return null;
+        }
+
+
+        const result =
+        await supabaseClient
+        .from(
+            "saved_searches"
+        )
+        .select("*")
+        .eq(
+            "id",
+            id
+        )
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .maybeSingle();
+
+
+        if(result.error){
+
+            console.error(
+                result.error
+            );
+
+            return null;
+
+        }
+
+
+        return result.data ||
+        null;
+
+    }
+
+
+    function setInputValue(
+        id,
+        value
+    ){
+
+        const element =
+        document.getElementById(
+            id
+        );
+
+
+        if(!element){
+            return;
+        }
+
+
+        element.value =
+        value ??
+        "";
+
+    }
+
+
+    async function applySavedSearch(
+        id
+    ){
+
+        const item =
+        await getSavedSearchById(
+            id
+        );
+
+
+        if(!item){
+            return;
+        }
+
+
+        const f =
+        item.filters ||
+        {};
+
+
+        showHomePage(
+            true
+        );
+
+
+        const currency =
+        f.display_currency ||
+        "USD";
+
+
+        const currencyButton =
+        document.querySelector(
+            '.yh-currency-button[data-yh-currency="' +
+            currency +
+            '"]'
+        );
+
+
+        if(
+            currencyButton &&
+            !currencyButton.classList
+            .contains(
+                "active"
+            )
+        ){
+
+            currencyButton.click();
+
+        }
+
+
+        setSearchType(
+            item.deal_type ||
+            "sale"
+        );
+
+
+        setInputValue(
+            "locationInput",
+            f.location
+        );
+
+        setInputValue(
+            "propertyType",
+            f.property_type ||
+            "all"
+        );
+
+        setInputValue(
+            "rooms",
+            f.rooms ||
+            "all"
+        );
+
+        setInputValue(
+            "minPriceInput",
+            f.min_price
+        );
+
+        setInputValue(
+            "maxPriceInput",
+            f.max_price
+        );
+
+        setInputValue(
+            "minArea",
+            f.min_area
+        );
+
+        setInputValue(
+            "maxArea",
+            f.max_area
+        );
+
+        setInputValue(
+            "filterBedrooms",
+            f.bedrooms ||
+            "all"
+        );
+
+        setInputValue(
+            "minFloor",
+            f.min_floor
+        );
+
+        setInputValue(
+            "maxFloor",
+            f.max_floor
+        );
+
+        setInputValue(
+            "filterCondition",
+            f.condition ||
+            "all"
+        );
+
+        setInputValue(
+            "filterOwnerType",
+            f.owner_type ||
+            "all"
+        );
+
+        setInputValue(
+            "minSqmPrice",
+            f.min_sqm_price
+        );
+
+        setInputValue(
+            "maxSqmPrice",
+            f.max_sqm_price
+        );
+
+
+        document
+        .querySelectorAll(
+            ".filter"
+        )
+        .forEach(
+            function(button){
+
+                button.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+        if(f.quick_filter){
+
+            const quick =
+            document.querySelector(
+                '.filter[data-filter="' +
+                f.quick_filter +
+                '"]'
+            );
+
+
+            if(quick){
+
+                quick.classList.add(
+                    "active"
+                );
+
+            }
+
+        }
+
+
+        filterProperties();
+
+
+        setTimeout(
+            function(){
+
+                document
+                .getElementById(
+                    "listingsSection"
+                )
+                ?.scrollIntoView({
+                    behavior:"smooth"
+                });
+
+            },
+            100
+        );
+
+    }
+
+
+    /* =====================================================
+       ALERT TOGGLE
+    ===================================================== */
+
+    async function toggleSavedSearchAlert(
+        id,
+        enabled
+    ){
+
+        const next =
+        !enabled;
+
+
+        const result =
+        await supabaseClient
+        .from(
+            "saved_searches"
+        )
+        .update({
+
+            alerts_enabled:
+            next
+
+        })
+        .eq(
+            "id",
+            id
+        )
+        .eq(
+            "user_id",
+            currentUser.id
+        );
+
+
+        if(result.error){
+
+            console.error(
+                result.error
+            );
+
+
+            showMessage(
+                yhSavedSearchText()
+                .updateError
+            );
+
+            return;
+
+        }
+
+
+        await loadSavedSearches();
+
+    }
+
+
+    /* =====================================================
+       DELETE
+    ===================================================== */
+
+    async function deleteSavedSearch(
+        id
+    ){
+
+        const t =
+        yhSavedSearchText();
+
+
+        const answer =
+        confirm(
+            t.deleteConfirm
+        );
+
+
+        if(!answer){
+            return;
+        }
+
+
+        const result =
+        await supabaseClient
+        .from(
+            "saved_searches"
+        )
+        .delete()
+        .eq(
+            "id",
+            id
+        )
+        .eq(
+            "user_id",
+            currentUser.id
+        );
+
+
+        if(result.error){
+
+            console.error(
+                result.error
+            );
+
+
+            showMessage(
+                t.deleteError
+            );
+
+            return;
+
+        }
+
+
+        showMessage(
+            t.deleted
+        );
+
+
+        await loadSavedSearches();
+
+    }
+
+
+    /* =====================================================
+       STATIC TEXT
+    ===================================================== */
+
+    function updateSavedSearchStaticText(){
+
+        const t =
+        yhSavedSearchText();
+
+
+        const menu =
+        document.getElementById(
+            "yhSavedSearchesMenuButton"
+        );
+
+
+        if(menu){
+
+            menu.textContent =
+            t.menu;
+
+        }
+
+
+        const save =
+        document.getElementById(
+            "yhSaveSearchButton"
+        );
+
+
+        if(save){
+
+            save.textContent =
+            t.save;
+
+        }
+
+
+        const title =
+        document.getElementById(
+            "yhSavedSearchesTitle"
+        );
+
+
+        if(title){
+
+            title.textContent =
+            t.title;
+
+        }
+
+
+        const intro =
+        document.getElementById(
+            "yhSavedSearchesIntro"
+        );
+
+
+        if(intro){
+
+            intro.textContent =
+            t.intro;
+
+        }
+
+
+        const back =
+        document.getElementById(
+            "yhSavedSearchesBack"
+        );
+
+
+        if(back){
+
+            back.textContent =
+            t.back;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       EVENTS
+    ===================================================== */
+
+    document
+    .getElementById(
+        "yhSavedSearchesBack"
+    )
+    .addEventListener(
+        "click",
+        function(){
+
+            showHomePage(
+                true
+            );
+
+        }
+    );
+
+
+    document
+    .getElementById(
+        "yhSavedSearchesGrid"
+    )
+    .addEventListener(
+        "click",
+        async function(event){
+
+
+            const apply =
+            event.target.closest(
+                ".yh-saved-search-apply"
+            );
+
+
+            if(apply){
+
+                await applySavedSearch(
+                    apply.dataset.id
+                );
+
+                return;
+
+            }
+
+
+            const alert =
+            event.target.closest(
+                ".yh-saved-search-alert"
+            );
+
+
+            if(alert){
+
+                await toggleSavedSearchAlert(
+                    alert.dataset.id,
+                    alert.dataset.enabled ===
+                    "true"
+                );
+
+                return;
+
+            }
+
+
+            const remove =
+            event.target.closest(
+                ".yh-saved-search-delete"
+            );
+
+
+            if(remove){
+
+                await deleteSavedSearch(
+                    remove.dataset.id
+                );
+
+            }
+
+        }
+    );
+
+
+    const language =
+    document.getElementById(
+        "language"
+    );
+
+
+    if(language){
+
+        language.addEventListener(
+            "change",
+            function(){
+
+                setTimeout(
+                    async function(){
+
+                        updateSavedSearchStaticText();
+
+
+                        if(
+                            document
+                            .getElementById(
+                                "yhSavedSearchesPage"
+                            )
+                            .classList
+                            .contains(
+                                "active"
+                            )
+                        ){
+
+                            await loadSavedSearches();
+
+                        }
+
+                    },
+                    0
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       INITIALIZE
+    ===================================================== */
+
+    updateSavedSearchStaticText();
+
+
+})();
+
+</script>
 </body>
 </html>
 
