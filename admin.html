@@ -9072,5 +9072,49 @@ checkAdminAccess();
 })();
 
 </script>
+    <style id="yhChatBubbleFix">
+
+/* მესიჯი იყოს მხოლოდ ტექსტის ზომის */
+.msg-bubble{
+    width:fit-content !important;
+    height:auto !important;
+    min-height:0 !important;
+
+    max-width:72% !important;
+
+    white-space:normal !important;
+
+    padding:9px 12px !important;
+
+    line-height:1.4 !important;
+}
+
+/* თითო მესიჯის რიგიც აღარ გაიწელოს */
+.msg-row{
+    height:auto !important;
+    min-height:0 !important;
+    flex:none !important;
+}
+
+/* ჩატის სია აღარ გაწელავს ბაბლებს */
+.msg-messages{
+    display:block !important;
+}
+
+/* საკუთარ მესიჯზე Sophia-ს ყოველ ჯერზე დაწერა არ გვჭირდება */
+.msg-row.me .msg-sender{
+    display:none !important;
+}
+
+@media(max-width:650px){
+
+    .msg-bubble{
+        max-width:82% !important;
+        padding:8px 11px !important;
+    }
+
+}
+
+</style>
 </body>
 </html>
