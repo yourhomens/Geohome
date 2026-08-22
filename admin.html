@@ -483,7 +483,7 @@ button{
     align-items:center;
     justify-content:center;
 
-    font-size:11px;
+    font-size: 11px;
 
     font-weight:800;
 
@@ -3696,40 +3696,91 @@ async function loadListingStats(){
 
 
 
-        /* VIP */
+        /* VIP — ONLY REAL ACTIVE PROMOTIONS */
 
-        const {
-            count:vipCount
-        } =
-        await sb
-        .from(
-            "listings"
-        )
-        .select(
-            "id",
-            {
-                count:"exact",
-                head:true
-            }
-        )
-        .neq(
-            "promotion_plan",
-            "FREE"
-        )
-        .not(
-            "promotion_plan",
-            "is",
-            null
-        );
+const {
+    data:promotionRows,
+    error:promotionError
+} =
+await sb
+.from(
+    "listings"
+)
+.select(
+    "promotion_plan, promotion_expires_at"
+);
 
 
-        document.getElementById(
-            "vipListingsCount"
-        )
-        .textContent =
-        formatNumber(
-            vipCount
-        );
+let vipCount = 0;
+
+
+if(
+    !promotionError &&
+    Array.isArray(promotionRows)
+){
+
+    const now =
+    Date.now();
+
+
+    vipCount =
+    promotionRows.filter(
+        function(row){
+
+            const plan =
+            String(
+                row.promotion_plan || ""
+            )
+            .trim()
+            .toLowerCase();
+
+
+            const expiresAt =
+            row.promotion_expires_at
+            ?
+            new Date(
+                row.promotion_expires_at
+            ).getTime()
+            :
+            0;
+
+
+            const activePlan =
+            [
+                "vip",
+                "vip+",
+                "vip_plus",
+                "vip+ pro",
+                "vip_pro",
+                "pro"
+            ]
+            .includes(plan);
+
+
+            return (
+                activePlan &&
+                Number.isFinite(expiresAt) &&
+                expiresAt > now
+            );
+
+        }
+    )
+    .length;
+
+}
+
+
+document.getElementById(
+    "vipListingsCount"
+)
+.textContent =
+promotionError
+?
+"—"
+:
+formatNumber(
+    vipCount
+);
 
 
 
