@@ -5006,10 +5006,10 @@ checkAdminAccess();
 
 
         const result =
-        await sb
-        .from("support_threads")
-        .select("*");
-
+await sb
+.rpc(
+    "yh_admin_support_get_threads"
+);
 
         if(result.error){
 
