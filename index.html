@@ -24010,19 +24010,21 @@ setDisplayCurrency(
 
 
         openListing =
-        function(
-            listing,
-            pushHistory = false
-        ){
+function(
+    listing,
+    pushHistory = false,
+    incrementView = true
+){
 
             yhCurrentDetailListing =
             listing;
 
 
             originalOpenListing(
-                listing,
-                pushHistory
-            );
+    listing,
+    pushHistory,
+    incrementView
+);
 
 
             enhanceListingDetail(
