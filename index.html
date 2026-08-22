@@ -32138,6 +32138,1444 @@ function(
 })();
 
 </script>
+    <!-- =========================================================
+     YOUR HOME — SUPPORT MESSENGER FINAL FIX
+========================================================= -->
+
+<script>
+
+(function(){
+
+    if(window.__YOUR_HOME_SUPPORT_FINAL_FIX__){
+        return;
+    }
+
+    window.__YOUR_HOME_SUPPORT_FINAL_FIX__ = true;
+
+
+    const YH_SUPPORT_FIX_TOKEN =
+    "yourHomeSupportGuestToken";
+
+    const YH_SUPPORT_FIX_THREADS =
+    "yourHomeSupportThreadsFinal";
+
+
+    let yhFixThreadId =
+    null;
+
+    let yhFixThreadKey =
+    "general";
+
+    let yhFixPollTimer =
+    null;
+
+    let yhFixSending =
+    false;
+
+
+    /* =============================================
+       LANGUAGE
+    ============================================= */
+
+    function yhFixLang(){
+
+        return (
+            document.getElementById("language")?.value ||
+            "ka"
+        );
+
+    }
+
+
+    function yhFixText(){
+
+        const lang =
+        yhFixLang();
+
+
+        if(lang === "en"){
+
+            return {
+                welcome:"👋 How can we help you?",
+                connecting:"Connecting...",
+                connected:"Online support",
+                sending:"Sending...",
+                send:"Send",
+                error:"Message could not be sent. Please try again.",
+                empty:"Write a message first.",
+                you:"You",
+                admin:"Your Home"
+            };
+
+        }
+
+
+        if(lang === "ru"){
+
+            return {
+                welcome:"👋 Чем мы можем помочь?",
+                connecting:"Подключение...",
+                connected:"Онлайн поддержка",
+                sending:"Отправка...",
+                send:"Отправить",
+                error:"Не удалось отправить сообщение. Попробуйте снова.",
+                empty:"Сначала напишите сообщение.",
+                you:"Вы",
+                admin:"Your Home"
+            };
+
+        }
+
+
+        return {
+            welcome:"👋 რით შეგვიძლია დაგეხმაროთ?",
+            connecting:"დაკავშირება...",
+            connected:"ონლაინ მხარდაჭერა",
+            sending:"იგზავნება...",
+            send:"გაგზავნა",
+            error:"შეტყობინება ვერ გაიგზავნა. სცადეთ ხელახლა.",
+            empty:"ჯერ დაწერეთ შეტყობინება.",
+            you:"თქვენ",
+            admin:"Your Home"
+        };
+
+    }
+
+
+    /* =============================================
+       TOKEN
+    ============================================= */
+
+    function yhFixGetToken(){
+
+        let token =
+        "";
+
+        try{
+
+            token =
+            localStorage.getItem(
+                YH_SUPPORT_FIX_TOKEN
+            ) || "";
+
+        }catch(error){}
+
+
+        if(!token){
+
+            token =
+            window.crypto?.randomUUID
+            ?
+            window.crypto.randomUUID()
+            :
+            "yh-" +
+            Date.now() +
+            "-" +
+            Math.random()
+            .toString(36)
+            .slice(2);
+
+
+            try{
+
+                localStorage.setItem(
+                    YH_SUPPORT_FIX_TOKEN,
+                    token
+                );
+
+            }catch(error){}
+
+        }
+
+
+        return token;
+
+    }
+
+
+    /* =============================================
+       THREAD STORAGE
+    ============================================= */
+
+    function yhFixGetThreadMap(){
+
+        try{
+
+            const data =
+            JSON.parse(
+                localStorage.getItem(
+                    YH_SUPPORT_FIX_THREADS
+                ) || "{}"
+            );
+
+
+            return (
+                data &&
+                typeof data === "object"
+            )
+            ?
+            data
+            :
+            {};
+
+        }catch(error){
+
+            return {};
+
+        }
+
+    }
+
+
+    function yhFixSaveThread(){
+
+        if(
+            !yhFixThreadId ||
+            !yhFixThreadKey
+        ){
+            return;
+        }
+
+
+        const map =
+        yhFixGetThreadMap();
+
+
+        map[
+            yhFixThreadKey
+        ] =
+        String(
+            yhFixThreadId
+        );
+
+
+        try{
+
+            localStorage.setItem(
+                YH_SUPPORT_FIX_THREADS,
+                JSON.stringify(map)
+            );
+
+        }catch(error){}
+
+    }
+
+
+    function yhFixRemoveThread(){
+
+        const map =
+        yhFixGetThreadMap();
+
+
+        delete map[
+            yhFixThreadKey
+        ];
+
+
+        try{
+
+            localStorage.setItem(
+                YH_SUPPORT_FIX_THREADS,
+                JSON.stringify(map)
+            );
+
+        }catch(error){}
+
+
+        yhFixThreadId =
+        null;
+
+    }
+
+
+    /* =============================================
+       CONTEXT
+    ============================================= */
+
+    function yhFixSetContext(){
+
+        const listing =
+        (
+            typeof activeListing !==
+            "undefined"
+        )
+        ?
+        activeListing
+        :
+        null;
+
+
+        if(
+            listing &&
+            listing.id !==
+            null &&
+            listing.id !==
+            undefined
+        ){
+
+            yhFixThreadKey =
+            "listing:" +
+            String(
+                listing.id
+            );
+
+        }else{
+
+            yhFixThreadKey =
+            "general";
+
+        }
+
+
+        const map =
+        yhFixGetThreadMap();
+
+
+        yhFixThreadId =
+        map[
+            yhFixThreadKey
+        ] ||
+        null;
+
+
+        const context =
+        document.getElementById(
+            "yhSupportContext"
+        );
+
+
+        if(!context){
+            return;
+        }
+
+
+        if(listing){
+
+            const title =
+            listing.title ||
+            (
+                typeof propertyLabel ===
+                "function"
+                ?
+                propertyLabel(
+                    listing.property_type
+                )
+                :
+                "ქონება"
+            );
+
+
+            const code =
+            listing.listing_code
+            ?
+            " · " +
+            listing.listing_code
+            :
+            "";
+
+
+            context.textContent =
+            "🏠 განცხადება: " +
+            title +
+            code;
+
+
+            context.classList.add(
+                "show"
+            );
+
+        }else{
+
+            context.textContent =
+            "";
+
+            context.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+
+
+    /* =============================================
+       STATUS
+    ============================================= */
+
+    function yhFixStatus(
+        text
+    ){
+
+        const element =
+        document.getElementById(
+            "yhSupportStatus"
+        );
+
+
+        if(element){
+
+            element.textContent =
+            text || "";
+
+        }
+
+    }
+
+
+    /* =============================================
+       RPC DATA
+    ============================================= */
+
+    function yhFixThreadIdFromData(
+        data
+    ){
+
+        if(
+            data === null ||
+            data === undefined
+        ){
+
+            return null;
+
+        }
+
+
+        if(
+            typeof data === "string" ||
+            typeof data === "number"
+        ){
+
+            return String(data);
+
+        }
+
+
+        if(Array.isArray(data)){
+
+            return data.length
+            ?
+            yhFixThreadIdFromData(
+                data[0]
+            )
+            :
+            null;
+
+        }
+
+
+        if(
+            typeof data === "object"
+        ){
+
+            const id =
+            data.thread_id ??
+            data.id ??
+            data.support_thread_id;
+
+
+            return (
+                id !== null &&
+                id !== undefined
+            )
+            ?
+            String(id)
+            :
+            null;
+
+        }
+
+
+        return null;
+
+    }
+
+
+    function yhFixRows(
+        data
+    ){
+
+        if(Array.isArray(data)){
+            return data;
+        }
+
+
+        if(
+            Array.isArray(
+                data?.messages
+            )
+        ){
+
+            return data.messages;
+
+        }
+
+
+        if(
+            Array.isArray(
+                data?.data
+            )
+        ){
+
+            return data.data;
+
+        }
+
+
+        return [];
+
+    }
+
+
+    /* =============================================
+       RENDER MESSAGES
+    ============================================= */
+
+    function yhFixRender(
+        rows
+    ){
+
+        const container =
+        document.getElementById(
+            "yhSupportMessages"
+        );
+
+
+        if(!container){
+            return;
+        }
+
+
+        const t =
+        yhFixText();
+
+
+        container.innerHTML =
+        "";
+
+
+        if(
+            !Array.isArray(rows) ||
+            !rows.length
+        ){
+
+            const welcome =
+            document.createElement(
+                "div"
+            );
+
+
+            welcome.className =
+            "yh-support-welcome";
+
+
+            welcome.textContent =
+            t.welcome;
+
+
+            container.appendChild(
+                welcome
+            );
+
+
+            return;
+
+        }
+
+
+        rows
+        .forEach(
+            function(row){
+
+                const message =
+                String(
+                    row?.message ??
+                    row?.body ??
+                    row?.content ??
+                    row?.text ??
+                    ""
+                )
+                .trim();
+
+
+                if(!message){
+                    return;
+                }
+
+
+                const senderType =
+                String(
+                    row?.sender_type ??
+                    row?.sender_role ??
+                    row?.role ??
+                    row?.sender ??
+                    "visitor"
+                )
+                .toLowerCase();
+
+
+                const isAdmin =
+                senderType.includes("admin") ||
+                senderType.includes("support") ||
+                senderType.includes("owner") ||
+                senderType.includes("staff");
+
+
+                const wrap =
+                document.createElement(
+                    "div"
+                );
+
+
+                wrap.className =
+                "yh-support-row " +
+                (
+                    isAdmin
+                    ?
+                    "admin"
+                    :
+                    "user"
+                );
+
+
+                const sender =
+                document.createElement(
+                    "div"
+                );
+
+
+                sender.className =
+                "yh-support-sender";
+
+
+                sender.textContent =
+                isAdmin
+                ?
+                t.admin
+                :
+                t.you;
+
+
+                const bubble =
+                document.createElement(
+                    "div"
+                );
+
+
+                bubble.className =
+                "yh-support-bubble";
+
+
+                bubble.textContent =
+                message;
+
+
+                const time =
+                document.createElement(
+                    "div"
+                );
+
+
+                time.className =
+                "yh-support-time";
+
+
+                if(
+                    row.created_at ||
+                    row.sent_at
+                ){
+
+                    try{
+
+                        time.textContent =
+                        new Date(
+                            row.created_at ||
+                            row.sent_at
+                        )
+                        .toLocaleTimeString(
+                            [],
+                            {
+                                hour:"2-digit",
+                                minute:"2-digit"
+                            }
+                        );
+
+                    }catch(error){}
+
+                }
+
+
+                wrap.appendChild(
+                    sender
+                );
+
+                wrap.appendChild(
+                    bubble
+                );
+
+                wrap.appendChild(
+                    time
+                );
+
+
+                container.appendChild(
+                    wrap
+                );
+
+            }
+        );
+
+
+        requestAnimationFrame(
+            function(){
+
+                container.scrollTop =
+                container.scrollHeight;
+
+            }
+        );
+
+    }
+
+
+    /* =============================================
+       LOAD MESSAGES
+    ============================================= */
+
+    async function yhFixLoadMessages(){
+
+        if(!yhFixThreadId){
+
+            yhFixRender([]);
+
+            return;
+
+        }
+
+
+        const token =
+        yhFixGetToken();
+
+
+        try{
+
+            const result =
+            await supabaseClient
+            .rpc(
+                "yh_support_get_messages",
+                {
+                    p_thread_id:
+                    yhFixThreadId,
+
+                    p_public_token:
+                    token
+                }
+            );
+
+
+            if(result.error){
+
+                console.error(
+                    "Support load:",
+                    result.error
+                );
+
+                return;
+
+            }
+
+
+            yhFixRender(
+                yhFixRows(
+                    result.data
+                )
+            );
+
+
+            yhFixStatus(
+                yhFixText()
+                .connected
+            );
+
+
+        }catch(error){
+
+            console.error(
+                "Support load:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =============================================
+       START THREAD
+    ============================================= */
+
+    async function yhFixStartThread(
+        message
+    ){
+
+        const token =
+        yhFixGetToken();
+
+
+        const nameInput =
+        document.getElementById(
+            "yhSupportName"
+        );
+
+
+        const emailInput =
+        document.getElementById(
+            "yhSupportEmail"
+        );
+
+
+        const name =
+        (
+            nameInput?.value ||
+            (
+                typeof currentUser !==
+                "undefined"
+                ?
+                currentUser
+                ?.user_metadata
+                ?.name
+                :
+                ""
+            ) ||
+            ""
+        )
+        .trim();
+
+
+        const email =
+        (
+            emailInput?.value ||
+            (
+                typeof currentUser !==
+                "undefined"
+                ?
+                currentUser?.email
+                :
+                ""
+            ) ||
+            ""
+        )
+        .trim();
+
+
+        const phone =
+        (
+            typeof currentUser !==
+            "undefined"
+            ?
+            currentUser
+            ?.user_metadata
+            ?.phone
+            :
+            null
+        ) ||
+        null;
+
+
+        const listing =
+        (
+            typeof activeListing !==
+            "undefined"
+        )
+        ?
+        activeListing
+        :
+        null;
+
+
+        const listingId =
+        listing?.id ??
+        null;
+
+
+        const result =
+        await supabaseClient
+        .rpc(
+            "yh_support_start_thread",
+            {
+                p_public_token:
+                token,
+
+                p_message:
+                message,
+
+                p_name:
+                name || null,
+
+                p_email:
+                email || null,
+
+                p_phone:
+                phone,
+
+                p_listing_id:
+                listingId
+            }
+        );
+
+
+        if(result.error){
+
+            throw result.error;
+
+        }
+
+
+        const id =
+        yhFixThreadIdFromData(
+            result.data
+        );
+
+
+        if(!id){
+
+            throw new Error(
+                "Thread ID not returned"
+            );
+
+        }
+
+
+        yhFixThreadId =
+        id;
+
+
+        yhFixSaveThread();
+
+
+        return id;
+
+    }
+
+
+    /* =============================================
+       SEND EXISTING THREAD
+    ============================================= */
+
+    async function yhFixSendExisting(
+        message
+    ){
+
+        const result =
+        await supabaseClient
+        .rpc(
+            "yh_support_send_message",
+            {
+                p_thread_id:
+                yhFixThreadId,
+
+                p_public_token:
+                yhFixGetToken(),
+
+                p_message:
+                message
+            }
+        );
+
+
+        if(result.error){
+
+            throw result.error;
+
+        }
+
+
+        return true;
+
+    }
+
+
+    /* =============================================
+       SEND MESSAGE
+    ============================================= */
+
+    async function yhFixSendMessage(){
+
+        if(yhFixSending){
+            return;
+        }
+
+
+        const input =
+        document.getElementById(
+            "yhSupportMessageInput"
+        );
+
+
+        const button =
+        document.getElementById(
+            "yhSupportSend"
+        );
+
+
+        const message =
+        String(
+            input?.value ||
+            ""
+        )
+        .trim();
+
+
+        const t =
+        yhFixText();
+
+
+        if(!message){
+
+            if(
+                typeof showMessage ===
+                "function"
+            ){
+
+                showMessage(
+                    t.empty
+                );
+
+            }
+
+            return;
+
+        }
+
+
+        yhFixSending =
+        true;
+
+
+        if(button){
+
+            button.disabled =
+            true;
+
+            button.textContent =
+            t.sending;
+
+        }
+
+
+        yhFixStatus(
+            t.connecting
+        );
+
+
+        try{
+
+            yhFixSetContext();
+
+
+            if(!yhFixThreadId){
+
+                await yhFixStartThread(
+                    message
+                );
+
+            }else{
+
+                try{
+
+                    await yhFixSendExisting(
+                        message
+                    );
+
+                }catch(error){
+
+                    /*
+                       თუ ძველი thread აღარ არსებობს,
+                       ვქმნით ახალს.
+                    */
+
+                    console.warn(
+                        "Old support thread:",
+                        error
+                    );
+
+
+                    yhFixRemoveThread();
+
+
+                    await yhFixStartThread(
+                        message
+                    );
+
+                }
+
+            }
+
+
+            if(input){
+
+                input.value =
+                "";
+
+                input.style.height =
+                "42px";
+
+            }
+
+
+            yhFixStatus(
+                t.connected
+            );
+
+
+            await yhFixLoadMessages();
+
+
+            yhFixStartPolling();
+
+
+        }catch(error){
+
+            console.error(
+                "Support send:",
+                error
+            );
+
+
+            yhFixStatus(
+                ""
+            );
+
+
+            if(
+                typeof showMessage ===
+                "function"
+            ){
+
+                showMessage(
+                    t.error
+                );
+
+            }
+
+        }finally{
+
+            yhFixSending =
+            false;
+
+
+            if(button){
+
+                button.disabled =
+                false;
+
+                button.textContent =
+                t.send;
+
+            }
+
+        }
+
+    }
+
+
+    /* =============================================
+       POLLING
+    ============================================= */
+
+    function yhFixStopPolling(){
+
+        if(yhFixPollTimer){
+
+            clearInterval(
+                yhFixPollTimer
+            );
+
+            yhFixPollTimer =
+            null;
+
+        }
+
+    }
+
+
+    function yhFixStartPolling(){
+
+        yhFixStopPolling();
+
+
+        if(!yhFixThreadId){
+            return;
+        }
+
+
+        yhFixPollTimer =
+        setInterval(
+            function(){
+
+                const panel =
+                document.getElementById(
+                    "yhSupportPanel"
+                );
+
+
+                if(
+                    panel?.classList
+                    .contains(
+                        "active"
+                    )
+                ){
+
+                    yhFixLoadMessages();
+
+                }
+
+            },
+            5000
+        );
+
+    }
+
+
+    /* =============================================
+       OPEN / CLOSE
+    ============================================= */
+
+    async function yhFixOpen(){
+
+        const panel =
+        document.getElementById(
+            "yhSupportPanel"
+        );
+
+
+        if(!panel){
+            return;
+        }
+
+
+        yhFixSetContext();
+
+
+        panel.classList.add(
+            "active"
+        );
+
+
+        if(yhFixThreadId){
+
+            yhFixStatus(
+                yhFixText()
+                .connecting
+            );
+
+
+            await yhFixLoadMessages();
+
+
+            yhFixStartPolling();
+
+        }else{
+
+            yhFixStatus(
+                ""
+            );
+
+
+            yhFixRender([]);
+
+        }
+
+
+        setTimeout(
+            function(){
+
+                document
+                .getElementById(
+                    "yhSupportMessageInput"
+                )
+                ?.focus();
+
+            },
+            100
+        );
+
+    }
+
+
+    function yhFixClose(){
+
+        document
+        .getElementById(
+            "yhSupportPanel"
+        )
+        ?.classList
+        .remove(
+            "active"
+        );
+
+
+        yhFixStopPolling();
+
+    }
+
+
+    /* =============================================
+       REMOVE OLD EVENT HANDLERS
+    ============================================= */
+
+    function yhFixClone(
+        id
+    ){
+
+        const old =
+        document.getElementById(
+            id
+        );
+
+
+        if(!old){
+            return null;
+        }
+
+
+        const fresh =
+        old.cloneNode(
+            true
+        );
+
+
+        old.replaceWith(
+            fresh
+        );
+
+
+        return fresh;
+
+    }
+
+
+    const launcher =
+    yhFixClone(
+        "yhSupportLauncher"
+    );
+
+
+    const close =
+    yhFixClone(
+        "yhSupportClose"
+    );
+
+
+    const send =
+    yhFixClone(
+        "yhSupportSend"
+    );
+
+
+    const input =
+    yhFixClone(
+        "yhSupportMessageInput"
+    );
+
+
+    /* =============================================
+       NEW EVENTS
+    ============================================= */
+
+    launcher
+    ?.addEventListener(
+        "click",
+        function(){
+
+            const panel =
+            document.getElementById(
+                "yhSupportPanel"
+            );
+
+
+            if(
+                panel
+                ?.classList
+                .contains(
+                    "active"
+                )
+            ){
+
+                yhFixClose();
+
+            }else{
+
+                yhFixOpen();
+
+            }
+
+        }
+    );
+
+
+    close
+    ?.addEventListener(
+        "click",
+        yhFixClose
+    );
+
+
+    send
+    ?.addEventListener(
+        "click",
+        yhFixSendMessage
+    );
+
+
+    input
+    ?.addEventListener(
+        "keydown",
+        function(event){
+
+            if(
+                event.key ===
+                "Enter" &&
+                !event.shiftKey
+            ){
+
+                event.preventDefault();
+
+                yhFixSendMessage();
+
+            }
+
+        }
+    );
+
+
+    input
+    ?.addEventListener(
+        "input",
+        function(){
+
+            this.style.height =
+            "42px";
+
+
+            this.style.height =
+            Math.min(
+                this.scrollHeight,
+                110
+            ) +
+            "px";
+
+        }
+    );
+
+
+    console.log(
+        "Your Home — Support Final Fix loaded."
+    );
+
+
+})();
+
+</script>
 
 
 <!-- =========================================================
