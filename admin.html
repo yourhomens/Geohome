@@ -7803,6 +7803,1274 @@ checkAdminAccess();
 }
 
 </style> 
+<!-- =========================================================
+     YOUR HOME — SIMPLE CHAT FINAL UI
+========================================================= -->
 
+<style id="yhSimpleChatFinal">
+
+/* =========================================================
+   SIMPLE CHAT LAYOUT
+========================================================= */
+
+#page-support,
+#page-teamchat{
+    max-width:1100px;
+    margin:0 auto;
+}
+
+#page-support .page-head,
+#page-teamchat .page-head{
+    margin-bottom:16px;
+}
+
+.msg-shell{
+    width:100%;
+    height:min(680px,calc(100vh - 180px));
+    min-height:540px;
+
+    display:grid;
+    grid-template-columns:270px minmax(0,1fr);
+
+    background:#fff;
+
+    border:1px solid var(--border);
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 8px 30px
+        rgba(30,38,26,.06);
+}
+
+
+/* =========================================================
+   LEFT CHAT LIST
+========================================================= */
+
+.msg-side{
+    background:#fff;
+    border-right:1px solid var(--border);
+}
+
+.msg-side-head{
+    padding:15px 14px;
+
+    border-bottom:1px solid var(--border);
+
+    background:#fff;
+}
+
+.msg-side-head strong{
+    font-size:15px;
+}
+
+.msg-side-head small{
+    font-size:10px;
+    margin-top:4px;
+}
+
+.msg-list{
+    background:#fff;
+}
+
+.msg-item{
+    padding:11px 12px;
+
+    border-bottom:
+        1px solid #eef0ea;
+
+    background:#fff;
+}
+
+.msg-item:hover{
+    background:#f8f9f5;
+}
+
+.msg-item.active{
+    background:#f1f4e8;
+
+    box-shadow:
+        inset 3px 0
+        var(--olive);
+}
+
+.msg-avatar{
+    width:38px;
+    height:38px;
+
+    flex:0 0 38px;
+
+    font-size:13px;
+
+    background:var(--olive-soft);
+}
+
+.msg-name{
+    font-size:13px;
+}
+
+.msg-preview{
+    font-size:10px;
+    margin-top:3px;
+}
+
+.msg-status{
+    margin-top:5px;
+
+    padding:3px 6px;
+
+    font-size:8px;
+}
+
+.msg-unread{
+    min-width:19px;
+    height:19px;
+
+    padding:0 5px;
+
+    font-size:10px;
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+.msg-chat{
+    background:#fff;
+
+    display:flex;
+    flex-direction:column;
+
+    min-width:0;
+    min-height:0;
+}
+
+
+/* =========================================================
+   CHAT HEADER
+========================================================= */
+
+.msg-head{
+    min-height:60px;
+
+    padding:10px 15px;
+
+    background:#fff;
+
+    border-bottom:
+        1px solid
+        var(--border);
+}
+
+.msg-head-user strong{
+    font-size:15px;
+}
+
+.msg-head-user small{
+    font-size:10px;
+    margin-top:3px;
+}
+
+.msg-actions{
+    gap:5px;
+}
+
+.msg-action{
+    padding:6px 9px;
+
+    border-radius:8px;
+
+    font-size:9px;
+}
+
+
+/* =========================================================
+   ASSIGNMENT LINE
+========================================================= */
+
+.msg-lock{
+    min-height:27px;
+
+    padding:5px 15px;
+
+    font-size:9px;
+
+    border-bottom:
+        1px solid
+        #eef0e9;
+}
+
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+.msg-messages{
+    flex:1;
+    min-height:0;
+
+    overflow-y:auto;
+
+    display:flex;
+    flex-direction:column;
+
+    padding:22px 22px 14px;
+
+    background:#f8f9f6;
+}
+
+
+/*
+   თითო მესიჯი მაქსიმუმ 780px ზონაში.
+*/
+
+.msg-row{
+    width:100%;
+    max-width:780px;
+
+    margin:
+        0 auto
+        8px;
+
+    display:flex;
+
+    align-items:flex-end;
+}
+
+.msg-row.me{
+    justify-content:flex-end;
+}
+
+
+/*
+   მთავარი:
+   ბაბლი აღარ იწელება მთელ სიგანეზე.
+*/
+
+.msg-bubble{
+    display:inline-block !important;
+
+    width:fit-content !important;
+    min-width:0 !important;
+
+    flex:
+        0 1 auto !important;
+
+    max-width:
+        min(
+            72%,
+            560px
+        ) !important;
+
+    padding:9px 12px;
+
+    margin:0;
+
+    border:0;
+
+    border-radius:
+        15px 15px 15px 5px;
+
+    background:#fff;
+
+    color:#2f342d;
+
+    font-size:13px;
+
+    line-height:1.45;
+
+    box-shadow:
+        0 1px 4px
+        rgba(0,0,0,.05);
+
+    word-break:break-word;
+    overflow-wrap:anywhere;
+
+    white-space:pre-wrap;
+}
+
+.msg-row.me .msg-bubble{
+    width:fit-content !important;
+
+    background:var(--olive);
+
+    color:#fff;
+
+    border:0;
+
+    border-radius:
+        15px 15px 5px 15px;
+
+    box-shadow:
+        0 2px 7px
+        rgba(93,105,51,.14);
+}
+
+.msg-sender{
+    margin-bottom:3px;
+
+    font-size:8px;
+
+    opacity:.65;
+}
+
+.msg-time{
+    margin-top:4px;
+
+    font-size:8px;
+
+    opacity:.55;
+
+    text-align:right;
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.msg-empty{
+    flex:1;
+
+    min-height:100%;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    color:#999e96;
+
+    font-size:12px;
+
+    padding:25px;
+}
+
+
+/* =========================================================
+   COMPOSER
+========================================================= */
+
+.msg-compose{
+    position:relative;
+
+    flex:0 0 auto;
+
+    min-height:64px;
+
+    padding:9px 12px;
+
+    background:#fff;
+
+    border-top:
+        1px solid
+        var(--border);
+
+    display:grid;
+
+    grid-template-columns:
+        40px minmax(0,1fr) auto;
+
+    align-items:end;
+
+    gap:7px;
+}
+
+.msg-input{
+    width:100%;
+
+    min-height:44px;
+    max-height:110px;
+
+    resize:none;
+
+    border:
+        1px solid
+        #dde1d8;
+
+    border-radius:20px;
+
+    padding:
+        11px 14px;
+
+    background:#f7f8f5;
+
+    color:#31362f;
+
+    font-size:13px;
+
+    line-height:1.4;
+
+    outline:none;
+}
+
+.msg-input:focus{
+    border-color:#9aa774;
+
+    background:#fff;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(125,139,69,.07);
+}
+
+.msg-send{
+    height:44px;
+
+    min-width:82px;
+
+    padding:0 14px;
+
+    border:0;
+
+    border-radius:18px;
+
+    background:var(--olive);
+
+    color:#fff;
+
+    font-size:11px;
+
+    font-weight:800;
+}
+
+.msg-send:hover{
+    background:var(--olive-dark);
+}
+
+
+/* =========================================================
+   EMOJI BUTTON
+========================================================= */
+
+.yh-chat-emoji-btn{
+    width:40px;
+    height:40px;
+
+    margin-bottom:2px;
+
+    border:0;
+
+    border-radius:50%;
+
+    background:#f0f2ec;
+
+    font-size:19px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.yh-chat-emoji-btn:hover{
+    background:var(--olive-soft);
+}
+
+
+/* =========================================================
+   EMOJI PICKER
+========================================================= */
+
+.yh-chat-emoji-picker{
+    display:none;
+
+    position:absolute;
+
+    left:10px;
+    bottom:60px;
+
+    z-index:100;
+
+    width:250px;
+
+    padding:10px;
+
+    background:#fff;
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius:16px;
+
+    box-shadow:
+        0 12px 35px
+        rgba(0,0,0,.15);
+
+    grid-template-columns:
+        repeat(6,1fr);
+
+    gap:5px;
+}
+
+.yh-chat-emoji-picker.open{
+    display:grid;
+}
+
+.yh-chat-emoji{
+    width:34px;
+    height:34px;
+
+    border:0;
+
+    background:transparent;
+
+    border-radius:8px;
+
+    font-size:20px;
+}
+
+.yh-chat-emoji:hover{
+    background:#f2f4ee;
+}
+
+
+/* =========================================================
+   MOBILE BACK BUTTON
+========================================================= */
+
+.yh-chat-back{
+    display:none;
+
+    width:34px;
+    height:34px;
+
+    margin-right:6px;
+
+    border:0;
+
+    border-radius:50%;
+
+    background:#eef1e8;
+
+    font-size:20px;
+
+    align-items:center;
+    justify-content:center;
+}
+
+.yh-chat-head-left{
+    display:flex;
+    align-items:center;
+    min-width:0;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media(max-width:900px){
+
+    .msg-shell{
+        grid-template-columns:
+            230px minmax(0,1fr);
+    }
+
+    .msg-messages{
+        padding:
+            18px 13px
+            12px;
+    }
+
+    .msg-bubble{
+        max-width:78% !important;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE — REAL MESSENGER STYLE
+========================================================= */
+
+@media(max-width:650px){
+
+    #page-support,
+    #page-teamchat{
+        width:100%;
+        max-width:none;
+    }
+
+    #page-support .page-head,
+    #page-teamchat .page-head{
+        margin-bottom:12px;
+    }
+
+    .msg-shell{
+        width:100%;
+
+        height:
+            calc(
+                100vh - 145px
+            );
+
+        min-height:560px;
+
+        display:block;
+
+        border-radius:16px;
+    }
+
+
+    /*
+       თავიდან მხოლოდ საუბრები ჩანს.
+    */
+
+    #page-support:not(.chat-open)
+    .msg-chat,
+
+    #page-teamchat:not(.chat-open)
+    .msg-chat{
+        display:none;
+    }
+
+
+    #page-support.chat-open
+    .msg-side,
+
+    #page-teamchat.chat-open
+    .msg-side{
+        display:none;
+    }
+
+
+    #page-support.chat-open
+    .msg-chat,
+
+    #page-teamchat.chat-open
+    .msg-chat{
+        display:flex;
+
+        height:100%;
+    }
+
+
+    .msg-side{
+        height:100%;
+
+        border:0;
+    }
+
+
+    .msg-side-head{
+        padding:12px 13px;
+    }
+
+
+    .msg-item{
+        padding:11px 12px;
+    }
+
+
+    .msg-avatar{
+        width:40px;
+        height:40px;
+
+        flex-basis:40px;
+    }
+
+
+    .msg-head{
+        min-height:56px;
+
+        padding:8px 9px;
+    }
+
+
+    .yh-chat-back{
+        display:flex;
+    }
+
+
+    .msg-lock{
+        padding:5px 10px;
+    }
+
+
+    .msg-messages{
+        padding:
+            13px 8px
+            10px;
+    }
+
+
+    .msg-row{
+        max-width:100%;
+
+        margin-bottom:7px;
+    }
+
+
+    .msg-bubble{
+        max-width:82% !important;
+
+        padding:
+            8px 11px;
+
+        font-size:12px;
+
+        border-radius:
+            14px 14px 14px 4px;
+    }
+
+
+    .msg-row.me .msg-bubble{
+        border-radius:
+            14px 14px 4px 14px;
+    }
+
+
+    .msg-compose{
+        min-height:60px;
+
+        padding:7px;
+
+        grid-template-columns:
+            38px minmax(0,1fr) 68px;
+
+        gap:5px;
+    }
+
+
+    .yh-chat-emoji-btn{
+        width:38px;
+        height:38px;
+
+        font-size:18px;
+    }
+
+
+    .msg-input{
+        min-height:42px;
+
+        padding:
+            10px 12px;
+
+        border-radius:18px;
+
+        font-size:12px;
+    }
+
+
+    .msg-send{
+        height:42px;
+
+        min-width:68px;
+
+        padding:0 8px;
+
+        border-radius:17px;
+
+        font-size:10px;
+    }
+
+
+    .yh-chat-emoji-picker{
+        left:6px;
+
+        bottom:56px;
+
+        width:235px;
+
+        grid-template-columns:
+            repeat(6,1fr);
+    }
+
+}
+
+</style>
+
+
+<script>
+
+(function(){
+
+    if(
+        window.__YH_SIMPLE_CHAT_FINAL__
+    ){
+        return;
+    }
+
+    window.__YH_SIMPLE_CHAT_FINAL__ =
+    true;
+
+
+    /* =====================================================
+       EMOJIS
+    ===================================================== */
+
+    const emojis = [
+
+        "😀","😃","😄","😁","😂","🤣",
+        "😊","😍","🥰","😘","😉","😎",
+        "🤗","🤔","😅","🙃","🥹","😇",
+
+        "❤️","💚","💕","💖","💯","🔥",
+        "👍","👎","👌","👏","🙏","🤝",
+        "👋","💪","🎉","✨","⭐","✅",
+
+        "🏠","🏡","🔑","📞","📍","💬",
+        "💰","👀","🙌","🤍","🫶","🙂"
+
+    ];
+
+
+    function addEmojiPicker(
+        inputId
+    ){
+
+        const input =
+        document.getElementById(
+            inputId
+        );
+
+
+        if(!input){
+            return;
+        }
+
+
+        const composer =
+        input.closest(
+            ".msg-compose"
+        );
+
+
+        if(
+            !composer ||
+            composer.querySelector(
+                ".yh-chat-emoji-btn"
+            )
+        ){
+            return;
+        }
+
+
+        const emojiButton =
+        document.createElement(
+            "button"
+        );
+
+
+        emojiButton.type =
+        "button";
+
+
+        emojiButton.className =
+        "yh-chat-emoji-btn";
+
+
+        emojiButton.innerHTML =
+        "😊";
+
+
+        emojiButton.setAttribute(
+            "aria-label",
+            "სმაილიკები"
+        );
+
+
+        const picker =
+        document.createElement(
+            "div"
+        );
+
+
+        picker.className =
+        "yh-chat-emoji-picker";
+
+
+        picker.innerHTML =
+        emojis
+        .map(
+            emoji =>
+            `
+            <button
+                type="button"
+                class="yh-chat-emoji"
+                data-emoji="${emoji}">
+                ${emoji}
+            </button>
+            `
+        )
+        .join("");
+
+
+        composer.insertBefore(
+            emojiButton,
+            input
+        );
+
+
+        composer.appendChild(
+            picker
+        );
+
+
+        emojiButton
+        .addEventListener(
+            "click",
+            function(event){
+
+                event.stopPropagation();
+
+
+                document
+                .querySelectorAll(
+                    ".yh-chat-emoji-picker.open"
+                )
+                .forEach(
+                    function(other){
+
+                        if(
+                            other !== picker
+                        ){
+
+                            other.classList.remove(
+                                "open"
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                picker.classList.toggle(
+                    "open"
+                );
+
+            }
+        );
+
+
+        picker.addEventListener(
+            "click",
+            function(event){
+
+                const button =
+                event.target.closest(
+                    "[data-emoji]"
+                );
+
+
+                if(!button){
+                    return;
+                }
+
+
+                const emoji =
+                button.dataset.emoji;
+
+
+                const start =
+                Number.isInteger(
+                    input.selectionStart
+                )
+                ?
+                input.selectionStart
+                :
+                input.value.length;
+
+
+                const end =
+                Number.isInteger(
+                    input.selectionEnd
+                )
+                ?
+                input.selectionEnd
+                :
+                start;
+
+
+                input.value =
+                input.value.slice(
+                    0,
+                    start
+                )
+                +
+                emoji
+                +
+                input.value.slice(
+                    end
+                );
+
+
+                const cursor =
+                start +
+                emoji.length;
+
+
+                input.focus();
+
+
+                try{
+
+                    input.setSelectionRange(
+                        cursor,
+                        cursor
+                    );
+
+                }
+                catch{}
+
+
+                picker.classList.remove(
+                    "open"
+                );
+
+            }
+        );
+
+    }
+
+
+    addEmojiPicker(
+        "supportInput"
+    );
+
+
+    addEmojiPicker(
+        "teamInput"
+    );
+
+
+
+    /* =====================================================
+       MOBILE BACK BUTTONS
+    ===================================================== */
+
+    function setupMobileChat(
+        pageId,
+        listId
+    ){
+
+        const page =
+        document.getElementById(
+            pageId
+        );
+
+
+        const list =
+        document.getElementById(
+            listId
+        );
+
+
+        if(
+            !page ||
+            !list
+        ){
+            return;
+        }
+
+
+        const head =
+        page.querySelector(
+            ".msg-head"
+        );
+
+
+        if(
+            head &&
+            !head.querySelector(
+                ".yh-chat-back"
+            )
+        ){
+
+            const first =
+            head.firstElementChild;
+
+
+            if(first){
+
+                const wrapper =
+                document.createElement(
+                    "div"
+                );
+
+
+                wrapper.className =
+                "yh-chat-head-left";
+
+
+                head.insertBefore(
+                    wrapper,
+                    first
+                );
+
+
+                const back =
+                document.createElement(
+                    "button"
+                );
+
+
+                back.type =
+                "button";
+
+
+                back.className =
+                "yh-chat-back";
+
+
+                back.innerHTML =
+                "‹";
+
+
+                wrapper.appendChild(
+                    back
+                );
+
+
+                wrapper.appendChild(
+                    first
+                );
+
+
+                back.addEventListener(
+                    "click",
+                    function(){
+
+                        page.classList.remove(
+                            "chat-open"
+                        );
+
+                    }
+                );
+
+            }
+
+        }
+
+
+        list.addEventListener(
+            "click",
+            function(event){
+
+                const item =
+                event.target.closest(
+                    ".msg-item"
+                );
+
+
+                if(!item){
+                    return;
+                }
+
+
+                page.classList.add(
+                    "chat-open"
+                );
+
+            }
+        );
+
+    }
+
+
+    setupMobileChat(
+        "page-support",
+        "supportThreadList"
+    );
+
+
+    setupMobileChat(
+        "page-teamchat",
+        "teamAdminList"
+    );
+
+
+
+    /* =====================================================
+       WHEN SIDEBAR MENU IS OPENED AGAIN ON MOBILE,
+       START FROM CHAT LIST
+    ===================================================== */
+
+    document
+    .querySelectorAll(
+        '.nav-btn[data-page="support"], .nav-btn[data-page="teamchat"]'
+    )
+    .forEach(
+        function(button){
+
+            button.addEventListener(
+                "click",
+                function(){
+
+                    const page =
+                    document.getElementById(
+                        "page-" +
+                        button.dataset.page
+                    );
+
+
+                    if(
+                        window.innerWidth <=
+                        650
+                    ){
+
+                        page?.classList.remove(
+                            "chat-open"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+
+    /* =====================================================
+       CLOSE EMOJI PICKER OUTSIDE
+    ===================================================== */
+
+    document.addEventListener(
+        "click",
+        function(event){
+
+            if(
+                event.target.closest(
+                    ".yh-chat-emoji-picker"
+                )
+                ||
+                event.target.closest(
+                    ".yh-chat-emoji-btn"
+                )
+            ){
+                return;
+            }
+
+
+            document
+            .querySelectorAll(
+                ".yh-chat-emoji-picker.open"
+            )
+            .forEach(
+                picker =>
+                picker.classList.remove(
+                    "open"
+                )
+            );
+
+        }
+    );
+
+
+    console.log(
+        "Your Home — Simple Chat Final UI ready."
+    );
+
+
+})();
+
+</script>
 </body>
 </html>
