@@ -27383,7 +27383,99 @@ setDisplayCurrency(
 })();
 
 </script>
+<!-- =========================================================
+     YOUR HOME — START APPLICATION
+========================================================= -->
 
+<script>
+
+(async function(){
+
+    if(
+        window.__YOUR_HOME_APP_STARTED__
+    ){
+        return;
+    }
+
+    window.__YOUR_HOME_APP_STARTED__ =
+    true;
+
+
+    /* =========================
+       INITIAL HISTORY STATE
+    ========================= */
+
+    window.history.replaceState(
+        {
+            yourHomeView:
+            "home"
+        },
+        "",
+        window.location.href
+    );
+
+
+    /* =========================
+       LOAD USER
+    ========================= */
+
+    try{
+
+        await loadCurrentUser();
+
+    }catch(error){
+
+        console.error(
+            "Current user load error:",
+            error
+        );
+
+    }
+
+
+    /* =========================
+       LOAD LISTINGS
+    ========================= */
+
+    try{
+
+        await loadListings();
+
+    }catch(error){
+
+        console.error(
+            "Listings load error:",
+            error
+        );
+
+    }
+
+
+    /* =========================
+       LOAD NBG RATES
+    ========================= */
+
+    try{
+
+        await loadNbgCurrencyRates();
+
+    }catch(error){
+
+        console.error(
+            "Currency rates load error:",
+            error
+        );
+
+    }
+
+
+    console.log(
+        "Your Home — application started."
+    );
+
+})();
+
+</script>
 
 </body>
 </html>
