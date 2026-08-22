@@ -27385,6 +27385,210 @@ function(
 })();
 
 </script>
+    <!-- =========================================================
+     YOUR HOME — ADMIN PANEL BUTTON
+========================================================= -->
+
+<script>
+
+(function(){
+
+    if(
+        window.__YOUR_HOME_ADMIN_BUTTON__
+    ){
+        return;
+    }
+
+    window.__YOUR_HOME_ADMIN_BUTTON__ =
+    true;
+
+
+    async function yhRefreshAdminPanelButton(){
+
+        const menu =
+        document.getElementById(
+            "accountMenu"
+        );
+
+
+        if(!menu){
+            return;
+        }
+
+
+        const oldButton =
+        document.getElementById(
+            "yhAdminPanelButton"
+        );
+
+
+        /* თუ მომხმარებელი გამოსულია */
+        if(!currentUser){
+
+            if(oldButton){
+                oldButton.remove();
+            }
+
+            return;
+        }
+
+
+        try{
+
+            const {
+                data,
+                error
+            } =
+            await supabaseClient
+            .from(
+                "admin_users"
+            )
+            .select(
+                "user_id, role, is_active"
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .eq(
+                "is_active",
+                true
+            )
+            .maybeSingle();
+
+
+            if(
+                error ||
+                !data
+            ){
+
+                if(oldButton){
+                    oldButton.remove();
+                }
+
+                return;
+            }
+
+
+            /* უკვე არსებობს */
+            if(oldButton){
+                return;
+            }
+
+
+            const button =
+            document.createElement(
+                "button"
+            );
+
+
+            button.id =
+            "yhAdminPanelButton";
+
+            button.type =
+            "button";
+
+            button.textContent =
+            "👑 Admin Panel";
+
+            button.style.color =
+            "var(--olive-dark)";
+
+            button.style.fontWeight =
+            "800";
+
+
+            button.addEventListener(
+                "click",
+                function(){
+
+                    window.location.href =
+                    "./admin.html";
+
+                }
+            );
+
+
+            const logoutButton =
+            document.getElementById(
+                "logoutButton"
+            );
+
+
+            if(logoutButton){
+
+                menu.insertBefore(
+                    button,
+                    logoutButton
+                );
+
+            }else{
+
+                menu.appendChild(
+                    button
+                );
+
+            }
+
+
+        }
+        catch(error){
+
+            console.error(
+                "Admin button check error:",
+                error
+            );
+
+        }
+
+    }
+
+
+
+    /* =============================================
+       არსებული user-change handler არ დავკარგოთ
+    ============================================= */
+
+    const previousAfterUserChanged =
+    window.yhAfterUserChanged;
+
+
+    window.yhAfterUserChanged =
+    async function(){
+
+        if(
+            typeof previousAfterUserChanged ===
+            "function"
+        ){
+
+            try{
+
+                await previousAfterUserChanged
+                .apply(
+                    this,
+                    arguments
+                );
+
+            }
+            catch(error){
+
+                console.error(
+                    error
+                );
+
+            }
+
+        }
+
+
+        await yhRefreshAdminPanelButton();
+
+    };
+
+
+})();
+
+</script>
 <!-- =========================================================
      YOUR HOME — START APPLICATION
 ========================================================= -->
