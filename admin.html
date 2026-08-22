@@ -5414,6 +5414,2758 @@ await sb
 })();
 
 </script>
+    <!-- =========================================================
+     YOUR HOME — SUPPORT MESSENGER V2 FINAL
+     REPLIES + ADMIN CLAIM/LOCK
+========================================================= -->
+
+<script>
+
+(function(){
+
+    if(window.__YOUR_HOME_SUPPORT_MESSENGER_V2_FINAL__){
+        return;
+    }
+
+    window.__YOUR_HOME_SUPPORT_MESSENGER_V2_FINAL__ = true;
+
+
+    /* =====================================================
+       REMOVE OLD SUPPORT UI
+    ===================================================== */
+
+    const oldSupportButton =
+    document.getElementById(
+        "yhAdminSupportButton"
+    );
+
+    if(oldSupportButton){
+        oldSupportButton.remove();
+    }
+
+
+    const oldSupportPanel =
+    document.getElementById(
+        "yhAdminSupportPanel"
+    );
+
+    if(oldSupportPanel){
+        oldSupportPanel.remove();
+    }
+
+
+    /* =====================================================
+       STATE
+    ===================================================== */
+
+    let yhSupportThreads = [];
+
+    let yhSupportActiveThreadId =
+    null;
+
+    let yhSupportMessagesLoading =
+    false;
+
+    let yhSupportPollBusy =
+    false;
+
+
+    /* =====================================================
+       HELPERS
+    ===================================================== */
+
+    function yhSupportEscape(value){
+
+        return String(
+            value ?? ""
+        )
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+    }
+
+
+    function yhSupportDate(value){
+
+        if(!value){
+            return "";
+        }
+
+
+        try{
+
+            return new Date(
+                value
+            )
+            .toLocaleString(
+                "ka-GE",
+                {
+                    day:"2-digit",
+                    month:"2-digit",
+                    hour:"2-digit",
+                    minute:"2-digit"
+                }
+            );
+
+        }catch(error){
+
+            return "";
+
+        }
+
+    }
+
+
+    function yhSupportThreadName(thread){
+
+        return (
+            thread?.name ||
+            thread?.email ||
+            thread?.phone ||
+            "მომხმარებელი"
+        );
+
+    }
+
+
+    function yhSupportNormalizeRows(data){
+
+        if(
+            Array.isArray(
+                data
+            )
+        ){
+
+            return data;
+
+        }
+
+
+        if(
+            typeof data ===
+            "string"
+        ){
+
+            try{
+
+                const parsed =
+                JSON.parse(
+                    data
+                );
+
+
+                return Array.isArray(
+                    parsed
+                )
+                ?
+                parsed
+                :
+                [];
+
+            }catch(error){
+
+                return [];
+
+            }
+
+        }
+
+
+        return [];
+
+    }
+
+
+    function yhSupportCurrentAdminId(){
+
+        return currentUser?.id
+        ?
+        String(
+            currentUser.id
+        )
+        :
+        "";
+
+    }
+
+
+    function yhSupportIsMine(thread){
+
+        if(
+            !thread?.assigned_admin_id
+        ){
+
+            return false;
+
+        }
+
+
+        return (
+            String(
+                thread.assigned_admin_id
+            ) ===
+            yhSupportCurrentAdminId()
+        );
+
+    }
+
+
+    function yhSupportIsLocked(thread){
+
+        return Boolean(
+            thread?.assigned_admin_id &&
+            !yhSupportIsMine(
+                thread
+            )
+        );
+
+    }
+
+
+    function yhSupportCurrentThread(){
+
+        return yhSupportThreads
+        .find(
+            function(thread){
+
+                return String(
+                    thread.id
+                ) ===
+                String(
+                    yhSupportActiveThreadId
+                );
+
+            }
+        )
+        ||
+        null;
+
+    }
+
+
+    /* =====================================================
+       STYLE
+    ===================================================== */
+
+    const yhSupportStyle =
+    document.createElement(
+        "style"
+    );
+
+
+    yhSupportStyle.textContent =
+    `
+
+    #yhSupportV2FloatingButton{
+
+        position:fixed;
+        right:22px;
+        bottom:22px;
+
+        z-index:8000;
+
+        border:0;
+
+        background:
+        var(--olive);
+
+        color:#fff;
+
+        border-radius:999px;
+
+        padding:
+        14px 19px;
+
+        font-weight:900;
+
+        box-shadow:
+        0 10px 32px
+        rgba(30,38,26,.24);
+
+    }
+
+
+    #yhSupportV2Panel{
+
+        display:none;
+
+        position:fixed;
+
+        inset:0;
+
+        z-index:15000;
+
+        background:
+        rgba(17,22,16,.67);
+
+        backdrop-filter:
+        blur(4px);
+
+        padding:18px;
+
+    }
+
+
+    #yhSupportV2Panel.active{
+
+        display:flex;
+
+        align-items:center;
+        justify-content:center;
+
+    }
+
+
+    .yh-support-v2-app{
+
+        width:min(
+            1180px,
+            100%
+        );
+
+        height:min(
+            820px,
+            94vh
+        );
+
+        background:#fff;
+
+        border-radius:24px;
+
+        overflow:hidden;
+
+        display:grid;
+
+        grid-template-columns:
+        350px minmax(0,1fr);
+
+        box-shadow:
+        0 30px 100px
+        rgba(0,0,0,.35);
+
+    }
+
+
+    /* LEFT */
+
+
+    .yh-support-v2-sidebar{
+
+        min-width:0;
+
+        background:#fafbf8;
+
+        border-right:
+        1px solid
+        var(--border);
+
+        display:flex;
+
+        flex-direction:column;
+
+    }
+
+
+    .yh-support-v2-sidebar-head{
+
+        padding:
+        20px 18px 17px;
+
+        background:#fff;
+
+        border-bottom:
+        1px solid
+        var(--border);
+
+    }
+
+
+    .yh-support-v2-sidebar-head h2{
+
+        font-size:20px;
+
+        color:var(--dark);
+
+    }
+
+
+    .yh-support-v2-sidebar-head p{
+
+        margin-top:5px;
+
+        color:var(--muted);
+
+        font-size:12px;
+
+    }
+
+
+    .yh-support-v2-refresh{
+
+        width:100%;
+
+        border:
+        1px solid
+        var(--border);
+
+        background:#fff;
+
+        color:var(--olive-dark);
+
+        border-radius:10px;
+
+        padding:9px;
+
+        margin-top:12px;
+
+        font-size:12px;
+
+        font-weight:800;
+
+    }
+
+
+    #yhSupportV2Threads{
+
+        flex:1;
+
+        overflow-y:auto;
+
+    }
+
+
+    .yh-support-v2-thread{
+
+        width:100%;
+
+        border:0;
+
+        border-bottom:
+        1px solid
+        #ecefe8;
+
+        background:transparent;
+
+        padding:
+        15px 16px;
+
+        text-align:left;
+
+        display:block;
+
+    }
+
+
+    .yh-support-v2-thread:hover{
+
+        background:#f2f5eb;
+
+    }
+
+
+    .yh-support-v2-thread.active{
+
+        background:
+        var(--olive-soft);
+
+        box-shadow:
+        inset 4px 0
+        var(--olive);
+
+    }
+
+
+    .yh-support-v2-thread-top{
+
+        display:flex;
+
+        align-items:center;
+
+        justify-content:space-between;
+
+        gap:8px;
+
+    }
+
+
+    .yh-support-v2-thread-name{
+
+        font-size:14px;
+
+        font-weight:900;
+
+        color:var(--dark);
+
+        overflow:hidden;
+
+        white-space:nowrap;
+
+        text-overflow:ellipsis;
+
+    }
+
+
+    .yh-support-v2-thread-time{
+
+        flex:0 0 auto;
+
+        font-size:10px;
+
+        color:var(--muted);
+
+    }
+
+
+    .yh-support-v2-thread-contact{
+
+        margin-top:5px;
+
+        color:var(--muted);
+
+        font-size:11px;
+
+        overflow:hidden;
+
+        white-space:nowrap;
+
+        text-overflow:ellipsis;
+
+    }
+
+
+    .yh-support-v2-thread-status{
+
+        display:inline-flex;
+
+        align-items:center;
+
+        margin-top:8px;
+
+        padding:
+        5px 8px;
+
+        border-radius:999px;
+
+        font-size:10px;
+
+        font-weight:900;
+
+        background:#eef0eb;
+
+        color:#737970;
+
+    }
+
+
+    .yh-support-v2-thread-status.mine{
+
+        background:
+        var(--olive-soft);
+
+        color:
+        var(--olive-dark);
+
+    }
+
+
+    .yh-support-v2-thread-status.locked{
+
+        background:#fff1e6;
+
+        color:#9d6728;
+
+    }
+
+
+    /* RIGHT */
+
+
+    .yh-support-v2-chat{
+
+        min-width:0;
+
+        display:flex;
+
+        flex-direction:column;
+
+        background:
+        #f4f5f1;
+
+    }
+
+
+    .yh-support-v2-chat-head{
+
+        min-height:76px;
+
+        padding:
+        14px 18px;
+
+        background:#fff;
+
+        border-bottom:
+        1px solid
+        var(--border);
+
+        display:flex;
+
+        align-items:center;
+
+        justify-content:space-between;
+
+        gap:12px;
+
+    }
+
+
+    .yh-support-v2-user-name{
+
+        font-size:17px;
+
+        font-weight:900;
+
+        color:var(--dark);
+
+    }
+
+
+    .yh-support-v2-user-info{
+
+        color:var(--muted);
+
+        font-size:11px;
+
+        margin-top:4px;
+
+    }
+
+
+    .yh-support-v2-head-actions{
+
+        display:flex;
+
+        align-items:center;
+
+        gap:7px;
+
+    }
+
+
+    .yh-support-v2-head-btn{
+
+        border:
+        1px solid
+        var(--border);
+
+        background:#fff;
+
+        border-radius:10px;
+
+        padding:
+        9px 11px;
+
+        font-weight:800;
+
+        font-size:12px;
+
+    }
+
+
+    .yh-support-v2-head-btn.take{
+
+        background:
+        var(--olive);
+
+        color:#fff;
+
+        border-color:
+        var(--olive);
+
+    }
+
+
+    .yh-support-v2-close{
+
+        width:39px;
+        height:39px;
+
+        border:0;
+
+        background:#eef1e8;
+
+        border-radius:50%;
+
+        font-size:23px;
+
+    }
+
+
+    .yh-support-v2-assignment{
+
+        padding:
+        9px 16px;
+
+        background:#fff;
+
+        border-bottom:
+        1px solid
+        var(--border);
+
+        color:var(--muted);
+
+        font-size:11px;
+
+        line-height:1.5;
+
+    }
+
+
+    .yh-support-v2-assignment.mine{
+
+        background:#f4f7ec;
+
+        color:var(--olive-dark);
+
+    }
+
+
+    .yh-support-v2-assignment.locked{
+
+        background:#fff8ee;
+
+        color:#92601f;
+
+    }
+
+
+    #yhSupportV2Messages{
+
+        flex:1;
+
+        overflow-y:auto;
+
+        padding:
+        22px;
+
+    }
+
+
+    .yh-support-v2-empty{
+
+        min-height:100%;
+
+        display:flex;
+
+        align-items:center;
+        justify-content:center;
+
+        text-align:center;
+
+        color:var(--muted);
+
+        padding:30px;
+
+        line-height:1.6;
+
+    }
+
+
+    .yh-support-v2-message-row{
+
+        display:flex;
+
+        margin-bottom:11px;
+
+    }
+
+
+    .yh-support-v2-message-row.admin{
+
+        justify-content:flex-end;
+
+    }
+
+
+    .yh-support-v2-bubble{
+
+        max-width:
+        min(
+            74%,
+            620px
+        );
+
+        padding:
+        11px 13px 8px;
+
+        border-radius:
+        6px 17px 17px 17px;
+
+        background:#fff;
+
+        border:
+        1px solid
+        var(--border);
+
+        box-shadow:
+        0 3px 10px
+        rgba(0,0,0,.025);
+
+        color:var(--text);
+
+        line-height:1.5;
+
+        white-space:pre-wrap;
+
+        word-break:break-word;
+
+    }
+
+
+    .yh-support-v2-message-row.admin
+    .yh-support-v2-bubble{
+
+        background:
+        var(--olive);
+
+        border-color:
+        var(--olive);
+
+        color:#fff;
+
+        border-radius:
+        17px 6px 17px 17px;
+
+    }
+
+
+    .yh-support-v2-bubble-time{
+
+        margin-top:6px;
+
+        font-size:9px;
+
+        opacity:.68;
+
+        text-align:right;
+
+    }
+
+
+    /* COMPOSER */
+
+
+    .yh-support-v2-composer{
+
+        background:#fff;
+
+        border-top:
+        1px solid
+        var(--border);
+
+        padding:
+        12px 14px;
+
+    }
+
+
+    .yh-support-v2-composer-inner{
+
+        display:flex;
+
+        align-items:flex-end;
+
+        gap:9px;
+
+    }
+
+
+    #yhSupportV2Reply{
+
+        flex:1;
+
+        min-height:46px;
+
+        max-height:140px;
+
+        resize:vertical;
+
+        border:
+        1px solid
+        var(--border);
+
+        border-radius:14px;
+
+        padding:
+        12px 14px;
+
+        outline:none;
+
+        background:#fafbf8;
+
+        line-height:1.45;
+
+    }
+
+
+    #yhSupportV2Reply:focus{
+
+        border-color:
+        var(--olive);
+
+        background:#fff;
+
+    }
+
+
+    #yhSupportV2Send{
+
+        flex:0 0 auto;
+
+        min-width:105px;
+
+        min-height:46px;
+
+        border:0;
+
+        border-radius:13px;
+
+        background:
+        var(--olive);
+
+        color:#fff;
+
+        font-weight:900;
+
+        padding:
+        11px 16px;
+
+    }
+
+
+    #yhSupportV2Send:disabled,
+    #yhSupportV2Reply:disabled{
+
+        opacity:.48;
+
+        cursor:not-allowed;
+
+    }
+
+
+    .yh-support-v2-composer-note{
+
+        margin-top:7px;
+
+        color:var(--muted);
+
+        font-size:10px;
+
+    }
+
+
+    .yh-support-v2-error{
+
+        margin:16px;
+
+        padding:13px;
+
+        background:#fff0f0;
+
+        border:
+        1px solid
+        #f0cccc;
+
+        border-radius:11px;
+
+        color:#9b4444;
+
+        font-size:12px;
+
+        line-height:1.5;
+
+    }
+
+
+    @media(max-width:760px){
+
+        #yhSupportV2Panel{
+
+            padding:4px;
+
+        }
+
+
+        .yh-support-v2-app{
+
+            height:97vh;
+
+            border-radius:15px;
+
+            grid-template-columns:1fr;
+
+            grid-template-rows:
+            37% 63%;
+
+        }
+
+
+        .yh-support-v2-sidebar{
+
+            border-right:0;
+
+            border-bottom:
+            1px solid
+            var(--border);
+
+        }
+
+
+        .yh-support-v2-sidebar-head{
+
+            padding:12px 14px;
+
+        }
+
+
+        .yh-support-v2-sidebar-head p{
+
+            display:none;
+
+        }
+
+
+        .yh-support-v2-refresh{
+
+            margin-top:8px;
+
+            padding:7px;
+
+        }
+
+
+        .yh-support-v2-chat-head{
+
+            min-height:57px;
+
+            padding:9px 11px;
+
+        }
+
+
+        #yhSupportV2Messages{
+
+            padding:12px;
+
+        }
+
+
+        .yh-support-v2-bubble{
+
+            max-width:88%;
+
+        }
+
+
+        .yh-support-v2-composer{
+
+            padding:8px;
+
+        }
+
+
+        #yhSupportV2Send{
+
+            min-width:70px;
+
+            padding:10px;
+
+        }
+
+
+        #yhSupportV2FloatingButton{
+
+            right:13px;
+
+            bottom:13px;
+
+            padding:
+            12px 15px;
+
+        }
+
+    }
+
+    `;
+
+
+    document.head.appendChild(
+        yhSupportStyle
+    );
+
+
+    /* =====================================================
+       CREATE UI
+    ===================================================== */
+
+    const yhSupportButton =
+    document.createElement(
+        "button"
+    );
+
+
+    yhSupportButton.id =
+    "yhSupportV2FloatingButton";
+
+    yhSupportButton.type =
+    "button";
+
+    yhSupportButton.textContent =
+    "💬 Support";
+
+
+    document.body.appendChild(
+        yhSupportButton
+    );
+
+
+    const yhSupportPanel =
+    document.createElement(
+        "div"
+    );
+
+
+    yhSupportPanel.id =
+    "yhSupportV2Panel";
+
+
+    yhSupportPanel.innerHTML =
+    `
+
+    <div class="yh-support-v2-app">
+
+
+        <aside class="yh-support-v2-sidebar">
+
+
+            <div class="yh-support-v2-sidebar-head">
+
+                <h2>
+                💬 Support Inbox
+                </h2>
+
+                <p>
+                მომხმარებლების შეტყობინებები
+                </p>
+
+                <button
+                type="button"
+                class="yh-support-v2-refresh"
+                id="yhSupportV2Refresh">
+                🔄 განახლება
+                </button>
+
+            </div>
+
+
+            <div id="yhSupportV2Threads">
+
+                <div class="yh-support-v2-empty">
+                იტვირთება...
+                </div>
+
+            </div>
+
+
+        </aside>
+
+
+        <section class="yh-support-v2-chat">
+
+
+            <header class="yh-support-v2-chat-head">
+
+
+                <div>
+
+                    <div
+                    class="yh-support-v2-user-name"
+                    id="yhSupportV2Name">
+                    აირჩიეთ საუბარი
+                    </div>
+
+                    <div
+                    class="yh-support-v2-user-info"
+                    id="yhSupportV2Info">
+                    </div>
+
+                </div>
+
+
+                <div class="yh-support-v2-head-actions">
+
+                    <button
+                    type="button"
+                    class="yh-support-v2-head-btn take"
+                    id="yhSupportV2Claim"
+                    hidden>
+                    საუბრის აღება
+                    </button>
+
+                    <button
+                    type="button"
+                    class="yh-support-v2-head-btn"
+                    id="yhSupportV2Release"
+                    hidden>
+                    გათავისუფლება
+                    </button>
+
+                    <button
+                    type="button"
+                    class="yh-support-v2-close"
+                    id="yhSupportV2Close">
+                    ×
+                    </button>
+
+                </div>
+
+
+            </header>
+
+
+            <div
+            class="yh-support-v2-assignment"
+            id="yhSupportV2Assignment">
+            საუბარი ჯერ არჩეული არ არის.
+            </div>
+
+
+            <div id="yhSupportV2Messages">
+
+                <div class="yh-support-v2-empty">
+                    <div>
+                        <div style="
+                        font-size:40px;
+                        margin-bottom:10px;
+                        ">
+                        💬
+                        </div>
+
+                        მარცხნიდან აირჩიეთ
+                        მომხმარებლის საუბარი.
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="yh-support-v2-composer">
+
+
+                <div class="yh-support-v2-composer-inner">
+
+                    <textarea
+                    id="yhSupportV2Reply"
+                    maxlength="1000"
+                    placeholder="დაწერეთ პასუხი..."
+                    disabled></textarea>
+
+                    <button
+                    type="button"
+                    id="yhSupportV2Send"
+                    disabled>
+                    გაგზავნა
+                    </button>
+
+                </div>
+
+
+                <div
+                class="yh-support-v2-composer-note"
+                id="yhSupportV2ComposerNote">
+                აირჩიეთ საუბარი.
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </div>
+
+    `;
+
+
+    document.body.appendChild(
+        yhSupportPanel
+    );
+
+
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
+
+    const yhSupportThreadsBox =
+    document.getElementById(
+        "yhSupportV2Threads"
+    );
+
+
+    const yhSupportMessagesBox =
+    document.getElementById(
+        "yhSupportV2Messages"
+    );
+
+
+    const yhSupportName =
+    document.getElementById(
+        "yhSupportV2Name"
+    );
+
+
+    const yhSupportInfo =
+    document.getElementById(
+        "yhSupportV2Info"
+    );
+
+
+    const yhSupportAssignment =
+    document.getElementById(
+        "yhSupportV2Assignment"
+    );
+
+
+    const yhSupportReply =
+    document.getElementById(
+        "yhSupportV2Reply"
+    );
+
+
+    const yhSupportSend =
+    document.getElementById(
+        "yhSupportV2Send"
+    );
+
+
+    const yhSupportComposerNote =
+    document.getElementById(
+        "yhSupportV2ComposerNote"
+    );
+
+
+    const yhSupportClaim =
+    document.getElementById(
+        "yhSupportV2Claim"
+    );
+
+
+    const yhSupportRelease =
+    document.getElementById(
+        "yhSupportV2Release"
+    );
+
+
+    /* =====================================================
+       THREAD UI
+    ===================================================== */
+
+    function yhSupportRenderThreads(){
+
+        if(!yhSupportThreads.length){
+
+            yhSupportThreadsBox.innerHTML =
+            `
+
+            <div class="yh-support-v2-empty">
+
+                <div>
+
+                    <div style="
+                    font-size:35px;
+                    margin-bottom:10px;
+                    ">
+                    📭
+                    </div>
+
+                    შეტყობინებები ჯერ არ არის.
+
+                </div>
+
+            </div>
+
+            `;
+
+
+            const badge =
+            document.querySelector(
+                '.nav-btn[data-page="support"] .nav-badge'
+            );
+
+
+            if(badge){
+
+                badge.textContent =
+                "0";
+
+            }
+
+
+            return;
+
+        }
+
+
+        yhSupportThreadsBox.innerHTML =
+        yhSupportThreads
+        .map(
+            function(thread){
+
+                const mine =
+                yhSupportIsMine(
+                    thread
+                );
+
+
+                const locked =
+                yhSupportIsLocked(
+                    thread
+                );
+
+
+                let statusClass =
+                "";
+
+
+                let statusText =
+                "ახალი / თავისუფალი";
+
+
+                if(mine){
+
+                    statusClass =
+                    "mine";
+
+                    statusText =
+                    "✓ შენ პასუხობ";
+
+                }else if(locked){
+
+                    statusClass =
+                    "locked";
+
+                    statusText =
+                    "🔒 " +
+                    (
+                        thread.assigned_admin_name ||
+                        "სხვა ადმინი"
+                    );
+
+                }
+
+
+                const contact =
+                thread.email ||
+                thread.phone ||
+                "";
+
+
+                return `
+
+                <button
+                type="button"
+                class="
+                yh-support-v2-thread
+                ${
+                    String(
+                        thread.id
+                    ) ===
+                    String(
+                        yhSupportActiveThreadId
+                    )
+                    ?
+                    "active"
+                    :
+                    ""
+                }
+                "
+                data-thread-id="${yhSupportEscape(
+                    thread.id
+                )}">
+
+
+                    <div class="yh-support-v2-thread-top">
+
+                        <div class="yh-support-v2-thread-name">
+                        ${yhSupportEscape(
+                            yhSupportThreadName(
+                                thread
+                            )
+                        )}
+                        </div>
+
+                        <div class="yh-support-v2-thread-time">
+                        ${yhSupportEscape(
+                            yhSupportDate(
+                                thread.updated_at ||
+                                thread.created_at
+                            )
+                        )}
+                        </div>
+
+                    </div>
+
+
+                    <div class="yh-support-v2-thread-contact">
+
+                    ${
+                        contact
+                        ?
+                        yhSupportEscape(
+                            contact
+                        )
+                        :
+                        "Your Home მომხმარებელი"
+                    }
+
+                    ${
+                        thread.listing_id
+                        ?
+                        " · განცხადება #" +
+                        yhSupportEscape(
+                            thread.listing_id
+                        )
+                        :
+                        ""
+                    }
+
+                    </div>
+
+
+                    <div
+                    class="
+                    yh-support-v2-thread-status
+                    ${statusClass}
+                    ">
+                    ${yhSupportEscape(
+                        statusText
+                    )}
+                    </div>
+
+
+                </button>
+
+                `;
+
+            }
+        )
+        .join("");
+
+
+        const badge =
+        document.querySelector(
+            '.nav-btn[data-page="support"] .nav-badge'
+        );
+
+
+        if(badge){
+
+            badge.textContent =
+            String(
+                yhSupportThreads.length
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       LOAD THREADS
+    ===================================================== */
+
+    async function yhSupportLoadThreads(
+        showLoading = true
+    ){
+
+        if(showLoading){
+
+            yhSupportThreadsBox.innerHTML =
+            `
+            <div class="yh-support-v2-empty">
+            იტვირთება...
+            </div>
+            `;
+
+        }
+
+
+        const result =
+        await sb
+        .rpc(
+            "yh_admin_support_get_threads_v2"
+        );
+
+
+        if(result.error){
+
+            console.error(
+                "Support V2 threads:",
+                result.error
+            );
+
+
+            yhSupportThreadsBox.innerHTML =
+            `
+
+            <div class="yh-support-v2-error">
+
+            შეტყობინებების ჩატვირთვა
+            ვერ მოხერხდა.
+
+            <br><br>
+
+            ${yhSupportEscape(
+                result.error.message
+            )}
+
+            </div>
+
+            `;
+
+
+            return;
+
+        }
+
+
+        yhSupportThreads =
+        yhSupportNormalizeRows(
+            result.data
+        );
+
+
+        yhSupportRenderThreads();
+
+
+        if(yhSupportActiveThreadId){
+
+            const exists =
+            yhSupportThreads
+            .some(
+                function(thread){
+
+                    return (
+                        String(
+                            thread.id
+                        ) ===
+                        String(
+                            yhSupportActiveThreadId
+                        )
+                    );
+
+                }
+            );
+
+
+            if(!exists){
+
+                yhSupportActiveThreadId =
+                null;
+
+            }
+
+        }
+
+
+        yhSupportUpdateActiveThreadUi();
+
+    }
+
+
+    /* =====================================================
+       ACTIVE THREAD HEADER
+    ===================================================== */
+
+    function yhSupportUpdateActiveThreadUi(){
+
+        const thread =
+        yhSupportCurrentThread();
+
+
+        if(!thread){
+
+            yhSupportName.textContent =
+            "აირჩიეთ საუბარი";
+
+
+            yhSupportInfo.textContent =
+            "";
+
+
+            yhSupportAssignment.className =
+            "yh-support-v2-assignment";
+
+
+            yhSupportAssignment.textContent =
+            "საუბარი ჯერ არჩეული არ არის.";
+
+
+            yhSupportClaim.hidden =
+            true;
+
+
+            yhSupportRelease.hidden =
+            true;
+
+
+            yhSupportReply.disabled =
+            true;
+
+
+            yhSupportSend.disabled =
+            true;
+
+
+            yhSupportComposerNote.textContent =
+            "აირჩიეთ საუბარი.";
+
+
+            return;
+
+        }
+
+
+        yhSupportName.textContent =
+        yhSupportThreadName(
+            thread
+        );
+
+
+        const info =
+        [];
+
+
+        if(thread.email){
+
+            info.push(
+                thread.email
+            );
+
+        }
+
+
+        if(thread.phone){
+
+            info.push(
+                thread.phone
+            );
+
+        }
+
+
+        if(thread.listing_id){
+
+            info.push(
+                "განცხადება #" +
+                thread.listing_id
+            );
+
+        }
+
+
+        yhSupportInfo.textContent =
+        info.join(
+            " · "
+        );
+
+
+        const mine =
+        yhSupportIsMine(
+            thread
+        );
+
+
+        const locked =
+        yhSupportIsLocked(
+            thread
+        );
+
+
+        if(mine){
+
+            yhSupportAssignment.className =
+            "yh-support-v2-assignment mine";
+
+
+            yhSupportAssignment.textContent =
+            "✓ ეს საუბარი შენზეა მინიჭებული. სხვა ადმინისტრატორი პასუხს ვერ გაგზავნის.";
+
+
+            yhSupportClaim.hidden =
+            true;
+
+
+            yhSupportRelease.hidden =
+            false;
+
+
+            yhSupportReply.disabled =
+            false;
+
+
+            yhSupportSend.disabled =
+            false;
+
+
+            yhSupportComposerNote.textContent =
+            "შეგიძლია უპასუხო მომხმარებელს.";
+
+
+            return;
+
+        }
+
+
+        if(locked){
+
+            yhSupportAssignment.className =
+            "yh-support-v2-assignment locked";
+
+
+            yhSupportAssignment.textContent =
+            "🔒 ამ საუბარს პასუხობს: " +
+            (
+                thread.assigned_admin_name ||
+                "სხვა ადმინისტრატორი"
+            );
+
+
+            yhSupportClaim.hidden =
+            true;
+
+
+            yhSupportRelease.hidden =
+            true;
+
+
+            yhSupportReply.disabled =
+            true;
+
+
+            yhSupportSend.disabled =
+            true;
+
+
+            yhSupportComposerNote.textContent =
+            "სხვა ადმინისტრატორი უკვე მუშაობს ამ საუბარზე.";
+
+
+            return;
+
+        }
+
+
+        yhSupportAssignment.className =
+        "yh-support-v2-assignment";
+
+
+        yhSupportAssignment.textContent =
+        "საუბარი თავისუფალია. პასუხის გაგზავნისას ავტომატურად შენზე მოინიშნება.";
+
+
+        yhSupportClaim.hidden =
+        false;
+
+
+        yhSupportRelease.hidden =
+        true;
+
+
+        yhSupportReply.disabled =
+        false;
+
+
+        yhSupportSend.disabled =
+        false;
+
+
+        yhSupportComposerNote.textContent =
+        "შეგიძლია უპასუხო ან წინასწარ აიღო საუბარი.";
+
+    }
+
+
+    /* =====================================================
+       LOAD MESSAGES
+    ===================================================== */
+
+    async function yhSupportLoadMessages(
+        showLoading = true
+    ){
+
+        if(
+            !yhSupportActiveThreadId ||
+            yhSupportMessagesLoading
+        ){
+
+            return;
+
+        }
+
+
+        yhSupportMessagesLoading =
+        true;
+
+
+        const wasNearBottom =
+        (
+            yhSupportMessagesBox.scrollHeight -
+            yhSupportMessagesBox.scrollTop -
+            yhSupportMessagesBox.clientHeight
+        ) < 100;
+
+
+        if(showLoading){
+
+            yhSupportMessagesBox.innerHTML =
+            `
+            <div class="yh-support-v2-empty">
+            იტვირთება...
+            </div>
+            `;
+
+        }
+
+
+        const result =
+        await sb
+        .rpc(
+            "yh_admin_support_get_messages_v2",
+            {
+                p_thread_id:
+                yhSupportActiveThreadId
+            }
+        );
+
+
+        yhSupportMessagesLoading =
+        false;
+
+
+        if(result.error){
+
+            console.error(
+                "Support V2 messages:",
+                result.error
+            );
+
+
+            yhSupportMessagesBox.innerHTML =
+            `
+
+            <div class="yh-support-v2-error">
+
+            მესიჯების ჩატვირთვა
+            ვერ მოხერხდა.
+
+            <br><br>
+
+            ${yhSupportEscape(
+                result.error.message
+            )}
+
+            </div>
+
+            `;
+
+
+            return;
+
+        }
+
+
+        const rows =
+        yhSupportNormalizeRows(
+            result.data
+        );
+
+
+        if(!rows.length){
+
+            yhSupportMessagesBox.innerHTML =
+            `
+
+            <div class="yh-support-v2-empty">
+
+                ამ საუბარში
+                შეტყობინებები ჯერ არ არის.
+
+            </div>
+
+            `;
+
+
+            return;
+
+        }
+
+
+        yhSupportMessagesBox.innerHTML =
+        rows.map(
+            function(row){
+
+                const sender =
+                String(
+                    row.sender_type ||
+                    ""
+                )
+                .toLowerCase();
+
+
+                const isAdmin =
+                sender === "admin" ||
+                sender === "staff" ||
+                sender === "support";
+
+
+                return `
+
+                <div
+                class="
+                yh-support-v2-message-row
+                ${
+                    isAdmin
+                    ?
+                    "admin"
+                    :
+                    ""
+                }
+                ">
+
+                    <div class="yh-support-v2-bubble">
+
+                        ${yhSupportEscape(
+                            row.message ||
+                            ""
+                        )}
+
+                        <div class="yh-support-v2-bubble-time">
+
+                        ${
+                            isAdmin
+                            ?
+                            "ადმინისტრაცია · "
+                            :
+                            ""
+                        }
+
+                        ${yhSupportEscape(
+                            yhSupportDate(
+                                row.created_at
+                            )
+                        )}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                `;
+
+            }
+        )
+        .join("");
+
+
+        if(
+            showLoading ||
+            wasNearBottom
+        ){
+
+            yhSupportMessagesBox.scrollTop =
+            yhSupportMessagesBox.scrollHeight;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       SELECT THREAD
+    ===================================================== */
+
+    async function yhSupportSelectThread(
+        threadId
+    ){
+
+        yhSupportActiveThreadId =
+        threadId;
+
+
+        yhSupportRenderThreads();
+
+
+        yhSupportUpdateActiveThreadUi();
+
+
+        await yhSupportLoadMessages(
+            true
+        );
+
+
+        setTimeout(
+            function(){
+
+                const thread =
+                yhSupportCurrentThread();
+
+
+                if(
+                    thread &&
+                    !yhSupportIsLocked(
+                        thread
+                    )
+                ){
+
+                    yhSupportReply.focus();
+
+                }
+
+            },
+            100
+        );
+
+    }
+
+
+    /* =====================================================
+       CLAIM THREAD
+    ===================================================== */
+
+    async function yhSupportClaimThread(){
+
+        if(!yhSupportActiveThreadId){
+            return;
+        }
+
+
+        yhSupportClaim.disabled =
+        true;
+
+
+        const result =
+        await sb
+        .rpc(
+            "yh_admin_support_claim_thread_v2",
+            {
+                p_thread_id:
+                yhSupportActiveThreadId
+            }
+        );
+
+
+        yhSupportClaim.disabled =
+        false;
+
+
+        if(result.error){
+
+            console.error(
+                result.error
+            );
+
+
+            alert(
+                "საუბრის აღება ვერ მოხერხდა: " +
+                result.error.message
+            );
+
+
+            return;
+
+        }
+
+
+        const data =
+        result.data ||
+        {};
+
+
+        if(data.ok !== true){
+
+            alert(
+                "ამ საუბარს უკვე სხვა ადმინისტრატორი პასუხობს."
+            );
+
+        }
+
+
+        await yhSupportLoadThreads(
+            false
+        );
+
+    }
+
+
+    /* =====================================================
+       RELEASE THREAD
+    ===================================================== */
+
+    async function yhSupportReleaseThread(){
+
+        if(!yhSupportActiveThreadId){
+            return;
+        }
+
+
+        const confirmed =
+        confirm(
+            "გსურს ამ საუბრის გათავისუფლება, რომ სხვა ადმინისტრატორმაც შეძლოს პასუხი?"
+        );
+
+
+        if(!confirmed){
+            return;
+        }
+
+
+        yhSupportRelease.disabled =
+        true;
+
+
+        const result =
+        await sb
+        .rpc(
+            "yh_admin_support_release_thread_v2",
+            {
+                p_thread_id:
+                yhSupportActiveThreadId
+            }
+        );
+
+
+        yhSupportRelease.disabled =
+        false;
+
+
+        if(result.error){
+
+            alert(
+                "საუბრის გათავისუფლება ვერ მოხერხდა."
+            );
+
+
+            return;
+
+        }
+
+
+        await yhSupportLoadThreads(
+            false
+        );
+
+    }
+
+
+    /* =====================================================
+       SEND MESSAGE
+    ===================================================== */
+
+    async function yhSupportSendMessage(){
+
+        if(!yhSupportActiveThreadId){
+            return;
+        }
+
+
+        const message =
+        yhSupportReply
+        .value
+        .trim();
+
+
+        if(!message){
+            return;
+        }
+
+
+        const thread =
+        yhSupportCurrentThread();
+
+
+        if(
+            thread &&
+            yhSupportIsLocked(
+                thread
+            )
+        ){
+
+            alert(
+                "ამ საუბარს უკვე სხვა ადმინისტრატორი პასუხობს."
+            );
+
+
+            await yhSupportLoadThreads(
+                false
+            );
+
+
+            return;
+
+        }
+
+
+        yhSupportSend.disabled =
+        true;
+
+
+        yhSupportReply.disabled =
+        true;
+
+
+        const oldButtonText =
+        yhSupportSend.textContent;
+
+
+        yhSupportSend.textContent =
+        "იგზავნება...";
+
+
+        const result =
+        await sb
+        .rpc(
+            "yh_admin_support_send_message_v2",
+            {
+
+                p_thread_id:
+                yhSupportActiveThreadId,
+
+                p_message:
+                message
+
+            }
+        );
+
+
+        yhSupportSend.textContent =
+        oldButtonText;
+
+
+        if(result.error){
+
+            console.error(
+                "Support send:",
+                result.error
+            );
+
+
+            yhSupportReply.disabled =
+            false;
+
+
+            yhSupportSend.disabled =
+            false;
+
+
+            alert(
+                "პასუხის გაგზავნა ვერ მოხერხდა: " +
+                result.error.message
+            );
+
+
+            return;
+
+        }
+
+
+        const data =
+        result.data ||
+        {};
+
+
+        if(
+            data.ok !== true
+        ){
+
+            await yhSupportLoadThreads(
+                false
+            );
+
+
+            yhSupportUpdateActiveThreadUi();
+
+
+            if(
+                data.reason ===
+                "TAKEN"
+            ){
+
+                alert(
+                    "ამ საუბარს უკვე სხვა ადმინისტრატორი პასუხობს."
+                );
+
+            }else if(
+                data.reason ===
+                "EMPTY_MESSAGE"
+            ){
+
+                alert(
+                    "მესიჯი ცარიელია."
+                );
+
+            }else if(
+                data.reason ===
+                "MESSAGE_TOO_LONG"
+            ){
+
+                alert(
+                    "მესიჯი ძალიან გრძელია."
+                );
+
+            }
+
+
+            return;
+
+        }
+
+
+        yhSupportReply.value =
+        "";
+
+
+        await yhSupportLoadThreads(
+            false
+        );
+
+
+        await yhSupportLoadMessages(
+            false
+        );
+
+
+        yhSupportUpdateActiveThreadUi();
+
+
+        yhSupportReply.focus();
+
+    }
+
+
+    /* =====================================================
+       OPEN / CLOSE
+    ===================================================== */
+
+    async function yhSupportOpen(){
+
+        if(
+            !currentUser ||
+            !currentAdmin
+        ){
+
+            return;
+
+        }
+
+
+        yhSupportPanel.classList.add(
+            "active"
+        );
+
+
+        document.body.style.overflow =
+        "hidden";
+
+
+        await yhSupportLoadThreads(
+            true
+        );
+
+
+        if(yhSupportActiveThreadId){
+
+            await yhSupportLoadMessages(
+                true
+            );
+
+        }
+
+    }
+
+
+    function yhSupportClose(){
+
+        yhSupportPanel.classList.remove(
+            "active"
+        );
+
+
+        document.body.style.overflow =
+        "";
+
+    }
+
+
+    /* =====================================================
+       EVENTS
+    ===================================================== */
+
+    yhSupportButton
+    .addEventListener(
+        "click",
+        yhSupportOpen
+    );
+
+
+    document
+    .getElementById(
+        "yhSupportV2Close"
+    )
+    .addEventListener(
+        "click",
+        yhSupportClose
+    );
+
+
+    document
+    .getElementById(
+        "yhSupportV2Refresh"
+    )
+    .addEventListener(
+        "click",
+        async function(){
+
+            await yhSupportLoadThreads(
+                false
+            );
+
+
+            if(yhSupportActiveThreadId){
+
+                await yhSupportLoadMessages(
+                    false
+                );
+
+            }
+
+        }
+    );
+
+
+    yhSupportThreadsBox
+    .addEventListener(
+        "click",
+        function(event){
+
+            const thread =
+            event.target.closest(
+                ".yh-support-v2-thread"
+            );
+
+
+            if(!thread){
+                return;
+            }
+
+
+            yhSupportSelectThread(
+                thread.dataset.threadId
+            );
+
+        }
+    );
+
+
+    yhSupportClaim
+    .addEventListener(
+        "click",
+        yhSupportClaimThread
+    );
+
+
+    yhSupportRelease
+    .addEventListener(
+        "click",
+        yhSupportReleaseThread
+    );
+
+
+    yhSupportSend
+    .addEventListener(
+        "click",
+        yhSupportSendMessage
+    );
+
+
+    yhSupportReply
+    .addEventListener(
+        "keydown",
+        function(event){
+
+            if(
+                event.key ===
+                "Enter" &&
+                !event.shiftKey
+            ){
+
+                event.preventDefault();
+
+
+                yhSupportSendMessage();
+
+            }
+
+        }
+    );
+
+
+    yhSupportPanel
+    .addEventListener(
+        "click",
+        function(event){
+
+            if(
+                event.target ===
+                yhSupportPanel
+            ){
+
+                yhSupportClose();
+
+            }
+
+        }
+    );
+
+
+    document
+    .addEventListener(
+        "keydown",
+        function(event){
+
+            if(
+                event.key ===
+                "Escape" &&
+                yhSupportPanel
+                .classList
+                .contains(
+                    "active"
+                )
+            ){
+
+                yhSupportClose();
+
+            }
+
+        }
+    );
+
+
+    /*
+       Sidebar-ის Support Inbox ღილაკი
+       პირდაპირ ახალ მესენჯერს გახსნის.
+    */
+
+    document
+    .addEventListener(
+        "click",
+        function(event){
+
+            const supportNav =
+            event.target.closest(
+                '.nav-btn[data-page="support"]'
+            );
+
+
+            if(!supportNav){
+                return;
+            }
+
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            event.stopImmediatePropagation();
+
+
+            yhSupportOpen();
+
+        },
+        true
+    );
+
+
+    /* =====================================================
+       AUTO REFRESH
+    ===================================================== */
+
+    setInterval(
+        async function(){
+
+            if(
+                !yhSupportPanel
+                .classList
+                .contains(
+                    "active"
+                ) ||
+                yhSupportPollBusy
+            ){
+
+                return;
+
+            }
+
+
+            yhSupportPollBusy =
+            true;
+
+
+            try{
+
+                await yhSupportLoadThreads(
+                    false
+                );
+
+
+                if(yhSupportActiveThreadId){
+
+                    await yhSupportLoadMessages(
+                        false
+                    );
+
+                }
+
+            }catch(error){
+
+                console.error(
+                    error
+                );
+
+            }finally{
+
+                yhSupportPollBusy =
+                false;
+
+            }
+
+        },
+        5000
+    );
+
+
+    console.log(
+        "Your Home — Support Messenger V2 ready."
+    );
+
+
+})();
+
+</script>
 
 </body>
 
