@@ -27589,6 +27589,169 @@ function(
 })();
 
 </script>
+
+<!-- =========================================================
+     YOUR HOME — SITE ANALYTICS
+========================================================= -->
+
+<script>
+
+(function(){
+
+    if(window.__YOUR_HOME_ANALYTICS__){
+        return;
+    }
+
+    window.__YOUR_HOME_ANALYTICS__ = true;
+
+
+    function getSessionId(){
+
+        let id =
+        sessionStorage.getItem(
+            "yourHomeAnalyticsSession"
+        );
+
+        if(!id){
+
+            id =
+            window.crypto?.randomUUID
+            ?
+            window.crypto.randomUUID()
+            :
+            "yh-" +
+            Date.now() +
+            "-" +
+            Math.random().toString(36).slice(2);
+
+            sessionStorage.setItem(
+                "yourHomeAnalyticsSession",
+                id
+            );
+        }
+
+        return id;
+    }
+
+
+    function getSource(){
+
+        if(!document.referrer){
+            return "direct";
+        }
+
+        try{
+
+            const host =
+            new URL(document.referrer)
+            .hostname
+            .toLowerCase();
+
+            if(host.includes("facebook")){
+                return "facebook";
+            }
+
+            if(host.includes("google")){
+                return "google";
+            }
+
+            if(host.includes("instagram")){
+                return "instagram";
+            }
+
+            return host;
+
+        }catch(error){
+
+            return "other";
+        }
+    }
+
+
+    function getDevice(){
+
+        if(window.innerWidth <= 767){
+            return "mobile";
+        }
+
+        if(window.innerWidth <= 1100){
+            return "tablet";
+        }
+
+        return "desktop";
+    }
+
+
+    window.yhTrackEvent =
+    async function(
+        eventType,
+        options = {}
+    ){
+
+        try{
+
+            await supabaseClient
+            .from("site_events")
+            .insert({
+
+                event_type:
+                String(eventType).slice(0,60),
+
+                page:
+                String(
+                    options.page ||
+                    window.location.pathname
+                ).slice(0,200),
+
+                session_id:
+                getSessionId(),
+
+                listing_id:
+                options.listingId || null,
+
+                metadata:
+                options.metadata || {}
+
+            });
+
+        }catch(error){
+
+            console.warn(
+                "Analytics error:",
+                error
+            );
+        }
+    };
+
+
+    window.addEventListener(
+        "load",
+        function(){
+
+            setTimeout(
+                function(){
+
+                    yhTrackEvent(
+                        "page_view",
+                        {
+                            metadata:{
+                                source:getSource(),
+                                device:getDevice()
+                            }
+                        }
+                    );
+
+                },
+                500
+            );
+        }
+    );
+
+})();
+
+</script>
+
+
 <!-- =========================================================
      YOUR HOME — START APPLICATION
 ========================================================= -->
