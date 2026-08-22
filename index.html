@@ -2242,7 +2242,6 @@ id="minPriceInput"
 type="number"
 min="0"
 step="1000"
-value="20000"
 placeholder="20 000">
 
 </div>
@@ -13536,41 +13535,66 @@ loadListings();
                 "მაგ. 1 300 ₾";
 
             }else if(
-                yhDisplayCurrency ===
-                "EUR"
-            ){
+updateMinPriceForDealType =
+function(){
 
-                input.placeholder =
-                "მაგ. €450";
+    const input =
+    document.getElementById(
+        "minPriceInput"
+    );
 
-            }else{
+    if(!input){
+        return;
+updateMinPriceForDealType =
+function(){
 
-                input.placeholder =
-                "მაგ. $500";
+    const input =
+    document.getElementById(
+        "minPriceInput"
+    );
 
-            }
+    if(!input){
+        return;
+    }
 
+    const symbol =
+    YH_CURRENCY_SYMBOLS[
+        yhDisplayCurrency
+    ] ||
+    "$";
+
+
+    if(searchType === "rent"){
+
+        if(yhDisplayCurrency === "GEL"){
+
+            input.placeholder =
+            "მაგ. 1 300 ₾";
+
+        }else if(
+            yhDisplayCurrency === "EUR"
+        ){
+
+            input.placeholder =
+            "მაგ. €450";
 
         }else{
 
-
-            if(!input.value){
-
-                input.value =
-                defaultSalePrice;
-
-            }
-
-
             input.placeholder =
-            "მინ. ფასი " +
-            YH_CURRENCY_SYMBOLS[
-                yhDisplayCurrency
-            ];
+            "მაგ. $500";
 
         }
 
-    };
+    }else{
+
+        input.placeholder =
+        "მინ. ფასი " +
+        symbol;
+
+    }
+
+};
+
 
 
     /* =========================
@@ -26173,6 +26197,334 @@ if(yhAgentMenuButton){
     ===================================================== */
 
     updateSavedSearchStaticText();
+
+
+})();
+
+</script>
+    <!-- =========================================================
+     YOUR HOME — SEARCH ACCURACY FIX
+========================================================= -->
+
+<script>
+
+(function(){
+
+    if(
+        window.__YOUR_HOME_SEARCH_FIX_V1__
+    ){
+        return;
+    }
+
+    window.__YOUR_HOME_SEARCH_FIX_V1__ =
+    true;
+
+
+    /* =====================================================
+       REMOVE AUTOMATIC 20 000 MINIMUM PRICE
+    ===================================================== */
+
+    const yhMinPriceInput =
+    document.getElementById(
+        "minPriceInput"
+    );
+
+
+    if(
+        yhMinPriceInput &&
+        yhMinPriceInput.value ===
+        "20000"
+    ){
+
+        yhMinPriceInput.value =
+        "";
+
+    }
+
+
+    /*
+      აღარ ვსვამთ ავტომატურად 20 000-ს.
+      მომხმარებელი თავად მიუთითებს მინიმალურ ფასს,
+      თუ ეს ფილტრი სჭირდება.
+    */
+
+    updateMinPriceForDealType =
+    function(){
+
+        const input =
+        document.getElementById(
+            "minPriceInput"
+        );
+
+
+        if(!input){
+            return;
+        }
+
+
+        const activeCurrency =
+        document.querySelector(
+            ".yh-currency-button.active"
+        );
+
+
+        const currency =
+        activeCurrency
+        ?.dataset
+        ?.yhCurrency ||
+        "USD";
+
+
+        const symbol =
+        currency === "GEL"
+        ?
+        "₾"
+        :
+        currency === "EUR"
+        ?
+        "€"
+        :
+        "$";
+
+
+        if(searchType === "rent"){
+
+            if(currency === "GEL"){
+
+                input.placeholder =
+                "მაგ. 1 300 ₾";
+
+            }else if(
+                currency === "EUR"
+            ){
+
+                input.placeholder =
+                "მაგ. €450";
+
+            }else{
+
+                input.placeholder =
+                "მაგ. $500";
+
+            }
+
+        }else{
+
+            input.placeholder =
+            "მინ. ფასი " +
+            symbol;
+
+        }
+
+    };
+
+
+    updateMinPriceForDealType();
+
+
+    /* =====================================================
+       SMART LOCATION SEARCH
+    ===================================================== */
+
+    function yhNormalizeSearchText(
+        value
+    ){
+
+        return String(
+            value ||
+            ""
+        )
+        .normalize(
+            "NFKC"
+        )
+        .toLowerCase()
+        .replace(
+            /[.,/\\|;:_\-()[\]{}'"`~!?@#$%^&*+=]+/g,
+            " "
+        )
+        .replace(
+            /\s+/g,
+            " "
+        )
+        .trim();
+
+    }
+
+
+    function yhLocationMatches(
+        listing,
+        query
+    ){
+
+        const normalizedQuery =
+        yhNormalizeSearchText(
+            query
+        );
+
+
+        if(!normalizedQuery){
+            return true;
+        }
+
+
+        const listingText =
+        yhNormalizeSearchText(
+            [
+                listing.city,
+                listing.district,
+                listing.address
+            ]
+            .filter(Boolean)
+            .join(
+                " "
+            )
+        );
+
+
+        if(!listingText){
+            return false;
+        }
+
+
+        const words =
+        normalizedQuery
+        .split(
+            " "
+        )
+        .filter(Boolean);
+
+
+        /*
+          ყველა ჩაწერილი სიტყვა უნდა არსებობდეს
+          ქალაქში / უბანში / მისამართში,
+          მაგრამ თანმიმდევრობა და მძიმეები
+          მნიშვნელობას აღარ ახდენს.
+        */
+
+        return words.every(
+            function(word){
+
+                return listingText
+                .includes(
+                    word
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       WRAP CURRENT FILTER ENGINE
+    ===================================================== */
+
+    const yhBaseListingMatcher =
+    listingMatchesCurrentFilters;
+
+
+    listingMatchesCurrentFilters =
+    function(
+        listing
+    ){
+
+        const locationInput =
+        document.getElementById(
+            "locationInput"
+        );
+
+
+        if(!locationInput){
+
+            return yhBaseListingMatcher(
+                listing
+            );
+
+        }
+
+
+        const originalLocation =
+        locationInput.value;
+
+
+        if(
+            !yhLocationMatches(
+                listing,
+                originalLocation
+            )
+        ){
+
+            return false;
+
+        }
+
+
+        /*
+          მდებარეობა უკვე ჩვენ შევამოწმეთ.
+          ძველ ფუნქციას დროებით ცარიელ location-ს
+          ვაძლევთ, რათა ძველი მკაცრი includes()
+          მეორედ აღარ ჩაერიოს.
+        */
+
+        try{
+
+            locationInput.value =
+            "";
+
+
+            return yhBaseListingMatcher(
+                listing
+            );
+
+        }finally{
+
+            locationInput.value =
+            originalLocation;
+
+        }
+
+    };
+
+
+    /* =====================================================
+       SEARCH BUTTON
+    ===================================================== */
+
+    const yhSearchButton =
+    document.getElementById(
+        "searchButton"
+    );
+
+
+    if(yhSearchButton){
+
+        yhSearchButton.addEventListener(
+            "click",
+            function(){
+
+                /*
+                  Search-ის შემდეგ ხელახლა ვატარებთ
+                  უკვე გასწორებულ ფილტრაციას.
+                */
+
+                setTimeout(
+                    function(){
+
+                        filterProperties();
+
+                    },
+                    0
+                );
+
+            }
+        );
+
+    }
+
+
+    console.log(
+        "Your Home — search accuracy fix loaded."
+    );
 
 
 })();
