@@ -27750,6 +27750,4394 @@ function(
 })();
 
 </script>
+    <!-- =========================================================
+     YOUR HOME — SUPPORT MESSENGER
+========================================================= -->
+
+<script>
+
+(function(){
+
+    if(
+        window.__YOUR_HOME_SUPPORT_MESSENGER__
+    ){
+        return;
+    }
+
+    window.__YOUR_HOME_SUPPORT_MESSENGER__ =
+    true;
+
+
+    /* =====================================================
+       STORAGE
+    ===================================================== */
+
+    const YH_SUPPORT_GUEST_TOKEN_KEY =
+    "yourHomeSupportGuestToken";
+
+    const YH_SUPPORT_THREADS_KEY =
+    "yourHomeSupportThreads";
+
+    const YH_SUPPORT_NAME_KEY =
+    "yourHomeSupportGuestName";
+
+    const YH_SUPPORT_EMAIL_KEY =
+    "yourHomeSupportGuestEmail";
+
+
+    let yhSupportIsOpen =
+    false;
+
+    let yhSupportThreadId =
+    null;
+
+    let yhSupportThreadKey =
+    "general";
+
+    let yhSupportContextListing =
+    null;
+
+    let yhSupportRealtimeChannel =
+    null;
+
+    let yhSupportPollTimer =
+    null;
+
+    let yhSupportSending =
+    false;
+
+    let yhSupportLastSentAt =
+    0;
+
+    let yhSupportLastRenderedSignature =
+    "";
+
+
+    /* =====================================================
+       LANGUAGE
+    ===================================================== */
+
+    function yhSupportLanguage(){
+
+        const lang =
+        document
+        .getElementById(
+            "language"
+        )
+        ?.value;
+
+
+        if(
+            lang === "en" ||
+            lang === "ru"
+        ){
+
+            return lang;
+
+        }
+
+
+        return "ka";
+
+    }
+
+
+    function yhSupportText(){
+
+        const lang =
+        yhSupportLanguage();
+
+
+        if(lang === "en"){
+
+            return {
+
+                launcher:
+                "Message us",
+
+                title:
+                "Your Home Support",
+
+                subtitle:
+                "We usually reply as soon as possible",
+
+                close:
+                "Close",
+
+                context:
+                "About listing",
+
+                name:
+                "Your name",
+
+                email:
+                "Email (optional)",
+
+                namePlaceholder:
+                "Name",
+
+                emailPlaceholder:
+                "you@email.com",
+
+                messagePlaceholder:
+                "Write a message...",
+
+                send:
+                "Send",
+
+                welcome:
+                "Hello 👋 How can we help you?",
+
+                connecting:
+                "Connecting...",
+
+                connected:
+                "Online support",
+
+                sendError:
+                "Message could not be sent. Please try again.",
+
+                emptyMessage:
+                "Write a message first.",
+
+                slowDown:
+                "Please wait a moment before sending another message.",
+
+                tooLong:
+                "Message can contain up to 1000 characters.",
+
+                admin:
+                "Your Home",
+
+                you:
+                "You"
+
+            };
+
+        }
+
+
+        if(lang === "ru"){
+
+            return {
+
+                launcher:
+                "Напишите нам",
+
+                title:
+                "Поддержка Your Home",
+
+                subtitle:
+                "Ответим при первой возможности",
+
+                close:
+                "Закрыть",
+
+                context:
+                "По объявлению",
+
+                name:
+                "Ваше имя",
+
+                email:
+                "Email (необязательно)",
+
+                namePlaceholder:
+                "Имя",
+
+                emailPlaceholder:
+                "you@email.com",
+
+                messagePlaceholder:
+                "Напишите сообщение...",
+
+                send:
+                "Отправить",
+
+                welcome:
+                "Здравствуйте 👋 Чем можем помочь?",
+
+                connecting:
+                "Подключение...",
+
+                connected:
+                "Поддержка онлайн",
+
+                sendError:
+                "Не удалось отправить сообщение. Попробуйте еще раз.",
+
+                emptyMessage:
+                "Сначала напишите сообщение.",
+
+                slowDown:
+                "Подождите немного перед следующим сообщением.",
+
+                tooLong:
+                "Сообщение может содержать до 1000 символов.",
+
+                admin:
+                "Your Home",
+
+                you:
+                "Вы"
+
+            };
+
+        }
+
+
+        return {
+
+            launcher:
+            "მოგვწერეთ",
+
+            title:
+            "Your Home მხარდაჭერა",
+
+            subtitle:
+            "გიპასუხებთ შეძლებისდაგვარად სწრაფად",
+
+            close:
+            "დახურვა",
+
+            context:
+            "განცხადების შესახებ",
+
+            name:
+            "თქვენი სახელი",
+
+            email:
+            "ელფოსტა (არასავალდებულო)",
+
+            namePlaceholder:
+            "სახელი",
+
+            emailPlaceholder:
+            "you@email.com",
+
+            messagePlaceholder:
+            "მოგვწერეთ შეტყობინება...",
+
+            send:
+            "გაგზავნა",
+
+            welcome:
+            "გამარჯობა 👋 რით შეგვიძლია დაგეხმაროთ?",
+
+            connecting:
+            "ვუკავშირდები...",
+
+            connected:
+            "ონლაინ მხარდაჭერა",
+
+            sendError:
+            "შეტყობინება ვერ გაიგზავნა. სცადეთ ხელახლა.",
+
+            emptyMessage:
+            "ჯერ დაწერეთ შეტყობინება.",
+
+            slowDown:
+            "შემდეგ შეტყობინებამდე ცოტა მოიცადეთ.",
+
+            tooLong:
+            "შეტყობინება მაქსიმუმ 1000 სიმბოლო შეიძლება იყოს.",
+
+            admin:
+            "Your Home",
+
+            you:
+            "თქვენ"
+
+        };
+
+    }
+
+
+    /* =====================================================
+       STYLE
+    ===================================================== */
+
+    function yhSupportCreateStyle(){
+
+        if(
+            document.getElementById(
+                "yhSupportStyle"
+            )
+        ){
+            return;
+        }
+
+
+        const style =
+        document.createElement(
+            "style"
+        );
+
+
+        style.id =
+        "yhSupportStyle";
+
+
+        style.textContent =
+        `
+
+        .yh-support-launcher{
+
+            position:fixed;
+
+            right:20px;
+            bottom:20px;
+
+            z-index:7200;
+
+            min-height:56px;
+
+            border:0;
+
+            border-radius:999px;
+
+            padding:
+            0 18px;
+
+            background:
+            var(--olive,#7d8b45);
+
+            color:#fff;
+
+            box-shadow:
+            0 12px 32px
+            rgba(30,36,27,.28);
+
+            display:flex;
+
+            align-items:center;
+            justify-content:center;
+
+            gap:9px;
+
+            font-weight:800;
+
+            font-size:14px;
+
+        }
+
+
+        .yh-support-launcher:hover{
+
+            background:
+            var(--olive-dark,#5d6933);
+
+        }
+
+
+        .yh-support-launcher-icon{
+
+            font-size:22px;
+
+            line-height:1;
+
+        }
+
+
+        .yh-support-unread{
+
+            display:none;
+
+            position:absolute;
+
+            right:-3px;
+            top:-4px;
+
+            min-width:21px;
+            height:21px;
+
+            padding:
+            0 6px;
+
+            border-radius:999px;
+
+            background:#c94b4b;
+
+            color:#fff;
+
+            border:
+            2px solid #fff;
+
+            align-items:center;
+            justify-content:center;
+
+            font-size:10px;
+
+            font-weight:900;
+
+        }
+
+
+        .yh-support-unread.show{
+
+            display:flex;
+
+        }
+
+
+        .yh-support-panel{
+
+            display:none;
+
+            position:fixed;
+
+            right:20px;
+            bottom:88px;
+
+            z-index:7250;
+
+            width:
+            min(
+                390px,
+                calc(100vw - 24px)
+            );
+
+            height:
+            min(
+                610px,
+                calc(100vh - 120px)
+            );
+
+            background:#fff;
+
+            border:
+            1px solid
+            var(--border,#e1e5dc);
+
+            border-radius:22px;
+
+            box-shadow:
+            0 24px 70px
+            rgba(25,31,22,.25);
+
+            overflow:hidden;
+
+            flex-direction:column;
+
+        }
+
+
+        .yh-support-panel.active{
+
+            display:flex;
+
+        }
+
+
+        .yh-support-head{
+
+            background:
+            linear-gradient(
+                135deg,
+                var(--dark,#252a24),
+                #353d31
+            );
+
+            color:#fff;
+
+            padding:
+            17px 16px;
+
+            display:flex;
+
+            align-items:center;
+
+            gap:12px;
+
+        }
+
+
+        .yh-support-logo{
+
+            width:42px;
+            height:42px;
+
+            border-radius:14px;
+
+            background:
+            var(--olive,#7d8b45);
+
+            display:flex;
+
+            align-items:center;
+            justify-content:center;
+
+            flex:0 0 auto;
+
+            font-size:21px;
+
+        }
+
+
+        .yh-support-head-text{
+
+            min-width:0;
+
+            flex:1;
+
+        }
+
+
+        .yh-support-head-title{
+
+            font-weight:900;
+
+            font-size:15px;
+
+        }
+
+
+        .yh-support-head-subtitle{
+
+            margin-top:3px;
+
+            color:
+            rgba(255,255,255,.64);
+
+            font-size:11px;
+
+            white-space:nowrap;
+
+            overflow:hidden;
+
+            text-overflow:ellipsis;
+
+        }
+
+
+        .yh-support-close{
+
+            width:36px;
+            height:36px;
+
+            border:0;
+
+            border-radius:50%;
+
+            background:
+            rgba(255,255,255,.10);
+
+            color:#fff;
+
+            font-size:22px;
+
+        }
+
+
+        .yh-support-context{
+
+            display:none;
+
+            margin:
+            11px 12px 0;
+
+            padding:
+            9px 11px;
+
+            border-radius:11px;
+
+            background:
+            var(--olive-light,#eef1e3);
+
+            color:
+            var(--olive-dark,#5d6933);
+
+            font-size:11px;
+
+            line-height:1.4;
+
+        }
+
+
+        .yh-support-context.show{
+
+            display:block;
+
+        }
+
+
+        .yh-support-guest{
+
+            display:grid;
+
+            grid-template-columns:
+            1fr 1fr;
+
+            gap:8px;
+
+            padding:
+            11px 12px 0;
+
+        }
+
+
+        .yh-support-guest.hidden{
+
+            display:none;
+
+        }
+
+
+        .yh-support-guest label{
+
+            display:block;
+
+            font-size:10px;
+
+            font-weight:800;
+
+            color:
+            var(--muted,#777d75);
+
+            margin-bottom:5px;
+
+        }
+
+
+        .yh-support-guest input{
+
+            width:100%;
+
+            border:
+            1px solid
+            var(--border,#e1e5dc);
+
+            background:#fff;
+
+            border-radius:9px;
+
+            padding:
+            9px 10px;
+
+            outline:none;
+
+            font-size:12px;
+
+        }
+
+
+        .yh-support-status{
+
+            min-height:26px;
+
+            padding:
+            8px 14px 4px;
+
+            color:
+            var(--muted,#777d75);
+
+            font-size:10px;
+
+        }
+
+
+        .yh-support-messages{
+
+            flex:1;
+
+            overflow-y:auto;
+
+            padding:
+            10px 12px 14px;
+
+            display:flex;
+
+            flex-direction:column;
+
+            gap:9px;
+
+            background:#fafbf8;
+
+        }
+
+
+        .yh-support-row{
+
+            display:flex;
+
+            flex-direction:column;
+
+            max-width:84%;
+
+        }
+
+
+        .yh-support-row.user{
+
+            align-self:flex-end;
+
+            align-items:flex-end;
+
+        }
+
+
+        .yh-support-row.admin{
+
+            align-self:flex-start;
+
+            align-items:flex-start;
+
+        }
+
+
+        .yh-support-sender{
+
+            color:
+            var(--muted,#777d75);
+
+            font-size:9px;
+
+            margin:
+            0 6px 3px;
+
+        }
+
+
+        .yh-support-bubble{
+
+            padding:
+            10px 12px;
+
+            border-radius:14px;
+
+            line-height:1.48;
+
+            font-size:13px;
+
+            white-space:pre-wrap;
+
+            word-break:break-word;
+
+        }
+
+
+        .yh-support-row.user
+        .yh-support-bubble{
+
+            background:
+            var(--olive,#7d8b45);
+
+            color:#fff;
+
+            border-bottom-right-radius:5px;
+
+        }
+
+
+        .yh-support-row.admin
+        .yh-support-bubble{
+
+            background:#fff;
+
+            color:
+            var(--text,#444a42);
+
+            border:
+            1px solid
+            var(--border,#e1e5dc);
+
+            border-bottom-left-radius:5px;
+
+        }
+
+
+        .yh-support-time{
+
+            margin:
+            3px 6px 0;
+
+            color:#999;
+
+            font-size:9px;
+
+        }
+
+
+        .yh-support-welcome{
+
+            margin:auto 0;
+
+            text-align:center;
+
+            color:
+            var(--muted,#777d75);
+
+            padding:
+            25px 20px;
+
+            line-height:1.6;
+
+            font-size:13px;
+
+        }
+
+
+        .yh-support-compose{
+
+            border-top:
+            1px solid
+            var(--border,#e1e5dc);
+
+            background:#fff;
+
+            padding:10px;
+
+            display:grid;
+
+            grid-template-columns:
+            1fr auto;
+
+            gap:8px;
+
+            align-items:end;
+
+        }
+
+
+        .yh-support-compose textarea{
+
+            width:100%;
+
+            max-height:110px;
+
+            min-height:42px;
+
+            resize:none;
+
+            border:
+            1px solid
+            var(--border,#e1e5dc);
+
+            border-radius:12px;
+
+            padding:
+            11px 12px;
+
+            outline:none;
+
+            font-size:13px;
+
+            line-height:1.4;
+
+        }
+
+
+        .yh-support-send{
+
+            min-width:78px;
+
+            height:42px;
+
+            border:0;
+
+            border-radius:11px;
+
+            background:
+            var(--olive,#7d8b45);
+
+            color:#fff;
+
+            padding:
+            0 13px;
+
+            font-weight:900;
+
+            font-size:12px;
+
+        }
+
+
+        .yh-support-send:disabled{
+
+            opacity:.55;
+
+        }
+
+
+        @media(max-width:600px){
+
+            .yh-support-launcher{
+
+                width:58px;
+
+                min-width:58px;
+
+                height:58px;
+
+                padding:0;
+
+                right:14px;
+
+                bottom:14px;
+
+            }
+
+
+            .yh-support-launcher-label{
+
+                display:none;
+
+            }
+
+
+            .yh-support-panel{
+
+                right:12px;
+
+                bottom:82px;
+
+                width:
+                calc(100vw - 24px);
+
+                height:
+                min(
+                    620px,
+                    calc(100vh - 104px)
+                );
+
+                border-radius:18px;
+
+            }
+
+
+            .yh-support-guest{
+
+                grid-template-columns:
+                1fr;
+
+            }
+
+        }
+
+        `;
+
+
+        document.head.appendChild(
+            style
+        );
+
+    }
+
+
+    /* =====================================================
+       CREATE UI
+    ===================================================== */
+
+    function yhSupportCreateUi(){
+
+        if(
+            document.getElementById(
+                "yhSupportLauncher"
+            )
+        ){
+            return;
+        }
+
+
+        document.body
+        .insertAdjacentHTML(
+            "beforeend",
+            `
+
+            <button
+            type="button"
+            class="yh-support-launcher"
+            id="yhSupportLauncher"
+            aria-label="მოგვწერეთ">
+
+                <span class="yh-support-launcher-icon">
+                💬
+                </span>
+
+                <span
+                class="yh-support-launcher-label"
+                id="yhSupportLauncherLabel">
+                მოგვწერეთ
+                </span>
+
+                <span
+                class="yh-support-unread"
+                id="yhSupportUnread">
+                0
+                </span>
+
+            </button>
+
+
+            <section
+            class="yh-support-panel"
+            id="yhSupportPanel"
+            aria-live="polite">
+
+
+                <div class="yh-support-head">
+
+                    <div class="yh-support-logo">
+                    🏠
+                    </div>
+
+
+                    <div class="yh-support-head-text">
+
+                        <div
+                        class="yh-support-head-title"
+                        id="yhSupportTitle">
+                        Your Home მხარდაჭერა
+                        </div>
+
+                        <div
+                        class="yh-support-head-subtitle"
+                        id="yhSupportSubtitle">
+                        გიპასუხებთ შეძლებისდაგვარად სწრაფად
+                        </div>
+
+                    </div>
+
+
+                    <button
+                    type="button"
+                    class="yh-support-close"
+                    id="yhSupportClose"
+                    aria-label="დახურვა">
+                    ×
+                    </button>
+
+                </div>
+
+
+                <div
+                class="yh-support-context"
+                id="yhSupportContext">
+                </div>
+
+
+                <div
+                class="yh-support-guest"
+                id="yhSupportGuestFields">
+
+
+                    <div>
+
+                        <label
+                        id="yhSupportNameLabel"
+                        for="yhSupportName">
+                        თქვენი სახელი
+                        </label>
+
+                        <input
+                        type="text"
+                        id="yhSupportName"
+                        maxlength="80"
+                        autocomplete="name"
+                        placeholder="სახელი">
+
+                    </div>
+
+
+                    <div>
+
+                        <label
+                        id="yhSupportEmailLabel"
+                        for="yhSupportEmail">
+                        ელფოსტა (არასავალდებულო)
+                        </label>
+
+                        <input
+                        type="email"
+                        id="yhSupportEmail"
+                        maxlength="160"
+                        autocomplete="email"
+                        placeholder="you@email.com">
+
+                    </div>
+
+                </div>
+
+
+                <div
+                class="yh-support-status"
+                id="yhSupportStatus">
+                </div>
+
+
+                <div
+                class="yh-support-messages"
+                id="yhSupportMessages">
+                </div>
+
+
+                <div class="yh-support-compose">
+
+                    <textarea
+                    id="yhSupportMessageInput"
+                    maxlength="1000"
+                    rows="1"
+                    placeholder="მოგვწერეთ შეტყობინება..."></textarea>
+
+
+                    <button
+                    type="button"
+                    class="yh-support-send"
+                    id="yhSupportSend">
+                    გაგზავნა
+                    </button>
+
+                </div>
+
+
+            </section>
+
+            `
+        );
+
+    }
+
+
+    /* =====================================================
+       GUEST TOKEN
+    ===================================================== */
+
+    function yhSupportGuestToken(){
+
+        let token =
+        "";
+
+
+        try{
+
+            token =
+            localStorage
+            .getItem(
+                YH_SUPPORT_GUEST_TOKEN_KEY
+            ) ||
+            "";
+
+        }catch(error){
+
+            console.log(
+                error
+            );
+
+        }
+
+
+        if(!token){
+
+            token =
+            window.crypto
+            ?.randomUUID
+            ?
+            window.crypto
+            .randomUUID()
+            :
+            "yh-" +
+            Date.now() +
+            "-" +
+            Math.random()
+            .toString(36)
+            .slice(2);
+
+
+            try{
+
+                localStorage
+                .setItem(
+                    YH_SUPPORT_GUEST_TOKEN_KEY,
+                    token
+                );
+
+            }catch(error){
+
+                console.log(
+                    error
+                );
+
+            }
+
+        }
+
+
+        return token;
+
+    }
+
+
+    /* =====================================================
+       THREAD STORAGE
+    ===================================================== */
+
+    function yhSupportGetThreadMap(){
+
+        try{
+
+            const data =
+            JSON.parse(
+                localStorage
+                .getItem(
+                    YH_SUPPORT_THREADS_KEY
+                ) ||
+                "{}"
+            );
+
+
+            if(
+                data &&
+                typeof data ===
+                "object"
+            ){
+
+                return data;
+
+            }
+
+        }catch(error){
+
+            console.log(
+                error
+            );
+
+        }
+
+
+        return {};
+
+    }
+
+
+    function yhSupportSaveThreadId(
+        key,
+        id
+    ){
+
+        if(
+            !key ||
+            !id
+        ){
+            return;
+        }
+
+
+        const map =
+        yhSupportGetThreadMap();
+
+
+        map[
+            key
+        ] =
+        String(
+            id
+        );
+
+
+        try{
+
+            localStorage
+            .setItem(
+                YH_SUPPORT_THREADS_KEY,
+                JSON.stringify(
+                    map
+                )
+            );
+
+        }catch(error){
+
+            console.log(
+                error
+            );
+
+        }
+
+    }
+
+
+    function yhSupportStoredThreadId(
+        key
+    ){
+
+        const map =
+        yhSupportGetThreadMap();
+
+
+        return (
+            map[
+                key
+            ] ||
+            null
+        );
+
+    }
+
+
+    function yhSupportRemoveStoredThreadId(
+        key
+    ){
+
+        const map =
+        yhSupportGetThreadMap();
+
+
+        delete map[
+            key
+        ];
+
+
+        try{
+
+            localStorage
+            .setItem(
+                YH_SUPPORT_THREADS_KEY,
+                JSON.stringify(
+                    map
+                )
+            );
+
+        }catch(error){
+
+            console.log(
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       LISTING CONTEXT
+    ===================================================== */
+
+    function yhSupportCurrentListing(){
+
+        if(
+            typeof activeListing !==
+            "undefined" &&
+            activeListing
+        ){
+
+            return activeListing;
+
+        }
+
+
+        return null;
+
+    }
+
+
+    function yhSupportSetContext(){
+
+        yhSupportContextListing =
+        yhSupportCurrentListing();
+
+
+        if(
+            yhSupportContextListing?.id !==
+            undefined &&
+            yhSupportContextListing?.id !==
+            null
+        ){
+
+            yhSupportThreadKey =
+            "listing:" +
+            String(
+                yhSupportContextListing.id
+            );
+
+        }else{
+
+            yhSupportThreadKey =
+            "general";
+
+        }
+
+
+        yhSupportThreadId =
+        yhSupportStoredThreadId(
+            yhSupportThreadKey
+        );
+
+
+        const box =
+        document.getElementById(
+            "yhSupportContext"
+        );
+
+
+        const t =
+        yhSupportText();
+
+
+        if(!box){
+            return;
+        }
+
+
+        if(
+            yhSupportContextListing
+        ){
+
+            const code =
+            yhSupportContextListing
+            .listing_code
+            ?
+            " · " +
+            yhSupportContextListing
+            .listing_code
+            :
+            "";
+
+
+            const title =
+            yhSupportContextListing
+            .title
+            ||
+            (
+                typeof propertyLabel ===
+                "function"
+                ?
+                propertyLabel(
+                    yhSupportContextListing
+                    .property_type
+                )
+                :
+                ""
+            );
+
+
+            box.textContent =
+            "🏠 " +
+            t.context +
+            ": " +
+            title +
+            code;
+
+
+            box.classList.add(
+                "show"
+            );
+
+        }else{
+
+            box.textContent =
+            "";
+
+
+            box.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       LANGUAGE UI
+    ===================================================== */
+
+    function yhSupportApplyLanguage(){
+
+        const t =
+        yhSupportText();
+
+
+        const values = {
+
+            yhSupportLauncherLabel:
+            t.launcher,
+
+            yhSupportTitle:
+            t.title,
+
+            yhSupportSubtitle:
+            t.subtitle,
+
+            yhSupportNameLabel:
+            t.name,
+
+            yhSupportEmailLabel:
+            t.email,
+
+            yhSupportSend:
+            t.send
+
+        };
+
+
+        Object
+        .keys(
+            values
+        )
+        .forEach(
+            function(id){
+
+                const element =
+                document
+                .getElementById(
+                    id
+                );
+
+
+                if(element){
+
+                    element.textContent =
+                    values[
+                        id
+                    ];
+
+                }
+
+            }
+        );
+
+
+        const launcher =
+        document.getElementById(
+            "yhSupportLauncher"
+        );
+
+
+        const close =
+        document.getElementById(
+            "yhSupportClose"
+        );
+
+
+        const name =
+        document.getElementById(
+            "yhSupportName"
+        );
+
+
+        const email =
+        document.getElementById(
+            "yhSupportEmail"
+        );
+
+
+        const input =
+        document.getElementById(
+            "yhSupportMessageInput"
+        );
+
+
+        if(launcher){
+
+            launcher
+            .setAttribute(
+                "aria-label",
+                t.launcher
+            );
+
+        }
+
+
+        if(close){
+
+            close
+            .setAttribute(
+                "aria-label",
+                t.close
+            );
+
+        }
+
+
+        if(name){
+
+            name.placeholder =
+            t.namePlaceholder;
+
+        }
+
+
+        if(email){
+
+            email.placeholder =
+            t.emailPlaceholder;
+
+        }
+
+
+        if(input){
+
+            input.placeholder =
+            t.messagePlaceholder;
+
+        }
+
+
+        yhSupportSetContext();
+
+
+        if(
+            !yhSupportThreadId
+        ){
+
+            yhSupportRenderMessages(
+                []
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       GUEST FIELDS
+    ===================================================== */
+
+    function yhSupportUpdateGuestFields(){
+
+        const fields =
+        document.getElementById(
+            "yhSupportGuestFields"
+        );
+
+
+        const nameInput =
+        document.getElementById(
+            "yhSupportName"
+        );
+
+
+        const emailInput =
+        document.getElementById(
+            "yhSupportEmail"
+        );
+
+
+        if(
+            !fields ||
+            !nameInput ||
+            !emailInput
+        ){
+            return;
+        }
+
+
+        if(
+            typeof currentUser !==
+            "undefined" &&
+            currentUser
+        ){
+
+            fields.classList.add(
+                "hidden"
+            );
+
+
+            nameInput.value =
+            currentUser
+            .user_metadata
+            ?.name ||
+            "";
+
+
+            emailInput.value =
+            currentUser.email ||
+            "";
+
+        }else{
+
+            fields.classList.remove(
+                "hidden"
+            );
+
+
+            try{
+
+                nameInput.value =
+                localStorage
+                .getItem(
+                    YH_SUPPORT_NAME_KEY
+                ) ||
+                "";
+
+
+                emailInput.value =
+                localStorage
+                .getItem(
+                    YH_SUPPORT_EMAIL_KEY
+                ) ||
+                "";
+
+            }catch(error){
+
+                console.log(
+                    error
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       STATUS
+    ===================================================== */
+
+    function yhSupportSetStatus(
+        text
+    ){
+
+        const status =
+        document.getElementById(
+            "yhSupportStatus"
+        );
+
+
+        if(status){
+
+            status.textContent =
+            text ||
+            "";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       MESSAGE HELPERS
+    ===================================================== */
+
+    function yhSupportFormatTime(
+        value
+    ){
+
+        if(!value){
+            return "";
+        }
+
+
+        const date =
+        new Date(
+            value
+        );
+
+
+        if(
+            Number.isNaN(
+                date.getTime()
+            )
+        ){
+
+            return "";
+
+        }
+
+
+        try{
+
+            return date
+            .toLocaleTimeString(
+                [],
+                {
+                    hour:
+                    "2-digit",
+
+                    minute:
+                    "2-digit"
+                }
+            );
+
+        }catch(error){
+
+            return "";
+
+        }
+
+    }
+
+
+    function yhSupportMessageText(
+        row
+    ){
+
+        return String(
+
+            row?.message ??
+            row?.body ??
+            row?.content ??
+            row?.text ??
+            ""
+
+        );
+
+    }
+
+
+    function yhSupportIsAdminMessage(
+        row
+    ){
+
+        const raw =
+        String(
+
+            row?.sender_type ??
+            row?.sender_role ??
+            row?.sender ??
+            row?.role ??
+            row?.direction ??
+            "user"
+
+        )
+        .toLowerCase();
+
+
+        return (
+
+            raw.includes(
+                "admin"
+            )
+            ||
+
+            raw.includes(
+                "support"
+            )
+            ||
+
+            raw.includes(
+                "owner"
+            )
+            ||
+
+            raw.includes(
+                "staff"
+            )
+            ||
+
+            raw ===
+            "outbound"
+
+        );
+
+    }
+
+
+    function yhSupportRowsFromData(
+        data
+    ){
+
+        if(
+            Array.isArray(
+                data
+            )
+        ){
+
+            return data;
+
+        }
+
+
+        if(
+            Array.isArray(
+                data?.messages
+            )
+        ){
+
+            return data.messages;
+
+        }
+
+
+        if(
+            Array.isArray(
+                data?.data
+            )
+        ){
+
+            return data.data;
+
+        }
+
+
+        if(
+            data &&
+            typeof data ===
+            "object"
+        ){
+
+            return [
+                data
+            ];
+
+        }
+
+
+        return [];
+
+    }
+
+
+    function yhSupportIdFromData(
+        data
+    ){
+
+        if(
+            data ===
+            null ||
+            data ===
+            undefined
+        ){
+
+            return null;
+
+        }
+
+
+        if(
+            typeof data ===
+            "string" ||
+            typeof data ===
+            "number"
+        ){
+
+            return String(
+                data
+            );
+
+        }
+
+
+        if(
+            Array.isArray(
+                data
+            )
+        ){
+
+            return data.length
+            ?
+            yhSupportIdFromData(
+                data[0]
+            )
+            :
+            null;
+
+        }
+
+
+        if(
+            typeof data ===
+            "object"
+        ){
+
+            const id =
+
+            data.thread_id ??
+            data.id ??
+            data.conversation_id ??
+            data.support_thread_id ??
+            data.data?.thread_id ??
+            data.data?.id;
+
+
+            if(
+                id !==
+                null &&
+                id !==
+                undefined
+            ){
+
+                return String(
+                    id
+                );
+
+            }
+
+        }
+
+
+        return null;
+
+    }
+
+
+    /* =====================================================
+       RENDER MESSAGES
+    ===================================================== */
+
+    function yhSupportRenderMessages(
+        rows
+    ){
+
+        const container =
+        document.getElementById(
+            "yhSupportMessages"
+        );
+
+
+        if(!container){
+            return;
+        }
+
+
+        const t =
+        yhSupportText();
+
+
+        const normalized =
+        (
+            rows ||
+            []
+        )
+        .filter(
+            function(row){
+
+                return yhSupportMessageText(
+                    row
+                )
+                .trim();
+
+            }
+        )
+        .sort(
+            function(
+                a,
+                b
+            ){
+
+                return (
+
+                    new Date(
+                        a.created_at ||
+                        a.sent_at ||
+                        0
+                    )
+                    -
+
+                    new Date(
+                        b.created_at ||
+                        b.sent_at ||
+                        0
+                    )
+
+                );
+
+            }
+        );
+
+
+        const signature =
+        normalized
+        .map(
+            function(row){
+
+                return [
+
+                    row.id ||
+                    "",
+
+                    yhSupportMessageText(
+                        row
+                    ),
+
+                    row.created_at ||
+                    row.sent_at ||
+                    "",
+
+                    yhSupportIsAdminMessage(
+                        row
+                    )
+                    ?
+                    "a"
+                    :
+                    "u"
+
+                ]
+                .join(
+                    "|"
+                );
+
+            }
+        )
+        .join(
+            "::"
+        );
+
+
+        if(
+            signature ===
+            yhSupportLastRenderedSignature &&
+            normalized.length
+        ){
+
+            return;
+
+        }
+
+
+        yhSupportLastRenderedSignature =
+        signature;
+
+
+        container.innerHTML =
+        "";
+
+
+        if(
+            !normalized.length
+        ){
+
+            const welcome =
+            document.createElement(
+                "div"
+            );
+
+
+            welcome.className =
+            "yh-support-welcome";
+
+
+            welcome.textContent =
+            t.welcome;
+
+
+            container.appendChild(
+                welcome
+            );
+
+
+            return;
+
+        }
+
+
+        normalized
+        .forEach(
+            function(row){
+
+                const admin =
+                yhSupportIsAdminMessage(
+                    row
+                );
+
+
+                const wrap =
+                document.createElement(
+                    "div"
+                );
+
+
+                wrap.className =
+                "yh-support-row " +
+                (
+                    admin
+                    ?
+                    "admin"
+                    :
+                    "user"
+                );
+
+
+                const sender =
+                document.createElement(
+                    "div"
+                );
+
+
+                sender.className =
+                "yh-support-sender";
+
+
+                sender.textContent =
+                admin
+                ?
+                t.admin
+                :
+                t.you;
+
+
+                const bubble =
+                document.createElement(
+                    "div"
+                );
+
+
+                bubble.className =
+                "yh-support-bubble";
+
+
+                bubble.textContent =
+                yhSupportMessageText(
+                    row
+                );
+
+
+                const time =
+                document.createElement(
+                    "div"
+                );
+
+
+                time.className =
+                "yh-support-time";
+
+
+                time.textContent =
+                yhSupportFormatTime(
+
+                    row.created_at ||
+                    row.sent_at
+
+                );
+
+
+                wrap.appendChild(
+                    sender
+                );
+
+
+                wrap.appendChild(
+                    bubble
+                );
+
+
+                wrap.appendChild(
+                    time
+                );
+
+
+                container.appendChild(
+                    wrap
+                );
+
+            }
+        );
+
+
+        requestAnimationFrame(
+            function(){
+
+                container.scrollTop =
+                container.scrollHeight;
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       RPC HELPER
+    ===================================================== */
+
+    async function yhSupportTryRpc(
+        candidates
+    ){
+
+        let lastError =
+        null;
+
+
+        for(
+            const candidate
+            of candidates
+        ){
+
+            try{
+
+                const result =
+                await supabaseClient
+                .rpc(
+                    candidate.name,
+                    candidate.args ||
+                    {}
+                );
+
+
+                if(
+                    !result.error
+                ){
+
+                    return {
+
+                        ok:
+                        true,
+
+                        data:
+                        result.data,
+
+                        name:
+                        candidate.name
+
+                    };
+
+                }
+
+
+                lastError =
+                result.error;
+
+            }catch(error){
+
+                lastError =
+                error;
+
+            }
+
+        }
+
+
+        return {
+
+            ok:
+            false,
+
+            error:
+            lastError
+
+        };
+
+    }
+
+
+    /* =====================================================
+       CREATE / OPEN THREAD RPC
+    ===================================================== */
+
+    function yhSupportOpenRpcCandidates(
+        token,
+        listingId,
+        name,
+        email
+    ){
+
+        const names = [
+
+            "yh_support_get_or_create_thread",
+            "yh_support_create_or_get_thread",
+            "yh_support_open_thread",
+            "yh_support_create_thread",
+            "yh_support_start_thread",
+            "yh_get_or_create_support_thread",
+            "yh_create_support_thread",
+            "support_get_or_create_thread",
+            "support_open_thread",
+            "create_support_thread"
+
+        ];
+
+
+        const argsList = [
+
+            {
+                p_guest_token:
+                token,
+
+                p_listing_id:
+                listingId,
+
+                p_guest_name:
+                name,
+
+                p_guest_email:
+                email
+            },
+
+            {
+                p_guest_token:
+                token,
+
+                p_listing_id:
+                listingId,
+
+                p_name:
+                name,
+
+                p_email:
+                email
+            },
+
+            {
+                p_token:
+                token,
+
+                p_listing_id:
+                listingId,
+
+                p_name:
+                name,
+
+                p_email:
+                email
+            },
+
+            {
+                guest_token:
+                token,
+
+                listing_id:
+                listingId,
+
+                guest_name:
+                name,
+
+                guest_email:
+                email
+            },
+
+            {
+                guest_token:
+                token,
+
+                listing_id:
+                listingId,
+
+                name:
+                name,
+
+                email:
+                email
+            },
+
+            {
+                p_guest_token:
+                token,
+
+                p_listing_id:
+                listingId
+            },
+
+            {
+                guest_token:
+                token,
+
+                listing_id:
+                listingId
+            },
+
+            {
+                p_guest_token:
+                token
+            },
+
+            {
+                guest_token:
+                token
+            }
+
+        ];
+
+
+        const result =
+        [];
+
+
+        names.forEach(
+            function(name){
+
+                argsList.forEach(
+                    function(args){
+
+                        result.push({
+
+                            name:
+                            name,
+
+                            args:
+                            args
+
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+
+        return result;
+
+    }
+
+
+    /* =====================================================
+       GET MESSAGES RPC
+    ===================================================== */
+
+    function yhSupportMessagesRpcCandidates(
+        threadId,
+        token
+    ){
+
+        const names = [
+
+            "yh_support_get_messages",
+            "yh_support_list_messages",
+            "yh_support_read_messages",
+            "yh_get_support_messages",
+            "support_get_messages",
+            "support_list_messages",
+            "get_support_messages"
+
+        ];
+
+
+        const argsList = [
+
+            {
+                p_thread_id:
+                threadId,
+
+                p_guest_token:
+                token
+            },
+
+            {
+                p_thread_id:
+                threadId,
+
+                p_token:
+                token
+            },
+
+            {
+                thread_id:
+                threadId,
+
+                guest_token:
+                token
+            },
+
+            {
+                p_thread_id:
+                threadId
+            },
+
+            {
+                thread_id:
+                threadId
+            }
+
+        ];
+
+
+        const result =
+        [];
+
+
+        names.forEach(
+            function(name){
+
+                argsList.forEach(
+                    function(args){
+
+                        result.push({
+
+                            name:
+                            name,
+
+                            args:
+                            args
+
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+
+        return result;
+
+    }
+
+
+    /* =====================================================
+       SEND RPC
+    ===================================================== */
+
+    function yhSupportSendRpcCandidates(
+        threadId,
+        token,
+        message,
+        listingId
+    ){
+
+        const names = [
+
+            "yh_support_send_message",
+            "yh_support_post_message",
+            "yh_support_add_message",
+            "yh_send_support_message",
+            "support_send_message",
+            "send_support_message"
+
+        ];
+
+
+        const argsList = [
+
+            {
+                p_thread_id:
+                threadId,
+
+                p_guest_token:
+                token,
+
+                p_message:
+                message,
+
+                p_listing_id:
+                listingId
+            },
+
+            {
+                p_thread_id:
+                threadId,
+
+                p_guest_token:
+                token,
+
+                p_message:
+                message
+            },
+
+            {
+                p_thread_id:
+                threadId,
+
+                p_token:
+                token,
+
+                p_message:
+                message
+            },
+
+            {
+                p_thread_id:
+                threadId,
+
+                p_guest_token:
+                token,
+
+                p_body:
+                message
+            },
+
+            {
+                thread_id:
+                threadId,
+
+                guest_token:
+                token,
+
+                message:
+                message,
+
+                listing_id:
+                listingId
+            },
+
+            {
+                thread_id:
+                threadId,
+
+                guest_token:
+                token,
+
+                message:
+                message
+            },
+
+            {
+                p_thread_id:
+                threadId,
+
+                p_message:
+                message
+            },
+
+            {
+                thread_id:
+                threadId,
+
+                message:
+                message
+            }
+
+        ];
+
+
+        const result =
+        [];
+
+
+        names.forEach(
+            function(name){
+
+                argsList.forEach(
+                    function(args){
+
+                        result.push({
+
+                            name:
+                            name,
+
+                            args:
+                            args
+
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+
+        return result;
+
+    }
+
+
+    /* =====================================================
+       DIRECT THREAD LOOKUP
+    ===================================================== */
+
+    async function yhSupportDirectFindThread(
+        token,
+        listingId
+    ){
+
+        try{
+
+            let query =
+            supabaseClient
+            .from(
+                "support_threads"
+            )
+            .select(
+                "*"
+            )
+            .order(
+                "updated_at",
+                {
+                    ascending:
+                    false
+                }
+            )
+            .limit(
+                1
+            );
+
+
+            if(
+                typeof currentUser !==
+                "undefined" &&
+                currentUser
+            ){
+
+                query =
+                query.eq(
+                    "user_id",
+                    currentUser.id
+                );
+
+            }else{
+
+                query =
+                query.eq(
+                    "guest_token",
+                    token
+                );
+
+            }
+
+
+            if(
+                listingId !==
+                null &&
+                listingId !==
+                undefined
+            ){
+
+                query =
+                query.eq(
+                    "listing_id",
+                    listingId
+                );
+
+            }
+
+
+            const result =
+            await query
+            .maybeSingle();
+
+
+            if(
+                !result.error &&
+                result.data
+            ){
+
+                return yhSupportIdFromData(
+                    result.data
+                );
+
+            }
+
+        }catch(error){
+
+            console.log(
+                "Support thread lookup:",
+                error
+            );
+
+        }
+
+
+        return null;
+
+    }
+
+
+    /* =====================================================
+       DIRECT CREATE THREAD
+    ===================================================== */
+
+    async function yhSupportDirectCreateThread(
+        token,
+        listingId,
+        name,
+        email
+    ){
+
+        const userId =
+
+        typeof currentUser !==
+        "undefined" &&
+        currentUser
+        ?
+        currentUser.id
+        :
+        null;
+
+
+        const payloads = [
+
+            {
+                guest_token:
+                token,
+
+                user_id:
+                userId,
+
+                listing_id:
+                listingId,
+
+                guest_name:
+                name ||
+                null,
+
+                guest_email:
+                email ||
+                null,
+
+                status:
+                "open"
+            },
+
+            {
+                guest_token:
+                token,
+
+                user_id:
+                userId,
+
+                listing_id:
+                listingId,
+
+                name:
+                name ||
+                null,
+
+                email:
+                email ||
+                null,
+
+                status:
+                "open"
+            },
+
+            {
+                guest_token:
+                token,
+
+                user_id:
+                userId,
+
+                listing_id:
+                listingId,
+
+                status:
+                "open"
+            },
+
+            {
+                guest_token:
+                token,
+
+                user_id:
+                userId,
+
+                listing_id:
+                listingId
+            },
+
+            {
+                guest_token:
+                token,
+
+                listing_id:
+                listingId
+            },
+
+            {
+                user_id:
+                userId,
+
+                listing_id:
+                listingId
+            }
+
+        ];
+
+
+        for(
+            const payload
+            of payloads
+        ){
+
+            try{
+
+                const result =
+                await supabaseClient
+                .from(
+                    "support_threads"
+                )
+                .insert(
+                    payload
+                )
+                .select(
+                    "*"
+                )
+                .single();
+
+
+                if(
+                    !result.error &&
+                    result.data
+                ){
+
+                    return yhSupportIdFromData(
+                        result.data
+                    );
+
+                }
+
+            }catch(error){
+
+                console.log(
+                    "Support thread create:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        return null;
+
+    }
+
+
+    /* =====================================================
+       ENSURE THREAD
+    ===================================================== */
+
+    async function yhSupportEnsureThread(){
+
+        if(
+            yhSupportThreadId
+        ){
+
+            return yhSupportThreadId;
+
+        }
+
+
+        const token =
+        yhSupportGuestToken();
+
+
+        const listingId =
+        yhSupportContextListing?.id ??
+        null;
+
+
+        const nameInput =
+        document.getElementById(
+            "yhSupportName"
+        );
+
+
+        const emailInput =
+        document.getElementById(
+            "yhSupportEmail"
+        );
+
+
+        const name =
+        (
+            nameInput?.value ||
+            currentUser
+            ?.user_metadata
+            ?.name ||
+            ""
+        )
+        .trim();
+
+
+        const email =
+        (
+            emailInput?.value ||
+            currentUser?.email ||
+            ""
+        )
+        .trim();
+
+
+        if(
+            typeof currentUser ===
+            "undefined" ||
+            !currentUser
+        ){
+
+            try{
+
+                localStorage
+                .setItem(
+                    YH_SUPPORT_NAME_KEY,
+                    name
+                );
+
+
+                localStorage
+                .setItem(
+                    YH_SUPPORT_EMAIL_KEY,
+                    email
+                );
+
+            }catch(error){
+
+                console.log(
+                    error
+                );
+
+            }
+
+        }
+
+
+        yhSupportSetStatus(
+            yhSupportText()
+            .connecting
+        );
+
+
+        const rpc =
+        await yhSupportTryRpc(
+
+            yhSupportOpenRpcCandidates(
+                token,
+                listingId,
+                name,
+                email
+            )
+
+        );
+
+
+        if(
+            rpc.ok
+        ){
+
+            const id =
+            yhSupportIdFromData(
+                rpc.data
+            );
+
+
+            if(id){
+
+                yhSupportThreadId =
+                id;
+
+
+                yhSupportSaveThreadId(
+                    yhSupportThreadKey,
+                    id
+                );
+
+
+                yhSupportSetStatus(
+                    yhSupportText()
+                    .connected
+                );
+
+
+                return id;
+
+            }
+
+        }
+
+
+        const existing =
+        await yhSupportDirectFindThread(
+            token,
+            listingId
+        );
+
+
+        if(existing){
+
+            yhSupportThreadId =
+            existing;
+
+
+            yhSupportSaveThreadId(
+                yhSupportThreadKey,
+                existing
+            );
+
+
+            yhSupportSetStatus(
+                yhSupportText()
+                .connected
+            );
+
+
+            return existing;
+
+        }
+
+
+        const created =
+        await yhSupportDirectCreateThread(
+
+            token,
+            listingId,
+            name,
+            email
+
+        );
+
+
+        if(created){
+
+            yhSupportThreadId =
+            created;
+
+
+            yhSupportSaveThreadId(
+                yhSupportThreadKey,
+                created
+            );
+
+
+            yhSupportSetStatus(
+                yhSupportText()
+                .connected
+            );
+
+
+            return created;
+
+        }
+
+
+        yhSupportSetStatus(
+            ""
+        );
+
+
+        return null;
+
+    }
+
+
+    /* =====================================================
+       LOAD MESSAGES
+    ===================================================== */
+
+    async function yhSupportLoadMessages(){
+
+        if(
+            !yhSupportThreadId
+        ){
+
+            yhSupportRenderMessages(
+                []
+            );
+
+
+            return [];
+
+        }
+
+
+        const token =
+        yhSupportGuestToken();
+
+
+        const rpc =
+        await yhSupportTryRpc(
+
+            yhSupportMessagesRpcCandidates(
+                yhSupportThreadId,
+                token
+            )
+
+        );
+
+
+        if(
+            rpc.ok
+        ){
+
+            const rows =
+            yhSupportRowsFromData(
+                rpc.data
+            );
+
+
+            yhSupportRenderMessages(
+                rows
+            );
+
+
+            yhSupportSetStatus(
+                yhSupportText()
+                .connected
+            );
+
+
+            return rows;
+
+        }
+
+
+        try{
+
+            const result =
+            await supabaseClient
+            .from(
+                "support_messages"
+            )
+            .select(
+                "*"
+            )
+            .eq(
+                "thread_id",
+                yhSupportThreadId
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:
+                    true
+                }
+            );
+
+
+            if(
+                !result.error
+            ){
+
+                const rows =
+                result.data ||
+                [];
+
+
+                yhSupportRenderMessages(
+                    rows
+                );
+
+
+                yhSupportSetStatus(
+                    yhSupportText()
+                    .connected
+                );
+
+
+                return rows;
+
+            }
+
+
+            console.warn(
+                "Support messages load:",
+                result.error
+            );
+
+        }catch(error){
+
+            console.warn(
+                "Support messages load:",
+                error
+            );
+
+        }
+
+
+        return [];
+
+    }
+
+
+    /* =====================================================
+       DIRECT SEND
+    ===================================================== */
+
+    async function yhSupportDirectSend(
+        threadId,
+        token,
+        message,
+        listingId
+    ){
+
+        const userId =
+
+        typeof currentUser !==
+        "undefined" &&
+        currentUser
+        ?
+        currentUser.id
+        :
+        null;
+
+
+        const payloads = [
+
+            {
+                thread_id:
+                threadId,
+
+                guest_token:
+                token,
+
+                sender_type:
+                "user",
+
+                sender_user_id:
+                userId,
+
+                message:
+                message,
+
+                listing_id:
+                listingId
+            },
+
+            {
+                thread_id:
+                threadId,
+
+                guest_token:
+                token,
+
+                sender_type:
+                "user",
+
+                user_id:
+                userId,
+
+                message:
+                message
+            },
+
+            {
+                thread_id:
+                threadId,
+
+                sender_type:
+                "user",
+
+                sender_user_id:
+                userId,
+
+                message:
+                message
+            },
+
+            {
+                thread_id:
+                threadId,
+
+                sender_type:
+                "user",
+
+                message:
+                message
+            },
+
+            {
+                thread_id:
+                threadId,
+
+                sender_role:
+                "user",
+
+                content:
+                message
+            },
+
+            {
+                thread_id:
+                threadId,
+
+                body:
+                message
+            },
+
+            {
+                thread_id:
+                threadId,
+
+                message:
+                message
+            }
+
+        ];
+
+
+        for(
+            const payload
+            of payloads
+        ){
+
+            try{
+
+                const result =
+                await supabaseClient
+                .from(
+                    "support_messages"
+                )
+                .insert(
+                    payload
+                )
+                .select(
+                    "*"
+                )
+                .single();
+
+
+                if(
+                    !result.error
+                ){
+
+                    return {
+
+                        ok:
+                        true,
+
+                        data:
+                        result.data
+
+                    };
+
+                }
+
+            }catch(error){
+
+                console.log(
+                    "Support direct send:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        return {
+
+            ok:
+            false
+
+        };
+
+    }
+
+
+    /* =====================================================
+       SEND MESSAGE
+    ===================================================== */
+
+    async function yhSupportSendMessage(){
+
+        if(
+            yhSupportSending
+        ){
+            return;
+        }
+
+
+        const input =
+        document.getElementById(
+            "yhSupportMessageInput"
+        );
+
+
+        const sendButton =
+        document.getElementById(
+            "yhSupportSend"
+        );
+
+
+        const t =
+        yhSupportText();
+
+
+        const message =
+        String(
+            input?.value ||
+            ""
+        )
+        .trim();
+
+
+        if(
+            !message
+        ){
+
+            if(
+                typeof showMessage ===
+                "function"
+            ){
+
+                showMessage(
+                    t.emptyMessage
+                );
+
+            }
+
+
+            return;
+
+        }
+
+
+        if(
+            message.length >
+            1000
+        ){
+
+            if(
+                typeof showMessage ===
+                "function"
+            ){
+
+                showMessage(
+                    t.tooLong
+                );
+
+            }
+
+
+            return;
+
+        }
+
+
+        if(
+            Date.now() -
+            yhSupportLastSentAt <
+            2500
+        ){
+
+            if(
+                typeof showMessage ===
+                "function"
+            ){
+
+                showMessage(
+                    t.slowDown
+                );
+
+            }
+
+
+            return;
+
+        }
+
+
+        yhSupportSending =
+        true;
+
+
+        if(sendButton){
+
+            sendButton.disabled =
+            true;
+
+        }
+
+
+        try{
+
+            const threadId =
+            await yhSupportEnsureThread();
+
+
+            if(
+                !threadId
+            ){
+
+                throw new Error(
+                    "Support thread unavailable"
+                );
+
+            }
+
+
+            const token =
+            yhSupportGuestToken();
+
+
+            const listingId =
+            yhSupportContextListing?.id ??
+            null;
+
+
+            const rpc =
+            await yhSupportTryRpc(
+
+                yhSupportSendRpcCandidates(
+                    threadId,
+                    token,
+                    message,
+                    listingId
+                )
+
+            );
+
+
+            let sent =
+            rpc.ok;
+
+
+            if(!sent){
+
+                const direct =
+                await yhSupportDirectSend(
+
+                    threadId,
+                    token,
+                    message,
+                    listingId
+
+                );
+
+
+                sent =
+                direct.ok;
+
+            }
+
+
+            if(!sent){
+
+                yhSupportRemoveStoredThreadId(
+                    yhSupportThreadKey
+                );
+
+
+                yhSupportThreadId =
+                null;
+
+
+                throw new Error(
+                    "Support send failed"
+                );
+
+            }
+
+
+            yhSupportLastSentAt =
+            Date.now();
+
+
+            if(input){
+
+                input.value =
+                "";
+
+
+                input.style.height =
+                "42px";
+
+            }
+
+
+            if(
+                typeof window
+                .yhTrackEvent ===
+                "function"
+            ){
+
+                window.yhTrackEvent(
+                    "support_message_sent",
+                    {
+
+                        listingId:
+                        listingId,
+
+                        metadata:{
+
+                            source:
+                            "support_messenger"
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+            await yhSupportLoadMessages();
+
+
+            yhSupportStartRealtime();
+
+
+        }catch(error){
+
+            console.error(
+                "Your Home support messenger:",
+                error
+            );
+
+
+            if(
+                typeof showMessage ===
+                "function"
+            ){
+
+                showMessage(
+                    t.sendError
+                );
+
+            }
+
+        }finally{
+
+            yhSupportSending =
+            false;
+
+
+            if(sendButton){
+
+                sendButton.disabled =
+                false;
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       REALTIME
+    ===================================================== */
+
+    function yhSupportStopRealtime(){
+
+        if(
+            yhSupportRealtimeChannel
+        ){
+
+            try{
+
+                supabaseClient
+                .removeChannel(
+                    yhSupportRealtimeChannel
+                );
+
+            }catch(error){
+
+                console.log(
+                    error
+                );
+
+            }
+
+
+            yhSupportRealtimeChannel =
+            null;
+
+        }
+
+
+        if(
+            yhSupportPollTimer
+        ){
+
+            clearInterval(
+                yhSupportPollTimer
+            );
+
+
+            yhSupportPollTimer =
+            null;
+
+        }
+
+    }
+
+
+    function yhSupportStartRealtime(){
+
+        yhSupportStopRealtime();
+
+
+        if(
+            !yhSupportThreadId
+        ){
+            return;
+        }
+
+
+        try{
+
+            yhSupportRealtimeChannel =
+            supabaseClient
+            .channel(
+                "yh-support-" +
+                String(
+                    yhSupportThreadId
+                )
+            )
+            .on(
+
+                "postgres_changes",
+
+                {
+
+                    event:
+                    "INSERT",
+
+                    schema:
+                    "public",
+
+                    table:
+                    "support_messages",
+
+                    filter:
+                    "thread_id=eq." +
+                    String(
+                        yhSupportThreadId
+                    )
+
+                },
+
+                function(){
+
+                    yhSupportLoadMessages();
+
+                }
+
+            )
+            .subscribe();
+
+        }catch(error){
+
+            console.log(
+                "Support realtime:",
+                error
+            );
+
+        }
+
+
+        yhSupportPollTimer =
+        setInterval(
+            function(){
+
+                if(
+                    yhSupportIsOpen &&
+                    yhSupportThreadId
+                ){
+
+                    yhSupportLoadMessages();
+
+                }
+
+            },
+            7000
+        );
+
+    }
+
+
+    /* =====================================================
+       OPEN / CLOSE
+    ===================================================== */
+
+    async function yhSupportOpen(){
+
+        yhSupportIsOpen =
+        true;
+
+
+        yhSupportSetContext();
+
+
+        yhSupportUpdateGuestFields();
+
+
+        yhSupportApplyLanguage();
+
+
+        const panel =
+        document.getElementById(
+            "yhSupportPanel"
+        );
+
+
+        const unread =
+        document.getElementById(
+            "yhSupportUnread"
+        );
+
+
+        panel
+        ?.classList
+        .add(
+            "active"
+        );
+
+
+        unread
+        ?.classList
+        .remove(
+            "show"
+        );
+
+
+        if(unread){
+
+            unread.textContent =
+            "0";
+
+        }
+
+
+        if(
+            typeof window
+            .yhTrackEvent ===
+            "function"
+        ){
+
+            window.yhTrackEvent(
+                "support_open",
+                {
+
+                    listingId:
+                    yhSupportContextListing
+                    ?.id ??
+                    null,
+
+                    metadata:{
+
+                        source:
+                        "support_messenger"
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        if(
+            yhSupportThreadId
+        ){
+
+            yhSupportSetStatus(
+                yhSupportText()
+                .connecting
+            );
+
+
+            await yhSupportLoadMessages();
+
+
+            yhSupportStartRealtime();
+
+        }else{
+
+            yhSupportSetStatus(
+                ""
+            );
+
+
+            yhSupportRenderMessages(
+                []
+            );
+
+        }
+
+
+        setTimeout(
+            function(){
+
+                document
+                .getElementById(
+                    "yhSupportMessageInput"
+                )
+                ?.focus();
+
+            },
+            120
+        );
+
+    }
+
+
+    function yhSupportClose(){
+
+        yhSupportIsOpen =
+        false;
+
+
+        document
+        .getElementById(
+            "yhSupportPanel"
+        )
+        ?.classList
+        .remove(
+            "active"
+        );
+
+
+        yhSupportStopRealtime();
+
+    }
+
+
+    /* =====================================================
+       EVENTS
+    ===================================================== */
+
+    function yhSupportBindEvents(){
+
+        document
+        .getElementById(
+            "yhSupportLauncher"
+        )
+        ?.addEventListener(
+            "click",
+            function(){
+
+                if(
+                    yhSupportIsOpen
+                ){
+
+                    yhSupportClose();
+
+                }else{
+
+                    yhSupportOpen();
+
+                }
+
+            }
+        );
+
+
+        document
+        .getElementById(
+            "yhSupportClose"
+        )
+        ?.addEventListener(
+            "click",
+            yhSupportClose
+        );
+
+
+        document
+        .getElementById(
+            "yhSupportSend"
+        )
+        ?.addEventListener(
+            "click",
+            yhSupportSendMessage
+        );
+
+
+        document
+        .getElementById(
+            "yhSupportMessageInput"
+        )
+        ?.addEventListener(
+            "keydown",
+            function(event){
+
+                if(
+                    event.key ===
+                    "Enter" &&
+                    !event.shiftKey
+                ){
+
+                    event.preventDefault();
+
+
+                    yhSupportSendMessage();
+
+                }
+
+            }
+        );
+
+
+        document
+        .getElementById(
+            "yhSupportMessageInput"
+        )
+        ?.addEventListener(
+            "input",
+            function(){
+
+                this.style.height =
+                "42px";
+
+
+                this.style.height =
+                Math.min(
+                    this.scrollHeight,
+                    110
+                ) +
+                "px";
+
+            }
+        );
+
+
+        document
+        .getElementById(
+            "yhSupportName"
+        )
+        ?.addEventListener(
+            "change",
+            function(){
+
+                try{
+
+                    localStorage
+                    .setItem(
+                        YH_SUPPORT_NAME_KEY,
+                        this.value
+                        .trim()
+                    );
+
+                }catch(error){
+
+                    console.log(
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+
+        document
+        .getElementById(
+            "yhSupportEmail"
+        )
+        ?.addEventListener(
+            "change",
+            function(){
+
+                try{
+
+                    localStorage
+                    .setItem(
+                        YH_SUPPORT_EMAIL_KEY,
+                        this.value
+                        .trim()
+                    );
+
+                }catch(error){
+
+                    console.log(
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+
+        document
+        .getElementById(
+            "language"
+        )
+        ?.addEventListener(
+            "change",
+            function(){
+
+                setTimeout(
+                    function(){
+
+                        yhSupportApplyLanguage();
+
+
+                        if(
+                            yhSupportThreadId
+                        ){
+
+                            yhSupportLoadMessages();
+
+                        }
+
+                    },
+                    0
+                );
+
+            }
+        );
+
+
+        document
+        .addEventListener(
+            "keydown",
+            function(event){
+
+                if(
+                    event.key ===
+                    "Escape" &&
+                    yhSupportIsOpen
+                ){
+
+                    yhSupportClose();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       USER CHANGE
+    ===================================================== */
+
+    const previousAfterUserChanged =
+    window.yhAfterUserChanged;
+
+
+    window.yhAfterUserChanged =
+    async function(){
+
+        if(
+            typeof previousAfterUserChanged ===
+            "function"
+        ){
+
+            try{
+
+                await previousAfterUserChanged
+                .apply(
+                    this,
+                    arguments
+                );
+
+            }catch(error){
+
+                console.error(
+                    error
+                );
+
+            }
+
+        }
+
+
+        yhSupportUpdateGuestFields();
+
+
+        if(
+            yhSupportIsOpen
+        ){
+
+            yhSupportSetContext();
+
+
+            if(
+                yhSupportThreadId
+            ){
+
+                await yhSupportLoadMessages();
+
+
+                yhSupportStartRealtime();
+
+            }
+
+        }
+
+    };
+
+
+    /* =====================================================
+       INITIALIZE
+    ===================================================== */
+
+    yhSupportCreateStyle();
+
+
+    yhSupportCreateUi();
+
+
+    yhSupportApplyLanguage();
+
+
+    yhSupportUpdateGuestFields();
+
+
+    yhSupportRenderMessages(
+        []
+    );
+
+
+    yhSupportBindEvents();
+
+
+})();
+
+</script>
 
 
 <!-- =========================================================
