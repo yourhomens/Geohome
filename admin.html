@@ -4634,7 +4634,786 @@ checkAdminAccess();
 
 
 </script>
+<!-- =========================================================
+     YOUR HOME — ADMIN SUPPORT INBOX
+========================================================= -->
 
+<script>
+
+(function(){
+
+    if(window.__YOUR_HOME_ADMIN_SUPPORT_INBOX__){
+        return;
+    }
+
+    window.__YOUR_HOME_ADMIN_SUPPORT_INBOX__ = true;
+
+
+    let yhAdminSupportThreadId = null;
+
+
+    /* =========================
+       STYLE
+    ========================= */
+
+    const style =
+    document.createElement("style");
+
+    style.textContent = `
+
+    #yhAdminSupportButton{
+        position:fixed;
+        right:22px;
+        bottom:22px;
+        z-index:9000;
+        border:0;
+        background:#7d8b45;
+        color:#fff;
+        border-radius:999px;
+        padding:14px 18px;
+        font-weight:800;
+        box-shadow:0 8px 30px rgba(0,0,0,.22);
+    }
+
+    #yhAdminSupportPanel{
+        display:none;
+        position:fixed;
+        inset:0;
+        z-index:9500;
+        background:rgba(20,25,20,.6);
+        padding:18px;
+    }
+
+    #yhAdminSupportPanel.active{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .yh-admin-support-box{
+        width:100%;
+        max-width:1050px;
+        height:min(760px,90vh);
+        background:#f6f7f3;
+        border-radius:18px;
+        overflow:hidden;
+        display:grid;
+        grid-template-columns:340px 1fr;
+        box-shadow:0 25px 80px rgba(0,0,0,.3);
+    }
+
+    .yh-admin-support-left{
+        background:#fff;
+        border-right:1px solid #e1e5dc;
+        overflow:auto;
+    }
+
+    .yh-admin-support-head{
+        padding:18px;
+        border-bottom:1px solid #e1e5dc;
+        position:sticky;
+        top:0;
+        background:#fff;
+        z-index:2;
+    }
+
+    .yh-admin-support-head h2{
+        margin:0;
+        font-size:20px;
+    }
+
+    .yh-admin-support-thread{
+        padding:15px 17px;
+        border-bottom:1px solid #eef0ea;
+        cursor:pointer;
+    }
+
+    .yh-admin-support-thread:hover,
+    .yh-admin-support-thread.active{
+        background:#eef1e3;
+    }
+
+    .yh-admin-support-thread strong{
+        display:block;
+        margin-bottom:5px;
+    }
+
+    .yh-admin-support-small{
+        font-size:12px;
+        color:#777d75;
+        line-height:1.45;
+    }
+
+    .yh-admin-support-right{
+        min-width:0;
+        display:flex;
+        flex-direction:column;
+    }
+
+    .yh-admin-support-chat-head{
+        min-height:64px;
+        padding:14px 18px;
+        background:#fff;
+        border-bottom:1px solid #e1e5dc;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+    }
+
+    .yh-admin-support-close{
+        border:0;
+        width:38px;
+        height:38px;
+        border-radius:50%;
+        background:#eef1e3;
+        font-size:22px;
+    }
+
+    #yhAdminSupportMessages{
+        flex:1;
+        overflow:auto;
+        padding:18px;
+    }
+
+    .yh-admin-support-empty{
+        color:#777d75;
+        text-align:center;
+        padding:40px 20px;
+    }
+
+    .yh-admin-support-message{
+        max-width:78%;
+        background:#fff;
+        border:1px solid #e1e5dc;
+        border-radius:13px;
+        padding:11px 13px;
+        margin-bottom:10px;
+        line-height:1.5;
+        white-space:pre-wrap;
+        word-break:break-word;
+    }
+
+    .yh-admin-support-message.admin{
+        margin-left:auto;
+        background:#eef1e3;
+        border-color:#d5ddc5;
+    }
+
+    .yh-admin-support-message small{
+        display:block;
+        color:#777d75;
+        margin-top:6px;
+        font-size:10px;
+    }
+
+    @media(max-width:700px){
+
+        #yhAdminSupportPanel{
+            padding:5px;
+        }
+
+        .yh-admin-support-box{
+            height:95vh;
+            grid-template-columns:1fr;
+            grid-template-rows:42% 58%;
+        }
+
+        .yh-admin-support-left{
+            border-right:0;
+            border-bottom:1px solid #e1e5dc;
+        }
+
+        #yhAdminSupportButton{
+            right:14px;
+            bottom:14px;
+        }
+
+    }
+
+    `;
+
+    document.head.appendChild(style);
+
+
+    /* =========================
+       HTML
+    ========================= */
+
+    const button =
+    document.createElement("button");
+
+    button.id =
+    "yhAdminSupportButton";
+
+    button.type =
+    "button";
+
+    button.textContent =
+    "💬 Support Inbox";
+
+    document.body.appendChild(button);
+
+
+    const panel =
+    document.createElement("div");
+
+    panel.id =
+    "yhAdminSupportPanel";
+
+    panel.innerHTML = `
+
+    <div class="yh-admin-support-box">
+
+        <div class="yh-admin-support-left">
+
+            <div class="yh-admin-support-head">
+
+                <h2>
+                💬 შეტყობინებები
+                </h2>
+
+                <div class="yh-admin-support-small">
+                Your Home Support
+                </div>
+
+            </div>
+
+            <div id="yhAdminSupportThreads">
+                <div class="yh-admin-support-empty">
+                იტვირთება...
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="yh-admin-support-right">
+
+            <div class="yh-admin-support-chat-head">
+
+                <div>
+
+                    <strong id="yhAdminSupportChatName">
+                    აირჩიეთ შეტყობინება
+                    </strong>
+
+                    <div
+                    class="yh-admin-support-small"
+                    id="yhAdminSupportChatInfo">
+                    </div>
+
+                </div>
+
+                <button
+                type="button"
+                class="yh-admin-support-close"
+                id="yhAdminSupportClose">
+                ×
+                </button>
+
+            </div>
+
+            <div id="yhAdminSupportMessages">
+
+                <div class="yh-admin-support-empty">
+                მარცხნიდან აირჩიეთ მომხმარებელი.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    `;
+
+    document.body.appendChild(panel);
+
+
+    /* =========================
+       HELPERS
+    ========================= */
+
+    function yhSupportAdminEscape(value){
+
+        return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+    }
+
+
+    function yhSupportAdminDate(value){
+
+        if(!value){
+            return "";
+        }
+
+        try{
+
+            return new Date(value)
+            .toLocaleString(
+                "ka-GE",
+                {
+                    day:"2-digit",
+                    month:"2-digit",
+                    hour:"2-digit",
+                    minute:"2-digit"
+                }
+            );
+
+        }catch(error){
+
+            return "";
+
+        }
+
+    }
+
+
+    function yhSupportThreadName(thread){
+
+        return (
+            thread.name ||
+            thread.visitor_name ||
+            thread.guest_name ||
+            thread.user_name ||
+            thread.email ||
+            thread.phone ||
+            "მომხმარებელი"
+        );
+
+    }
+
+
+    /* =========================
+       LOAD THREADS
+    ========================= */
+
+    async function yhAdminSupportLoadThreads(){
+
+        const container =
+        document.getElementById(
+            "yhAdminSupportThreads"
+        );
+
+        container.innerHTML =
+        '<div class="yh-admin-support-empty">იტვირთება...</div>';
+
+
+        const result =
+        await sb
+        .from("support_threads")
+        .select("*");
+
+
+        if(result.error){
+
+            console.error(
+                "Support threads:",
+                result.error
+            );
+
+            container.innerHTML =
+            `
+            <div class="yh-admin-support-empty">
+            შეტყობინებების ჩატვირთვა ვერ მოხერხდა.<br><br>
+            ${yhSupportAdminEscape(result.error.message)}
+            </div>
+            `;
+
+            return;
+
+        }
+
+
+        const rows =
+        result.data || [];
+
+
+        rows.sort(
+            function(a,b){
+
+                return new Date(
+                    b.updated_at ||
+                    b.created_at ||
+                    0
+                ) -
+                new Date(
+                    a.updated_at ||
+                    a.created_at ||
+                    0
+                );
+
+            }
+        );
+
+
+        if(!rows.length){
+
+            container.innerHTML =
+            `
+            <div class="yh-admin-support-empty">
+            შეტყობინებები ჯერ არ არის.
+            </div>
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+        rows.map(
+            function(thread){
+
+                const name =
+                yhSupportThreadName(
+                    thread
+                );
+
+                const contact =
+                thread.email ||
+                thread.phone ||
+                "";
+
+                const listing =
+                thread.listing_id
+                ?
+                " · განცხადება #" +
+                thread.listing_id
+                :
+                "";
+
+                return `
+
+                <div
+                class="yh-admin-support-thread"
+                data-thread-id="${yhSupportAdminEscape(thread.id)}">
+
+                    <strong>
+                    ${yhSupportAdminEscape(name)}
+                    </strong>
+
+                    <div class="yh-admin-support-small">
+                    ${yhSupportAdminEscape(contact)}
+                    ${yhSupportAdminEscape(listing)}
+                    </div>
+
+                    <div class="yh-admin-support-small"
+                    style="margin-top:5px;">
+                    ${yhSupportAdminEscape(
+                        yhSupportAdminDate(
+                            thread.updated_at ||
+                            thread.created_at
+                        )
+                    )}
+                    </div>
+
+                </div>
+
+                `;
+
+            }
+        ).join("");
+
+    }
+
+
+    /* =========================
+       LOAD MESSAGES
+    ========================= */
+
+    async function yhAdminSupportLoadMessages(
+        threadId
+    ){
+
+        yhAdminSupportThreadId =
+        threadId;
+
+
+        document
+        .querySelectorAll(
+            ".yh-admin-support-thread"
+        )
+        .forEach(
+            function(item){
+
+                item.classList.toggle(
+                    "active",
+                    String(item.dataset.threadId) ===
+                    String(threadId)
+                );
+
+            }
+        );
+
+
+        const messages =
+        document.getElementById(
+            "yhAdminSupportMessages"
+        );
+
+
+        messages.innerHTML =
+        '<div class="yh-admin-support-empty">იტვირთება...</div>';
+
+
+        const result =
+        await sb
+        .from("support_messages")
+        .select("*")
+        .eq(
+            "thread_id",
+            threadId
+        )
+        .order(
+            "created_at",
+            {
+                ascending:true
+            }
+        );
+
+
+        if(result.error){
+
+            console.error(
+                "Support messages:",
+                result.error
+            );
+
+            messages.innerHTML =
+            `
+            <div class="yh-admin-support-empty">
+            მესიჯების ჩატვირთვა ვერ მოხერხდა.<br><br>
+            ${yhSupportAdminEscape(result.error.message)}
+            </div>
+            `;
+
+            return;
+
+        }
+
+
+        const rows =
+        result.data || [];
+
+
+        const selectedThread =
+        document.querySelector(
+            '.yh-admin-support-thread[data-thread-id="' +
+            CSS.escape(String(threadId)) +
+            '"]'
+        );
+
+
+        document
+        .getElementById(
+            "yhAdminSupportChatName"
+        )
+        .textContent =
+        selectedThread
+        ?.querySelector("strong")
+        ?.textContent
+        ?.trim() ||
+        "მომხმარებელი";
+
+
+        if(!rows.length){
+
+            messages.innerHTML =
+            `
+            <div class="yh-admin-support-empty">
+            ამ საუბარში მესიჯები ჯერ არ არის.
+            </div>
+            `;
+
+            return;
+
+        }
+
+
+        messages.innerHTML =
+        rows.map(
+            function(row){
+
+                const text =
+                row.message ??
+                row.body ??
+                row.content ??
+                row.text ??
+                "";
+
+
+                const sender =
+                String(
+                    row.sender_type ??
+                    row.sender_role ??
+                    row.sender ??
+                    ""
+                ).toLowerCase();
+
+
+                const isAdmin =
+                sender === "admin" ||
+                sender === "staff" ||
+                sender === "support";
+
+
+                return `
+
+                <div
+                class="yh-admin-support-message ${
+                    isAdmin
+                    ?
+                    "admin"
+                    :
+                    ""
+                }">
+
+                    ${yhSupportAdminEscape(text)}
+
+                    <small>
+                    ${
+                        isAdmin
+                        ?
+                        "ადმინისტრაცია"
+                        :
+                        "მომხმარებელი"
+                    }
+                    ·
+                    ${yhSupportAdminEscape(
+                        yhSupportAdminDate(
+                            row.created_at
+                        )
+                    )}
+                    </small>
+
+                </div>
+
+                `;
+
+            }
+        ).join("");
+
+
+        messages.scrollTop =
+        messages.scrollHeight;
+
+    }
+
+
+    /* =========================
+       EVENTS
+    ========================= */
+
+    button.addEventListener(
+        "click",
+        async function(){
+
+            panel.classList.add(
+                "active"
+            );
+
+            await yhAdminSupportLoadThreads();
+
+        }
+    );
+
+
+    document
+    .getElementById(
+        "yhAdminSupportClose"
+    )
+    .addEventListener(
+        "click",
+        function(){
+
+            panel.classList.remove(
+                "active"
+            );
+
+        }
+    );
+
+
+    panel.addEventListener(
+        "click",
+        function(event){
+
+            if(event.target === panel){
+
+                panel.classList.remove(
+                    "active"
+                );
+
+                return;
+
+            }
+
+
+            const thread =
+            event.target.closest(
+                ".yh-admin-support-thread"
+            );
+
+
+            if(thread){
+
+                yhAdminSupportLoadMessages(
+                    thread.dataset.threadId
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       AUTO REFRESH
+    ========================= */
+
+    setInterval(
+        async function(){
+
+            if(
+                !panel.classList.contains(
+                    "active"
+                )
+            ){
+                return;
+            }
+
+
+            await yhAdminSupportLoadThreads();
+
+
+            if(yhAdminSupportThreadId){
+
+                await yhAdminSupportLoadMessages(
+                    yhAdminSupportThreadId
+                );
+
+            }
+
+        },
+        8000
+    );
+
+
+    console.log(
+        "Your Home — Admin Support Inbox loaded."
+    );
+
+
+})();
+
+</script>
 
 </body>
 
