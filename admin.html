@@ -4938,5 +4938,2306 @@ checkAdminAccess();
 }
 
 </style>
+    <!-- =========================================================
+     YOUR HOME — RECURRING TASKS MANAGEMENT UI FINAL
+========================================================= -->
+
+<style id="yhRecurringTasksFinalStyle">
+
+.yh-recurring-card{
+    max-width:none !important;
+    margin-top:18px !important;
+    margin-bottom:22px !important;
+}
+
+.yh-recurring-title-row{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:18px;
+}
+
+.yh-recurring-title-row h3{
+    font-size:21px;
+    color:var(--dark);
+}
+
+.yh-recurring-title-row p{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.55;
+}
+
+.yh-recurring-badge{
+    flex:0 0 auto;
+    padding:7px 10px;
+    border-radius:999px;
+    background:var(--olive-soft);
+    color:var(--olive-dark);
+    font-size:10px;
+    font-weight:900;
+}
+
+.yh-recurring-form{
+    padding:18px;
+    border:1px solid var(--border);
+    border-radius:18px;
+    background:#fafbf8;
+}
+
+.yh-recurring-form-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(4,minmax(0,1fr));
+    gap:12px;
+}
+
+.yh-recurring-form-grid .field.full{
+    grid-column:1/-1;
+}
+
+.yh-recurring-form-grid .field.half{
+    grid-column:span 2;
+}
+
+.yh-recurring-actions{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+    margin-top:15px;
+}
+
+.yh-recurring-save{
+    min-height:43px;
+    padding:10px 18px;
+    border:0;
+    border-radius:13px;
+    background:var(--olive);
+    color:#fff;
+    font-weight:900;
+}
+
+.yh-recurring-cancel{
+    min-height:43px;
+    padding:10px 15px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:#fff;
+    color:var(--text);
+    font-weight:800;
+}
+
+.yh-recurring-save:disabled,
+.yh-recurring-cancel:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+.yh-recurring-help{
+    margin-top:12px;
+    padding:11px 13px;
+    border-radius:13px;
+    background:var(--olive-soft);
+    color:var(--olive-dark);
+    font-size:11px;
+    line-height:1.55;
+}
+
+.yh-rule-list-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-top:24px;
+    margin-bottom:12px;
+}
+
+.yh-rule-list-title strong{
+    font-size:18px;
+    color:var(--dark);
+}
+
+.yh-rule-refresh{
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--text);
+    border-radius:11px;
+    padding:8px 11px;
+    font-size:11px;
+    font-weight:800;
+}
+
+.yh-rule-list{
+    display:grid;
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+    gap:13px;
+}
+
+.yh-rule-card{
+    padding:17px;
+    border:1px solid var(--border);
+    border-radius:18px;
+    background:#fff;
+}
+
+.yh-rule-card.off{
+    opacity:.62;
+    background:#f7f7f5;
+}
+
+.yh-rule-top{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    align-items:flex-start;
+}
+
+.yh-rule-name{
+    font-size:15px;
+    font-weight:900;
+    color:var(--dark);
+    line-height:1.35;
+}
+
+.yh-rule-description{
+    margin-top:6px;
+    color:var(--muted);
+    font-size:11px;
+    line-height:1.55;
+}
+
+.yh-rule-state{
+    flex:0 0 auto;
+    padding:5px 8px;
+    border-radius:999px;
+    font-size:9px;
+    font-weight:900;
+}
+
+.yh-rule-state.on{
+    background:#eaf4e5;
+    color:#52703f;
+}
+
+.yh-rule-state.off{
+    background:#fff0f0;
+    color:#a34a4a;
+}
+
+.yh-rule-meta{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    margin-top:14px;
+}
+
+.yh-rule-meta-item{
+    padding:9px 10px;
+    border-radius:11px;
+    background:#f4f5f1;
+    font-size:10px;
+    line-height:1.45;
+}
+
+.yh-rule-meta-item b{
+    display:block;
+    margin-bottom:2px;
+    color:var(--dark);
+    font-size:9px;
+}
+
+.yh-rule-actions{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+    margin-top:13px;
+    padding-top:12px;
+    border-top:1px solid var(--border);
+}
+
+.yh-rule-edit,
+.yh-rule-toggle{
+    border-radius:11px;
+    min-height:37px;
+    padding:8px 11px;
+    font-size:10px;
+    font-weight:900;
+}
+
+.yh-rule-edit{
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--text);
+}
+
+.yh-rule-toggle{
+    border:0;
+}
+
+.yh-rule-toggle.disable{
+    background:#fff0f0;
+    color:#a34848;
+}
+
+.yh-rule-toggle.enable{
+    background:var(--olive-soft);
+    color:var(--olive-dark);
+}
+
+.yh-rule-readonly{
+    padding:13px;
+    border-radius:13px;
+    background:#f3f4f0;
+    color:var(--muted);
+    font-size:11px;
+    line-height:1.55;
+    margin-bottom:16px;
+}
+
+@media(max-width:1050px){
+
+    .yh-recurring-form-grid{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+    }
+
+    .yh-rule-list{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:650px){
+
+    .yh-recurring-title-row{
+        flex-direction:column;
+    }
+
+    .yh-recurring-form{
+        padding:14px;
+    }
+
+    .yh-recurring-form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .yh-recurring-form-grid .field.full,
+    .yh-recurring-form-grid .field.half{
+        grid-column:1;
+    }
+
+    .yh-rule-meta{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+(function(){
+
+    if(window.__YH_RECURRING_TASKS_UI_FINAL__){
+        return;
+    }
+
+    window.__YH_RECURRING_TASKS_UI_FINAL__ = true;
+
+
+    /* =====================================================
+       STATE
+    ===================================================== */
+
+    let yhTaskRules = [];
+    let yhEditingRuleId = null;
+    let yhTaskAdmins = [];
+
+
+    const taskPage =
+        document.getElementById(
+            "page-tasks"
+        );
+
+
+    const taskList =
+        document.getElementById(
+            "taskList"
+        );
+
+
+    if(
+        !taskPage ||
+        !taskList
+    ){
+        return;
+    }
+
+
+    /* =====================================================
+       CREATE UI
+    ===================================================== */
+
+    const recurringCard =
+        document.createElement(
+            "section"
+        );
+
+
+    recurringCard.className =
+        "form-card yh-recurring-card";
+
+
+    recurringCard.id =
+        "yhRecurringTasksCard";
+
+
+    recurringCard.innerHTML = `
+
+        <div class="yh-recurring-title-row">
+
+            <div>
+
+                <h3>
+                    🔁 მუდმივი დავალებები
+                </h3>
+
+                <p>
+                    ყოველდღიური ან ყოველკვირეული
+                    დავალებები თანამშრომლებისთვის.
+                </p>
+
+            </div>
+
+            <div class="yh-recurring-badge">
+                ავტომატური
+            </div>
+
+        </div>
+
+
+        <div id="yhRecurringManagerArea"></div>
+
+
+        <div class="yh-rule-list-title">
+
+            <strong>
+                📋 მუდმივი წესები
+            </strong>
+
+            <button
+                type="button"
+                class="yh-rule-refresh"
+                id="yhRecurringRefresh"
+            >
+                🔄 განახლება
+            </button>
+
+        </div>
+
+
+        <div
+            class="yh-rule-list"
+            id="yhRecurringRuleList"
+        >
+
+            <div class="empty-state">
+                ⏳ იტვირთება...
+            </div>
+
+        </div>
+
+    `;
+
+
+    /*
+       ვსვამთ ერთჯერადი დავალების ფორმის შემდეგ,
+       ჩვეულებრივი taskList-ის წინ.
+    */
+
+    taskList.parentNode.insertBefore(
+        recurringCard,
+        taskList
+    );
+
+
+    /* =====================================================
+       HELPERS
+    ===================================================== */
+
+    function yhRole(){
+
+        return String(
+            currentAdmin?.role ||
+            ""
+        )
+        .toLowerCase();
+
+    }
+
+
+    function yhCanManageRules(){
+
+        return[
+            "owner",
+            "admin"
+        ].includes(
+            yhRole()
+        );
+
+    }
+
+
+    function yhSafe(value){
+
+        return String(
+            value ?? ""
+        )
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+    }
+
+
+    function yhRows(data){
+
+        if(Array.isArray(data)){
+            return data;
+        }
+
+        if(typeof data === "string"){
+
+            try{
+
+                const parsed =
+                    JSON.parse(data);
+
+                return Array.isArray(parsed)
+                    ? parsed
+                    : [];
+
+            }catch{}
+
+        }
+
+        return[];
+
+    }
+
+
+    function yhRoleText(role){
+
+        return({
+
+            owner:"OWNER",
+            admin:"ADMIN",
+            moderator:"MODERATOR",
+            support:"SUPPORT"
+
+        })[
+            String(
+                role || ""
+            )
+            .toLowerCase()
+        ]
+        ||
+        String(
+            role || ""
+        )
+        .toUpperCase();
+
+    }
+
+
+    function yhWeekdayText(day){
+
+        return({
+
+            1:"ორშაბათი",
+            2:"სამშაბათი",
+            3:"ოთხშაბათი",
+            4:"ხუთშაბათი",
+            5:"პარასკევი",
+            6:"შაბათი",
+            7:"კვირა"
+
+        })[
+            Number(day)
+        ]
+        ||
+        "—";
+
+    }
+
+
+    function yhRecurrenceText(rule){
+
+        if(
+            rule.recurrence ===
+            "daily"
+        ){
+
+            return "ყოველდღე";
+
+        }
+
+
+        if(
+            rule.recurrence ===
+            "weekly"
+        ){
+
+            return(
+                "ყოველ კვირას · "
+                +
+                yhWeekdayText(
+                    rule.weekly_day
+                )
+            );
+
+        }
+
+
+        return rule.recurrence || "—";
+
+    }
+
+
+    function yhTimeText(value){
+
+        if(!value){
+            return "23:59";
+        }
+
+        return String(value)
+            .slice(0,5);
+
+    }
+
+
+    /* =====================================================
+       LOAD TEAM
+    ===================================================== */
+
+    async function yhLoadTaskAdmins(){
+
+        try{
+
+            const{
+                data,
+                error
+            } =
+            await sb.rpc(
+                "yh_admin_team_list_final"
+            );
+
+
+            if(error){
+                throw error;
+            }
+
+
+            const list =
+                yhRows(data);
+
+
+            /*
+               Team RPC ხშირად საკუთარ თავს არ აბრუნებს,
+               ამიტომ თვითონაც ვამატებთ.
+            */
+
+            const self = {
+
+                user_id:
+                    currentUser?.id,
+
+                display_name:
+                    currentAdmin?.display_name
+                    ||
+                    currentUser?.email
+                    ||
+                    "Admin",
+
+                role:
+                    currentAdmin?.role,
+
+                is_active:true
+
+            };
+
+
+            const map =
+                new Map();
+
+
+            if(self.user_id){
+
+                map.set(
+                    String(
+                        self.user_id
+                    ),
+                    self
+                );
+
+            }
+
+
+            list.forEach(
+                function(admin){
+
+                    if(
+                        admin?.user_id
+                    ){
+
+                        map.set(
+                            String(
+                                admin.user_id
+                            ),
+                            admin
+                        );
+
+                    }
+
+                }
+            );
+
+
+            yhTaskAdmins =
+                Array.from(
+                    map.values()
+                );
+
+
+        }catch(error){
+
+            console.error(
+                "Recurring task admins",
+                error
+            );
+
+            yhTaskAdmins = [];
+
+        }
+
+    }
+
+
+    /* =====================================================
+       MANAGER FORM
+    ===================================================== */
+
+    function yhRenderManager(){
+
+        const area =
+            document.getElementById(
+                "yhRecurringManagerArea"
+            );
+
+
+        if(!area){
+            return;
+        }
+
+
+        if(
+            !yhCanManageRules()
+        ){
+
+            area.innerHTML = `
+
+                <div class="yh-rule-readonly">
+
+                    🔐 მუდმივი დავალებების შექმნა
+                    და შეცვლა შეუძლია
+                    OWNER-ს ან ADMIN-ს.
+
+                    <br>
+
+                    შენთვის ან შენს როლზე
+                    შექმნილი დავალებები ქვემოთ
+                    ჩვეულებრივ გამოჩნდება.
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        const allowOwner =
+            yhRole() === "owner";
+
+
+        const userOptions =
+            yhTaskAdmins
+            .filter(
+                function(admin){
+
+                    if(
+                        admin.is_active ===
+                        false
+                    ){
+                        return false;
+                    }
+
+
+                    if(
+                        !allowOwner &&
+                        String(
+                            admin.role ||
+                            ""
+                        )
+                        .toLowerCase()
+                        ===
+                        "owner"
+                    ){
+                        return false;
+                    }
+
+
+                    return true;
+
+                }
+            )
+            .map(
+                function(admin){
+
+                    return `
+
+                        <option
+                            value="${yhSafe(admin.user_id)}"
+                        >
+
+                            ${yhSafe(
+                                admin.display_name ||
+                                "Admin"
+                            )}
+
+                            —
+                            ${yhSafe(
+                                yhRoleText(
+                                    admin.role
+                                )
+                            )}
+
+                        </option>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+
+        area.innerHTML = `
+
+            <form
+                class="yh-recurring-form"
+                id="yhRecurringForm"
+            >
+
+                <div class="yh-recurring-form-grid">
+
+
+                    <div class="field half">
+
+                        <label>
+                            დავალების სათაური
+                        </label>
+
+                        <input
+                            type="text"
+                            id="yhRuleTitle"
+                            maxlength="150"
+                            placeholder="მაგ: Support Inbox-ის შემოწმება"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            ვის მიეცეს
+                        </label>
+
+                        <select
+                            id="yhRuleAssignmentType"
+                        >
+
+                            <option value="role">
+                                მთლიან როლს
+                            </option>
+
+                            <option value="user">
+                                კონკრეტულ ადამიანს
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div
+                        class="field"
+                        id="yhRuleRoleWrap"
+                    >
+
+                        <label>
+                            როლი
+                        </label>
+
+                        <select
+                            id="yhRuleRole"
+                        >
+
+                            ${
+                                allowOwner
+                                ?`
+                                    <option value="owner">
+                                        OWNER
+                                    </option>
+                                `
+                                :""
+                            }
+
+                            <option value="admin">
+                                ADMIN
+                            </option>
+
+                            <option value="moderator">
+                                MODERATOR
+                            </option>
+
+                            <option
+                                value="support"
+                                selected
+                            >
+                                SUPPORT
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div
+                        class="field hidden"
+                        id="yhRuleUserWrap"
+                    >
+
+                        <label>
+                            თანამშრომელი
+                        </label>
+
+                        <select
+                            id="yhRuleUser"
+                        >
+                            ${userOptions}
+                        </select>
+
+                    </div>
+
+
+                    <div class="field full">
+
+                        <label>
+                            აღწერა
+                        </label>
+
+                        <textarea
+                            id="yhRuleDescription"
+                            placeholder="რა უნდა გააკეთოს თანამშრომელმა..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            განმეორება
+                        </label>
+
+                        <select
+                            id="yhRuleRecurrence"
+                        >
+
+                            <option
+                                value="daily"
+                                selected
+                            >
+                                ყოველდღე
+                            </option>
+
+                            <option value="weekly">
+                                ყოველკვირეულად
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div
+                        class="field hidden"
+                        id="yhRuleWeekdayWrap"
+                    >
+
+                        <label>
+                            კვირის დღე
+                        </label>
+
+                        <select
+                            id="yhRuleWeekday"
+                        >
+
+                            <option value="1">
+                                ორშაბათი
+                            </option>
+
+                            <option value="2">
+                                სამშაბათი
+                            </option>
+
+                            <option value="3">
+                                ოთხშაბათი
+                            </option>
+
+                            <option value="4">
+                                ხუთშაბათი
+                            </option>
+
+                            <option value="5">
+                                პარასკევი
+                            </option>
+
+                            <option value="6">
+                                შაბათი
+                            </option>
+
+                            <option value="7">
+                                კვირა
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            შესრულების ვადა
+                        </label>
+
+                        <input
+                            type="time"
+                            id="yhRuleDueTime"
+                            value="18:00"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            პრიორიტეტი
+                        </label>
+
+                        <select
+                            id="yhRulePriority"
+                        >
+
+                            <option value="low">
+                                LOW
+                            </option>
+
+                            <option
+                                value="normal"
+                                selected
+                            >
+                                NORMAL
+                            </option>
+
+                            <option value="high">
+                                HIGH
+                            </option>
+
+                            <option value="urgent">
+                                URGENT
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="yh-recurring-actions">
+
+                    <button
+                        type="submit"
+                        class="yh-recurring-save"
+                        id="yhRuleSaveBtn"
+                    >
+                        + მუდმივი დავალების შექმნა
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="yh-recurring-cancel hidden"
+                        id="yhRuleCancelBtn"
+                    >
+                        გაუქმება
+                    </button>
+
+                </div>
+
+
+                <div class="yh-recurring-help">
+
+                    💡 მაგალითად:
+                    <strong>SUPPORT → ყოველდღე → Support Inbox-ის შემოწმება.</strong>
+
+                    სისტემა შესაბამისი თანამშრომლებისთვის
+                    დავალებას ავტომატურად შექმნის.
+
+                </div>
+
+            </form>
+
+        `;
+
+
+        yhAttachFormEvents();
+
+    }
+
+
+    /* =====================================================
+       FORM VISIBILITY
+    ===================================================== */
+
+    function yhUpdateAssignmentFields(){
+
+        const type =
+            document.getElementById(
+                "yhRuleAssignmentType"
+            )
+            ?.value;
+
+
+        document
+        .getElementById(
+            "yhRuleRoleWrap"
+        )
+        ?.classList.toggle(
+            "hidden",
+            type !== "role"
+        );
+
+
+        document
+        .getElementById(
+            "yhRuleUserWrap"
+        )
+        ?.classList.toggle(
+            "hidden",
+            type !== "user"
+        );
+
+    }
+
+
+    function yhUpdateRecurrenceFields(){
+
+        const recurrence =
+            document.getElementById(
+                "yhRuleRecurrence"
+            )
+            ?.value;
+
+
+        document
+        .getElementById(
+            "yhRuleWeekdayWrap"
+        )
+        ?.classList.toggle(
+            "hidden",
+            recurrence !== "weekly"
+        );
+
+    }
+
+
+    /* =====================================================
+       FORM EVENTS
+    ===================================================== */
+
+    function yhAttachFormEvents(){
+
+        document
+        .getElementById(
+            "yhRuleAssignmentType"
+        )
+        ?.addEventListener(
+            "change",
+            yhUpdateAssignmentFields
+        );
+
+
+        document
+        .getElementById(
+            "yhRuleRecurrence"
+        )
+        ?.addEventListener(
+            "change",
+            yhUpdateRecurrenceFields
+        );
+
+
+        document
+        .getElementById(
+            "yhRecurringForm"
+        )
+        ?.addEventListener(
+            "submit",
+            function(event){
+
+                event.preventDefault();
+
+                yhSaveRule();
+
+            }
+        );
+
+
+        document
+        .getElementById(
+            "yhRuleCancelBtn"
+        )
+        ?.addEventListener(
+            "click",
+            yhResetForm
+        );
+
+
+        yhUpdateAssignmentFields();
+        yhUpdateRecurrenceFields();
+
+    }
+
+
+    /* =====================================================
+       RESET FORM
+    ===================================================== */
+
+    function yhResetForm(){
+
+        yhEditingRuleId =
+            null;
+
+
+        const form =
+            document.getElementById(
+                "yhRecurringForm"
+            );
+
+
+        form?.reset();
+
+
+        const due =
+            document.getElementById(
+                "yhRuleDueTime"
+            );
+
+        if(due){
+            due.value = "18:00";
+        }
+
+
+        const save =
+            document.getElementById(
+                "yhRuleSaveBtn"
+            );
+
+
+        if(save){
+
+            save.textContent =
+                "+ მუდმივი დავალების შექმნა";
+
+        }
+
+
+        document
+        .getElementById(
+            "yhRuleCancelBtn"
+        )
+        ?.classList.add(
+            "hidden"
+        );
+
+
+        yhUpdateAssignmentFields();
+        yhUpdateRecurrenceFields();
+
+    }
+
+
+    /* =====================================================
+       SAVE RULE
+    ===================================================== */
+
+    async function yhSaveRule(){
+
+        const saveButton =
+            document.getElementById(
+                "yhRuleSaveBtn"
+            );
+
+
+        const assignmentType =
+            document.getElementById(
+                "yhRuleAssignmentType"
+            )
+            ?.value;
+
+
+        const recurrence =
+            document.getElementById(
+                "yhRuleRecurrence"
+            )
+            ?.value;
+
+
+        const title =
+            document.getElementById(
+                "yhRuleTitle"
+            )
+            ?.value
+            .trim();
+
+
+        if(!title){
+
+            alert(
+                "დავალების სათაური ჩაწერე."
+            );
+
+            return;
+        }
+
+
+        saveButton.disabled =
+            true;
+
+
+        saveButton.textContent =
+            "⏳ ინახება...";
+
+
+        try{
+
+            const{
+                data,
+                error
+            } =
+            await sb.rpc(
+                "yh_admin_task_rule_save_final",
+                {
+
+                    p_rule_id:
+                        yhEditingRuleId
+                        ?
+                        Number(
+                            yhEditingRuleId
+                        )
+                        :
+                        null,
+
+                    p_title:
+                        title,
+
+                    p_description:
+                        document
+                        .getElementById(
+                            "yhRuleDescription"
+                        )
+                        ?.value
+                        .trim()
+                        ||
+                        "",
+
+                    p_assignment_type:
+                        assignmentType,
+
+                    p_assigned_user_id:
+                        assignmentType ===
+                        "user"
+                        ?
+                        (
+                            document
+                            .getElementById(
+                                "yhRuleUser"
+                            )
+                            ?.value
+                            ||
+                            null
+                        )
+                        :
+                        null,
+
+                    p_assigned_role:
+                        assignmentType ===
+                        "role"
+                        ?
+                        (
+                            document
+                            .getElementById(
+                                "yhRuleRole"
+                            )
+                            ?.value
+                            ||
+                            null
+                        )
+                        :
+                        null,
+
+                    p_recurrence:
+                        recurrence,
+
+                    p_weekly_day:
+                        recurrence ===
+                        "weekly"
+                        ?
+                        Number(
+                            document
+                            .getElementById(
+                                "yhRuleWeekday"
+                            )
+                            ?.value
+                        )
+                        :
+                        null,
+
+                    p_due_time:
+                        document
+                        .getElementById(
+                            "yhRuleDueTime"
+                        )
+                        ?.value
+                        ||
+                        "18:00",
+
+                    p_priority:
+                        document
+                        .getElementById(
+                            "yhRulePriority"
+                        )
+                        ?.value
+                        ||
+                        "normal"
+
+                }
+            );
+
+
+            if(error){
+                throw error;
+            }
+
+
+            if(
+                data?.ok !== true
+            ){
+
+                throw new Error(
+                    "დავალების წესის შენახვა ვერ მოხერხდა."
+                );
+
+            }
+
+
+            yhResetForm();
+
+
+            await yhLoadRules();
+
+
+            /*
+               დღევანდელი დავალებაც მაშინვე შეიქმნას,
+               თუ წესი დღეს მოქმედებს.
+            */
+
+            try{
+
+                await sb.rpc(
+                    "yh_admin_task_sync_recurring_final"
+                );
+
+            }catch(error){
+
+                console.error(
+                    "Task sync",
+                    error
+                );
+
+            }
+
+
+            /*
+               არსებული Tasks სია და Dashboard განახლდეს.
+            */
+
+            try{
+
+                if(
+                    typeof loadTasks ===
+                    "function"
+                ){
+
+                    await loadTasks();
+
+                }
+
+            }catch{}
+
+
+            try{
+
+                if(
+                    typeof loadAdminDashboardSummary ===
+                    "function"
+                ){
+
+                    await loadAdminDashboardSummary();
+
+                }
+
+            }catch{}
+
+
+        }catch(error){
+
+            console.error(
+                "Recurring task save",
+                error
+            );
+
+
+            alert(
+                "შენახვა ვერ მოხერხდა:\n\n"
+                +
+                (
+                    error?.message
+                    ||
+                    "Unknown error"
+                )
+            );
+
+
+        }finally{
+
+            saveButton.disabled =
+                false;
+
+
+            if(
+                yhEditingRuleId
+            ){
+
+                saveButton.textContent =
+                    "💾 ცვლილებების შენახვა";
+
+            }else{
+
+                saveButton.textContent =
+                    "+ მუდმივი დავალების შექმნა";
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       LOAD RULES
+    ===================================================== */
+
+    async function yhLoadRules(){
+
+        const list =
+            document.getElementById(
+                "yhRecurringRuleList"
+            );
+
+
+        if(!list){
+            return;
+        }
+
+
+        list.innerHTML = `
+
+            <div class="empty-state">
+                ⏳ იტვირთება...
+            </div>
+
+        `;
+
+
+        try{
+
+            const{
+                data,
+                error
+            } =
+            await sb.rpc(
+                "yh_admin_task_rules_final"
+            );
+
+
+            if(error){
+                throw error;
+            }
+
+
+            yhTaskRules =
+                yhRows(data);
+
+
+            yhRenderRules();
+
+
+        }catch(error){
+
+            console.error(
+                "Recurring rules",
+                error
+            );
+
+
+            list.innerHTML = `
+
+                <div class="empty-state error-state">
+
+                    ❌ მუდმივი დავალებების
+                    ჩატვირთვა ვერ მოხერხდა.
+
+                    <br><br>
+
+                    ${yhSafe(
+                        error?.message ||
+                        "Unknown error"
+                    )}
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RENDER RULES
+    ===================================================== */
+
+    function yhRenderRules(){
+
+        const list =
+            document.getElementById(
+                "yhRecurringRuleList"
+            );
+
+
+        if(!list){
+            return;
+        }
+
+
+        if(
+            !yhTaskRules.length
+        ){
+
+            list.innerHTML = `
+
+                <div class="empty-state">
+
+                    მუდმივი დავალება
+                    ჯერ არ არის შექმნილი.
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        list.innerHTML =
+            yhTaskRules
+            .map(
+                function(rule){
+
+
+                    const active =
+                        rule.is_active ===
+                        true;
+
+
+                    const target =
+                        rule.assignment_type ===
+                        "role"
+
+                        ?
+                        (
+                            "როლი: "
+                            +
+                            yhRoleText(
+                                rule.assigned_role
+                            )
+                        )
+
+                        :
+                        (
+                            "თანამშრომელი: "
+                            +
+                            (
+                                rule.assigned_user_name
+                                ||
+                                "Admin"
+                            )
+                        );
+
+
+                    return `
+
+                        <article
+                            class="
+                                yh-rule-card
+                                ${active ? "" : "off"}
+                            "
+                        >
+
+                            <div class="yh-rule-top">
+
+                                <div>
+
+                                    <div class="yh-rule-name">
+                                        ${yhSafe(rule.title)}
+                                    </div>
+
+                                    ${
+                                        rule.description
+                                        ?
+                                        `
+                                            <div class="yh-rule-description">
+                                                ${yhSafe(rule.description)}
+                                            </div>
+                                        `
+                                        :
+                                        ""
+                                    }
+
+                                </div>
+
+
+                                <span
+                                    class="
+                                        yh-rule-state
+                                        ${active ? "on" : "off"}
+                                    "
+                                >
+
+                                    ${
+                                        active
+                                        ?
+                                        "● აქტიური"
+                                        :
+                                        "● გამორთული"
+                                    }
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="yh-rule-meta">
+
+                                <div class="yh-rule-meta-item">
+
+                                    <b>
+                                        👤 მინიჭება
+                                    </b>
+
+                                    ${yhSafe(target)}
+
+                                </div>
+
+
+                                <div class="yh-rule-meta-item">
+
+                                    <b>
+                                        🔁 განმეორება
+                                    </b>
+
+                                    ${yhSafe(
+                                        yhRecurrenceText(
+                                            rule
+                                        )
+                                    )}
+
+                                </div>
+
+
+                                <div class="yh-rule-meta-item">
+
+                                    <b>
+                                        ⏰ ვადა
+                                    </b>
+
+                                    ${yhSafe(
+                                        yhTimeText(
+                                            rule.due_time
+                                        )
+                                    )}
+
+                                </div>
+
+
+                                <div class="yh-rule-meta-item">
+
+                                    <b>
+                                        🚩 პრიორიტეტი
+                                    </b>
+
+                                    ${yhSafe(
+                                        String(
+                                            rule.priority ||
+                                            "normal"
+                                        )
+                                        .toUpperCase()
+                                    )}
+
+                                </div>
+
+                            </div>
+
+
+                            ${
+                                yhCanManageRules()
+                                ?
+                                `
+                                    <div class="yh-rule-actions">
+
+                                        <button
+                                            type="button"
+                                            class="yh-rule-edit"
+                                            data-yh-edit-rule="${rule.id}"
+                                        >
+                                            ✏️ რედაქტირება
+                                        </button>
+
+
+                                        <button
+                                            type="button"
+                                            class="
+                                                yh-rule-toggle
+                                                ${
+                                                    active
+                                                    ?
+                                                    "disable"
+                                                    :
+                                                    "enable"
+                                                }
+                                            "
+                                            data-yh-toggle-rule="${rule.id}"
+                                            data-yh-active="${
+                                                active
+                                                ?
+                                                "false"
+                                                :
+                                                "true"
+                                            }"
+                                        >
+
+                                            ${
+                                                active
+                                                ?
+                                                "⏸️ გამორთვა"
+                                                :
+                                                "▶️ ჩართვა"
+                                            }
+
+                                        </button>
+
+                                    </div>
+                                `
+                                :
+                                ""
+                            }
+
+                        </article>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+    }
+
+
+    /* =====================================================
+       EDIT RULE
+    ===================================================== */
+
+    function yhEditRule(id){
+
+        if(
+            !yhCanManageRules()
+        ){
+            return;
+        }
+
+
+        const rule =
+            yhTaskRules.find(
+                function(item){
+
+                    return(
+                        String(item.id)
+                        ===
+                        String(id)
+                    );
+
+                }
+            );
+
+
+        if(!rule){
+            return;
+        }
+
+
+        yhEditingRuleId =
+            rule.id;
+
+
+        const title =
+            document.getElementById(
+                "yhRuleTitle"
+            );
+
+        const description =
+            document.getElementById(
+                "yhRuleDescription"
+            );
+
+        const assignmentType =
+            document.getElementById(
+                "yhRuleAssignmentType"
+            );
+
+        const role =
+            document.getElementById(
+                "yhRuleRole"
+            );
+
+        const user =
+            document.getElementById(
+                "yhRuleUser"
+            );
+
+        const recurrence =
+            document.getElementById(
+                "yhRuleRecurrence"
+            );
+
+        const weekday =
+            document.getElementById(
+                "yhRuleWeekday"
+            );
+
+        const due =
+            document.getElementById(
+                "yhRuleDueTime"
+            );
+
+        const priority =
+            document.getElementById(
+                "yhRulePriority"
+            );
+
+
+        if(title){
+            title.value =
+                rule.title || "";
+        }
+
+        if(description){
+            description.value =
+                rule.description || "";
+        }
+
+        if(assignmentType){
+            assignmentType.value =
+                rule.assignment_type ||
+                "role";
+        }
+
+        if(role && rule.assigned_role){
+            role.value =
+                rule.assigned_role;
+        }
+
+        if(user && rule.assigned_user_id){
+            user.value =
+                rule.assigned_user_id;
+        }
+
+        if(recurrence){
+            recurrence.value =
+                rule.recurrence ||
+                "daily";
+        }
+
+        if(
+            weekday &&
+            rule.weekly_day
+        ){
+            weekday.value =
+                String(
+                    rule.weekly_day
+                );
+        }
+
+        if(due){
+            due.value =
+                yhTimeText(
+                    rule.due_time
+                );
+        }
+
+        if(priority){
+            priority.value =
+                rule.priority ||
+                "normal";
+        }
+
+
+        yhUpdateAssignmentFields();
+        yhUpdateRecurrenceFields();
+
+
+        const save =
+            document.getElementById(
+                "yhRuleSaveBtn"
+            );
+
+
+        if(save){
+
+            save.textContent =
+                "💾 ცვლილებების შენახვა";
+
+        }
+
+
+        document
+        .getElementById(
+            "yhRuleCancelBtn"
+        )
+        ?.classList.remove(
+            "hidden"
+        );
+
+
+        document
+        .getElementById(
+            "yhRecurringTasksCard"
+        )
+        ?.scrollIntoView(
+            {
+                behavior:"smooth",
+                block:"start"
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       ENABLE / DISABLE RULE
+    ===================================================== */
+
+    async function yhToggleRule(
+        id,
+        active,
+        button
+    ){
+
+        if(
+            !yhCanManageRules()
+        ){
+            return;
+        }
+
+
+        button.disabled =
+            true;
+
+
+        const oldText =
+            button.textContent;
+
+
+        button.textContent =
+            "⏳...";
+
+
+        try{
+
+            const{
+                data,
+                error
+            } =
+            await sb.rpc(
+                "yh_admin_task_rule_toggle_final",
+                {
+
+                    p_rule_id:
+                        Number(id),
+
+                    p_active:
+                        Boolean(active)
+
+                }
+            );
+
+
+            if(error){
+                throw error;
+            }
+
+
+            if(
+                data?.ok !== true
+            ){
+
+                throw new Error(
+                    "ცვლილება ვერ შესრულდა."
+                );
+
+            }
+
+
+            await yhLoadRules();
+
+
+        }catch(error){
+
+            console.error(
+                "Toggle task rule",
+                error
+            );
+
+
+            alert(
+                "ცვლილება ვერ შესრულდა:\n\n"
+                +
+                (
+                    error?.message ||
+                    "Unknown error"
+                )
+            );
+
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                oldText;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RULE LIST EVENTS
+    ===================================================== */
+
+    document
+    .getElementById(
+        "yhRecurringRuleList"
+    )
+    ?.addEventListener(
+        "click",
+        function(event){
+
+
+            const edit =
+                event.target.closest(
+                    "[data-yh-edit-rule]"
+                );
+
+
+            if(edit){
+
+                yhEditRule(
+                    edit.dataset.yhEditRule
+                );
+
+                return;
+
+            }
+
+
+            const toggle =
+                event.target.closest(
+                    "[data-yh-toggle-rule]"
+                );
+
+
+            if(toggle){
+
+                yhToggleRule(
+
+                    toggle.dataset.yhToggleRule,
+
+                    toggle.dataset.yhActive
+                    ===
+                    "true",
+
+                    toggle
+
+                );
+
+            }
+
+        }
+    );
+
+
+    document
+    .getElementById(
+        "yhRecurringRefresh"
+    )
+    ?.addEventListener(
+        "click",
+        yhLoadRules
+    );
+
+
+    /* =====================================================
+       START / OPEN TASKS PAGE
+    ===================================================== */
+
+    async function yhInitRecurringTasks(){
+
+        await yhLoadTaskAdmins();
+
+        yhRenderManager();
+
+        await yhLoadRules();
+
+    }
+
+
+    /*
+       Tasks მენიუზე დაჭერისას
+    */
+
+    document
+    .querySelectorAll(
+        '.nav-btn[data-page="tasks"]'
+    )
+    .forEach(
+        function(button){
+
+            button.addEventListener(
+                "click",
+                function(){
+
+                    setTimeout(
+                        yhInitRecurringTasks,
+                        40
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /*
+       Refresh Tasks-ზეც განახლდეს.
+    */
+
+    document
+    .getElementById(
+        "refreshTasksBtn"
+    )
+    ?.addEventListener(
+        "click",
+        function(){
+
+            setTimeout(
+                yhLoadRules,
+                100
+            );
+
+        }
+    );
+
+
+    /*
+       თუ გვერდი უკვე გახსნილია.
+    */
+
+    setTimeout(
+        function(){
+
+            if(
+                taskPage.classList.contains(
+                    "active"
+                )
+            ){
+
+                yhInitRecurringTasks();
+
+            }
+
+        },
+        700
+    );
+
+
+})();
+
+</script>
 </body>
 </html>
