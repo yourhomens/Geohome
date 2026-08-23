@@ -10431,5 +10431,1021 @@ checkAdminAccess();
 })();
 
 </script>
+    <!-- =========================================================
+     YOUR HOME — TEAM GROUP CHAT FINAL
+========================================================= -->
+
+<style id="yhGroupChatFinalStyle">
+
+/* საერთო ჩატი — გვერდითი სიის გარეშე */
+.group-chat-shell{
+    display:block !important;
+    height:min(720px,calc(100vh - 190px));
+    min-height:520px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:24px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+}
+
+.group-chat-shell .msg-chat{
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+}
+
+.group-chat-head-icon{
+    width:42px;
+    height:42px;
+    flex:0 0 42px;
+    border-radius:50%;
+    background:var(--olive-soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+}
+
+.group-chat-head-left{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    min-width:0;
+}
+
+.group-chat-messages{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:20px !important;
+    background:#f5f6f2;
+}
+
+
+/* IMPORTANT — ბაბლები აღარ გაიწელება */
+
+#groupMessages .msg-row{
+    display:flex !important;
+    flex:none !important;
+    width:100% !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:none !important;
+    align-items:flex-end !important;
+    margin-bottom:10px !important;
+}
+
+#groupMessages .msg-row.me{
+    justify-content:flex-end !important;
+}
+
+#groupMessages .msg-bubble{
+    display:inline-block !important;
+    width:auto !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:none !important;
+    max-width:min(72%,620px) !important;
+    flex:none !important;
+    white-space:normal !important;
+    padding:9px 12px !important;
+    line-height:1.4 !important;
+}
+
+#groupMessages .msg-row.me .msg-bubble{
+    background:var(--olive);
+    color:#fff;
+    border-color:var(--olive);
+}
+
+.group-message-sender{
+    font-size:10px;
+    font-weight:900;
+    margin-bottom:5px;
+    color:var(--olive-dark);
+}
+
+.msg-row.me .group-message-sender{
+    color:rgba(255,255,255,.82);
+}
+
+.group-role{
+    font-size:8px;
+    font-weight:800;
+    opacity:.65;
+    margin-left:4px;
+}
+
+.group-chat-online{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    padding:5px 8px;
+    border-radius:999px;
+    background:var(--olive-soft);
+    color:var(--olive-dark);
+    font-size:9px;
+    font-weight:900;
+}
+
+.group-chat-online-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--olive);
+}
+
+@media(max-width:760px){
+
+    .group-chat-shell{
+        height:calc(100vh - 160px);
+        min-height:610px;
+        border-radius:17px;
+    }
+
+    .group-chat-messages{
+        padding:11px !important;
+    }
+
+    #groupMessages .msg-bubble{
+        max-width:84% !important;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+(function(){
+
+    if(window.__YH_GROUP_CHAT_FINAL__){
+        return;
+    }
+
+    window.__YH_GROUP_CHAT_FINAL__ = true;
+
+
+    /* =====================================================
+       1. SIDEBAR BUTTON
+    ===================================================== */
+
+    const teamPrivateButton =
+        document.querySelector(
+            '.nav-btn[data-page="teamchat"]'
+        );
+
+
+    if(
+        teamPrivateButton &&
+        !document.querySelector(
+            '.nav-btn[data-page="groupchat"]'
+        )
+    ){
+
+        const groupButton =
+            document.createElement(
+                "button"
+            );
+
+
+        groupButton.type =
+            "button";
+
+
+        groupButton.className =
+            "nav-btn";
+
+
+        groupButton.dataset.page =
+            "groupchat";
+
+
+        groupButton.innerHTML = `
+
+            <span class="nav-icon">
+                👥
+            </span>
+
+            გუნდის საერთო ჩატი
+
+            <span
+                class="nav-badge"
+                id="groupBadge"
+            >
+                0
+            </span>
+
+        `;
+
+
+        teamPrivateButton.insertAdjacentElement(
+            "afterend",
+            groupButton
+        );
+
+    }
+
+
+    /* =====================================================
+       2. GROUP CHAT PAGE
+    ===================================================== */
+
+    if(
+        !document.getElementById(
+            "page-groupchat"
+        )
+    ){
+
+        const page =
+            document.createElement(
+                "section"
+            );
+
+
+        page.className =
+            "admin-page";
+
+
+        page.id =
+            "page-groupchat";
+
+
+        page.innerHTML = `
+
+            <div class="page-head">
+
+                <div>
+
+                    <h2>
+                        👥 გუნდის საერთო ჩატი
+                    </h2>
+
+                    <p>
+                        Your Home-ის ადმინისტრაციის საერთო სივრცე.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="group-chat-shell">
+
+                <section class="msg-chat">
+
+
+                    <div class="msg-head">
+
+                        <div class="group-chat-head-left">
+
+                            <div class="group-chat-head-icon">
+                                👥
+                            </div>
+
+
+                            <div class="msg-head-user">
+
+                                <strong>
+                                    Your Home Team
+                                </strong>
+
+                                <small>
+                                    OWNER · ADMIN · MODERATOR · SUPPORT
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="group-chat-online">
+
+                            <span class="group-chat-online-dot"></span>
+
+                            გუნდის ჩატი
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="msg-messages group-chat-messages"
+                        id="groupMessages"
+                    >
+
+                        <div class="msg-empty">
+                            ⏳ შეტყობინებები იტვირთება...
+                        </div>
+
+                    </div>
+
+
+                    <div class="msg-compose">
+
+                        <textarea
+                            class="msg-input"
+                            id="groupInput"
+                            maxlength="2000"
+                            placeholder="მიწერეთ გუნდს..."
+                        ></textarea>
+
+
+                        <button
+                            type="button"
+                            class="msg-send"
+                            id="groupSendBtn"
+                        >
+                            გაგზავნა
+                        </button>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        `;
+
+
+        document
+            .querySelector(
+                ".content"
+            )
+            ?.appendChild(
+                page
+            );
+
+    }
+
+
+    /* =====================================================
+       3. DASHBOARD COUNTER
+    ===================================================== */
+
+    if(
+        !document.getElementById(
+            "dashboardGroupUnread"
+        )
+    ){
+
+        const dashboardGrid =
+            document.querySelector(
+                "#page-dashboard .stats-grid"
+            );
+
+
+        if(dashboardGrid){
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "stat-card";
+
+
+            card.innerHTML = `
+
+                <div class="stat-icon">
+                    👥
+                </div>
+
+                <div class="stat-title">
+                    გუნდის ახალი მესიჯები
+                </div>
+
+                <div
+                    class="stat-number"
+                    id="dashboardGroupUnread"
+                >
+                    0
+                </div>
+
+                <div class="stat-sub">
+                    საერთო ადმინისტრაციული ჩატი
+                </div>
+
+            `;
+
+
+            dashboardGrid.appendChild(
+                card
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       4. PAGE TITLE
+    ===================================================== */
+
+    try{
+
+        pageTitles.groupchat =
+            "გუნდის საერთო ჩატი";
+
+    }catch(error){}
+
+
+    const groupMessages =
+        document.getElementById(
+            "groupMessages"
+        );
+
+
+    const groupInput =
+        document.getElementById(
+            "groupInput"
+        );
+
+
+    const groupSendBtn =
+        document.getElementById(
+            "groupSendBtn"
+        );
+
+
+    let groupLoading = false;
+
+
+    function groupRoleLabel(role){
+
+        return({
+
+            owner:"OWNER",
+            admin:"ADMIN",
+            moderator:"MODERATOR",
+            support:"SUPPORT"
+
+        })[
+            String(
+                role || ""
+            ).toLowerCase()
+        ]
+        ||
+        String(
+            role || ""
+        ).toUpperCase();
+
+    }
+
+
+    function groupIsMine(message){
+
+        return(
+            String(
+                message?.sender_id || ""
+            )
+            ===
+            String(
+                currentUser?.id || ""
+            )
+        );
+
+    }
+
+
+    /* =====================================================
+       5. RENDER
+    ===================================================== */
+
+    function renderGroupMessages(
+        messages
+    ){
+
+        if(!groupMessages){
+            return;
+        }
+
+
+        if(!messages.length){
+
+            groupMessages.innerHTML = `
+
+                <div class="msg-empty">
+
+                    ჯერ საერთო ჩატში
+                    შეტყობინებები არ არის.
+
+                    <br>
+
+                    დაწერე პირველი შეტყობინება 🙂
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        groupMessages.innerHTML =
+            messages
+            .map(
+                function(message){
+
+                    const mine =
+                        groupIsMine(
+                            message
+                        );
+
+
+                    const name =
+                        message.sender_name ||
+                        "Admin";
+
+
+                    const role =
+                        groupRoleLabel(
+                            message.sender_role
+                        );
+
+
+                    return `
+
+                        <div
+                            class="msg-row ${mine ? "me" : ""}"
+                        >
+
+                            <div class="msg-bubble">
+
+                                <div class="group-message-sender">
+
+                                    ${esc(name)}
+
+                                    <span class="group-role">
+                                        ${esc(role)}
+                                    </span>
+
+                                </div>
+
+                                ${esc(
+                                    message.message ||
+                                    ""
+                                )}
+
+                                <div class="msg-time">
+
+                                    ${esc(
+                                        dateText(
+                                            message.created_at
+                                        )
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+    }
+
+
+    /* =====================================================
+       6. LOAD MESSAGES
+    ===================================================== */
+
+    async function loadGroupChat(
+        forceScroll = false
+    ){
+
+        if(
+            !currentUser ||
+            !currentAdmin ||
+            groupLoading
+        ){
+            return;
+        }
+
+
+        groupLoading =
+            true;
+
+
+        const nearBottom =
+            groupMessages
+                ?(
+                    groupMessages.scrollHeight
+                    -
+                    groupMessages.scrollTop
+                    -
+                    groupMessages.clientHeight
+                    <
+                    100
+                )
+                :true;
+
+
+        try{
+
+            const{
+                data,
+                error
+            } =
+            await sb.rpc(
+                "yh_admin_group_messages_final",
+                {
+                    p_limit:200
+                }
+            );
+
+
+            if(error){
+                throw error;
+            }
+
+
+            const messages =
+                rows(data);
+
+
+            renderGroupMessages(
+                messages
+            );
+
+
+            if(
+                forceScroll ||
+                nearBottom
+            ){
+
+                groupMessages.scrollTop =
+                    groupMessages.scrollHeight;
+
+            }
+
+
+            await loadGroupUnread();
+
+
+        }catch(error){
+
+            console.error(
+                "Group chat",
+                error
+            );
+
+
+            groupMessages.innerHTML = `
+
+                <div class="msg-error">
+
+                    საერთო ჩატის ჩატვირთვა
+                    ვერ მოხერხდა.
+
+                    <br><br>
+
+                    ${esc(
+                        error?.message ||
+                        "Unknown error"
+                    )}
+
+                </div>
+
+            `;
+
+        }finally{
+
+            groupLoading =
+                false;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       7. UNREAD
+    ===================================================== */
+
+    async function loadGroupUnread(){
+
+        if(
+            !currentUser ||
+            !currentAdmin
+        ){
+            return;
+        }
+
+
+        try{
+
+            const{
+                data,
+                error
+            } =
+            await sb.rpc(
+                "yh_admin_group_unread_final"
+            );
+
+
+            if(error){
+                throw error;
+            }
+
+
+            const count =
+                Number(
+                    data || 0
+                );
+
+
+            const badge =
+                document.getElementById(
+                    "groupBadge"
+                );
+
+
+            if(badge){
+
+                badge.textContent =
+                    String(count);
+
+
+                badge.classList.toggle(
+                    "has-unread",
+                    count > 0
+                );
+
+            }
+
+
+            const dashboard =
+                document.getElementById(
+                    "dashboardGroupUnread"
+                );
+
+
+            if(dashboard){
+
+                dashboard.textContent =
+                    String(count);
+
+            }
+
+
+        }catch(error){
+
+            console.error(
+                "Group unread",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       8. SEND
+    ===================================================== */
+
+    async function sendGroupMessage(){
+
+        const text =
+            String(
+                groupInput?.value ||
+                ""
+            )
+            .trim();
+
+
+        if(!text){
+            return;
+        }
+
+
+        groupSendBtn.disabled =
+            true;
+
+
+        groupInput.disabled =
+            true;
+
+
+        groupSendBtn.textContent =
+            "იგზავნება...";
+
+
+        try{
+
+            const{
+                data,
+                error
+            } =
+            await sb.rpc(
+                "yh_admin_group_send_final",
+                {
+                    p_message:text
+                }
+            );
+
+
+            if(error){
+                throw error;
+            }
+
+
+            if(
+                data?.ok !== true
+            ){
+
+                throw new Error(
+                    "მესიჯის გაგზავნა ვერ მოხერხდა."
+                );
+
+            }
+
+
+            groupInput.value =
+                "";
+
+
+            await loadGroupChat(
+                true
+            );
+
+
+        }catch(error){
+
+            console.error(
+                "Group send",
+                error
+            );
+
+
+            alert(
+                "მესიჯის გაგზავნა ვერ მოხერხდა:\n\n"
+                +
+                (
+                    error?.message ||
+                    "Unknown error"
+                )
+            );
+
+
+        }finally{
+
+            groupSendBtn.disabled =
+                false;
+
+
+            groupInput.disabled =
+                false;
+
+
+            groupSendBtn.textContent =
+                "გაგზავნა";
+
+
+            groupInput.focus();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       9. EVENTS
+    ===================================================== */
+
+    groupSendBtn
+    ?.addEventListener(
+        "click",
+        sendGroupMessage
+    );
+
+
+    groupInput
+    ?.addEventListener(
+        "keydown",
+        function(event){
+
+            if(
+                event.key === "Enter" &&
+                !event.shiftKey
+            ){
+
+                event.preventDefault();
+
+                sendGroupMessage();
+
+            }
+
+        }
+    );
+
+
+    const groupNavButton =
+        document.querySelector(
+            '.nav-btn[data-page="groupchat"]'
+        );
+
+
+    groupNavButton
+    ?.addEventListener(
+        "click",
+        function(){
+
+            openPage(
+                "groupchat"
+            );
+
+
+            loadGroupChat(
+                true
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       10. POLLING
+    ===================================================== */
+
+    setInterval(
+        async function(){
+
+            if(
+                !currentUser ||
+                !currentAdmin
+            ){
+                return;
+            }
+
+
+            const page =
+                document.getElementById(
+                    "page-groupchat"
+                );
+
+
+            if(
+                page?.classList.contains(
+                    "active"
+                )
+            ){
+
+                await loadGroupChat(
+                    false
+                );
+
+            }else{
+
+                await loadGroupUnread();
+
+            }
+
+        },
+        5000
+    );
+
+
+    /*
+       Admin Panel-ის ჩატვირთვის შემდეგ
+       პირველი unread counter.
+    */
+
+    const startupTimer =
+        setInterval(
+            function(){
+
+                if(
+                    currentUser &&
+                    currentAdmin
+                ){
+
+                    clearInterval(
+                        startupTimer
+                    );
+
+                    loadGroupUnread();
+
+                }
+
+            },
+            500
+        );
+
+
+})();
+
+</script>
 </body>
 </html>
