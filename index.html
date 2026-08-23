@@ -39873,6 +39873,255 @@ if(
 })();
 
 </script>
+    <!-- =========================================================
+     YOUR HOME — CLICKABLE AD PRICES FIX
+========================================================= -->
+
+<style id="yhClickableAdPricesFix">
+
+.yh-ad-price-line{
+    cursor:pointer;
+    transition:.15s ease;
+    border:1px solid transparent;
+}
+
+.yh-ad-price-line:hover{
+    border-color:#cdd4b6;
+    background:#f1f4e8;
+}
+
+.yh-ad-price-line.yh-price-selected{
+    background:#eef1e3;
+    border-color:#7d8b45;
+    color:#252a24;
+}
+
+.yh-ad-price-line.yh-price-selected b{
+    color:#5d6933;
+}
+
+</style>
+
+<script>
+
+(function(){
+
+    if(window.__YH_CLICKABLE_AD_PRICES_FIX__){
+        return;
+    }
+
+    window.__YH_CLICKABLE_AD_PRICES_FIX__ = true;
+
+
+    function markSelectedPrice(){
+
+        const durationSelect =
+            document.getElementById(
+                "yhAdDuration"
+            );
+
+        const selectedPackage =
+            document.querySelector(
+                ".yh-ad-package.selected"
+            );
+
+        if(
+            !durationSelect ||
+            !selectedPackage
+        ){
+            return;
+        }
+
+
+        const currentDays =
+            Number(
+                durationSelect.value
+            );
+
+
+        selectedPackage
+        .querySelectorAll(
+            ".yh-ad-price-line"
+        )
+        .forEach(
+            row => {
+
+                const days =
+                    parseInt(
+                        row.textContent,
+                        10
+                    );
+
+                row.classList.toggle(
+                    "yh-price-selected",
+                    days === currentDays
+                );
+
+            }
+        );
+
+    }
+
+
+    /*
+       Capture რეჟიმში ვიჭერთ კლიკს
+       სანამ ძირითადი რეკლამის კოდი
+       პაკეტის ბარათს თავიდან დახატავს.
+    */
+
+    document.addEventListener(
+
+        "click",
+
+        function(event){
+
+            const priceRow =
+                event.target.closest(
+                    ".yh-ad-price-line"
+                );
+
+            if(!priceRow){
+                return;
+            }
+
+
+            const packageCard =
+                priceRow.closest(
+                    ".yh-ad-package"
+                );
+
+            if(!packageCard){
+                return;
+            }
+
+
+            const days =
+                parseInt(
+                    priceRow.textContent,
+                    10
+                );
+
+
+            if(
+                ![
+                    7,
+                    15,
+                    30
+                ].includes(days)
+            ){
+                return;
+            }
+
+
+            const durationSelect =
+                document.getElementById(
+                    "yhAdDuration"
+                );
+
+
+            if(durationSelect){
+
+                durationSelect.value =
+                    String(days);
+
+
+                durationSelect.dispatchEvent(
+                    new Event(
+                        "change",
+                        {
+                            bubbles:true
+                        }
+                    )
+                );
+
+            }
+
+
+            /*
+               ძირითადი კოდი ამავე კლიკზე
+               პაკეტსაც აირჩევს.
+               შემდეგ ვიზუალურად მოვნიშნავთ
+               ზუსტად არჩეულ ფასს.
+            */
+
+            setTimeout(
+                markSelectedPrice,
+                30
+            );
+
+        },
+
+        true
+
+    );
+
+
+    /*
+       თუ პერიოდი ქვედა dropdown-იდან შეიცვალა,
+       ფასის შესაბამისი ხაზიც მოინიშნოს.
+    */
+
+    document.addEventListener(
+
+        "change",
+
+        function(event){
+
+            if(
+                event.target?.id ===
+                "yhAdDuration"
+            ){
+
+                setTimeout(
+                    markSelectedPrice,
+                    20
+                );
+
+            }
+
+        }
+
+    );
+
+
+    /*
+       პაკეტის ბარათზე დაჭერის შემდეგაც
+       სწორი პერიოდი გამოჩნდეს მონიშნული.
+    */
+
+    document.addEventListener(
+
+        "click",
+
+        function(event){
+
+            if(
+                event.target.closest(
+                    ".yh-ad-package"
+                )
+            ){
+
+                setTimeout(
+                    markSelectedPrice,
+                    40
+                );
+
+            }
+
+        }
+
+    );
+
+
+    setTimeout(
+        markSelectedPrice,
+        700
+    );
+
+
+})();
+
+</script>
 </body>
 </html>
 
