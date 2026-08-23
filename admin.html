@@ -2685,6 +2685,211 @@ setInterval(
 checkAdminAccess();
 
 </script>
+<script>
+(function(){
 
+    if(window.__YH_FORCE_CHAT_BUBBLES__){
+        return;
+    }
+
+    window.__YH_FORCE_CHAT_BUBBLES__ = true;
+
+    function fixChat(container){
+
+        if(!container){
+            return;
+        }
+
+        container.style.setProperty(
+            "display",
+            "block",
+            "important"
+        );
+
+        container
+        .querySelectorAll(".msg-row")
+        .forEach(function(row){
+
+            row.style.setProperty(
+                "display",
+                "flex",
+                "important"
+            );
+
+            row.style.setProperty(
+                "width",
+                "100%",
+                "important"
+            );
+
+            row.style.setProperty(
+                "height",
+                "auto",
+                "important"
+            );
+
+            row.style.setProperty(
+                "min-height",
+                "0",
+                "important"
+            );
+
+            row.style.setProperty(
+                "max-height",
+                "none",
+                "important"
+            );
+
+            row.style.setProperty(
+                "flex",
+                "0 0 auto",
+                "important"
+            );
+
+            row.style.setProperty(
+                "align-items",
+                "flex-end",
+                "important"
+            );
+
+            row.style.setProperty(
+                "justify-content",
+                row.classList.contains("me")
+                    ? "flex-end"
+                    : "flex-start",
+                "important"
+            );
+
+            row.style.setProperty(
+                "margin-bottom",
+                "8px",
+                "important"
+            );
+
+
+            const bubble =
+            row.querySelector(".msg-bubble");
+
+            if(!bubble){
+                return;
+            }
+
+            bubble.style.setProperty(
+                "display",
+                "inline-block",
+                "important"
+            );
+
+            bubble.style.setProperty(
+                "width",
+                "auto",
+                "important"
+            );
+
+            bubble.style.setProperty(
+                "height",
+                "auto",
+                "important"
+            );
+
+            bubble.style.setProperty(
+                "min-height",
+                "0",
+                "important"
+            );
+
+            bubble.style.setProperty(
+                "max-height",
+                "none",
+                "important"
+            );
+
+            bubble.style.setProperty(
+                "max-width",
+                window.innerWidth <= 650
+                    ? "82%"
+                    : "70%",
+                "important"
+            );
+
+            bubble.style.setProperty(
+                "flex",
+                "0 0 auto",
+                "important"
+            );
+
+            bubble.style.setProperty(
+                "white-space",
+                "normal",
+                "important"
+            );
+
+            bubble.style.setProperty(
+                "padding",
+                "9px 12px",
+                "important"
+            );
+
+            bubble.style.setProperty(
+                "line-height",
+                "1.4",
+                "important"
+            );
+
+        });
+
+    }
+
+
+    function fixAllChats(){
+
+        fixChat(
+            document.getElementById(
+                "supportMessages"
+            )
+        );
+
+        fixChat(
+            document.getElementById(
+                "teamMessages"
+            )
+        );
+
+    }
+
+
+    const observer =
+    new MutationObserver(
+        fixAllChats
+    );
+
+
+    [
+        document.getElementById(
+            "supportMessages"
+        ),
+
+        document.getElementById(
+            "teamMessages"
+        )
+    ]
+    .filter(Boolean)
+    .forEach(function(container){
+
+        observer.observe(
+            container,
+            {
+                childList:true,
+                subtree:true
+            }
+        );
+
+    });
+
+
+    fixAllChats();
+
+})();
+</script>
 </body>
 </html>
