@@ -8674,6 +8674,1762 @@ checkAdminAccess();
 })();
 
 </script>
+<!-- =========================================================
+     YOUR HOME — ADMIN MANAGEMENT FINAL
+========================================================= -->
 
+<style id="yhAdminManagementStyle">
+
+.admin-management-wrap{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.admin-manage-top{
+    display:grid;
+    grid-template-columns:minmax(0,420px) minmax(0,1fr);
+    gap:18px;
+    align-items:start;
+}
+
+.admin-add-card,
+.admin-list-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:22px;
+    box-shadow:0 5px 20px rgba(33,40,30,.03);
+}
+
+.admin-card-title{
+    font-size:18px;
+    color:var(--dark);
+    font-weight:900;
+    margin-bottom:5px;
+}
+
+.admin-card-sub{
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.55;
+    margin-bottom:18px;
+}
+
+.admin-form{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.admin-field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.admin-field label{
+    color:var(--dark);
+    font-size:11px;
+    font-weight:800;
+}
+
+.admin-field input,
+.admin-field select{
+    width:100%;
+    height:46px;
+    border:1px solid var(--border);
+    background:#fafbf8;
+    border-radius:14px;
+    padding:0 13px;
+    outline:none;
+    color:var(--text);
+}
+
+.admin-field input:focus,
+.admin-field select:focus{
+    background:#fff;
+    border-color:var(--olive);
+    box-shadow:0 0 0 3px rgba(125,139,69,.08);
+}
+
+.admin-add-btn{
+    min-height:46px;
+    border:0;
+    border-radius:14px;
+    background:var(--olive);
+    color:#fff;
+    font-weight:900;
+    margin-top:3px;
+}
+
+.admin-add-btn:hover{
+    background:var(--olive-dark);
+}
+
+.admin-add-btn:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+.admin-security-note{
+    margin-top:14px;
+    padding:12px;
+    border-radius:13px;
+    background:var(--olive-soft);
+    color:var(--olive-dark);
+    font-size:11px;
+    line-height:1.55;
+}
+
+.admin-list-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.admin-list-head strong{
+    font-size:18px;
+    color:var(--dark);
+}
+
+.admin-refresh-btn{
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:11px;
+    padding:8px 11px;
+    color:var(--text);
+    font-size:11px;
+    font-weight:800;
+}
+
+.admin-team-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.admin-person{
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:14px;
+    background:#fafbf8;
+}
+
+.admin-person.owner{
+    background:linear-gradient(
+        135deg,
+        #f5f7ed,
+        #fff
+    );
+    border-color:#dce3c8;
+}
+
+.admin-person.inactive{
+    opacity:.67;
+}
+
+.admin-person-main{
+    display:grid;
+    grid-template-columns:44px minmax(0,1fr) auto;
+    gap:12px;
+    align-items:center;
+}
+
+.admin-person-avatar{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:var(--olive-soft);
+    color:var(--olive-dark);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    font-size:16px;
+}
+
+.admin-person-info{
+    min-width:0;
+}
+
+.admin-person-name{
+    color:var(--dark);
+    font-weight:900;
+    font-size:14px;
+}
+
+.admin-person-email{
+    color:var(--muted);
+    font-size:10px;
+    margin-top:3px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.admin-person-badges{
+    margin-top:7px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+}
+
+.admin-role-badge,
+.admin-state-badge,
+.admin-finance-badge{
+    display:inline-flex;
+    align-items:center;
+    padding:4px 7px;
+    border-radius:999px;
+    font-size:9px;
+    font-weight:900;
+}
+
+.admin-role-badge{
+    background:var(--olive-soft);
+    color:var(--olive-dark);
+}
+
+.admin-state-badge{
+    background:#eef0eb;
+    color:#687066;
+}
+
+.admin-state-badge.active{
+    background:#eaf5e7;
+    color:#4f7746;
+}
+
+.admin-state-badge.inactive{
+    background:#fff0f0;
+    color:#a54a4a;
+}
+
+.admin-finance-badge{
+    background:#f2efe3;
+    color:#776a34;
+}
+
+.admin-protected{
+    color:var(--olive-dark);
+    font-size:10px;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.admin-edit-area{
+    margin-top:13px;
+    padding-top:13px;
+    border-top:1px solid var(--border);
+    display:grid;
+    grid-template-columns:1.2fr .8fr auto;
+    gap:8px;
+    align-items:center;
+}
+
+.admin-edit-area input,
+.admin-edit-area select{
+    height:40px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    padding:0 10px;
+    outline:none;
+    background:#fff;
+    color:var(--text);
+    min-width:0;
+}
+
+.admin-edit-area input:focus,
+.admin-edit-area select:focus{
+    border-color:var(--olive);
+}
+
+.admin-edit-actions{
+    display:flex;
+    gap:6px;
+}
+
+.admin-save-btn,
+.admin-disable-btn,
+.admin-enable-btn{
+    min-height:40px;
+    border-radius:11px;
+    padding:8px 11px;
+    font-size:10px;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.admin-save-btn{
+    border:0;
+    background:var(--olive);
+    color:#fff;
+}
+
+.admin-disable-btn{
+    border:1px solid #efcccc;
+    background:#fff0f0;
+    color:#a84545;
+}
+
+.admin-enable-btn{
+    border:1px solid #d6e2c8;
+    background:#edf5e5;
+    color:#59733d;
+}
+
+.admin-save-btn:disabled,
+.admin-disable-btn:disabled,
+.admin-enable-btn:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+.admin-manage-message{
+    min-height:220px;
+    border:1px solid var(--border);
+    border-radius:22px;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:30px;
+    color:var(--muted);
+    line-height:1.6;
+}
+
+.admin-manage-message.error{
+    background:#fff5f5;
+    color:#9d4545;
+    border-color:#efcccc;
+}
+
+.admin-owner-only{
+    min-height:300px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:30px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+.admin-owner-only-icon{
+    width:68px;
+    height:68px;
+    border-radius:20px;
+    background:var(--olive-soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:31px;
+    margin-bottom:16px;
+}
+
+.admin-owner-only h3{
+    color:var(--dark);
+    font-size:21px;
+}
+
+.admin-owner-only p{
+    max-width:520px;
+    margin-top:9px;
+    color:var(--muted);
+    line-height:1.6;
+}
+
+@media(max-width:900px){
+
+    .admin-manage-top{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:650px){
+
+    .admin-add-card,
+    .admin-list-card{
+        padding:16px;
+        border-radius:19px;
+    }
+
+    .admin-person-main{
+        grid-template-columns:40px minmax(0,1fr);
+    }
+
+    .admin-person-avatar{
+        width:40px;
+        height:40px;
+    }
+
+    .admin-protected{
+        grid-column:1 / -1;
+        padding-left:52px;
+    }
+
+    .admin-edit-area{
+        grid-template-columns:1fr;
+    }
+
+    .admin-edit-actions{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+    }
+
+    .admin-save-btn,
+    .admin-disable-btn,
+    .admin-enable-btn{
+        width:100%;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+(function(){
+
+    if(
+        window.__YH_ADMIN_MANAGEMENT_FINAL__
+    ){
+        return;
+    }
+
+    window.__YH_ADMIN_MANAGEMENT_FINAL__ =
+    true;
+
+
+    /* =====================================================
+       REPLACE OLD ADMIN PLACEHOLDER
+    ===================================================== */
+
+    const page =
+    document.getElementById(
+        "page-admins"
+    );
+
+
+    if(!page){
+        return;
+    }
+
+
+    page.innerHTML = `
+
+        <div class="page-head">
+
+            <div>
+
+                <h2>
+                    🔐 ადმინისტრატორები
+                </h2>
+
+                <p>
+                    გუნდის წევრების დამატება,
+                    როლების შეცვლა და წვდომის მართვა.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div id="adminManagementRoot">
+
+            <div class="admin-manage-message">
+                ⏳ იტვირთება...
+            </div>
+
+        </div>
+
+    `;
+
+
+    let managedAdmins = [];
+
+
+    const root =
+    document.getElementById(
+        "adminManagementRoot"
+    );
+
+
+    /* =====================================================
+       HELPERS
+    ===================================================== */
+
+    function isOwner(){
+
+        return(
+            String(
+                currentAdmin?.role ||
+                ""
+            )
+            .toLowerCase()
+            ===
+            "owner"
+        );
+
+    }
+
+
+    function adminRoleName(role){
+
+        const r =
+        String(
+            role || ""
+        )
+        .toLowerCase();
+
+
+        return({
+
+            owner:"OWNER",
+            admin:"ADMIN",
+            moderator:"MODERATOR",
+            support:"SUPPORT"
+
+        })[r] || r.toUpperCase();
+
+    }
+
+
+    function friendlyAdminError(error){
+
+        const text =
+        String(
+            error?.message ||
+            error ||
+            ""
+        );
+
+
+        if(
+            text.includes(
+                "USER_NOT_FOUND"
+            )
+        ){
+
+            return(
+                "ეს ელფოსტა Your Home-ზე რეგისტრირებული არ არის. ჯერ მომხმარებელმა უნდა შექმნას ჩვეულებრივი ანგარიში."
+            );
+
+        }
+
+
+        if(
+            text.includes(
+                "ADMIN_ALREADY_EXISTS"
+            )
+        ){
+
+            return(
+                "ეს მომხმარებელი უკვე დამატებულია ადმინისტრატორებში."
+            );
+
+        }
+
+
+        if(
+            text.includes(
+                "OWNER_ACCESS_REQUIRED"
+            )
+        ){
+
+            return(
+                "ადმინისტრატორების მართვა მხოლოდ OWNER-ს შეუძლია."
+            );
+
+        }
+
+
+        if(
+            text.includes(
+                "OWNER_ACCOUNT_PROTECTED"
+            )
+        ){
+
+            return(
+                "OWNER ანგარიშის შეცვლა ან გათიშვა ამ გვერდიდან აკრძალულია."
+            );
+
+        }
+
+
+        if(
+            text.includes(
+                "INVALID_ADMIN_ROLE"
+            )
+        ){
+
+            return(
+                "არჩეული როლი არასწორია."
+            );
+
+        }
+
+
+        if(
+            text.includes(
+                "ADMIN_NOT_FOUND"
+            )
+        ){
+
+            return(
+                "ადმინისტრატორი ვერ მოიძებნა."
+            );
+
+        }
+
+
+        return(
+            text ||
+            "მოქმედება ვერ შესრულდა."
+        );
+
+    }
+
+
+    /* =====================================================
+       OWNER ONLY SCREEN
+    ===================================================== */
+
+    function renderOwnerOnly(){
+
+        root.innerHTML = `
+
+            <div class="admin-owner-only">
+
+                <div class="admin-owner-only-icon">
+                    🔐
+                </div>
+
+                <h3>
+                    OWNER წვდომა
+                </h3>
+
+                <p>
+                    ადმინისტრატორების დამატება,
+                    როლების შეცვლა და მათი წვდომის
+                    გათიშვა მხოლოდ OWNER ანგარიშიდან შეიძლება.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =====================================================
+       RENDER ADMIN LIST
+    ===================================================== */
+
+    function renderAdminManagement(){
+
+        if(!isOwner()){
+
+            renderOwnerOnly();
+
+            return;
+        }
+
+
+        root.innerHTML = `
+
+            <div class="admin-management-wrap">
+
+                <div class="admin-manage-top">
+
+
+                    <!-- ADD ADMIN -->
+
+                    <section class="admin-add-card">
+
+                        <div class="admin-card-title">
+                            ➕ ახალი ადმინისტრატორი
+                        </div>
+
+                        <div class="admin-card-sub">
+                            მომხმარებელი ჯერ რეგისტრირებული
+                            უნდა იყოს Your Home-ზე.
+                        </div>
+
+
+                        <form
+                            class="admin-form"
+                            id="newAdminForm"
+                        >
+
+                            <div class="admin-field">
+
+                                <label>
+                                    ელფოსტა
+                                </label>
+
+                                <input
+                                    type="email"
+                                    id="newAdminEmail"
+                                    placeholder="example@gmail.com"
+                                    required
+                                    autocomplete="off"
+                                >
+
+                            </div>
+
+
+                            <div class="admin-field">
+
+                                <label>
+                                    სახელი
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="newAdminName"
+                                    maxlength="80"
+                                    placeholder="მაგ: Mariam"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="admin-field">
+
+                                <label>
+                                    როლი
+                                </label>
+
+                                <select
+                                    id="newAdminRole"
+                                    required
+                                >
+
+                                    <option value="admin">
+                                        ADMIN
+                                    </option>
+
+                                    <option value="moderator">
+                                        MODERATOR
+                                    </option>
+
+                                    <option value="support">
+                                        SUPPORT
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                class="admin-add-btn"
+                                id="newAdminSubmit"
+                            >
+                                + ადმინისტრატორის დამატება
+                            </button>
+
+                        </form>
+
+
+                        <div class="admin-security-note">
+
+                            🔐 ამ ფორმიდან
+                            <strong>OWNER</strong>
+                            და ფინანსური წვდომის მინიჭება
+                            შეუძლებელია.
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- TEAM LIST -->
+
+                    <section class="admin-list-card">
+
+                        <div class="admin-list-head">
+
+                            <strong>
+                                👥 ადმინისტრაციის გუნდი
+                            </strong>
+
+                            <button
+                                type="button"
+                                class="admin-refresh-btn"
+                                id="refreshAdminManagement"
+                            >
+                                🔄 განახლება
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            class="admin-team-list"
+                            id="adminTeamList"
+                        ></div>
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        renderAdminRows();
+        attachAdminManagementEvents();
+
+    }
+
+
+    function renderAdminRows(){
+
+        const list =
+        document.getElementById(
+            "adminTeamList"
+        );
+
+
+        if(!list){
+            return;
+        }
+
+
+        if(
+            !managedAdmins.length
+        ){
+
+            list.innerHTML = `
+
+                <div class="admin-manage-message">
+
+                    ადმინისტრატორები
+                    ვერ მოიძებნა.
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        list.innerHTML =
+        managedAdmins
+        .map(function(admin){
+
+            const role =
+            String(
+                admin.role || ""
+            )
+            .toLowerCase();
+
+
+            const owner =
+            role === "owner";
+
+
+            const active =
+            admin.is_active === true;
+
+
+            const name =
+            admin.display_name ||
+            admin.email ||
+            "Admin";
+
+
+            const initial =
+            String(name)
+            .trim()
+            .charAt(0)
+            .toUpperCase()
+            ||
+            "A";
+
+
+            if(owner){
+
+                return `
+
+                    <article
+                        class="admin-person owner"
+                    >
+
+                        <div class="admin-person-main">
+
+                            <div class="admin-person-avatar">
+                                ${esc(initial)}
+                            </div>
+
+
+                            <div class="admin-person-info">
+
+                                <div class="admin-person-name">
+                                    ${esc(name)}
+                                </div>
+
+                                <div class="admin-person-email">
+                                    ${esc(admin.email || "")}
+                                </div>
+
+
+                                <div class="admin-person-badges">
+
+                                    <span class="admin-role-badge">
+                                        👑 OWNER
+                                    </span>
+
+                                    <span class="admin-state-badge active">
+                                        ● აქტიური
+                                    </span>
+
+                                    ${
+                                        admin.finance_access === true
+                                        ?`
+                                        <span class="admin-finance-badge">
+                                            🔐 Finance
+                                        </span>
+                                        `
+                                        :""
+                                    }
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="admin-protected">
+                                🔒 დაცული
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                `;
+
+            }
+
+
+            return `
+
+                <article
+                    class="admin-person ${active ? "" : "inactive"}"
+                    data-managed-admin="${esc(admin.user_id)}"
+                >
+
+                    <div class="admin-person-main">
+
+                        <div class="admin-person-avatar">
+                            ${esc(initial)}
+                        </div>
+
+
+                        <div class="admin-person-info">
+
+                            <div class="admin-person-name">
+                                ${esc(name)}
+                            </div>
+
+                            <div class="admin-person-email">
+                                ${esc(admin.email || "")}
+                            </div>
+
+
+                            <div class="admin-person-badges">
+
+                                <span class="admin-role-badge">
+                                    ${esc(
+                                        adminRoleName(
+                                            role
+                                        )
+                                    )}
+                                </span>
+
+
+                                <span class="
+                                    admin-state-badge
+                                    ${active ? "active" : "inactive"}
+                                ">
+
+                                    ${
+                                        active
+                                        ?"● აქტიური"
+                                        :"● გათიშული"
+                                    }
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-edit-area">
+
+
+                        <input
+                            type="text"
+                            class="managed-admin-name"
+                            maxlength="80"
+                            value="${esc(name)}"
+                            aria-label="სახელი"
+                        >
+
+
+                        <select
+                            class="managed-admin-role"
+                            aria-label="როლი"
+                        >
+
+                            <option
+                                value="admin"
+                                ${role==="admin" ? "selected" : ""}
+                            >
+                                ADMIN
+                            </option>
+
+                            <option
+                                value="moderator"
+                                ${role==="moderator" ? "selected" : ""}
+                            >
+                                MODERATOR
+                            </option>
+
+                            <option
+                                value="support"
+                                ${role==="support" ? "selected" : ""}
+                            >
+                                SUPPORT
+                            </option>
+
+                        </select>
+
+
+                        <div class="admin-edit-actions">
+
+                            <button
+                                type="button"
+                                class="admin-save-btn"
+                                data-save-admin="${esc(admin.user_id)}"
+                            >
+                                💾 შენახვა
+                            </button>
+
+
+                            ${
+                                active
+
+                                ?`
+                                <button
+                                    type="button"
+                                    class="admin-disable-btn"
+                                    data-disable-admin="${esc(admin.user_id)}"
+                                >
+                                    ⛔ გათიშვა
+                                </button>
+                                `
+
+                                :`
+                                <button
+                                    type="button"
+                                    class="admin-enable-btn"
+                                    data-enable-admin="${esc(admin.user_id)}"
+                                >
+                                    ✅ გააქტიურება
+                                </button>
+                                `
+                            }
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            `;
+
+        })
+        .join("");
+
+    }
+
+
+    /* =====================================================
+       LOAD
+    ===================================================== */
+
+    async function loadAdminManagement(){
+
+        if(!currentAdmin){
+            return;
+        }
+
+
+        if(!isOwner()){
+
+            renderOwnerOnly();
+
+            return;
+        }
+
+
+        root.innerHTML = `
+
+            <div class="admin-manage-message">
+                ⏳ ადმინისტრატორები იტვირთება...
+            </div>
+
+        `;
+
+
+        const{
+            data,
+            error
+        } =
+        await sb.rpc(
+            "yh_admin_manage_list_final"
+        );
+
+
+        if(error){
+
+            console.error(
+                "Admin management list",
+                error
+            );
+
+
+            root.innerHTML = `
+
+                <div class="admin-manage-message error">
+
+                    <div>
+
+                        ❌ ადმინისტრატორების
+                        ჩატვირთვა ვერ მოხერხდა.
+
+                        <br><br>
+
+                        ${esc(
+                            friendlyAdminError(
+                                error
+                            )
+                        )}
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            return;
+        }
+
+
+        managedAdmins =
+        rows(data);
+
+
+        renderAdminManagement();
+
+    }
+
+
+    /* =====================================================
+       ADD ADMIN
+    ===================================================== */
+
+    async function addAdmin(){
+
+        const emailInput =
+        document.getElementById(
+            "newAdminEmail"
+        );
+
+
+        const nameInput =
+        document.getElementById(
+            "newAdminName"
+        );
+
+
+        const roleInput =
+        document.getElementById(
+            "newAdminRole"
+        );
+
+
+        const submitBtn =
+        document.getElementById(
+            "newAdminSubmit"
+        );
+
+
+        const email =
+        emailInput?.value
+        .trim();
+
+
+        const name =
+        nameInput?.value
+        .trim();
+
+
+        const role =
+        roleInput?.value;
+
+
+        if(
+            !email ||
+            !name ||
+            !role
+        ){
+
+            alert(
+                "შეავსე ელფოსტა, სახელი და როლი."
+            );
+
+            return;
+        }
+
+
+        submitBtn.disabled =
+        true;
+
+
+        submitBtn.textContent =
+        "⏳ ემატება...";
+
+
+        try{
+
+            const{
+                data,
+                error
+            } =
+            await sb.rpc(
+                "yh_admin_manage_add_final",
+                {
+
+                    p_email:
+                        email,
+
+                    p_display_name:
+                        name,
+
+                    p_role:
+                        role
+
+                }
+            );
+
+
+            if(error){
+                throw error;
+            }
+
+
+            if(
+                data?.ok !== true
+            ){
+
+                throw new Error(
+                    "ადმინისტრატორის დამატება ვერ მოხერხდა."
+                );
+
+            }
+
+
+            alert(
+                "✅ ადმინისტრატორი წარმატებით დაემატა."
+            );
+
+
+            await loadAdminManagement();
+
+
+            /*
+               შიდა ჩატის სიაც განახლდეს
+            */
+
+            try{
+                await loadTeamAdmins();
+            }catch{}
+
+
+        }catch(error){
+
+            console.error(
+                "Add admin",
+                error
+            );
+
+
+            alert(
+                "დამატება ვერ მოხერხდა:\n\n"
+                +
+                friendlyAdminError(
+                    error
+                )
+            );
+
+
+            submitBtn.disabled =
+            false;
+
+
+            submitBtn.textContent =
+            "+ ადმინისტრატორის დამატება";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       UPDATE ADMIN
+    ===================================================== */
+
+    async function updateManagedAdmin(
+        userId,
+        isActive,
+        button
+    ){
+
+        const card =
+        document.querySelector(
+            `[data-managed-admin="${CSS.escape(userId)}"]`
+        );
+
+
+        if(!card){
+            return;
+        }
+
+
+        const name =
+        card
+        .querySelector(
+            ".managed-admin-name"
+        )
+        ?.value
+        .trim();
+
+
+        const role =
+        card
+        .querySelector(
+            ".managed-admin-role"
+        )
+        ?.value;
+
+
+        if(!name){
+
+            alert(
+                "სახელი ცარიელი არ უნდა იყოს."
+            );
+
+            return;
+        }
+
+
+        card
+        .querySelectorAll(
+            "button,input,select"
+        )
+        .forEach(
+            el =>
+            el.disabled = true
+        );
+
+
+        const oldText =
+        button?.textContent;
+
+
+        if(button){
+
+            button.textContent =
+            "⏳ მუშავდება...";
+
+        }
+
+
+        try{
+
+            const{
+                data,
+                error
+            } =
+            await sb.rpc(
+                "yh_admin_manage_update_final",
+                {
+
+                    p_user_id:
+                        userId,
+
+                    p_display_name:
+                        name,
+
+                    p_role:
+                        role,
+
+                    p_is_active:
+                        Boolean(
+                            isActive
+                        )
+
+                }
+            );
+
+
+            if(error){
+                throw error;
+            }
+
+
+            if(
+                data?.ok !== true
+            ){
+
+                throw new Error(
+                    "ცვლილება ვერ შესრულდა."
+                );
+
+            }
+
+
+            await loadAdminManagement();
+
+
+            try{
+                await loadTeamAdmins();
+            }catch{}
+
+
+        }catch(error){
+
+            console.error(
+                "Update admin",
+                error
+            );
+
+
+            alert(
+                "ცვლილება ვერ შესრულდა:\n\n"
+                +
+                friendlyAdminError(
+                    error
+                )
+            );
+
+
+            card
+            .querySelectorAll(
+                "button,input,select"
+            )
+            .forEach(
+                el =>
+                el.disabled = false
+            );
+
+
+            if(button){
+                button.textContent =
+                oldText;
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       DISABLE ADMIN
+    ===================================================== */
+
+    async function disableManagedAdmin(
+        userId,
+        button
+    ){
+
+        if(
+            !confirm(
+                "გსურს ამ ადმინისტრატორის წვდომის გათიშვა?"
+            )
+        ){
+            return;
+        }
+
+
+        const card =
+        button.closest(
+            ".admin-person"
+        );
+
+
+        card
+        ?.querySelectorAll(
+            "button,input,select"
+        )
+        .forEach(
+            el =>
+            el.disabled = true
+        );
+
+
+        button.textContent =
+        "⏳ ითიშება...";
+
+
+        try{
+
+            const{
+                data,
+                error
+            } =
+            await sb.rpc(
+                "yh_admin_manage_disable_final",
+                {
+                    p_user_id:
+                        userId
+                }
+            );
+
+
+            if(error){
+                throw error;
+            }
+
+
+            if(
+                data?.ok !== true
+            ){
+
+                throw new Error(
+                    "გათიშვა ვერ შესრულდა."
+                );
+
+            }
+
+
+            await loadAdminManagement();
+
+
+            try{
+                await loadTeamAdmins();
+            }catch{}
+
+
+        }catch(error){
+
+            console.error(
+                "Disable admin",
+                error
+            );
+
+
+            alert(
+                "გათიშვა ვერ მოხერხდა:\n\n"
+                +
+                friendlyAdminError(
+                    error
+                )
+            );
+
+
+            await loadAdminManagement();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       EVENTS
+    ===================================================== */
+
+    function attachAdminManagementEvents(){
+
+        const form =
+        document.getElementById(
+            "newAdminForm"
+        );
+
+
+        form
+        ?.addEventListener(
+            "submit",
+            function(event){
+
+                event.preventDefault();
+
+                addAdmin();
+
+            }
+        );
+
+
+        document
+        .getElementById(
+            "refreshAdminManagement"
+        )
+        ?.addEventListener(
+            "click",
+            loadAdminManagement
+        );
+
+
+        document
+        .getElementById(
+            "adminTeamList"
+        )
+        ?.addEventListener(
+            "click",
+            function(event){
+
+
+                const saveBtn =
+                event.target.closest(
+                    "[data-save-admin]"
+                );
+
+
+                if(saveBtn){
+
+                    updateManagedAdmin(
+                        saveBtn.dataset.saveAdmin,
+                        true,
+                        saveBtn
+                    );
+
+                    return;
+                }
+
+
+                const disableBtn =
+                event.target.closest(
+                    "[data-disable-admin]"
+                );
+
+
+                if(disableBtn){
+
+                    disableManagedAdmin(
+                        disableBtn.dataset.disableAdmin,
+                        disableBtn
+                    );
+
+                    return;
+                }
+
+
+                const enableBtn =
+                event.target.closest(
+                    "[data-enable-admin]"
+                );
+
+
+                if(enableBtn){
+
+                    updateManagedAdmin(
+                        enableBtn.dataset.enableAdmin,
+                        true,
+                        enableBtn
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       OPEN PAGE HOOK
+    ===================================================== */
+
+    document
+    .querySelectorAll(
+        '.nav-btn[data-page="admins"]'
+    )
+    .forEach(
+        function(button){
+
+            button.addEventListener(
+                "click",
+                function(){
+
+                    setTimeout(
+                        loadAdminManagement,
+                        30
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /*
+       თუ Quick Action-ით ან სხვა გზით გაიხსნება,
+       ამასაც დაიჭერს.
+    */
+
+    const pageObserver =
+    new MutationObserver(
+        function(){
+
+            if(
+                page.classList.contains(
+                    "active"
+                )
+            ){
+
+                loadAdminManagement();
+
+            }
+
+        }
+    );
+
+
+    pageObserver.observe(
+        page,
+        {
+            attributes:true,
+            attributeFilter:[
+                "class"
+            ]
+        }
+    );
+
+
+})();
+
+</script>
 </body>
 </html>
