@@ -2891,5 +2891,690 @@ checkAdminAccess();
 
 })();
 </script>
+    <!-- =========================================================
+     YOUR HOME — EMOJI PICKER FINAL
+     Works for Support + Team Chat
+========================================================= -->
+
+<style id="yhEmojiPickerFinalStyle">
+
+.yh-emoji-host{
+    position:relative !important;
+    overflow:visible !important;
+}
+
+/* textarea / input-ს ვუტოვებთ ადგილს 😊 ღილაკისთვის */
+.yh-emoji-input{
+    padding-left:52px !important;
+}
+
+
+/* 😊 BUTTON */
+
+.yh-emoji-trigger{
+    position:absolute;
+
+    left:12px;
+    bottom:10px;
+
+    width:34px;
+    height:34px;
+
+    border:0;
+    border-radius:50%;
+
+    background:transparent;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+    z-index:80;
+
+    transition:.15s;
+}
+
+.yh-emoji-trigger:hover{
+    background:#eef1e3;
+}
+
+.yh-emoji-trigger:active{
+    transform:scale(.94);
+}
+
+
+/* EMOJI PANEL */
+
+.yh-emoji-panel{
+    display:none;
+
+    position:absolute;
+
+    left:8px;
+    bottom:56px;
+
+    width:270px;
+
+    padding:10px;
+
+    background:#fff;
+
+    border:1px solid #e1e5dc;
+    border-radius:16px;
+
+    box-shadow:
+        0 12px 38px
+        rgba(25,32,23,.18);
+
+    grid-template-columns:
+        repeat(7,1fr);
+
+    gap:4px;
+
+    z-index:99999;
+}
+
+.yh-emoji-panel.open{
+    display:grid;
+}
+
+
+/* თითო emoji */
+
+.yh-emoji-option{
+    width:32px;
+    height:32px;
+
+    padding:0;
+
+    border:0;
+    border-radius:8px;
+
+    background:transparent;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:20px;
+
+    cursor:pointer;
+}
+
+.yh-emoji-option:hover{
+    background:#f1f3ed;
+}
+
+
+/* MOBILE */
+
+@media(max-width:650px){
+
+    .yh-emoji-panel{
+        width:245px;
+
+        grid-template-columns:
+            repeat(6,1fr);
+
+        left:5px;
+
+        bottom:55px;
+    }
+
+    .yh-emoji-trigger{
+        left:9px;
+        bottom:9px;
+
+        width:32px;
+        height:32px;
+
+        font-size:19px;
+    }
+
+    .yh-emoji-input{
+        padding-left:47px !important;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+(function(){
+
+    if(
+        window.__YH_EMOJI_PICKER_FINAL__
+    ){
+        return;
+    }
+
+    window.__YH_EMOJI_PICKER_FINAL__ =
+    true;
+
+
+    const YH_EMOJIS = [
+
+        "😀","😃","😄","😁","😆","😅","😂",
+
+        "🤣","😊","🙂","🙃","😉","😍","🥰",
+
+        "😘","😇","😎","🤗","🤔","🥹","😢",
+
+        "😭","😡","😱","😴","🤭","🫣","🫠",
+
+        "❤️","💚","🤍","💕","💖","💘","💯",
+
+        "👍","👎","👌","👏","🙏","🤝","🫶",
+
+        "👋","💪","🙌","✌️","🤞","👉","👀",
+
+        "🔥","✨","⭐","🎉","🎊","✅","❗",
+
+        "🏠","🏡","🔑","📍","📞","💬","💰"
+
+    ];
+
+
+    /* =====================================================
+       IS THIS A CHAT FIELD?
+    ===================================================== */
+
+    function yhIsChatInput(
+        input
+    ){
+
+        if(!input){
+            return false;
+        }
+
+
+        const id =
+        String(
+            input.id || ""
+        )
+        .toLowerCase();
+
+
+        /*
+           Admin chat fields
+        */
+
+        if(
+            id === "supportinput" ||
+            id === "teaminput" ||
+            id === "yhsupportv2reply"
+        ){
+            return true;
+        }
+
+
+        /*
+           Support / messenger dynamic fields
+        */
+
+        if(
+            id.includes(
+                "support"
+            ) ||
+            id.includes(
+                "message"
+            ) ||
+            id.includes(
+                "chat"
+            )
+        ){
+
+            const area =
+            input.closest(
+                `
+                [id*="support" i],
+                [class*="support" i],
+                [id*="chat" i],
+                [class*="chat" i],
+                [id*="messenger" i],
+                [class*="messenger" i],
+                .msg-compose
+                `
+            );
+
+
+            if(area){
+                return true;
+            }
+
+        }
+
+
+        /*
+           თუ input პირდაპირ chat composer-შია
+        */
+
+        if(
+            input.closest(
+                ".msg-compose"
+            )
+        ){
+            return true;
+        }
+
+
+        return false;
+
+    }
+
+
+
+    /* =====================================================
+       INSERT EMOJI
+    ===================================================== */
+
+    function yhInsertEmoji(
+        input,
+        emoji
+    ){
+
+        const value =
+        input.value || "";
+
+
+        const start =
+        typeof input.selectionStart ===
+        "number"
+        ?
+        input.selectionStart
+        :
+        value.length;
+
+
+        const end =
+        typeof input.selectionEnd ===
+        "number"
+        ?
+        input.selectionEnd
+        :
+        start;
+
+
+        input.value =
+        value.slice(
+            0,
+            start
+        )
+        +
+        emoji
+        +
+        value.slice(
+            end
+        );
+
+
+        const newPosition =
+        start +
+        emoji.length;
+
+
+        input.focus();
+
+
+        try{
+
+            input.setSelectionRange(
+                newPosition,
+                newPosition
+            );
+
+        }
+        catch(error){}
+
+
+        /*
+           თუ რომელიმე chat listener
+           input event-ს იყენებს
+        */
+
+        input.dispatchEvent(
+            new Event(
+                "input",
+                {
+                    bubbles:true
+                }
+            )
+        );
+
+    }
+
+
+
+    /* =====================================================
+       ATTACH PICKER
+    ===================================================== */
+
+    function yhAttachEmojiPicker(
+        input
+    ){
+
+        if(
+            !input ||
+            input.dataset.yhEmojiReady ===
+            "1" ||
+            !yhIsChatInput(
+                input
+            )
+        ){
+
+            return;
+
+        }
+
+
+        input.dataset.yhEmojiReady =
+        "1";
+
+
+        input.classList.add(
+            "yh-emoji-input"
+        );
+
+
+        let host =
+        input.closest(
+            ".msg-compose"
+        );
+
+
+        /*
+           საიტის საჯარო Support-ში
+           composer-ს შეიძლება სხვა კლასი ჰქონდეს.
+        */
+
+        if(!host){
+
+            host =
+            input.parentElement;
+
+        }
+
+
+        if(!host){
+            return;
+        }
+
+
+        host.classList.add(
+            "yh-emoji-host"
+        );
+
+
+        /*
+           ძველი emoji picker თუ სადმე დარჩა,
+           აღარ გვინდა ორი 😊 ღილაკი.
+        */
+
+        host
+        .querySelectorAll(
+            ".yh-chat-emoji-btn, .yh-chat-emoji-picker"
+        )
+        .forEach(
+            function(element){
+
+                element.remove();
+
+            }
+        );
+
+
+        const button =
+        document.createElement(
+            "button"
+        );
+
+
+        button.type =
+        "button";
+
+
+        button.className =
+        "yh-emoji-trigger";
+
+
+        button.textContent =
+        "😊";
+
+
+        button.setAttribute(
+            "aria-label",
+            "სმაილიკები"
+        );
+
+
+        const panel =
+        document.createElement(
+            "div"
+        );
+
+
+        panel.className =
+        "yh-emoji-panel";
+
+
+        panel.innerHTML =
+        YH_EMOJIS
+        .map(
+            function(emoji){
+
+                return `
+
+                <button
+                    type="button"
+                    class="yh-emoji-option"
+                    data-yh-emoji="${emoji}">
+
+                    ${emoji}
+
+                </button>
+
+                `;
+
+            }
+        )
+        .join("");
+
+
+        host.appendChild(
+            button
+        );
+
+
+        host.appendChild(
+            panel
+        );
+
+
+
+        /* OPEN */
+
+        button.addEventListener(
+            "click",
+            function(event){
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+
+                document
+                .querySelectorAll(
+                    ".yh-emoji-panel.open"
+                )
+                .forEach(
+                    function(other){
+
+                        if(
+                            other !== panel
+                        ){
+
+                            other.classList.remove(
+                                "open"
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                panel.classList.toggle(
+                    "open"
+                );
+
+            }
+        );
+
+
+
+        /* SELECT */
+
+        panel.addEventListener(
+            "click",
+            function(event){
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+
+                const emojiButton =
+                event.target.closest(
+                    "[data-yh-emoji]"
+                );
+
+
+                if(!emojiButton){
+                    return;
+                }
+
+
+                yhInsertEmoji(
+                    input,
+                    emojiButton.dataset.yhEmoji
+                );
+
+
+                panel.classList.remove(
+                    "open"
+                );
+
+            }
+        );
+
+    }
+
+
+
+    /* =====================================================
+       SCAN PAGE
+    ===================================================== */
+
+    function yhScanEmojiInputs(){
+
+        document
+        .querySelectorAll(
+            `
+            textarea,
+            input[type="text"]
+            `
+        )
+        .forEach(
+            yhAttachEmojiPicker
+        );
+
+    }
+
+
+    yhScanEmojiInputs();
+
+
+
+    /* =====================================================
+       DYNAMIC SUPPORT CHAT
+       index.html creates Messenger later,
+       so watch for new elements.
+    ===================================================== */
+
+    const observer =
+    new MutationObserver(
+        function(){
+
+            yhScanEmojiInputs();
+
+        }
+    );
+
+
+    observer.observe(
+        document.body,
+        {
+            childList:true,
+            subtree:true
+        }
+    );
+
+
+
+    /* =====================================================
+       CLOSE OUTSIDE
+    ===================================================== */
+
+    document.addEventListener(
+        "click",
+        function(event){
+
+            if(
+                event.target.closest(
+                    ".yh-emoji-trigger"
+                )
+                ||
+                event.target.closest(
+                    ".yh-emoji-panel"
+                )
+            ){
+
+                return;
+
+            }
+
+
+            document
+            .querySelectorAll(
+                ".yh-emoji-panel.open"
+            )
+            .forEach(
+                function(panel){
+
+                    panel.classList.remove(
+                        "open"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    console.log(
+        "Your Home — Emoji Picker ready."
+    );
+
+
+})();
+
+</script>
 </body>
 </html>
