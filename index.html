@@ -34357,6 +34357,356 @@ function(
 
 </script>
     <!-- =========================================================
+     YOUR HOME — SUPPORT MEDIA / EDIT / DELETE PATCH
+     Safe add-on: does not change admin.html or SQL
+========================================================= -->
+<style id="yhSupportMediaPatchStyle">
+.yh-support-compose{position:relative!important}
+#yhSupportMessageInput.yh-emoji-input{padding-left:88px!important}
+
+.yh-support-file-trigger{
+    position:absolute;
+    left:48px;
+    bottom:10px;
+    width:34px;
+    height:34px;
+    border:0;
+    border-radius:50%;
+    background:transparent;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:19px;
+    cursor:pointer;
+    z-index:81;
+    transition:.15s;
+    color:#5d6933;
+}
+
+.yh-support-file-trigger:hover{
+    background:#eef1e3;
+}
+
+.yh-support-file-trigger:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+.yh-support-media-image{
+    display:block;
+    max-width:240px;
+    width:100%;
+    max-height:260px;
+    object-fit:cover;
+    border-radius:12px;
+    cursor:pointer;
+    background:#eef1e3;
+}
+
+.yh-support-file-card{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:190px;
+    max-width:260px;
+    padding:10px 12px;
+    border-radius:11px;
+    background:rgba(255,255,255,.16);
+    text-decoration:none;
+    color:inherit;
+    border:1px solid rgba(255,255,255,.24);
+}
+
+.yh-support-row.admin .yh-support-file-card{
+    background:#f7f8f4;
+    border-color:#e1e5dc;
+    color:#444a42;
+}
+
+.yh-support-file-icon{
+    font-size:24px;
+    flex:0 0 auto;
+}
+
+.yh-support-file-info{
+    min-width:0;
+    flex:1;
+}
+
+.yh-support-file-name{
+    font-size:12px;
+    font-weight:800;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.yh-support-file-size{
+    font-size:10px;
+    opacity:.72;
+    margin-top:3px;
+}
+
+.yh-support-media-loading{
+    font-size:12px;
+    opacity:.8;
+    padding:8px 2px;
+}
+
+.yh-support-actions{
+    display:flex;
+    gap:4px;
+    margin-top:5px;
+    justify-content:flex-end;
+}
+
+.yh-support-action{
+    border:0;
+    background:transparent;
+    padding:3px 5px;
+    border-radius:6px;
+    font-size:11px;
+    cursor:pointer;
+    opacity:.78;
+    color:inherit;
+}
+
+.yh-support-action:hover{
+    background:rgba(0,0,0,.08);
+    opacity:1;
+}
+
+.yh-support-row.user .yh-support-action:hover{
+    background:rgba(255,255,255,.16);
+}
+
+@media(max-width:650px){
+
+    #yhSupportMessageInput.yh-emoji-input{
+        padding-left:82px!important;
+    }
+
+    .yh-support-file-trigger{
+        left:43px;
+        bottom:9px;
+        width:32px;
+        height:32px;
+        font-size:18px;
+    }
+
+    .yh-support-media-image{
+        max-width:220px;
+        max-height:230px;
+    }
+}
+</style>
+
+<script>
+(function(){
+
+    if(window.__YH_SUPPORT_MEDIA_PATCH__){
+        return;
+    }
+
+    window.__YH_SUPPORT_MEDIA_PATCH__ = true;
+
+
+    const FILE_PREFIX =
+    "__YH_FILE__";
+
+    const BUCKET =
+    "admin-chat-files";
+
+    const TOKEN_KEY =
+    "yourHomeSupportGuestToken";
+
+    const THREADS_KEY =
+    "yourHomeSupportThreadsFinal";
+
+    const MAX_FILE_SIZE =
+    10 * 1024 * 1024;
+
+    const urlCache =
+    new Map();
+
+
+    let messageObserver =
+    null;
+
+    let refreshTimer =
+    null;
+
+    let refreshBusy =
+    false;
+
+    let uploadBusy =
+    false;
+
+
+    function lang(){
+
+        return document
+        .getElementById(
+            "language"
+        )?.value || "ka";
+
+    }
+
+
+    function txt(){
+
+        const l =
+        lang();
+
+
+        if(l === "en"){
+
+            return {
+
+                you:"You",
+
+                admin:
+                "Your Home",
+
+                edit:
+                "Edit",
+
+                del:
+                "Delete",
+
+                attach:
+                "Attach file",
+
+                uploading:
+                "Uploading...",
+
+                tooBig:
+                "File is too large. Maximum size is 10 MB.",
+
+                uploadError:
+                "File could not be uploaded.",
+
+                sendError:
+                "File could not be sent.",
+
+                editTitle:
+                "Edit message",
+
+                editError:
+                "Message could not be edited.",
+
+                deleteAsk:
+                "Delete this message?",
+
+                deleteError:
+                "Message could not be deleted.",
+
+                fileDeletedWarn:
+                "The message was deleted, but the stored file could not be removed."
+
+            };
+
+        }
+
+
+        if(l === "ru"){
+
+            return {
+
+                you:"Вы",
+
+                admin:
+                "Your Home",
+
+                edit:
+                "Изменить",
+
+                del:
+                "Удалить",
+
+                attach:
+                "Прикрепить файл",
+
+                uploading:
+                "Загрузка...",
+
+                tooBig:
+                "Файл слишком большой. Максимум 10 МБ.",
+
+                uploadError:
+                "Не удалось загрузить файл.",
+
+                sendError:
+                "Не удалось отправить файл.",
+
+                editTitle:
+                "Изменить сообщение",
+
+                editError:
+                "Не удалось изменить сообщение.",
+
+                deleteAsk:
+                "Удалить это сообщение?",
+
+                deleteError:
+                "Не удалось удалить сообщение.",
+
+                fileDeletedWarn:
+                "Сообщение удалено, но файл не удалось удалить из хранилища."
+
+            };
+
+        }
+
+
+        return {
+
+            you:
+            "თქვენ",
+
+            admin:
+            "Your Home",
+
+            edit:
+            "ჩასწორება",
+
+            del:
+            "წაშლა",
+
+            attach:
+            "ფაილის მიმაგრება",
+
+            uploading:
+            "იტვირთება...",
+
+            tooBig:
+            "ფაილი ძალიან დიდია. მაქსიმალური ზომაა 10 MB.",
+
+            uploadError:
+            "ფაილის ატვირთვა ვერ მოხერხდა.",
+
+            sendError:
+            "ფაილის გაგზავნა ვერ მოხერხდა.",
+
+            editTitle:
+            "შეტყობინების ჩასწორება",
+
+            editError:
+            "შეტყობინების ჩასწორება ვერ მოხერხდა.",
+
+            deleteAsk:
+            "წავშალოთ ეს შეტყობინება?",
+
+            deleteError:
+            "შეტყობინების წაშლა ვერ მოხერხდა.",
+
+            fileDeletedWarn:
+            "მესიჯი წაიშალა, მაგრამ საცავიდან ფაილის წაშლა ვერ მოხერხდა."
+
+        };
+
+    }
+    <!-- =========================================================
      YOUR HOME — BUSINESS ADVERTISING MODULE FINAL
      USER UPLOAD + PACKAGES + ROTATION + STATS
 ========================================================= -->
