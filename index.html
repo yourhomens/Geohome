@@ -35996,8 +35996,10 @@ function(
                     "click",
                     () =>
                     handleDelete(
-                        row,
-                        meta
+    row,
+    meta,
+    wrap
+)
                     )
                 );
 
@@ -36582,21 +36584,113 @@ function(
                 }
             }
 
+async function handleDelete(
+    row,
+    meta,
+    wrap
+){
 
-            await refreshAndRender();
+    const t =
+    txt();
 
-        }catch(e){
+    if(
+        !confirm(
+            t.deleteAsk
+        )
+    ){
+        return;
+    }
 
-            console.warn(
-                "Support delete:",
-                e
+    if(wrap){
+
+        wrap.style.opacity =
+        ".35";
+
+        wrap.style.pointerEvents =
+        "none";
+    }
+
+    try{
+
+        const ok =
+        await deleteMessage(
+            row
+        );
+
+        if(!ok){
+
+            throw new Error(
+                "delete denied"
             );
-
-            notify(
-                t.deleteError
-            );
-
         }
+
+        if(wrap){
+
+            wrap.remove();
+        }
+
+        if(
+            meta?.path
+        ){
+
+            supabaseClient
+            .storage
+            .from(
+                BUCKET
+            )
+            .remove([
+                meta.path
+            ])
+            .then(
+                function(result){
+
+                    if(
+                        result.error
+                    ){
+
+                        console.warn(
+                            "Support file delete:",
+                            result.error
+                        );
+                    }
+
+                    urlCache.delete(
+                        meta.path
+                    );
+                }
+            )
+            .catch(
+                function(error){
+
+                    console.warn(
+                        "Support file delete:",
+                        error
+                    );
+                }
+            );
+        }
+
+    }catch(e){
+
+        console.warn(
+            "Support delete:",
+            e
+        );
+
+        if(wrap){
+
+            wrap.style.opacity =
+            "";
+
+            wrap.style.pointerEvents =
+            "";
+        }
+
+        notify(
+            t.deleteError
+        );
+    }
+}
     }
       function safeFileName(name){
 
