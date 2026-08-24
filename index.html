@@ -34706,6 +34706,2558 @@ function(
         };
 
     }
+        function notify(message){
+
+        if(
+            typeof showMessage ===
+            "function"
+        ){
+
+            showMessage(
+                message
+            );
+
+        }else{
+
+            alert(
+                message
+            );
+
+        }
+
+    }
+
+
+    function getToken(){
+
+        let token =
+        "";
+
+        try{
+
+            token =
+            localStorage
+            .getItem(
+                TOKEN_KEY
+            ) || "";
+
+        }catch(e){}
+
+
+        if(!token){
+
+            token =
+            window.crypto
+            ?.randomUUID
+            ?
+            window.crypto
+            .randomUUID()
+            :
+            "yh-" +
+            Date.now() +
+            "-" +
+            Math.random()
+            .toString(36)
+            .slice(2);
+
+
+            try{
+
+                localStorage
+                .setItem(
+                    TOKEN_KEY,
+                    token
+                );
+
+            }catch(e){}
+
+        }
+
+
+        return token;
+
+    }
+
+
+    function currentThreadKey(){
+
+        try{
+
+            if(
+                typeof activeListing !==
+                "undefined" &&
+                activeListing?.id !== null &&
+                activeListing?.id !== undefined
+            ){
+
+                return (
+                    "listing:" +
+                    String(
+                        activeListing.id
+                    )
+                );
+
+            }
+
+        }catch(e){}
+
+
+        return "general";
+
+    }
+
+
+    function getThreadMap(){
+
+        try{
+
+            const map =
+            JSON.parse(
+                localStorage
+                .getItem(
+                    THREADS_KEY
+                ) || "{}"
+            );
+
+
+            return (
+                map &&
+                typeof map ===
+                "object"
+            )
+            ?
+            map
+            :
+            {};
+
+        }catch(e){
+
+            return {};
+
+        }
+
+    }
+
+
+    function getThreadId(){
+
+        const map =
+        getThreadMap();
+
+
+        return (
+            map[
+                currentThreadKey()
+            ] ||
+            null
+        );
+
+    }
+
+
+    function saveThreadId(id){
+
+        if(!id){
+            return;
+        }
+
+
+        const map =
+        getThreadMap();
+
+
+        map[
+            currentThreadKey()
+        ] =
+        String(id);
+
+
+        try{
+
+            localStorage
+            .setItem(
+                THREADS_KEY,
+                JSON.stringify(
+                    map
+                )
+            );
+
+        }catch(e){}
+
+    }
+
+
+    function removeThreadId(){
+
+        const map =
+        getThreadMap();
+
+
+        delete map[
+            currentThreadKey()
+        ];
+
+
+        try{
+
+            localStorage
+            .setItem(
+                THREADS_KEY,
+                JSON.stringify(
+                    map
+                )
+            );
+
+        }catch(e){}
+
+    }
+
+
+    function threadIdFromData(
+        data
+    ){
+
+        if(
+            data === null ||
+            data === undefined
+        ){
+            return null;
+        }
+
+
+        if(
+            typeof data ===
+            "string" ||
+            typeof data ===
+            "number"
+        ){
+
+            return String(
+                data
+            );
+
+        }
+
+
+        if(
+            Array.isArray(
+                data
+            )
+        ){
+
+            return data.length
+            ?
+            threadIdFromData(
+                data[0]
+            )
+            :
+            null;
+
+        }
+
+
+        if(
+            typeof data ===
+            "object"
+        ){
+
+            const id =
+            data.thread_id ??
+            data.id ??
+            data.conversation_id ??
+            data.support_thread_id ??
+            data.data?.thread_id ??
+            data.data?.id;
+
+
+            return (
+                id === null ||
+                id === undefined
+            )
+            ?
+            null
+            :
+            String(id);
+
+        }
+
+
+        return null;
+
+    }
+
+
+    function rowsFromData(
+        data
+    ){
+
+        if(
+            Array.isArray(
+                data
+            )
+        ){
+            return data;
+        }
+
+
+        if(
+            Array.isArray(
+                data?.messages
+            )
+        ){
+            return data.messages;
+        }
+
+
+        if(
+            Array.isArray(
+                data?.data
+            )
+        ){
+            return data.data;
+        }
+
+
+        return [];
+
+    }
+
+
+    function rowText(
+        row
+    ){
+
+        return String(
+            row?.message ??
+            row?.body ??
+            row?.content ??
+            row?.text ??
+            ""
+        )
+        .trim();
+
+    }
+
+
+    function rowId(
+        row
+    ){
+
+        const id =
+        row?.id ??
+        row?.message_id ??
+        row?.support_message_id;
+
+
+        return (
+            id === null ||
+            id === undefined
+        )
+        ?
+        null
+        :
+        String(id);
+
+    }
+
+
+    function isAdmin(
+        row
+    ){
+
+        const raw =
+        String(
+            row?.sender_type ??
+            row?.sender_role ??
+            row?.role ??
+            row?.sender ??
+            "visitor"
+        )
+        .toLowerCase();
+
+
+        return (
+            raw.includes(
+                "admin"
+            ) ||
+            raw.includes(
+                "support"
+            ) ||
+            raw.includes(
+                "owner"
+            ) ||
+            raw.includes(
+                "staff"
+            ) ||
+            raw ===
+            "outbound"
+        );
+
+    }
+
+
+    function parseFileMarker(
+        value
+    ){
+
+        const text =
+        String(
+            value || ""
+        )
+        .trim();
+
+
+        if(
+            !text.startsWith(
+                FILE_PREFIX
+            )
+        ){
+            return null;
+        }
+
+
+        try{
+
+            const meta =
+            JSON.parse(
+                text.slice(
+                    FILE_PREFIX.length
+                )
+            );
+
+
+            if(
+                !meta ||
+                typeof meta !==
+                "object"
+            ){
+                return null;
+            }
+
+
+            return {
+
+                path:
+                String(
+                    meta.path || ""
+                ),
+
+                name:
+                String(
+                    meta.name ||
+                    "ფაილი"
+                ),
+
+                mime:
+                String(
+                    meta.mime ||
+                    meta.type ||
+                    ""
+                ),
+
+                size:
+                Number(
+                    meta.size || 0
+                ),
+
+                url:
+                String(
+                    meta.url ||
+                    meta.publicUrl ||
+                    meta.public_url ||
+                    ""
+                )
+
+            };
+
+        }catch(e){
+
+            return null;
+
+        }
+
+    }
+
+
+    function isImageFile(
+        meta
+    ){
+
+        if(
+            String(
+                meta?.mime || ""
+            )
+            .toLowerCase()
+            .startsWith(
+                "image/"
+            )
+        ){
+
+            return true;
+
+        }
+
+
+        return (
+            /\.(png|jpe?g|gif|webp|bmp|svg|heic|heif)$/i
+            .test(
+                String(
+                    meta?.name ||
+                    meta?.path ||
+                    ""
+                )
+            )
+        );
+
+    }
+
+
+    function formatSize(
+        bytes
+    ){
+
+        const n =
+        Number(
+            bytes || 0
+        );
+
+
+        if(!n){
+            return "";
+        }
+
+
+        if(
+            n < 1024
+        ){
+
+            return (
+                n +
+                " B"
+            );
+
+        }
+
+
+        if(
+            n <
+            1024 * 1024
+        ){
+
+            return (
+                (
+                    n / 1024
+                )
+                .toFixed(
+                    n < 10240
+                    ?
+                    1
+                    :
+                    0
+                ) +
+                " KB"
+            );
+
+        }
+
+
+        return (
+            (
+                n /
+                (
+                    1024 *
+                    1024
+                )
+            )
+            .toFixed(1) +
+            " MB"
+        );
+
+    }
+
+
+    async function fileUrl(
+        meta
+    ){
+
+        if(
+            meta?.url
+        ){
+            return meta.url;
+        }
+
+
+        if(
+            !meta?.path
+        ){
+            return "";
+        }
+
+
+        if(
+            urlCache.has(
+                meta.path
+            )
+        ){
+
+            return urlCache.get(
+                meta.path
+            );
+
+        }
+
+
+        try{
+
+            const signed =
+            await supabaseClient
+            .storage
+            .from(
+                BUCKET
+            )
+            .createSignedUrl(
+                meta.path,
+                3600
+            );
+
+
+            if(
+                !signed.error &&
+                signed.data?.signedUrl
+            ){
+
+                urlCache.set(
+                    meta.path,
+                    signed.data.signedUrl
+                );
+
+
+                return (
+                    signed.data
+                    .signedUrl
+                );
+
+            }
+
+        }catch(e){}
+
+
+        try{
+
+            const pub =
+            supabaseClient
+            .storage
+            .from(
+                BUCKET
+            )
+            .getPublicUrl(
+                meta.path
+            );
+
+
+            const url =
+            pub?.data?.publicUrl ||
+            "";
+
+
+            if(url){
+
+                urlCache.set(
+                    meta.path,
+                    url
+                );
+
+
+                return url;
+
+            }
+
+        }catch(e){}
+
+
+        return "";
+
+    }
+
+
+    function formatTime(
+        value
+    ){
+
+        if(!value){
+            return "";
+        }
+
+
+        try{
+
+            const d =
+            new Date(
+                value
+            );
+
+
+            if(
+                Number.isNaN(
+                    d.getTime()
+                )
+            ){
+                return "";
+            }
+
+
+            return (
+                d.toLocaleTimeString(
+                    [],
+                    {
+                        hour:
+                        "2-digit",
+
+                        minute:
+                        "2-digit"
+                    }
+                )
+            );
+
+        }catch(e){
+
+            return "";
+
+        }
+
+    }
+
+
+    function appendTextBubble(
+        bubble,
+        text
+    ){
+
+        bubble.textContent =
+        text;
+
+    }
+
+
+    async function appendFileBubble(
+        bubble,
+        meta
+    ){
+
+        bubble.textContent =
+        "";
+
+
+        const loading =
+        document.createElement(
+            "div"
+        );
+
+
+        loading.className =
+        "yh-support-media-loading";
+
+
+        loading.textContent =
+        "⏳ " +
+        (
+            meta.name ||
+            "ფაილი"
+        );
+
+
+        bubble.appendChild(
+            loading
+        );
+
+
+        const url =
+        await fileUrl(
+            meta
+        );
+
+
+        if(
+            !bubble.isConnected
+        ){
+            return;
+        }
+
+
+        bubble.textContent =
+        "";
+
+
+        if(
+            isImageFile(
+                meta
+            ) &&
+            url
+        ){
+
+            const img =
+            document.createElement(
+                "img"
+            );
+
+
+            img.className =
+            "yh-support-media-image";
+
+
+            img.alt =
+            meta.name ||
+            "ფოტო";
+
+
+            img.loading =
+            "lazy";
+
+
+            img.src =
+            url;
+
+
+            img.addEventListener(
+                "click",
+                function(){
+
+                    window.open(
+                        url,
+                        "_blank",
+                        "noopener"
+                    );
+
+                }
+            );
+
+
+            img.addEventListener(
+                "error",
+                function(){
+
+                    bubble.textContent =
+                    "📎 " +
+                    (
+                        meta.name ||
+                        "ფაილი"
+                    );
+
+                },
+                {
+                    once:true
+                }
+            );
+
+
+            bubble.appendChild(
+                img
+            );
+
+
+            return;
+
+        }
+
+
+        const card =
+        document.createElement(
+            url
+            ?
+            "a"
+            :
+            "div"
+        );
+
+
+        card.className =
+        "yh-support-file-card";
+
+
+        if(url){
+
+            card.href =
+            url;
+
+            card.target =
+            "_blank";
+
+            card.rel =
+            "noopener";
+
+        }
+
+
+        const icon =
+        document.createElement(
+            "span"
+        );
+
+
+        icon.className =
+        "yh-support-file-icon";
+
+
+        icon.textContent =
+        isImageFile(
+            meta
+        )
+        ?
+        "🖼️"
+        :
+        "📎";
+
+
+        const info =
+        document.createElement(
+            "span"
+        );
+
+
+        info.className =
+        "yh-support-file-info";
+
+
+        const name =
+        document.createElement(
+            "div"
+        );
+
+
+        name.className =
+        "yh-support-file-name";
+
+
+        name.textContent =
+        meta.name ||
+        "ფაილი";
+
+
+        const size =
+        document.createElement(
+            "div"
+        );
+
+
+        size.className =
+        "yh-support-file-size";
+
+
+        size.textContent =
+        formatSize(
+            meta.size
+        ) ||
+        (
+            url
+            ?
+            "გახსნა"
+            :
+            "ფაილი"
+        );
+
+
+        info.append(
+            name,
+            size
+        );
+
+
+        card.append(
+            icon,
+            info
+        );
+
+
+        bubble.appendChild(
+            card
+        );
+
+    }
+        function hideNativeMarkers(container){
+        if(!container) return;
+
+        container
+        .querySelectorAll(".yh-support-bubble")
+        .forEach(function(bubble){
+
+            const meta =
+            parseFileMarker(
+                bubble.textContent || ""
+            );
+
+            if(meta){
+                bubble.textContent =
+                "⏳ " +
+                (
+                    meta.name ||
+                    "ფაილი"
+                );
+            }
+
+        });
+    }
+
+
+    function connectObserver(container){
+
+        if(messageObserver){
+            messageObserver.disconnect();
+        }
+
+        messageObserver =
+        new MutationObserver(
+            function(){
+
+                hideNativeMarkers(
+                    container
+                );
+
+                scheduleRefresh();
+
+            }
+        );
+
+        messageObserver.observe(
+            container,
+            {
+                childList:true
+            }
+        );
+    }
+
+
+    async function loadRows(){
+
+        const threadId =
+        getThreadId();
+
+        if(!threadId){
+            return [];
+        }
+
+        const result =
+        await supabaseClient
+        .rpc(
+            "yh_support_get_messages",
+            {
+                p_thread_id:
+                threadId,
+
+                p_public_token:
+                getToken()
+            }
+        );
+
+        if(result.error){
+            throw result.error;
+        }
+
+        return rowsFromData(
+            result.data
+        );
+    }
+
+
+    async function renderRows(rows){
+
+        const container =
+        document.getElementById(
+            "yhSupportMessages"
+        );
+
+        if(!container){
+            return;
+        }
+
+        if(messageObserver){
+            messageObserver.disconnect();
+        }
+
+
+        const t =
+        txt();
+
+
+        const normalized =
+        (rows || [])
+        .filter(
+            row =>
+            rowText(row)
+        )
+        .sort(
+            (a,b) =>
+            new Date(
+                a.created_at ||
+                a.sent_at ||
+                0
+            )
+            -
+            new Date(
+                b.created_at ||
+                b.sent_at ||
+                0
+            )
+        );
+
+
+        container.innerHTML =
+        "";
+
+
+        if(!normalized.length){
+
+            const welcome =
+            document.createElement(
+                "div"
+            );
+
+            welcome.className =
+            "yh-support-welcome";
+
+            welcome.textContent =
+            lang() === "en"
+            ?
+            "👋 How can we help you?"
+            :
+            lang() === "ru"
+            ?
+            "👋 Чем мы можем помочь?"
+            :
+            "👋 რით შეგვიძლია დაგეხმაროთ?";
+
+            container.appendChild(
+                welcome
+            );
+
+            connectObserver(
+                container
+            );
+
+            return;
+        }
+
+
+        for(
+            const row
+            of normalized
+        ){
+
+            const admin =
+            isAdmin(row);
+
+            const text =
+            rowText(row);
+
+            const meta =
+            parseFileMarker(
+                text
+            );
+
+
+            const wrap =
+            document.createElement(
+                "div"
+            );
+
+            wrap.className =
+            "yh-support-row " +
+            (
+                admin
+                ?
+                "admin"
+                :
+                "user"
+            );
+
+
+            const sender =
+            document.createElement(
+                "div"
+            );
+
+            sender.className =
+            "yh-support-sender";
+
+            sender.textContent =
+            admin
+            ?
+            t.admin
+            :
+            t.you;
+
+
+            const bubble =
+            document.createElement(
+                "div"
+            );
+
+            bubble.className =
+            "yh-support-bubble";
+
+
+            if(meta){
+
+                appendFileBubble(
+                    bubble,
+                    meta
+                );
+
+            }else{
+
+                appendTextBubble(
+                    bubble,
+                    text
+                );
+
+            }
+
+
+            const time =
+            document.createElement(
+                "div"
+            );
+
+            time.className =
+            "yh-support-time";
+
+            time.textContent =
+            formatTime(
+                row.created_at ||
+                row.sent_at
+            );
+
+
+            wrap.append(
+                sender,
+                bubble,
+                time
+            );
+
+
+            if(
+                !admin &&
+                rowId(row)
+            ){
+
+                const actions =
+                document.createElement(
+                    "div"
+                );
+
+                actions.className =
+                "yh-support-actions";
+
+
+                if(!meta){
+
+                    const edit =
+                    document.createElement(
+                        "button"
+                    );
+
+                    edit.type =
+                    "button";
+
+                    edit.className =
+                    "yh-support-action";
+
+                    edit.textContent =
+                    "✏️ " +
+                    t.edit;
+
+                    edit.addEventListener(
+                        "click",
+                        () =>
+                        handleEdit(row)
+                    );
+
+                    actions.appendChild(
+                        edit
+                    );
+                }
+
+
+                const del =
+                document.createElement(
+                    "button"
+                );
+
+                del.type =
+                "button";
+
+                del.className =
+                "yh-support-action";
+
+                del.textContent =
+                "🗑️ " +
+                t.del;
+
+                del.addEventListener(
+                    "click",
+                    () =>
+                    handleDelete(
+                        row,
+                        meta
+                    )
+                );
+
+                actions.appendChild(
+                    del
+                );
+
+                wrap.appendChild(
+                    actions
+                );
+            }
+
+
+            container.appendChild(
+                wrap
+            );
+        }
+
+
+        requestAnimationFrame(
+            () => {
+
+                container.scrollTop =
+                container.scrollHeight;
+
+            }
+        );
+
+
+        connectObserver(
+            container
+        );
+    }
+
+
+    function scheduleRefresh(){
+
+        clearTimeout(
+            refreshTimer
+        );
+
+        refreshTimer =
+        setTimeout(
+            refreshAndRender,
+            35
+        );
+    }
+
+
+    async function refreshAndRender(){
+
+        if(refreshBusy){
+            return;
+        }
+
+        const panel =
+        document.getElementById(
+            "yhSupportPanel"
+        );
+
+        if(
+            !panel
+            ?.classList
+            .contains("active")
+        ){
+            return;
+        }
+
+        if(!getThreadId()){
+            return;
+        }
+
+
+        refreshBusy =
+        true;
+
+
+        try{
+
+            await renderRows(
+                await loadRows()
+            );
+
+        }catch(e){
+
+            console.warn(
+                "Support media refresh:",
+                e
+            );
+
+        }finally{
+
+            refreshBusy =
+            false;
+
+        }
+    }
+
+
+    async function tryRpc(
+        names,
+        variants
+    ){
+
+        for(
+            const name
+            of names
+        ){
+
+            for(
+                const args
+                of variants
+            ){
+
+                try{
+
+                    const r =
+                    await supabaseClient
+                    .rpc(
+                        name,
+                        args
+                    );
+
+                    if(!r.error){
+
+                        return {
+                            ok:true,
+                            data:r.data
+                        };
+
+                    }
+
+                }catch(e){}
+
+            }
+        }
+
+
+        return {
+            ok:false
+        };
+    }
+
+
+    function ownerFilters(){
+
+        const out = [
+
+            [
+                "guest_token",
+                getToken()
+            ],
+
+            [
+                "public_token",
+                getToken()
+            ]
+
+        ];
+
+
+        try{
+
+            if(
+                typeof currentUser !==
+                "undefined" &&
+                currentUser?.id
+            ){
+
+                out.push(
+                    [
+                        "sender_user_id",
+                        currentUser.id
+                    ],
+                    [
+                        "user_id",
+                        currentUser.id
+                    ]
+                );
+
+            }
+
+        }catch(e){}
+
+
+        return out;
+    }
+
+
+    async function directUpdateMessage(
+        id,
+        newText
+    ){
+
+        const threadId =
+        getThreadId();
+
+
+        for(
+            const [
+                column,
+                value
+            ]
+            of ownerFilters()
+        ){
+
+            try{
+
+                const r =
+                await supabaseClient
+                .from(
+                    "support_messages"
+                )
+                .update({
+                    message:
+                    newText
+                })
+                .eq(
+                    "id",
+                    id
+                )
+                .eq(
+                    "thread_id",
+                    threadId
+                )
+                .eq(
+                    "sender_type",
+                    "user"
+                )
+                .eq(
+                    column,
+                    value
+                )
+                .select(
+                    "id"
+                );
+
+
+                if(
+                    !r.error &&
+                    Array.isArray(
+                        r.data
+                    ) &&
+                    r.data.length
+                ){
+
+                    return true;
+
+                }
+
+            }catch(e){}
+        }
+
+
+        return false;
+    }
+
+
+    async function directDeleteMessage(
+        id
+    ){
+
+        const threadId =
+        getThreadId();
+
+
+        for(
+            const [
+                column,
+                value
+            ]
+            of ownerFilters()
+        ){
+
+            try{
+
+                const r =
+                await supabaseClient
+                .from(
+                    "support_messages"
+                )
+                .delete()
+                .eq(
+                    "id",
+                    id
+                )
+                .eq(
+                    "thread_id",
+                    threadId
+                )
+                .eq(
+                    "sender_type",
+                    "user"
+                )
+                .eq(
+                    column,
+                    value
+                )
+                .select(
+                    "id"
+                );
+
+
+                if(
+                    !r.error &&
+                    Array.isArray(
+                        r.data
+                    ) &&
+                    r.data.length
+                ){
+
+                    return true;
+
+                }
+
+            }catch(e){}
+        }
+
+
+        return false;
+    }
+
+
+    async function updateMessage(
+        row,
+        newText
+    ){
+
+        const id =
+        rowId(row);
+
+        const threadId =
+        getThreadId();
+
+        const token =
+        getToken();
+
+
+        const rpc =
+        await tryRpc(
+
+            [
+                "yh_support_edit_message",
+                "yh_support_update_message"
+            ],
+
+            [
+                {
+                    p_message_id:id,
+                    p_thread_id:threadId,
+                    p_public_token:token,
+                    p_message:newText
+                },
+
+                {
+                    p_message_id:id,
+                    p_public_token:token,
+                    p_message:newText
+                },
+
+                {
+                    p_id:id,
+                    p_thread_id:threadId,
+                    p_public_token:token,
+                    p_message:newText
+                }
+            ]
+        );
+
+
+        if(rpc.ok){
+            return true;
+        }
+
+
+        return directUpdateMessage(
+            id,
+            newText
+        );
+    }
+
+
+    async function deleteMessage(
+        row
+    ){
+
+        const id =
+        rowId(row);
+
+        const threadId =
+        getThreadId();
+
+        const token =
+        getToken();
+
+
+        const rpc =
+        await tryRpc(
+
+            [
+                "yh_support_delete_message",
+                "yh_support_remove_message"
+            ],
+
+            [
+                {
+                    p_message_id:id,
+                    p_thread_id:threadId,
+                    p_public_token:token
+                },
+
+                {
+                    p_message_id:id,
+                    p_public_token:token
+                },
+
+                {
+                    p_id:id,
+                    p_thread_id:threadId,
+                    p_public_token:token
+                }
+            ]
+        );
+
+
+        if(rpc.ok){
+            return true;
+        }
+
+
+        return directDeleteMessage(
+            id
+        );
+    }
+
+
+    async function handleEdit(
+        row
+    ){
+
+        const t =
+        txt();
+
+        const oldText =
+        rowText(row);
+
+        const value =
+        prompt(
+            t.editTitle,
+            oldText
+        );
+
+
+        if(
+            value === null
+        ){
+            return;
+        }
+
+
+        const newText =
+        String(
+            value
+        )
+        .trim();
+
+
+        if(
+            !newText ||
+            newText === oldText
+        ){
+            return;
+        }
+
+
+        try{
+
+            const ok =
+            await updateMessage(
+                row,
+                newText
+            );
+
+
+            if(!ok){
+                throw new Error(
+                    "edit denied"
+                );
+            }
+
+
+            await refreshAndRender();
+
+        }catch(e){
+
+            console.warn(
+                "Support edit:",
+                e
+            );
+
+            notify(
+                t.editError
+            );
+
+        }
+    }
+
+
+    async function handleDelete(
+        row,
+        meta
+    ){
+
+        const t =
+        txt();
+
+
+        if(
+            !confirm(
+                t.deleteAsk
+            )
+        ){
+            return;
+        }
+
+
+        try{
+
+            const ok =
+            await deleteMessage(
+                row
+            );
+
+
+            if(!ok){
+
+                throw new Error(
+                    "delete denied"
+                );
+
+            }
+
+
+            if(
+                meta?.path
+            ){
+
+                try{
+
+                    const storageResult =
+                    await supabaseClient
+                    .storage
+                    .from(
+                        BUCKET
+                    )
+                    .remove([
+                        meta.path
+                    ]);
+
+
+                    if(
+                        storageResult.error
+                    ){
+
+                        notify(
+                            t.fileDeletedWarn
+                        );
+
+                    }
+
+
+                    urlCache.delete(
+                        meta.path
+                    );
+
+                }catch(e){
+
+                    notify(
+                        t.fileDeletedWarn
+                    );
+
+                }
+            }
+
+
+            await refreshAndRender();
+
+        }catch(e){
+
+            console.warn(
+                "Support delete:",
+                e
+            );
+
+            notify(
+                t.deleteError
+            );
+
+        }
+    }
+      function safeFileName(name){
+
+        const cleaned =
+        String(
+            name || "file"
+        )
+        .normalize(
+            "NFKD"
+        )
+        .replace(
+            /[^a-zA-Z0-9._-]+/g,
+            "-"
+        )
+        .replace(
+            /-+/g,
+            "-"
+        )
+        .replace(
+            /^-|-$/g,
+            ""
+        );
+
+        return (
+            cleaned.slice(-90) ||
+            "file"
+        );
+
+    }
+
+
+    async function startThreadWith(
+        message
+    ){
+
+        const token =
+        getToken();
+
+        const nameInput =
+        document.getElementById(
+            "yhSupportName"
+        );
+
+        const emailInput =
+        document.getElementById(
+            "yhSupportEmail"
+        );
+
+
+        let name =
+        String(
+            nameInput?.value || ""
+        )
+        .trim();
+
+
+        let email =
+        String(
+            emailInput?.value || ""
+        )
+        .trim();
+
+
+        let phone =
+        null;
+
+
+        try{
+
+            name =
+            name ||
+            currentUser
+            ?.user_metadata
+            ?.name ||
+            "";
+
+            email =
+            email ||
+            currentUser
+            ?.email ||
+            "";
+
+            phone =
+            currentUser
+            ?.user_metadata
+            ?.phone ||
+            null;
+
+        }catch(e){}
+
+
+        let listingId =
+        null;
+
+
+        try{
+
+            listingId =
+            typeof activeListing !==
+            "undefined"
+            ?
+            (
+                activeListing?.id ??
+                null
+            )
+            :
+            null;
+
+        }catch(e){}
+
+
+        const r =
+        await supabaseClient
+        .rpc(
+            "yh_support_start_thread",
+            {
+                p_public_token:
+                token,
+
+                p_message:
+                message,
+
+                p_name:
+                name || null,
+
+                p_email:
+                email || null,
+
+                p_phone:
+                phone,
+
+                p_listing_id:
+                listingId
+            }
+        );
+
+
+        if(r.error){
+            throw r.error;
+        }
+
+
+        const id =
+        threadIdFromData(
+            r.data
+        );
+
+
+        if(!id){
+
+            throw new Error(
+                "Thread ID not returned"
+            );
+
+        }
+
+
+        saveThreadId(
+            id
+        );
+
+
+        return id;
+
+    }
+
+
+    async function sendRaw(
+        message
+    ){
+
+        let threadId =
+        getThreadId();
+
+
+        if(!threadId){
+
+            return startThreadWith(
+                message
+            );
+
+        }
+
+
+        let r =
+        await supabaseClient
+        .rpc(
+            "yh_support_send_message",
+            {
+                p_thread_id:
+                threadId,
+
+                p_public_token:
+                getToken(),
+
+                p_message:
+                message
+            }
+        );
+
+
+        if(!r.error){
+
+            return threadId;
+
+        }
+
+
+        removeThreadId();
+
+
+        return startThreadWith(
+            message
+        );
+
+    }
+
+
+    async function uploadAndSend(
+        file,
+        button
+    ){
+
+        const t =
+        txt();
+
+
+        if(
+            uploadBusy ||
+            !file
+        ){
+            return;
+        }
+
+
+        if(
+            file.size >
+            MAX_FILE_SIZE
+        ){
+
+            notify(
+                t.tooBig
+            );
+
+            return;
+
+        }
+
+
+        uploadBusy =
+        true;
+
+
+        if(button){
+
+            button.disabled =
+            true;
+
+            button.textContent =
+            "⏳";
+
+        }
+
+
+        let path =
+        "";
+
+
+        try{
+
+            const token =
+            getToken();
+
+
+            path =
+            "support/" +
+            token +
+            "/" +
+            Date.now() +
+            "-" +
+            Math.random()
+            .toString(36)
+            .slice(2,8) +
+            "-" +
+            safeFileName(
+                file.name
+            );
+
+
+            const up =
+            await supabaseClient
+            .storage
+            .from(
+                BUCKET
+            )
+            .upload(
+                path,
+                file,
+                {
+                    cacheControl:
+                    "3600",
+
+                    upsert:
+                    false,
+
+                    contentType:
+                    file.type ||
+                    "application/octet-stream"
+                }
+            );
+
+
+            if(up.error){
+
+                throw up.error;
+
+            }
+
+
+            const marker =
+            FILE_PREFIX +
+            JSON.stringify({
+                path:
+                path,
+
+                name:
+                file.name,
+
+                mime:
+                file.type ||
+                "",
+
+                size:
+                file.size
+            });
+
+
+            try{
+
+                await sendRaw(
+                    marker
+                );
+
+            }catch(sendError){
+
+                try{
+
+                    await supabaseClient
+                    .storage
+                    .from(
+                        BUCKET
+                    )
+                    .remove([
+                        path
+                    ]);
+
+                }catch(e){}
+
+
+                throw sendError;
+
+            }
+
+
+            await refreshAndRender();
+
+
+        }catch(e){
+
+            console.warn(
+                "Support file upload/send:",
+                e
+            );
+
+
+            notify(
+                path
+                ?
+                t.sendError
+                :
+                t.uploadError
+            );
+
+
+        }finally{
+
+            uploadBusy =
+            false;
+
+
+            if(button){
+
+                button.disabled =
+                false;
+
+                button.textContent =
+                "📎";
+
+            }
+
+        }
+
+    }
+
+
+    function attachFileUi(){
+
+        const compose =
+        document.querySelector(
+            "#yhSupportPanel .yh-support-compose"
+        );
+
+
+        const input =
+        document.getElementById(
+            "yhSupportMessageInput"
+        );
+
+
+        if(
+            !compose ||
+            !input ||
+            document.getElementById(
+                "yhSupportFileTrigger"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        const fileInput =
+        document.createElement(
+            "input"
+        );
+
+
+        fileInput.type =
+        "file";
+
+        fileInput.id =
+        "yhSupportFileInput";
+
+        fileInput.hidden =
+        true;
+
+        fileInput.accept =
+        "image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip";
+
+
+        const button =
+        document.createElement(
+            "button"
+        );
+
+
+        button.type =
+        "button";
+
+        button.id =
+        "yhSupportFileTrigger";
+
+        button.className =
+        "yh-support-file-trigger";
+
+        button.textContent =
+        "📎";
+
+        button.title =
+        txt().attach;
+
+
+        button.setAttribute(
+            "aria-label",
+            txt().attach
+        );
+
+
+        button.addEventListener(
+            "click",
+            () =>
+            fileInput.click()
+        );
+
+
+        fileInput
+        .addEventListener(
+            "change",
+            async function(){
+
+                const file =
+                this.files?.[0];
+
+
+                this.value =
+                "";
+
+
+                if(file){
+
+                    await uploadAndSend(
+                        file,
+                        button
+                    );
+
+                }
+
+            }
+        );
+
+
+        compose.append(
+            fileInput,
+            button
+        );
+
+    }
+
+
+    function init(){
+
+        attachFileUi();
+
+
+        const container =
+        document.getElementById(
+            "yhSupportMessages"
+        );
+
+
+        if(container){
+
+            hideNativeMarkers(
+                container
+            );
+
+            connectObserver(
+                container
+            );
+
+        }
+
+
+        document
+        .getElementById(
+            "yhSupportLauncher"
+        )
+        ?.addEventListener(
+            "click",
+            () =>
+            setTimeout(
+                refreshAndRender,
+                80
+            )
+        );
+
+
+        document
+        .getElementById(
+            "language"
+        )
+        ?.addEventListener(
+            "change",
+            () =>
+            setTimeout(
+                function(){
+
+                    const b =
+                    document.getElementById(
+                        "yhSupportFileTrigger"
+                    );
+
+
+                    if(b){
+
+                        b.title =
+                        txt().attach;
+
+                        b.setAttribute(
+                            "aria-label",
+                            txt().attach
+                        );
+
+                    }
+
+
+                    refreshAndRender();
+
+                },
+                50
+            )
+        );
+
+
+        setInterval(
+            function(){
+
+                attachFileUi();
+
+
+                const panel =
+                document.getElementById(
+                    "yhSupportPanel"
+                );
+
+
+                if(
+                    panel
+                    ?.classList
+                    .contains(
+                        "active"
+                    ) &&
+                    getThreadId()
+                ){
+
+                    refreshAndRender();
+
+                }
+
+            },
+            5000
+        );
+
+
+        console.log(
+            "Your Home — Support media/edit/delete patch loaded."
+        );
+
+    }
+
+
+    if(
+        document.readyState ===
+        "loading"
+    ){
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () =>
+            setTimeout(
+                init,
+                0
+            ),
+            {
+                once:true
+            }
+        );
+
+    }else{
+
+        setTimeout(
+            init,
+            0
+        );
+
+    }
+
+
+})();
+</script>  
     <!-- =========================================================
      YOUR HOME — BUSINESS ADVERTISING MODULE FINAL
      USER UPLOAD + PACKAGES + ROTATION + STATS
