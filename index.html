@@ -36340,7 +36340,7 @@ function(
         await tryRpc(
 
             [
-                "yh_support_edit_message",
+                "yh_support_message_edit_user_final",
                 "yh_support_update_message"
             ],
 
@@ -36398,7 +36398,7 @@ function(
         await tryRpc(
 
             [
-                "yh_support_delete_message",
+                "yh_support_message_delete_user_final",
                 "yh_support_remove_message"
             ],
 
@@ -36868,22 +36868,46 @@ function(
         try{
 
             const token =
-            getToken();
+getToken();
+
+const threadId =
+getThreadId();
+
+let actor =
+token;
+
+try{
+
+    const userResult =
+    await supabaseClient
+    .auth
+    .getUser();
+
+    actor =
+    userResult
+    ?.data
+    ?.user
+    ?.id ||
+    token;
+
+}catch(e){}
 
 
-            path =
-            "support/" +
-            token +
-            "/" +
-            Date.now() +
-            "-" +
-            Math.random()
-            .toString(36)
-            .slice(2,8) +
-            "-" +
-            safeFileName(
-                file.name
-            );
+path =
+"support-user/" +
+threadId +
+"/" +
+actor +
+"/" +
+Date.now() +
+"-" +
+Math.random()
+.toString(36)
+.slice(2,8) +
+"-" +
+safeFileName(
+    file.name
+);
 
 
             const up =
