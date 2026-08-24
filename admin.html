@@ -11029,5 +11029,273 @@ console.log(
 </script>
 
 <!-- YOUR HOME COMPLETE ADMIN MESSENGER FRONTEND FINAL END -->
+    <!-- =========================================================
+     YOUR HOME — CALL RINGTONE FIX FINAL
+========================================================= -->
+<script>
+(function(){
+
+    if(window.__YH_CALL_RINGTONE_FIX__) return;
+    window.__YH_CALL_RINGTONE_FIX__ = true;
+
+    let ctx = null;
+    let timer = null;
+    let mode = null;
+
+    function getCtx(){
+
+        const AudioCtx =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        if(!AudioCtx) return null;
+
+        if(!ctx){
+            ctx = new AudioCtx();
+        }
+
+        if(ctx.state === "suspended"){
+            ctx.resume().catch(()=>{});
+        }
+
+        return ctx;
+    }
+
+    /* ბრაუზერს ერთხელ მაინც სჭირდება მომხმარებლის შეხება */
+    document.addEventListener("pointerdown", ()=>{
+        getCtx();
+    }, {passive:true});
+
+
+    function beep(freq, duration, volume){
+
+        const c = getCtx();
+
+        if(!c || c.state !== "running") return;
+
+        const oscillator = c.createOscillator();
+        const gain = c.createGain();
+
+        oscillator.type = "sine";
+        oscillator.frequency.value = freq;
+
+        gain.gain.setValueAtTime(
+            0.0001,
+            c.currentTime
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            volume,
+            c.currentTime + 0.02
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            0.0001,
+            c.currentTime + duration
+        );
+
+        oscillator.connect(gain);
+        gain.connect(c.destination);
+
+        oscillator.start();
+        oscillator.stop(
+            c.currentTime + duration + 0.03
+        );
+    }
+
+
+    function incomingPattern(){
+
+        beep(740, .20, .16);
+
+        setTimeout(()=>{
+            beep(920, .20, .16);
+        },250);
+
+        setTimeout(()=>{
+            beep(740, .20, .16);
+        },500);
+    }
+
+
+    function outgoingPattern(){
+
+        beep(425, .32, .12);
+
+        setTimeout(()=>{
+            beep(425, .32, .12);
+        },430);
+    }
+
+
+    function stopRing(){
+
+        if(timer){
+            clearInterval(timer);
+            timer = null;
+        }
+
+        mode = null;
+    }
+
+
+    function startRing(nextMode){
+
+        if(mode === nextMode && timer){
+            return;
+        }
+
+        stopRing();
+
+        mode = nextMode;
+
+        if(nextMode === "incoming"){
+
+            incomingPattern();
+
+            timer = setInterval(
+                incomingPattern,
+                2400
+            );
+
+        }else if(nextMode === "outgoing"){
+
+            outgoingPattern();
+
+            timer = setInterval(
+                outgoingPattern,
+                3300
+            );
+        }
+    }
+
+
+    function updateRing(){
+
+        const overlay =
+            document.getElementById(
+                "yhCallOverlay"
+            );
+
+        const incoming =
+            document.getElementById(
+                "yhIncomingActions"
+            );
+
+        const status =
+            document.getElementById(
+                "yhCallStatus"
+            );
+
+        if(
+            !overlay ||
+            !overlay.classList.contains("open")
+        ){
+            stopRing();
+            return;
+        }
+
+        const text =
+            String(
+                status?.textContent || ""
+            ).toLowerCase();
+
+
+        /* კავშირი დამყარდა — ხმა შეწყდეს */
+        if(
+            text.includes("დაკავშირებულია") ||
+            text.includes("ერთდება") ||
+            text.includes("დასრულდა") ||
+            text.includes("უარყოფილია")
+        ){
+            stopRing();
+            return;
+        }
+
+
+        if(
+            incoming?.classList.contains("show")
+        ){
+
+            startRing("incoming");
+
+        }else{
+
+            startRing("outgoing");
+        }
+    }
+
+
+    const observer =
+        new MutationObserver(
+            updateRing
+        );
+
+
+    function install(){
+
+        const overlay =
+            document.getElementById(
+                "yhCallOverlay"
+            );
+
+        const incoming =
+            document.getElementById(
+                "yhIncomingActions"
+            );
+
+        const status =
+            document.getElementById(
+                "yhCallStatus"
+            );
+
+        if(!overlay){
+            setTimeout(install,500);
+            return;
+        }
+
+        observer.observe(
+            overlay,
+            {
+                attributes:true,
+                attributeFilter:["class"]
+            }
+        );
+
+        if(incoming){
+
+            observer.observe(
+                incoming,
+                {
+                    attributes:true,
+                    attributeFilter:["class"]
+                }
+            );
+        }
+
+        if(status){
+
+            observer.observe(
+                status,
+                {
+                    childList:true,
+                    subtree:true,
+                    characterData:true
+                }
+            );
+        }
+
+        updateRing();
+    }
+
+
+    install();
+
+    console.log(
+        "YOUR HOME CALL RINGTONE READY 🔔"
+    );
+
+})();
+</script>
 </body>
 </html>
