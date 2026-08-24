@@ -36340,7 +36340,7 @@ function(
         await tryRpc(
 
             [
-                "yh_support_edit_message",
+                "yh_support_message_edit_user_final",
                 "yh_support_update_message"
             ],
 
@@ -36398,7 +36398,7 @@ function(
         await tryRpc(
 
             [
-                "yh_support_delete_message",
+                "yh_support_message_delete_user_final",
                 "yh_support_remove_message"
             ],
 
@@ -36867,13 +36867,42 @@ function(
 
         try{
 
-            const token =
+                        const token =
             getToken();
+
+            const threadId =
+            getThreadId();
+
+            if(!threadId){
+
+                notify(
+                    "ჯერ ერთი ტექსტური შეტყობინება გაგზავნეთ, შემდეგ კი ფოტო ან ფაილი მიამაგრეთ."
+                );
+
+                return;
+            }
+
+            let actor =
+            token;
+
+            try{
+
+                if(
+                    typeof currentUser !== "undefined" &&
+                    currentUser?.id
+                ){
+                    actor =
+                    currentUser.id;
+                }
+
+            }catch(e){}
 
 
             path =
-            "support/" +
-            token +
+            "support-user/" +
+            threadId +
+            "/" +
+            actor +
             "/" +
             Date.now() +
             "-" +
@@ -43039,6 +43068,147 @@ if(
 }
 
 </style>
+    <!-- =========================================================
+     YOUR HOME — MAIN HEADER ALWAYS VISIBLE FINAL
+========================================================= -->
+<style id="yhMainHeaderAlwaysVisible">
+
+:root{
+    --yh-main-header-height:80px;
+}
+
+body > header{
+    position:sticky !important;
+    top:0 !important;
+    z-index:2147483000 !important;
+}
+
+/* სრული განცხადება */
+.listing-modal{
+    top:var(--yh-main-header-height) !important;
+    right:0 !important;
+    bottom:0 !important;
+    left:0 !important;
+}
+
+/* VIP ფანჯარა */
+.yh-vip-modal{
+    top:var(--yh-main-header-height) !important;
+    right:0 !important;
+    bottom:0 !important;
+    left:0 !important;
+}
+
+/* ბიზნეს რეკლამის გვერდი */
+.yh-ad-modal{
+    top:var(--yh-main-header-height) !important;
+    right:0 !important;
+    bottom:0 !important;
+    left:0 !important;
+}
+
+/* რეკლამის პატარა დუბლირებული "header" აღარ გვჭირდება */
+.yh-ad-modal-topbar{
+    min-height:auto !important;
+    padding:10px max(18px,4vw) !important;
+    justify-content:flex-end !important;
+}
+
+.yh-ad-modal-brand{
+    display:none !important;
+}
+
+/* განცხადებაში მთავარი და currency უკვე ზედა მთავარ header-ში გვაქვს */
+.listing-detail-home,
+.yh-detail-currency{
+    display:none !important;
+}
+
+.listing-detail-top{
+    flex-direction:row !important;
+    align-items:center !important;
+}
+
+/* Messenger რეკლამის გვერდზეც გამოჩნდეს */
+.yh-support-launcher{
+    z-index:2147483100 !important;
+}
+
+.yh-support-panel{
+    z-index:2147483200 !important;
+}
+
+</style>
+
+<script>
+(function(){
+
+    function yhSyncMainHeaderHeight(){
+
+        const header =
+        document.querySelector(
+            "body > header"
+        );
+
+        if(!header){
+            return;
+        }
+
+        const height =
+        Math.ceil(
+            header.getBoundingClientRect().height
+        );
+
+        document.documentElement
+        .style
+        .setProperty(
+            "--yh-main-header-height",
+            height + "px"
+        );
+    }
+
+    yhSyncMainHeaderHeight();
+
+    window.addEventListener(
+        "resize",
+        yhSyncMainHeaderHeight
+    );
+
+    window.addEventListener(
+        "orientationchange",
+        function(){
+            setTimeout(
+                yhSyncMainHeaderHeight,
+                150
+            );
+        }
+    );
+
+    if(window.ResizeObserver){
+
+        const header =
+        document.querySelector(
+            "body > header"
+        );
+
+        if(header){
+
+            new ResizeObserver(
+                yhSyncMainHeaderHeight
+            )
+            .observe(
+                header
+            );
+        }
+    }
+
+    setTimeout(
+        yhSyncMainHeaderHeight,
+        300
+    );
+
+})();
+</script>
 </body>
 </html>
 
