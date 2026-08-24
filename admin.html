@@ -11297,5 +11297,1865 @@ console.log(
 
 })();
 </script>
+    <!-- =========================================================
+     YOUR HOME — CHAT FILES + CALL HISTORY FINAL
+========================================================= -->
+
+<style id="yhChatFilesCallsFinalStyle">
+
+.yh-attach-btn{
+    width:38px;
+    height:38px;
+    margin-bottom:2px;
+    border:0;
+    border-radius:50%;
+    background:#eef1e3;
+    color:#5d6933;
+    font-size:18px;
+    font-weight:900;
+    flex:0 0 38px;
+}
+
+.yh-file-compose{
+    grid-template-columns:
+        38px
+        38px
+        38px
+        minmax(0,1fr)
+        auto !important;
+}
+
+#page-support .msg-compose.yh-file-compose{
+    grid-template-columns:
+        38px
+        38px
+        minmax(0,1fr)
+        auto !important;
+}
+
+.yh-file-card{
+    min-width:210px;
+    max-width:320px;
+}
+
+.yh-file-image{
+    display:block;
+    width:100%;
+    max-width:300px;
+    max-height:260px;
+    object-fit:cover;
+    border-radius:12px;
+    margin-bottom:7px;
+    cursor:pointer;
+}
+
+.yh-file-link{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:9px 10px;
+    border-radius:11px;
+    background:rgba(0,0,0,.05);
+    color:inherit;
+    text-decoration:none;
+}
+
+.msg-row.me .yh-file-link{
+    background:rgba(255,255,255,.14);
+    color:#fff;
+}
+
+.yh-file-icon{
+    font-size:23px;
+    flex:0 0 auto;
+}
+
+.yh-file-info{
+    min-width:0;
+}
+
+.yh-file-name{
+    display:block;
+    font-size:10px;
+    font-weight:900;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+.yh-file-size{
+    display:block;
+    margin-top:2px;
+    font-size:8px;
+    opacity:.65;
+}
+
+.yh-file-uploading{
+    position:fixed;
+    left:50%;
+    bottom:25px;
+    transform:translateX(-50%);
+    z-index:30000;
+    padding:11px 16px;
+    border-radius:999px;
+    background:#20261f;
+    color:#fff;
+    font-size:11px;
+    font-weight:800;
+    box-shadow:0 12px 35px rgba(0,0,0,.25);
+}
+
+.yh-call-history{
+    display:flex;
+    justify-content:center;
+    margin:10px 0;
+}
+
+.yh-call-history-line{
+    padding:6px 11px;
+    border-radius:999px;
+    background:#ecefe7;
+    color:#697064;
+    font-size:9px;
+    font-weight:800;
+}
+
+@media(max-width:700px){
+
+    .yh-file-compose{
+        grid-template-columns:
+            36px
+            36px
+            36px
+            minmax(0,1fr)
+            auto !important;
+    }
+
+    #page-support .msg-compose.yh-file-compose{
+        grid-template-columns:
+            36px
+            36px
+            minmax(0,1fr)
+            auto !important;
+    }
+
+    .yh-attach-btn{
+        width:36px;
+        height:36px;
+        flex-basis:36px;
+    }
+
+    .yh-file-card{
+        min-width:190px;
+        max-width:280px;
+    }
+}
+
+</style>
+
+<script>
+
+(function(){
+
+if(window.__YH_CHAT_FILES_CALL_HISTORY_FINAL__){
+    return;
+}
+
+window.__YH_CHAT_FILES_CALL_HISTORY_FINAL__=true;
+
+const YH_FILE_PREFIX="__YH_FILE__";
+
+const yhFileUrlCache=new Map();
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function yhFileSafeName(name){
+
+    return String(name||"file")
+        .replace(/[\/\\:*?"<>|]/g,"_")
+        .slice(0,160);
+}
+
+
+function yhFileSize(bytes){
+
+    bytes=Number(bytes||0);
+
+    if(bytes<1024)return bytes+" B";
+
+    if(bytes<1024*1024){
+        return (bytes/1024).toFixed(1)+" KB";
+    }
+
+    return (bytes/1024/1024).toFixed(1)+" MB";
+}
+
+
+function yhParseFileMessage(message){
+
+    const text=String(message||"");
+
+    if(!text.startsWith(YH_FILE_PREFIX)){
+        return null;
+    }
+
+    try{
+
+        const obj=JSON.parse(
+            text.slice(YH_FILE_PREFIX.length)
+        );
+
+        if(!obj?.path){
+            return null;
+        }
+
+        return obj;
+
+    }catch{
+        return null;
+    }
+}
+
+
+async function yhChatFileUrl(path){
+
+    if(!path)return"";
+
+    const cached=
+        yhFileUrlCache.get(path);
+
+    if(
+        cached
+        &&
+        cached.expires>Date.now()
+    ){
+        return cached.url;
+    }
+
+    const{
+        data,
+        error
+    }=
+    await sb.storage
+        .from("admin-chat-files")
+        .createSignedUrl(
+            path,
+            3300
+        );
+
+    if(error){
+        console.error(error);
+        return"";
+    }
+
+    const url=data?.signedUrl||"";
+
+    yhFileUrlCache.set(
+        path,
+        {
+            url,
+            expires:
+                Date.now()+
+                50*60*1000
+        }
+    );
+
+    return url;
+}
+
+
+async function yhHydrateChatFiles(container){
+
+    if(!container)return;
+
+    const elements=
+        container.querySelectorAll(
+            "[data-yh-chat-file-path]"
+        );
+
+    for(const el of elements){
+
+        const path=
+            el.dataset.yhChatFilePath;
+
+        if(!path){
+            continue;
+        }
+
+        const url=
+            await yhChatFileUrl(path);
+
+        if(!url){
+            continue;
+        }
+
+        if(el.tagName==="IMG"){
+
+            el.src=url;
+
+            el.onclick=()=>{
+                window.open(url,"_blank");
+            };
+
+        }else{
+
+            el.href=url;
+        }
+    }
+}
+
+
+async function yhHydrateVoiceAgain(container){
+
+    if(!container)return;
+
+    const audios=
+        container.querySelectorAll(
+            "audio[data-yh-voice-path]"
+        );
+
+    for(const audio of audios){
+
+        if(audio.src)continue;
+
+        try{
+
+            const{
+                data,
+                error
+            }=
+            await sb.storage
+                .from("admin-voice")
+                .createSignedUrl(
+                    audio.dataset.yhVoicePath,
+                    3300
+                );
+
+            if(!error&&data?.signedUrl){
+                audio.src=data.signedUrl;
+            }
+
+        }catch{}
+    }
+}
+
+
+function yhFileHTML(file){
+
+    const mime=
+        String(file.mime||"");
+
+    const isImage=
+        mime.startsWith("image/");
+
+    if(isImage){
+
+        return`
+
+            <div class="yh-file-card">
+
+                <img
+                    class="yh-file-image"
+                    data-yh-chat-file-path="${esc(file.path)}"
+                    alt="${esc(file.name||"ფოტო")}"
+                >
+
+                <div class="yh-file-name">
+                    🖼️ ${esc(file.name||"ფოტო")}
+                </div>
+
+                <div class="yh-file-size">
+                    ${esc(yhFileSize(file.size))}
+                </div>
+
+            </div>
+        `;
+    }
+
+    return`
+
+        <div class="yh-file-card">
+
+            <a
+                class="yh-file-link"
+                data-yh-chat-file-path="${esc(file.path)}"
+                target="_blank"
+                rel="noopener"
+            >
+
+                <span class="yh-file-icon">
+                    📎
+                </span>
+
+                <span class="yh-file-info">
+
+                    <span class="yh-file-name">
+                        ${esc(file.name||"ფაილი")}
+                    </span>
+
+                    <span class="yh-file-size">
+                        ${esc(yhFileSize(file.size))}
+                    </span>
+
+                </span>
+
+            </a>
+
+        </div>
+    `;
+}
+
+
+function yhTextActions(type,m){
+
+    if(
+        m.deleted_at
+        ||
+        String(m.message_type||"text")
+        !=="text"
+    ){
+        return"";
+    }
+
+    return`
+
+        <div class="yh-msg-actions">
+
+            <button
+                class="yh-msg-action"
+                data-yh-message-edit="${esc(m.id)}"
+                data-yh-message-type="${type}"
+            >
+                ✏️ რედაქტირება
+            </button>
+
+            <button
+                class="yh-msg-action"
+                data-yh-message-delete="${esc(m.id)}"
+                data-yh-message-type="${type}"
+            >
+                🗑️ წაშლა
+            </button>
+
+        </div>
+    `;
+}
+
+
+function yhFileDeleteAction(type,m,file){
+
+    if(m.deleted_at)return"";
+
+    return`
+
+        <div class="yh-msg-actions">
+
+            <button
+                class="yh-msg-action"
+                data-yh-file-delete="${esc(m.id)}"
+                data-yh-file-channel="${esc(type)}"
+                data-yh-file-path="${esc(file.path)}"
+            >
+                🗑️ წაშლა
+            </button>
+
+        </div>
+    `;
+}
+
+
+function yhDurationText(seconds){
+
+    seconds=Math.max(
+        0,
+        Number(seconds||0)
+    );
+
+    const min=Math.floor(seconds/60);
+    const sec=Math.floor(seconds%60);
+
+    return(
+        min+
+        ":"+
+        String(sec).padStart(2,"0")
+    );
+}
+
+
+function yhCallHistoryText(call){
+
+    const icon=
+        call.call_type==="video"
+        ?"🎥"
+        :"📞";
+
+    if(call.status==="declined"){
+
+        return(
+            icon+
+            " უარყოფილი "+
+            (
+                call.call_type==="video"
+                ?"ვიდეოზარი"
+                :"ზარი"
+            )
+        );
+    }
+
+    if(call.status==="missed"){
+
+        return(
+            icon+
+            " უპასუხო "+
+            (
+                call.call_type==="video"
+                ?"ვიდეოზარი"
+                :"ზარი"
+            )
+        );
+    }
+
+    if(
+        call.status==="ended"
+        ||
+        call.status==="accepted"
+    ){
+
+        const duration=
+            Number(
+                call.duration_seconds||0
+            );
+
+        return(
+            icon+
+            " "+
+            (
+                call.call_type==="video"
+                ?"ვიდეოზარი"
+                :"ხმოვანი ზარი"
+            )
+            +
+            (
+                duration>0
+                ?" · "+yhDurationText(duration)
+                :""
+            )
+        );
+    }
+
+    return(
+        icon+
+        " "+
+        (
+            call.call_type==="video"
+            ?"ვიდეოზარი"
+            :"ხმოვანი ზარი"
+        )
+    );
+}
+
+
+/* =========================================================
+   FILE PICKER BUTTONS
+========================================================= */
+
+function yhInstallFileButton(
+    pageSelector,
+    type
+){
+
+    const compose=
+        document.querySelector(
+            pageSelector+
+            " .msg-compose"
+        );
+
+    if(
+        !compose
+        ||
+        compose.querySelector(
+            `[data-yh-file-button="${type}"]`
+        )
+    ){
+        return;
+    }
+
+    compose.classList.add(
+        "yh-file-compose"
+    );
+
+    const btn=
+        document.createElement(
+            "button"
+        );
+
+    btn.type="button";
+    btn.className="yh-attach-btn";
+    btn.dataset.yhFileButton=type;
+    btn.textContent="📎";
+    btn.title="ფოტო ან ფაილი";
+
+    const input=
+        document.createElement(
+            "input"
+        );
+
+    input.type="file";
+    input.hidden=true;
+
+    input.accept=[
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/gif",
+        "image/heic",
+        "image/heif",
+        "application/pdf",
+        ".doc",
+        ".docx",
+        ".xls",
+        ".xlsx",
+        ".ppt",
+        ".pptx",
+        ".txt",
+        ".zip",
+        ".rar"
+    ].join(",");
+
+    const voice=
+        compose.querySelector(
+            ".yh-voice-btn"
+        );
+
+    const emoji=
+        compose.querySelector(
+            ".emoji-btn"
+        );
+
+    if(voice){
+
+        voice.after(btn);
+
+    }else{
+
+        emoji?.after(btn);
+    }
+
+    compose.appendChild(input);
+
+    btn.onclick=()=>{
+
+        if(
+            type==="support"
+            &&
+            !supportThreadId
+        ){
+
+            alert(
+                "ჯერ აირჩიე მომხმარებლის საუბარი."
+            );
+
+            return;
+        }
+
+        if(
+            type==="team"
+            &&
+            !teamAdminId
+        ){
+
+            alert(
+                "ჯერ აირჩიე თანამშრომელი."
+            );
+
+            return;
+        }
+
+        input.click();
+    };
+
+
+    input.onchange=async()=>{
+
+        const file=
+            input.files?.[0];
+
+        input.value="";
+
+        if(!file)return;
+
+        if(file.size>25*1024*1024){
+
+            alert(
+                "ფაილი მაქსიმუმ 25 MB შეიძლება იყოს."
+            );
+
+            return;
+        }
+
+        await yhUploadChatFile(
+            type,
+            file
+        );
+    };
+}
+
+
+yhInstallFileButton(
+    "#page-support",
+    "support"
+);
+
+yhInstallFileButton(
+    "#page-teamchat",
+    "team"
+);
+
+yhInstallFileButton(
+    "#page-groupchat",
+    "group"
+);
+
+
+/* =========================================================
+   UPLOAD + SEND
+========================================================= */
+
+async function yhUploadChatFile(
+    type,
+    file
+){
+
+    const uid=
+        currentAdminId();
+
+    if(!uid)return;
+
+    const loading=
+        document.createElement("div");
+
+    loading.className=
+        "yh-file-uploading";
+
+    loading.textContent=
+        "⏳ ფაილი იტვირთება...";
+
+    document.body.appendChild(
+        loading
+    );
+
+    let path="";
+
+    try{
+
+        const safe=
+            yhFileSafeName(
+                file.name
+            );
+
+        const rand=
+            crypto.randomUUID
+            ?crypto.randomUUID()
+            :Math.random()
+                .toString(36)
+                .slice(2);
+
+        if(type==="support"){
+
+            path=
+                "support/"+
+                String(supportThreadId)+
+                "/"+
+                uid+
+                "/"+
+                Date.now()+
+                "-"+
+                rand+
+                "-"+
+                safe;
+
+        }else if(type==="team"){
+
+            path=
+                "team/"+
+                uid+
+                "/"+
+                String(teamAdminId)+
+                "/"+
+                Date.now()+
+                "-"+
+                rand+
+                "-"+
+                safe;
+
+        }else{
+
+            path=
+                "group/"+
+                uid+
+                "/"+
+                Date.now()+
+                "-"+
+                rand+
+                "-"+
+                safe;
+        }
+
+
+        const{
+            error:uploadError
+        }=
+        await sb.storage
+            .from("admin-chat-files")
+            .upload(
+                path,
+                file,
+                {
+                    upsert:false,
+                    contentType:
+                        file.type||
+                        "application/octet-stream"
+                }
+            );
+
+        if(uploadError){
+            throw uploadError;
+        }
+
+
+        const marker=
+            YH_FILE_PREFIX+
+            JSON.stringify({
+
+                path,
+
+                name:
+                    file.name.slice(
+                        0,
+                        160
+                    ),
+
+                mime:
+                    file.type||
+                    "application/octet-stream",
+
+                size:
+                    file.size
+
+            });
+
+
+        let result;
+
+
+        if(type==="support"){
+
+            result=
+                await sb.rpc(
+                    "yh_admin_support_send_final",
+                    {
+                        p_thread_id:
+                            supportThreadId,
+
+                        p_message:
+                            marker
+                    }
+                );
+
+        }else if(type==="team"){
+
+            result=
+                await sb.rpc(
+                    "yh_admin_team_send_final",
+                    {
+                        p_recipient_id:
+                            teamAdminId,
+
+                        p_message:
+                            marker
+                    }
+                );
+
+        }else{
+
+            result=
+                await sb.rpc(
+                    "yh_admin_group_send_final",
+                    {
+                        p_message:
+                            marker
+                    }
+                );
+        }
+
+
+        if(result.error){
+            throw result.error;
+        }
+
+
+        if(type==="support"){
+
+            await openSupportThread(
+                supportThreadId
+            );
+
+        }else if(type==="team"){
+
+            await openTeamChat(
+                teamAdminId
+            );
+
+        }else{
+
+            await loadGroupMessages(
+                true
+            );
+        }
+
+
+    }catch(error){
+
+        console.error(
+            "Chat file upload",
+            error
+        );
+
+        if(path){
+
+            try{
+
+                await sb.storage
+                    .from("admin-chat-files")
+                    .remove([path]);
+
+            }catch{}
+        }
+
+        alert(
+            "ფაილის გაგზავნა ვერ მოხერხდა:\n\n"+
+            error.message
+        );
+
+    }finally{
+
+        loading.remove();
+    }
+}
+
+
+/* =========================================================
+   SUPPORT RENDER
+========================================================= */
+
+const yhOldSupportOpen=
+    window.openSupportThread;
+
+
+window.openSupportThread=
+openSupportThread=
+async function(id){
+
+    supportThreadId=id;
+
+    $("supportShell")
+        .classList
+        .add("chat-open");
+
+    await loadSupportThreads();
+
+    try{
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            "yh_admin_support_messages_v3_final",
+            {
+                p_thread_id:
+                    String(id)
+            }
+        );
+
+        if(error)throw error;
+
+        const list=rows(data);
+
+        $("supportMessages").innerHTML=
+            list.length
+            ?list.map(m=>{
+
+                const adminMessage=
+                    [
+                        "admin",
+                        "staff",
+                        "support"
+                    ]
+                    .includes(
+                        String(
+                            m.sender_type||""
+                        ).toLowerCase()
+                    );
+
+                const own=
+                    adminMessage
+                    &&
+                    String(
+                        m.admin_sender_id||""
+                    )===currentAdminId();
+
+                const file=
+                    yhParseFileMessage(
+                        m.message
+                    );
+
+                let body="";
+
+                if(m.deleted_at){
+
+                    body=`
+                        <span class="yh-deleted-message">
+                            🗑️ შეტყობინება წაიშალა
+                        </span>
+                    `;
+
+                }else if(file){
+
+                    body=
+                        yhFileHTML(file);
+
+                }else{
+
+                    body=
+                        esc(m.message||"");
+                }
+
+
+                return`
+
+                    <div class="msg-row ${adminMessage?"me":""}">
+
+                        <div class="msg-bubble">
+
+                            ${
+                                adminMessage
+                                &&
+                                m.admin_sender_name
+                                ?`
+                                    <div class="msg-sender">
+                                        ${esc(m.admin_sender_name)}
+                                    </div>
+                                `
+                                :""
+                            }
+
+                            ${body}
+
+                            <div class="yh-msg-footer">
+
+                                ${
+                                    m.edited_at
+                                    &&
+                                    !m.deleted_at
+                                    ?`
+                                        <span class="yh-edited">
+                                            რედაქტირებულია
+                                        </span>
+                                    `
+                                    :""
+                                }
+
+                                <span class="yh-msg-meta">
+                                    ${esc(dateText(m.created_at))}
+                                </span>
+
+                                ${
+                                    own
+                                    ?`
+                                        <span class="yh-msg-status">
+                                            ${
+                                                m.user_read_at
+                                                ?"👁️ ნანახია"
+                                                :"✓ გაგზავნილია"
+                                            }
+                                        </span>
+                                    `
+                                    :""
+                                }
+
+                            </div>
+
+                            ${
+                                own
+                                &&
+                                !file
+                                ?yhTextActions(
+                                    "support",
+                                    {
+                                        ...m,
+                                        message_type:"text"
+                                    }
+                                )
+                                :""
+                            }
+
+                            ${
+                                own
+                                &&
+                                file
+                                ?yhFileDeleteAction(
+                                    "support",
+                                    m,
+                                    file
+                                )
+                                :""
+                            }
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("")
+
+            :`
+                <div class="msg-empty">
+                    მესიჯები არ არის.
+                </div>
+            `;
+
+
+        await yhHydrateChatFiles(
+            $("supportMessages")
+        );
+
+        $("supportMessages").scrollTop=
+            $("supportMessages").scrollHeight;
+
+        await loadUnreadCounts();
+
+    }catch(error){
+
+        errorBox(
+            "supportMessages",
+            error
+        );
+    }
+};
+
+
+/* =========================================================
+   PRIVATE TEAM — MESSAGES + CALL HISTORY
+========================================================= */
+
+window.openTeamChat=
+openTeamChat=
+async function(id){
+
+    teamAdminId=id;
+
+    $("teamShell")
+        .classList
+        .add("chat-open");
+
+    const admin=
+        teamAdmins.find(
+            a=>
+            String(a.user_id)
+            ===
+            String(id)
+        );
+
+    $("teamChatName").textContent=
+        admin?.display_name||
+        "Admin";
+
+    $("teamChatRole").textContent=
+        roleLabel(admin?.role);
+
+    $("teamInput").disabled=false;
+    $("teamSendBtn").disabled=false;
+
+
+    /* არსებული ზარის ღილაკები */
+    const callWrap=
+        document.getElementById(
+            "yhTeamCallActions"
+        );
+
+    if(callWrap){
+
+        callWrap.hidden=
+            !(
+                String(
+                    currentAdmin?.role||""
+                ).toLowerCase()
+                ==="owner"
+
+                &&
+
+                String(
+                    admin?.role||""
+                ).toLowerCase()
+                ==="owner"
+            );
+    }
+
+
+    try{
+
+        const[
+            messagesResult,
+            callsResult
+        ]=
+        await Promise.all([
+
+            sb.rpc(
+                "yh_admin_team_messages_v3_final",
+                {
+                    p_other_admin_id:id
+                }
+            ),
+
+            sb.rpc(
+                "yh_admin_call_history_final",
+                {
+                    p_other_admin_id:id,
+                    p_limit:100
+                }
+            )
+
+        ]);
+
+
+        if(messagesResult.error){
+            throw messagesResult.error;
+        }
+
+
+        const messages=
+            rows(
+                messagesResult.data
+            )
+            .map(m=>({
+                ...m,
+                _kind:"message"
+            }));
+
+
+        const calls=
+            callsResult.error
+            ?[]
+            :rows(
+                callsResult.data
+            )
+            .filter(c=>
+                ![
+                    "ringing"
+                ].includes(
+                    String(
+                        c.status||""
+                    )
+                )
+            )
+            .map(c=>({
+                ...c,
+                _kind:"call"
+            }));
+
+
+        const combined=[
+            ...messages,
+            ...calls
+        ]
+        .sort(
+            (a,b)=>
+                new Date(
+                    a.created_at
+                )
+                -
+                new Date(
+                    b.created_at
+                )
+        );
+
+
+        $("teamMessages").innerHTML=
+            combined.length
+            ?combined.map(item=>{
+
+
+                if(item._kind==="call"){
+
+                    return`
+
+                        <div class="yh-call-history">
+
+                            <div class="yh-call-history-line">
+                                ${esc(
+                                    yhCallHistoryText(
+                                        item
+                                    )
+                                )}
+                            </div>
+
+                        </div>
+                    `;
+                }
+
+
+                const m=item;
+
+                const mine=
+                    String(m.sender_id)
+                    ===currentAdminId();
+
+
+                const file=
+                    yhParseFileMessage(
+                        m.message
+                    );
+
+
+                let body="";
+
+
+                if(m.deleted_at){
+
+                    body=`
+                        <span class="yh-deleted-message">
+                            🗑️ შეტყობინება წაიშალა
+                        </span>
+                    `;
+
+                }else if(file){
+
+                    body=
+                        yhFileHTML(file);
+
+                }else if(
+                    String(
+                        m.message_type||
+                        "text"
+                    )==="voice"
+                ){
+
+                    body=`
+
+                        <div class="yh-voice-message">
+
+                            <div class="yh-voice-caption">
+                                🎙️ ხმოვანი
+                            </div>
+
+                            <audio
+                                controls
+                                preload="metadata"
+                                data-yh-voice-path="${esc(m.voice_path||"")}"
+                            ></audio>
+
+                        </div>
+                    `;
+
+                }else{
+
+                    body=
+                        esc(m.message||"");
+                }
+
+
+                let status="";
+
+
+                if(mine){
+
+                    if(m.read_at){
+
+                        status=
+                            "✓✓ ნანახია";
+
+                    }else if(m.delivered_at){
+
+                        status=
+                            "✓✓ მიწოდებულია";
+
+                    }else{
+
+                        status=
+                            "✓ გაგზავნილია";
+                    }
+                }
+
+
+                return`
+
+                    <div class="msg-row ${mine?"me":""}">
+
+                        <div class="msg-bubble">
+
+                            ${body}
+
+                            <div class="yh-msg-footer">
+
+                                ${
+                                    m.edited_at
+                                    &&
+                                    !m.deleted_at
+                                    ?`
+                                        <span class="yh-edited">
+                                            რედაქტირებულია
+                                        </span>
+                                    `
+                                    :""
+                                }
+
+                                <span class="yh-msg-meta">
+                                    ${esc(dateText(m.created_at))}
+                                </span>
+
+                                ${
+                                    status
+                                    ?`
+                                        <span class="yh-msg-status">
+                                            ${status}
+                                        </span>
+                                    `
+                                    :""
+                                }
+
+                            </div>
+
+                            ${
+                                mine
+                                &&
+                                !file
+                                ?yhTextActions(
+                                    "team",
+                                    m
+                                )
+                                :""
+                            }
+
+                            ${
+                                mine
+                                &&
+                                file
+                                ?yhFileDeleteAction(
+                                    "team",
+                                    m,
+                                    file
+                                )
+                                :""
+                            }
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("")
+
+            :`
+                <div class="msg-empty">
+                    ჯერ მიმოწერა არ გაქვთ 🙂
+                </div>
+            `;
+
+
+        await yhHydrateChatFiles(
+            $("teamMessages")
+        );
+
+        await yhHydrateVoiceAgain(
+            $("teamMessages")
+        );
+
+
+        $("teamMessages").scrollTop=
+            $("teamMessages").scrollHeight;
+
+
+        await loadTeamAdmins();
+        await loadUnreadCounts();
+
+
+    }catch(error){
+
+        errorBox(
+            "teamMessages",
+            error
+        );
+    }
+};
+
+
+/* =========================================================
+   GROUP CHAT FILE SUPPORT
+========================================================= */
+
+window.loadGroupMessages=
+loadGroupMessages=
+async function(scroll=false){
+
+    try{
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            "yh_admin_group_messages_v3_final",
+            {
+                p_limit:200
+            }
+        );
+
+        if(error)throw error;
+
+        const list=rows(data);
+
+
+        $("groupMessages").innerHTML=
+            list.length
+            ?list.map(m=>{
+
+                const mine=
+                    String(m.sender_id)
+                    ===currentAdminId();
+
+
+                const file=
+                    yhParseFileMessage(
+                        m.message
+                    );
+
+
+                let body="";
+
+
+                if(m.deleted_at){
+
+                    body=`
+                        <span class="yh-deleted-message">
+                            🗑️ შეტყობინება წაიშალა
+                        </span>
+                    `;
+
+                }else if(file){
+
+                    body=
+                        yhFileHTML(file);
+
+                }else if(
+                    String(
+                        m.message_type||
+                        "text"
+                    )==="voice"
+                ){
+
+                    body=`
+
+                        <div class="yh-voice-message">
+
+                            <div class="yh-voice-caption">
+                                🎙️ ხმოვანი
+                            </div>
+
+                            <audio
+                                controls
+                                preload="metadata"
+                                data-yh-voice-path="${esc(m.voice_path||"")}"
+                            ></audio>
+
+                        </div>
+                    `;
+
+                }else{
+
+                    body=
+                        esc(m.message||"");
+                }
+
+
+                return`
+
+                    <div class="msg-row ${mine?"me":""}">
+
+                        <div class="msg-bubble">
+
+                            <div class="msg-sender">
+                                ${esc(m.sender_name||"Admin")}
+                                ·
+                                ${esc(roleLabel(m.sender_role))}
+                            </div>
+
+                            ${body}
+
+                            <div class="yh-msg-footer">
+
+                                ${
+                                    m.edited_at
+                                    &&
+                                    !m.deleted_at
+                                    ?`
+                                        <span class="yh-edited">
+                                            რედაქტირებულია
+                                        </span>
+                                    `
+                                    :""
+                                }
+
+                                <span class="yh-msg-meta">
+                                    ${esc(dateText(m.created_at))}
+                                </span>
+
+                                ${
+                                    mine
+                                    ?`
+                                        <span class="yh-msg-status">
+                                            ${
+                                                Number(
+                                                    m.seen_count||0
+                                                )>0
+
+                                                ?`
+                                                    👁️
+                                                    ${Number(
+                                                        m.seen_count
+                                                    )}
+                                                    ნანახი
+                                                `
+
+                                                :"✓ გაგზავნილია"
+                                            }
+                                        </span>
+                                    `
+                                    :""
+                                }
+
+                            </div>
+
+
+                            ${
+                                mine
+                                &&
+                                !file
+                                ?yhTextActions(
+                                    "group",
+                                    m
+                                )
+                                :""
+                            }
+
+
+                            ${
+                                mine
+                                &&
+                                file
+                                ?yhFileDeleteAction(
+                                    "group",
+                                    m,
+                                    file
+                                )
+                                :""
+                            }
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("")
+
+            :`
+                <div class="msg-empty">
+                    დაწერე პირველი შეტყობინება 🙂
+                </div>
+            `;
+
+
+        await yhHydrateChatFiles(
+            $("groupMessages")
+        );
+
+        await yhHydrateVoiceAgain(
+            $("groupMessages")
+        );
+
+
+        if(scroll){
+
+            $("groupMessages").scrollTop=
+                $("groupMessages").scrollHeight;
+        }
+
+
+        await loadGroupUnread();
+
+
+    }catch(error){
+
+        errorBox(
+            "groupMessages",
+            error
+        );
+    }
+};
+
+
+/* =========================================================
+   DELETE FILE MESSAGE + STORAGE FILE
+========================================================= */
+
+async function yhDeleteFileMessage(
+    type,
+    messageId,
+    path
+){
+
+    if(
+        !confirm(
+            "ფაილი და შეტყობინება წაიშალოს?"
+        )
+    ){
+        return;
+    }
+
+
+    try{
+
+        let rpc="";
+
+
+        if(type==="support"){
+
+            rpc=
+                "yh_admin_support_message_delete_final";
+
+        }else if(type==="team"){
+
+            rpc=
+                "yh_admin_team_message_delete_v2_final";
+
+        }else{
+
+            rpc=
+                "yh_admin_group_message_delete_final";
+        }
+
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            rpc,
+            {
+                p_message_id:
+                    String(messageId)
+            }
+        );
+
+
+        if(error)throw error;
+
+
+        if(data?.ok!==true){
+
+            throw new Error(
+                "MESSAGE_DELETE_FAILED"
+            );
+        }
+
+
+        try{
+
+            await sb.storage
+                .from("admin-chat-files")
+                .remove([path]);
+
+        }catch{}
+
+
+        yhFileUrlCache.delete(path);
+
+
+        if(type==="support"){
+
+            await openSupportThread(
+                supportThreadId
+            );
+
+        }else if(type==="team"){
+
+            await openTeamChat(
+                teamAdminId
+            );
+
+        }else{
+
+            await loadGroupMessages(
+                false
+            );
+        }
+
+
+    }catch(error){
+
+        alert(
+            "წაშლა ვერ მოხერხდა:\n\n"+
+            error.message
+        );
+    }
+}
+
+
+document.addEventListener(
+    "click",
+    event=>{
+
+        const btn=
+            event.target.closest(
+                "[data-yh-file-delete]"
+            );
+
+        if(!btn)return;
+
+
+        event.preventDefault();
+        event.stopPropagation();
+
+
+        yhDeleteFileMessage(
+
+            btn.dataset.yhFileChannel,
+
+            btn.dataset.yhFileDelete,
+
+            btn.dataset.yhFilePath
+        );
+
+    },
+    true
+);
+
+
+/* =========================================================
+   READY
+========================================================= */
+
+console.log(
+    "YOUR HOME CHAT FILES + CALL HISTORY READY ✅"
+);
+
+})();
+
+</script>
+
+<!-- YOUR HOME CHAT FILES + CALL HISTORY FINAL END -->
 </body>
 </html>
