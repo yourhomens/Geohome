@@ -13886,5 +13886,1450 @@ console.log(
 </script>
 
 <!-- YOUR HOME SUPPORT FILES FINAL HOTFIX END -->
+    <!-- =========================================================
+     YOUR HOME — GROUP VIDEO CALL FINAL
+========================================================= -->
+
+<style id="yhGroupVideoCallFinalStyle">
+
+.yh-group-video-call-btn{
+    width:40px;
+    height:40px;
+    flex:0 0 40px;
+    border:1px solid var(--border);
+    border-radius:50%;
+    background:#fff;
+    font-size:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.yh-group-video-call-btn:hover{
+    background:var(--olive-soft);
+}
+
+
+/* ჩატში ვიდეოზარის შეტყობინება */
+
+.yh-group-call-message{
+    margin-top:7px;
+    padding:12px;
+    border-radius:14px;
+    background:rgba(255,255,255,.18);
+    border:1px solid rgba(255,255,255,.28);
+}
+
+.msg-row:not(.me) .yh-group-call-message{
+    background:var(--olive-soft);
+    border-color:#dce3cc;
+}
+
+.yh-group-call-message strong{
+    display:block;
+    margin-bottom:5px;
+    font-size:13px;
+}
+
+.yh-group-call-message small{
+    display:block;
+    opacity:.8;
+    margin-bottom:10px;
+}
+
+.yh-group-call-join{
+    border:0;
+    border-radius:11px;
+    padding:9px 13px;
+    background:var(--olive-dark);
+    color:#fff;
+    font-weight:900;
+    font-size:11px;
+}
+
+
+/* შემომავალი საერთო ზარის ფანჯარა */
+
+#yhGroupCallInvite{
+    position:fixed;
+    right:22px;
+    top:92px;
+    z-index:30000;
+
+    width:min(390px,calc(100vw - 28px));
+
+    padding:17px;
+
+    border:1px solid #dce3cc;
+    border-radius:20px;
+
+    background:#fff;
+
+    box-shadow:
+        0 20px 60px
+        rgba(0,0,0,.23);
+
+    display:none;
+}
+
+#yhGroupCallInvite.open{
+    display:block;
+}
+
+.yh-group-call-invite-top{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.yh-group-call-invite-icon{
+    width:48px;
+    height:48px;
+    flex:0 0 48px;
+
+    border-radius:15px;
+
+    background:var(--olive-soft);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:25px;
+}
+
+.yh-group-call-invite-text{
+    min-width:0;
+    flex:1;
+}
+
+.yh-group-call-invite-text strong{
+    display:block;
+    color:var(--dark);
+    font-size:15px;
+}
+
+.yh-group-call-invite-text small{
+    display:block;
+    margin-top:4px;
+    color:var(--muted);
+    line-height:1.4;
+}
+
+.yh-group-call-invite-actions{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:8px;
+    margin-top:14px;
+}
+
+#yhGroupCallJoinBtn{
+    border:0;
+    border-radius:12px;
+    padding:11px 14px;
+
+    background:var(--olive);
+    color:#fff;
+
+    font-weight:900;
+}
+
+#yhGroupCallCloseBtn{
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:11px 13px;
+
+    background:#fff;
+    color:var(--text);
+
+    font-weight:800;
+}
+
+
+@media(max-width:700px){
+
+    #yhGroupCallInvite{
+        top:76px;
+        left:14px;
+        right:14px;
+        width:auto;
+    }
+
+    .yh-group-video-call-btn{
+        width:36px;
+        height:36px;
+        flex-basis:36px;
+    }
+
+}
+
+</style>
+
+
+<div id="yhGroupCallInvite">
+
+    <div class="yh-group-call-invite-top">
+
+        <div class="yh-group-call-invite-icon">
+            🎥
+        </div>
+
+        <div class="yh-group-call-invite-text">
+
+            <strong>
+                გუნდის ვიდეოზარი
+            </strong>
+
+            <small id="yhGroupCallInviteText">
+                გუნდის წევრი იწყებს ვიდეოზარს.
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="yh-group-call-invite-actions">
+
+        <button
+            type="button"
+            id="yhGroupCallJoinBtn"
+        >
+            🎥 შემოსვლა
+        </button>
+
+        <button
+            type="button"
+            id="yhGroupCallCloseBtn"
+        >
+            მოგვიანებით
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+(function(){
+
+    if(
+        window.__YH_GROUP_VIDEO_CALL_FINAL__
+    ){
+        return;
+    }
+
+    window.__YH_GROUP_VIDEO_CALL_FINAL__ =
+        true;
+
+
+    const PREFIX =
+        "__YH_GROUP_VIDEO_CALL__";
+
+
+    const SEEN_KEY =
+        "yhGroupVideoCallsSeenFinal";
+
+
+    let yhGroupCallCheckBusy =
+        false;
+
+
+    let yhCurrentGroupInvite =
+        null;
+
+
+    let yhGroupInviteTimer =
+        null;
+
+
+    let yhGroupAudioContext =
+        null;
+
+
+    /* =========================================
+       HELPERS
+    ========================================= */
+
+    function yhGroupCurrentAdminId(){
+
+        try{
+
+            if(
+                typeof currentAdminId ===
+                "function"
+            ){
+                return String(
+                    currentAdminId() || ""
+                );
+            }
+
+        }catch(e){}
+
+
+        try{
+
+            return String(
+                currentUser?.id || ""
+            );
+
+        }catch(e){
+
+            return "";
+
+        }
+
+    }
+
+
+    function yhGroupCurrentAdminName(){
+
+        try{
+
+            return String(
+                currentAdmin?.display_name ||
+                currentAdmin?.name ||
+                currentAdmin?.email ||
+                "გუნდის წევრი"
+            );
+
+        }catch(e){
+
+            return "გუნდის წევრი";
+
+        }
+
+    }
+
+
+    function yhGroupCreateId(){
+
+        try{
+
+            if(
+                window.crypto &&
+                crypto.randomUUID
+            ){
+                return crypto.randomUUID();
+            }
+
+        }catch(e){}
+
+
+        return(
+            Date.now().toString(36) +
+            "-" +
+            Math.random()
+            .toString(36)
+            .slice(2,10)
+        );
+
+    }
+
+
+    function yhGroupCreateRoom(){
+
+        return(
+            "YourHome-Team-" +
+            Date.now().toString(36) +
+            "-" +
+            Math.random()
+            .toString(36)
+            .slice(2,10)
+        );
+
+    }
+
+
+    function yhGroupOpenMeeting(url){
+
+        if(!url){
+            return;
+        }
+
+        const win =
+            window.open(
+                url,
+                "_blank"
+            );
+
+        if(win){
+
+            try{
+                win.opener = null;
+            }catch(e){}
+
+        }else{
+
+            window.location.href =
+                url;
+
+        }
+
+    }
+
+
+    function yhGroupParseCall(value){
+
+        const text =
+            String(value || "");
+
+        if(
+            !text.startsWith(
+                PREFIX
+            )
+        ){
+            return null;
+        }
+
+        try{
+
+            const call =
+                JSON.parse(
+                    text.slice(
+                        PREFIX.length
+                    )
+                );
+
+            if(
+                !call ||
+                !call.id ||
+                !call.url
+            ){
+                return null;
+            }
+
+            return call;
+
+        }catch(e){
+
+            return null;
+
+        }
+
+    }
+
+
+    /* =========================================
+       SEEN CALLS
+    ========================================= */
+
+    function yhGroupSeenCalls(){
+
+        try{
+
+            const parsed =
+                JSON.parse(
+                    localStorage
+                    .getItem(
+                        SEEN_KEY
+                    ) ||
+                    "[]"
+                );
+
+            return Array.isArray(parsed)
+                ?parsed
+                :[];
+
+        }catch(e){
+
+            return [];
+
+        }
+
+    }
+
+
+    function yhGroupHasSeenCall(id){
+
+        return yhGroupSeenCalls()
+            .includes(
+                String(id)
+            );
+
+    }
+
+
+    function yhGroupMarkCallSeen(id){
+
+        const list =
+            yhGroupSeenCalls();
+
+        const value =
+            String(id);
+
+        if(
+            !list.includes(value)
+        ){
+            list.push(value);
+        }
+
+        localStorage.setItem(
+            SEEN_KEY,
+            JSON.stringify(
+                list.slice(-80)
+            )
+        );
+
+    }
+
+
+    /* =========================================
+       SAME SOUND AS EXISTING ADMIN MESSENGER
+       720 Hz -> 880 Hz
+    ========================================= */
+
+    function yhGroupUnlockSound(){
+
+        try{
+
+            const AudioCtx =
+                window.AudioContext ||
+                window.webkitAudioContext;
+
+            if(!AudioCtx){
+                return;
+            }
+
+            if(
+                !yhGroupAudioContext
+            ){
+
+                yhGroupAudioContext =
+                    new AudioCtx();
+
+            }
+
+            yhGroupAudioContext
+            .resume()
+            .catch(()=>{});
+
+        }catch(e){}
+
+    }
+
+
+    document.addEventListener(
+        "pointerdown",
+        yhGroupUnlockSound,
+        {
+            passive:true
+        }
+    );
+
+
+    function yhGroupPlayCallTone(){
+
+        try{
+
+            yhGroupUnlockSound();
+
+            if(
+                !yhGroupAudioContext
+            ){
+                return;
+            }
+
+            const ctx =
+                yhGroupAudioContext;
+
+            const now =
+                ctx.currentTime;
+
+
+            [
+                {
+                    time:now,
+                    frequency:720
+                },
+                {
+                    time:now + .12,
+                    frequency:880
+                }
+            ]
+            .forEach(function(item){
+
+                const osc =
+                    ctx.createOscillator();
+
+                const gain =
+                    ctx.createGain();
+
+                osc.frequency.value =
+                    item.frequency;
+
+                gain.gain
+                .setValueAtTime(
+                    .0001,
+                    item.time
+                );
+
+                gain.gain
+                .exponentialRampToValueAtTime(
+                    .13,
+                    item.time + .015
+                );
+
+                gain.gain
+                .exponentialRampToValueAtTime(
+                    .0001,
+                    item.time + .11
+                );
+
+                osc.connect(gain);
+
+                gain.connect(
+                    ctx.destination
+                );
+
+                osc.start(
+                    item.time
+                );
+
+                osc.stop(
+                    item.time + .12
+                );
+
+            });
+
+        }catch(e){}
+
+    }
+
+
+    function yhGroupRing(){
+
+        yhGroupPlayCallTone();
+
+        setTimeout(
+            yhGroupPlayCallTone,
+            650
+        );
+
+        setTimeout(
+            yhGroupPlayCallTone,
+            1300
+        );
+
+
+        try{
+
+            if(
+                navigator.vibrate
+            ){
+
+                navigator.vibrate(
+                    [
+                        180,
+                        100,
+                        180
+                    ]
+                );
+
+            }
+
+        }catch(e){}
+
+    }
+
+
+    /* =========================================
+       VIDEO BUTTON
+    ========================================= */
+
+    function yhGroupEnsureVideoButton(){
+
+        if(
+            document.getElementById(
+                "yhGroupVideoCallBtn"
+            )
+        ){
+            return;
+        }
+
+
+        const head =
+            document.querySelector(
+                "#page-groupchat " +
+                ".group-shell " +
+                ".msg-head"
+            );
+
+
+        if(!head){
+            return;
+        }
+
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+
+        button.type =
+            "button";
+
+
+        button.id =
+            "yhGroupVideoCallBtn";
+
+
+        button.className =
+            "yh-group-video-call-btn";
+
+
+        button.title =
+            "გუნდის საერთო ვიდეოზარი";
+
+
+        button.innerHTML =
+            "🎥";
+
+
+        button.addEventListener(
+            "click",
+            yhGroupStartVideoCall
+        );
+
+
+        head.appendChild(
+            button
+        );
+
+    }
+
+
+    /* =========================================
+       START GROUP VIDEO CALL
+    ========================================= */
+
+    async function yhGroupStartVideoCall(){
+
+        const button =
+            document.getElementById(
+                "yhGroupVideoCallBtn"
+            );
+
+
+        if(button){
+            button.disabled = true;
+        }
+
+
+        const room =
+            yhGroupCreateRoom();
+
+
+        const url =
+            "https://meet.jit.si/" +
+            encodeURIComponent(
+                room
+            );
+
+
+        const call = {
+
+            id:
+                yhGroupCreateId(),
+
+            room:
+                room,
+
+            url:
+                url,
+
+            starter_id:
+                yhGroupCurrentAdminId(),
+
+            starter_name:
+                yhGroupCurrentAdminName(),
+
+            created_at:
+                new Date()
+                .toISOString()
+
+        };
+
+
+        /*
+           ბრაუზერმა popup არ დაბლოკოს,
+           ამიტომ ცარიელ ფანჯარას ჯერ ვხსნით.
+        */
+
+        let meetingWindow =
+            null;
+
+
+        try{
+
+            meetingWindow =
+                window.open(
+                    "about:blank",
+                    "_blank"
+                );
+
+            if(meetingWindow){
+
+                try{
+                    meetingWindow.opener =
+                        null;
+                }catch(e){}
+
+            }
+
+        }catch(e){}
+
+
+        try{
+
+            const result =
+                await sb.rpc(
+                    "yh_admin_group_send_final",
+                    {
+                        p_message:
+                            PREFIX +
+                            JSON.stringify(
+                                call
+                            )
+                    }
+                );
+
+
+            if(result.error){
+                throw result.error;
+            }
+
+
+            yhGroupMarkCallSeen(
+                call.id
+            );
+
+
+            try{
+
+                if(
+                    typeof loadGroupMessages ===
+                    "function"
+                ){
+
+                    await loadGroupMessages(
+                        true
+                    );
+
+                }
+
+            }catch(e){}
+
+
+            if(meetingWindow){
+
+                meetingWindow.location.href =
+                    url;
+
+            }else{
+
+                yhGroupOpenMeeting(
+                    url
+                );
+
+            }
+
+
+        }catch(error){
+
+            try{
+                meetingWindow?.close();
+            }catch(e){}
+
+
+            alert(
+                "გუნდის ვიდეოზარის დაწყება ვერ მოხერხდა:\n\n" +
+                (
+                    error?.message ||
+                    String(error)
+                )
+            );
+
+        }finally{
+
+            if(button){
+                button.disabled = false;
+            }
+
+        }
+
+    }
+
+
+    /* =========================================
+       INCOMING CALL POPUP
+    ========================================= */
+
+    function yhGroupHideInvite(){
+
+        document
+        .getElementById(
+            "yhGroupCallInvite"
+        )
+        ?.classList
+        .remove(
+            "open"
+        );
+
+
+        yhCurrentGroupInvite =
+            null;
+
+
+        clearTimeout(
+            yhGroupInviteTimer
+        );
+
+    }
+
+
+    function yhGroupShowInvite(call){
+
+        yhCurrentGroupInvite =
+            call;
+
+
+        const box =
+            document.getElementById(
+                "yhGroupCallInvite"
+            );
+
+
+        const text =
+            document.getElementById(
+                "yhGroupCallInviteText"
+            );
+
+
+        if(
+            !box ||
+            !text
+        ){
+            return;
+        }
+
+
+        text.textContent =
+            (
+                call.starter_name ||
+                "გუნდის წევრი"
+            ) +
+            " იწყებს გუნდის საერთო ვიდეოზარს.";
+
+
+        box.classList.add(
+            "open"
+        );
+
+
+        yhGroupRing();
+
+
+        clearTimeout(
+            yhGroupInviteTimer
+        );
+
+
+        yhGroupInviteTimer =
+            setTimeout(
+                yhGroupHideInvite,
+                60000
+            );
+
+    }
+
+
+    document
+    .getElementById(
+        "yhGroupCallJoinBtn"
+    )
+    ?.addEventListener(
+        "click",
+        function(){
+
+            const call =
+                yhCurrentGroupInvite;
+
+            yhGroupHideInvite();
+
+            if(
+                call?.url
+            ){
+
+                yhGroupOpenMeeting(
+                    call.url
+                );
+
+            }
+
+        }
+    );
+
+
+    document
+    .getElementById(
+        "yhGroupCallCloseBtn"
+    )
+    ?.addEventListener(
+        "click",
+        yhGroupHideInvite
+    );
+
+
+    /* =========================================
+       CHECK NEW GROUP CALL
+    ========================================= */
+
+    async function yhGroupCheckIncomingCall(){
+
+        yhGroupEnsureVideoButton();
+
+
+        if(
+            yhGroupCallCheckBusy
+        ){
+            return;
+        }
+
+
+        try{
+
+            if(
+                !currentUser ||
+                !currentAdmin
+            ){
+                return;
+            }
+
+        }catch(e){
+
+            return;
+
+        }
+
+
+        yhGroupCallCheckBusy =
+            true;
+
+
+        try{
+
+            const {
+                data,
+                error
+            } =
+            await sb.rpc(
+                "yh_admin_group_messages_v3_final",
+                {
+                    p_limit:30
+                }
+            );
+
+
+            if(error){
+                return;
+            }
+
+
+            const list =
+                typeof rows ===
+                "function"
+                ?rows(data)
+                :(
+                    Array.isArray(data)
+                    ?data
+                    :[]
+                );
+
+
+            const calls =
+                list
+                .filter(function(m){
+
+                    return(
+                        !m.deleted_at &&
+                        yhGroupParseCall(
+                            m.message
+                        )
+                    );
+
+                })
+                .map(function(m){
+
+                    const call =
+                        yhGroupParseCall(
+                            m.message
+                        );
+
+                    return{
+                        call,
+                        time:
+                            new Date(
+                                call.created_at ||
+                                m.created_at ||
+                                0
+                            )
+                            .getTime()
+                    };
+
+                })
+                .filter(
+                    item=>
+                    item.call
+                )
+                .sort(
+                    (a,b)=>
+                    b.time-a.time
+                );
+
+
+            if(
+                !calls.length
+            ){
+                return;
+            }
+
+
+            const latest =
+                calls[0];
+
+
+            const call =
+                latest.call;
+
+
+            if(
+                String(
+                    call.starter_id ||
+                    ""
+                )
+                ===
+                yhGroupCurrentAdminId()
+            ){
+
+                yhGroupMarkCallSeen(
+                    call.id
+                );
+
+                return;
+            }
+
+
+            const age =
+                Date.now() -
+                Number(
+                    latest.time ||
+                    0
+                );
+
+
+            /*
+               ძველი ზარი აღარ დარეკოს.
+               მხოლოდ ბოლო 3 წუთის ზარი.
+            */
+
+            if(
+                age < -60000 ||
+                age > 180000
+            ){
+                return;
+            }
+
+
+            if(
+                yhGroupHasSeenCall(
+                    call.id
+                )
+            ){
+                return;
+            }
+
+
+            yhGroupMarkCallSeen(
+                call.id
+            );
+
+
+            yhGroupShowInvite(
+                call
+            );
+
+
+        }catch(error){
+
+            console.error(
+                "Group video call check",
+                error
+            );
+
+        }finally{
+
+            yhGroupCallCheckBusy =
+                false;
+
+        }
+
+    }
+
+
+    /* =========================================
+       TURN RAW CALL MESSAGE INTO NICE CARD
+    ========================================= */
+
+    function yhGroupDecorateCallMessages(){
+
+        const container =
+            document.getElementById(
+                "groupMessages"
+            );
+
+
+        if(!container){
+            return;
+        }
+
+
+        container
+        .querySelectorAll(
+            ".msg-bubble"
+        )
+        .forEach(function(bubble){
+
+            if(
+                bubble.dataset
+                .yhGroupCallDecorated
+            ){
+                return;
+            }
+
+
+            const nodes =
+                Array.from(
+                    bubble.childNodes
+                );
+
+
+            const markerNode =
+                nodes.find(
+                    function(node){
+
+                        return(
+                            node.nodeType ===
+                            Node.TEXT_NODE
+                            &&
+                            String(
+                                node.nodeValue ||
+                                ""
+                            )
+                            .trim()
+                            .startsWith(
+                                PREFIX
+                            )
+                        );
+
+                    }
+                );
+
+
+            if(!markerNode){
+                return;
+            }
+
+
+            const call =
+                yhGroupParseCall(
+                    String(
+                        markerNode
+                        .nodeValue ||
+                        ""
+                    )
+                    .trim()
+                );
+
+
+            if(!call){
+                return;
+            }
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "yh-group-call-message";
+
+
+            const title =
+                document.createElement(
+                    "strong"
+                );
+
+
+            title.textContent =
+                "🎥 გუნდის ვიდეოზარი";
+
+
+            const info =
+                document.createElement(
+                    "small"
+                );
+
+
+            info.textContent =
+                (
+                    call.starter_name ||
+                    "გუნდის წევრი"
+                ) +
+                " დაიწყო საერთო ვიდეოზარი.";
+
+
+            const join =
+                document.createElement(
+                    "button"
+                );
+
+
+            join.type =
+                "button";
+
+
+            join.className =
+                "yh-group-call-join";
+
+
+            join.textContent =
+                "🎥 შემოსვლა";
+
+
+            join.addEventListener(
+                "click",
+                function(){
+
+                    yhGroupOpenMeeting(
+                        call.url
+                    );
+
+                }
+            );
+
+
+            card.append(
+                title,
+                info,
+                join
+            );
+
+
+            markerNode.replaceWith(
+                card
+            );
+
+
+            bubble
+            .querySelector(
+                ".yh-msg-actions"
+            )
+            ?.remove();
+
+
+            bubble.dataset
+            .yhGroupCallDecorated =
+                "1";
+
+        });
+
+    }
+
+
+    /* =========================================
+       KEEP DECORATION AFTER CHAT REFRESH
+    ========================================= */
+
+    try{
+
+        if(
+            typeof loadGroupMessages ===
+            "function"
+        ){
+
+            const original =
+                loadGroupMessages;
+
+
+            const wrapped =
+                async function(scroll=false){
+
+                    const result =
+                        await original(
+                            scroll
+                        );
+
+
+                    setTimeout(
+                        yhGroupDecorateCallMessages,
+                        0
+                    );
+
+
+                    return result;
+
+                };
+
+
+            loadGroupMessages =
+                wrapped;
+
+
+            window.loadGroupMessages =
+                wrapped;
+
+        }
+
+    }catch(e){}
+
+
+    /* =========================================
+       START
+    ========================================= */
+
+    yhGroupEnsureVideoButton();
+
+
+    setTimeout(
+        function(){
+
+            yhGroupEnsureVideoButton();
+
+            yhGroupDecorateCallMessages();
+
+            yhGroupCheckIncomingCall();
+
+        },
+        1200
+    );
+
+
+    setInterval(
+        yhGroupCheckIncomingCall,
+        4500
+    );
+
+
+    console.log(
+        "YOUR HOME GROUP VIDEO CALL FINAL READY ✅"
+    );
+
+})();
+</script>
+
+<!-- YOUR HOME — GROUP VIDEO CALL FINAL END -->
 </body>
 </html>
