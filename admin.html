@@ -13157,5 +13157,721 @@ console.log(
 </script>
 
 <!-- YOUR HOME CHAT FILES + CALL HISTORY FINAL END -->
+    <!-- =========================================================
+     YOUR HOME — SUPPORT FILES FINAL HOTFIX
+     body/message fallback + non-blocking file preview
+========================================================= -->
+
+<script id="yhSupportFilesFinalHotfix">
+(function(){
+
+    if(window.__YH_SUPPORT_FILES_FINAL_HOTFIX__){
+        return;
+    }
+
+    window.__YH_SUPPORT_FILES_FINAL_HOTFIX__ = true;
+
+    const YH_SUPPORT_FILE_PREFIX = "__YH_FILE__";
+
+
+    /* =====================================================
+       HELPERS
+    ===================================================== */
+
+    function yhSupportMessageText(message){
+
+        return String(
+            message?.message ??
+            message?.body ??
+            ""
+        );
+    }
+
+
+    function yhSupportParseFile(message){
+
+        const text =
+            yhSupportMessageText(message);
+
+        if(
+            !text.startsWith(
+                YH_SUPPORT_FILE_PREFIX
+            )
+        ){
+            return null;
+        }
+
+        try{
+
+            const file =
+                JSON.parse(
+                    text.slice(
+                        YH_SUPPORT_FILE_PREFIX.length
+                    )
+                );
+
+            if(!file?.path){
+                return null;
+            }
+
+            return file;
+
+        }catch(error){
+
+            console.error(
+                "Support file marker parse",
+                error
+            );
+
+            return null;
+        }
+    }
+
+
+    function yhSupportFileSize(bytes){
+
+        const size =
+            Number(bytes || 0);
+
+        if(size < 1024){
+            return size + " B";
+        }
+
+        if(size < 1024 * 1024){
+
+            return(
+                (size / 1024)
+                .toFixed(1)
+                +
+                " KB"
+            );
+        }
+
+        return(
+            (
+                size /
+                1024 /
+                1024
+            )
+            .toFixed(1)
+            +
+            " MB"
+        );
+    }
+
+
+    function yhSupportFileHTML(file){
+
+        const mime =
+            String(
+                file?.mime || ""
+            );
+
+        const isImage =
+            mime.startsWith(
+                "image/"
+            );
+
+
+        if(isImage){
+
+            return `
+                <div class="yh-file-card">
+
+                    <img
+                        class="yh-file-image"
+                        data-yh-support-file-path="${esc(file.path)}"
+                        alt="${esc(file.name || "ფოტო")}"
+                    >
+
+                    <div class="yh-file-name">
+                        🖼️ ${esc(file.name || "ფოტო")}
+                    </div>
+
+                    <div class="yh-file-size">
+                        ${esc(
+                            yhSupportFileSize(
+                                file.size
+                            )
+                        )}
+                    </div>
+
+                </div>
+            `;
+        }
+
+
+        return `
+            <div class="yh-file-card">
+
+                <a
+                    class="yh-file-link"
+                    data-yh-support-file-path="${esc(file.path)}"
+                    target="_blank"
+                    rel="noopener"
+                >
+
+                    <span class="yh-file-icon">
+                        📎
+                    </span>
+
+                    <span class="yh-file-info">
+
+                        <span class="yh-file-name">
+                            ${esc(file.name || "ფაილი")}
+                        </span>
+
+                        <span class="yh-file-size">
+                            ${esc(
+                                yhSupportFileSize(
+                                    file.size
+                                )
+                            )}
+                        </span>
+
+                    </span>
+
+                </a>
+
+            </div>
+        `;
+    }
+
+
+    /* =====================================================
+       SIGNED URL WITH TIMEOUT
+    ===================================================== */
+
+    async function yhSupportSignedFileUrl(
+        path,
+        timeoutMs = 10000
+    ){
+
+        if(!path){
+            return "";
+        }
+
+        let timer = null;
+
+        try{
+
+            const timeoutPromise =
+                new Promise(
+                    (_, reject)=>{
+
+                        timer =
+                            setTimeout(
+                                ()=>{
+
+                                    reject(
+                                        new Error(
+                                            "FILE_URL_TIMEOUT"
+                                        )
+                                    );
+
+                                },
+                                timeoutMs
+                            );
+                    }
+                );
+
+
+            const requestPromise =
+                sb.storage
+                .from(
+                    "admin-chat-files"
+                )
+                .createSignedUrl(
+                    path,
+                    3300
+                );
+
+
+            const result =
+                await Promise.race([
+                    requestPromise,
+                    timeoutPromise
+                ]);
+
+
+            if(result?.error){
+
+                throw result.error;
+            }
+
+
+            return(
+                result?.data?.signedUrl
+                ||
+                ""
+            );
+
+
+        }catch(error){
+
+            console.error(
+                "Support signed file URL",
+                path,
+                error
+            );
+
+            return "";
+
+        }finally{
+
+            if(timer){
+                clearTimeout(timer);
+            }
+        }
+    }
+
+
+    /* =====================================================
+       FILE PREVIEW HYDRATION
+       IMPORTANT:
+       intentionally NOT blocking chat rendering
+    ===================================================== */
+
+    async function yhSupportHydrateFiles(
+        container
+    ){
+
+        if(!container){
+            return;
+        }
+
+
+        const elements =
+            Array.from(
+                container.querySelectorAll(
+                    "[data-yh-support-file-path]"
+                )
+            );
+
+
+        await Promise.allSettled(
+
+            elements.map(
+                async element=>{
+
+                    const path =
+                        element.dataset
+                        .yhSupportFilePath;
+
+
+                    if(!path){
+                        return;
+                    }
+
+
+                    const url =
+                        await yhSupportSignedFileUrl(
+                            path
+                        );
+
+
+                    if(!url){
+                        return;
+                    }
+
+
+                    if(
+                        element.tagName ===
+                        "IMG"
+                    ){
+
+                        element.src = url;
+
+                        element.onclick =
+                            ()=>{
+
+                                window.open(
+                                    url,
+                                    "_blank"
+                                );
+                            };
+
+                    }else{
+
+                        element.href = url;
+                    }
+                }
+            )
+        );
+    }
+
+
+    /* =====================================================
+       SUPPORT OPEN — FINAL OVERRIDE
+    ===================================================== */
+
+    window.openSupportThread =
+    openSupportThread =
+    async function(id){
+
+        supportThreadId = id;
+
+
+        $("supportShell")
+            ?.classList
+            .add(
+                "chat-open"
+            );
+
+
+        /*
+           Thread list update
+        */
+
+        try{
+
+            await loadSupportThreads();
+
+        }catch(error){
+
+            console.error(
+                "Support threads refresh",
+                error
+            );
+        }
+
+
+        try{
+
+            const{
+                data,
+                error
+            } =
+            await sb.rpc(
+                "yh_admin_support_messages_v3_final",
+                {
+                    p_thread_id:
+                        String(id)
+                }
+            );
+
+
+            if(error){
+                throw error;
+            }
+
+
+            const list =
+                rows(data);
+
+
+            $("supportMessages").innerHTML =
+
+                list.length
+
+                ? list.map(
+                    message=>{
+
+
+                        const senderType =
+                            String(
+                                message.sender_type
+                                ||
+                                ""
+                            )
+                            .toLowerCase();
+
+
+                        const adminMessage =
+                            [
+                                "admin",
+                                "staff",
+                                "support"
+                            ]
+                            .includes(
+                                senderType
+                            );
+
+
+                        const own =
+                            adminMessage
+                            &&
+                            String(
+                                message.admin_sender_id
+                                ||
+                                message.sender_user_id
+                                ||
+                                ""
+                            )
+                            ===
+                            currentAdminId();
+
+
+                        const messageText =
+                            yhSupportMessageText(
+                                message
+                            );
+
+
+                        const file =
+                            yhSupportParseFile(
+                                message
+                            );
+
+
+                        let body = "";
+
+
+                        if(
+                            message.deleted_at
+                        ){
+
+                            body = `
+                                <span class="yh-deleted-message">
+                                    🗑️ შეტყობინება წაიშალა
+                                </span>
+                            `;
+
+                        }else if(file){
+
+                            body =
+                                yhSupportFileHTML(
+                                    file
+                                );
+
+                        }else{
+
+                            body =
+                                esc(
+                                    messageText
+                                );
+                        }
+
+
+                        let status = "";
+
+
+                        if(own){
+
+                            status =
+                                message.user_read_at
+
+                                ? "✓✓ ნანახია"
+
+                                : "✓ გაგზავნილია";
+                        }
+
+
+                        let actions = "";
+
+
+                        if(
+                            own
+                            &&
+                            !message.deleted_at
+                        ){
+
+                            if(file){
+
+                                actions = `
+                                    <div class="yh-msg-actions">
+
+                                        <button
+                                            type="button"
+                                            class="yh-msg-action"
+                                            data-yh-file-delete="${esc(message.id)}"
+                                            data-yh-file-channel="support"
+                                            data-yh-file-path="${esc(file.path)}"
+                                        >
+                                            🗑️ წაშლა
+                                        </button>
+
+                                    </div>
+                                `;
+
+                            }else{
+
+                                actions = `
+                                    <div class="yh-msg-actions">
+
+                                        <button
+                                            type="button"
+                                            class="yh-msg-action"
+                                            data-yh-message-edit="${esc(message.id)}"
+                                            data-yh-message-type="support"
+                                        >
+                                            ✏️ რედაქტირება
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            class="yh-msg-action"
+                                            data-yh-message-delete="${esc(message.id)}"
+                                            data-yh-message-type="support"
+                                        >
+                                            🗑️ წაშლა
+                                        </button>
+
+                                    </div>
+                                `;
+                            }
+                        }
+
+
+                        return `
+
+                            <div class="msg-row ${adminMessage ? "me" : ""}">
+
+                                <div class="msg-bubble">
+
+                                    ${
+                                        adminMessage
+                                        &&
+                                        message.admin_sender_name
+
+                                        ? `
+                                            <div class="msg-sender">
+                                                ${esc(
+                                                    message.admin_sender_name
+                                                )}
+                                            </div>
+                                        `
+
+                                        : ""
+                                    }
+
+
+                                    <div>
+                                        ${body}
+                                    </div>
+
+
+                                    <div class="yh-msg-footer">
+
+                                        ${
+                                            message.edited_at
+                                            &&
+                                            !message.deleted_at
+                                            &&
+                                            !file
+
+                                            ? `
+                                                <span class="yh-edited">
+                                                    რედაქტირებულია
+                                                </span>
+                                            `
+
+                                            : ""
+                                        }
+
+
+                                        <span class="yh-msg-meta">
+
+                                            ${esc(
+                                                dateText(
+                                                    message.created_at
+                                                )
+                                            )}
+
+                                        </span>
+
+
+                                        ${
+                                            status
+
+                                            ? `
+                                                <span class="yh-msg-status">
+                                                    ${status}
+                                                </span>
+                                            `
+
+                                            : ""
+                                        }
+
+                                    </div>
+
+
+                                    ${actions}
+
+                                </div>
+
+                            </div>
+                        `;
+
+                    }
+                )
+                .join("")
+
+                : `
+                    <div class="msg-empty">
+                        მესიჯები არ არის.
+                    </div>
+                `;
+
+
+            const container =
+                $("supportMessages");
+
+
+            /*
+               ძალიან მნიშვნელოვანია:
+               URL-ის მიღებას აღარ ველოდებით.
+               ამიტომ "ფაილი იტვირთება..."
+               აღარ გაიჭედება.
+            */
+
+            yhSupportHydrateFiles(
+                container
+            )
+            .catch(
+                error=>{
+
+                    console.error(
+                        "Support file hydrate",
+                        error
+                    );
+                }
+            );
+
+
+            if(container){
+
+                container.scrollTop =
+                    container.scrollHeight;
+            }
+
+
+            try{
+
+                await loadUnreadCounts();
+
+            }catch(error){
+
+                console.error(
+                    "Support unread refresh",
+                    error
+                );
+            }
+
+
+        }catch(error){
+
+            console.error(
+                "Support open final",
+                error
+            );
+
+
+            errorBox(
+                "supportMessages",
+                error
+            );
+        }
+    };
+
+
+    console.log(
+        "YOUR HOME SUPPORT FILES FINAL HOTFIX READY ✅"
+    );
+
+})();
+</script>
+
+<!-- YOUR HOME SUPPORT FILES FINAL HOTFIX END -->
 </body>
 </html>
