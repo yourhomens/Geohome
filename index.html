@@ -35996,10 +35996,8 @@ function(
                     "click",
                     () =>
                     handleDelete(
-    row,
-    meta,
-    wrap
-)
+                        row,
+                        meta
                     )
                 );
 
@@ -36584,113 +36582,21 @@ function(
                 }
             }
 
-async function handleDelete(
-    row,
-    meta,
-    wrap
-){
 
-    const t =
-    txt();
+            await refreshAndRender();
 
-    if(
-        !confirm(
-            t.deleteAsk
-        )
-    ){
-        return;
-    }
+        }catch(e){
 
-    if(wrap){
-
-        wrap.style.opacity =
-        ".35";
-
-        wrap.style.pointerEvents =
-        "none";
-    }
-
-    try{
-
-        const ok =
-        await deleteMessage(
-            row
-        );
-
-        if(!ok){
-
-            throw new Error(
-                "delete denied"
+            console.warn(
+                "Support delete:",
+                e
             );
-        }
 
-        if(wrap){
-
-            wrap.remove();
-        }
-
-        if(
-            meta?.path
-        ){
-
-            supabaseClient
-            .storage
-            .from(
-                BUCKET
-            )
-            .remove([
-                meta.path
-            ])
-            .then(
-                function(result){
-
-                    if(
-                        result.error
-                    ){
-
-                        console.warn(
-                            "Support file delete:",
-                            result.error
-                        );
-                    }
-
-                    urlCache.delete(
-                        meta.path
-                    );
-                }
-            )
-            .catch(
-                function(error){
-
-                    console.warn(
-                        "Support file delete:",
-                        error
-                    );
-                }
+            notify(
+                t.deleteError
             );
+
         }
-
-    }catch(e){
-
-        console.warn(
-            "Support delete:",
-            e
-        );
-
-        if(wrap){
-
-            wrap.style.opacity =
-            "";
-
-            wrap.style.pointerEvents =
-            "";
-        }
-
-        notify(
-            t.deleteError
-        );
-    }
-}
     }
       function safeFileName(name){
 
@@ -43305,6 +43211,9 @@ body > header{
 </script>
 </body>
 </html>
+
+
+
 
 
 
