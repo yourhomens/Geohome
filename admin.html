@@ -7239,5 +7239,3795 @@ checkAdminAccess();
 })();
 
 </script>
+    <!-- =========================================================
+     YOUR HOME — COMPLETE ADMIN MESSENGER FRONTEND FINAL
+     Support: edit / delete / seen
+     Private: voice / edit / delete / delivered / seen / calls
+     Group: voice / edit / delete / seen
+     Notification sound
+========================================================= -->
+
+<style id="yhCompleteMessengerFrontendFinalStyle">
+
+/* =========================================================
+   MESSAGE META / ACTIONS
+========================================================= */
+
+.yh-msg-footer{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:7px;
+    flex-wrap:wrap;
+    margin-top:5px;
+}
+
+.yh-msg-meta{
+    font-size:8px;
+    opacity:.68;
+}
+
+.yh-msg-status{
+    font-size:8px;
+    font-weight:800;
+    opacity:.78;
+}
+
+.yh-msg-actions{
+    display:flex;
+    gap:3px;
+    margin-top:5px;
+    justify-content:flex-end;
+}
+
+.yh-msg-action{
+    border:0;
+    background:rgba(0,0,0,.06);
+    color:inherit;
+    border-radius:8px;
+    min-height:25px;
+    padding:4px 7px;
+    font-size:9px;
+    font-weight:800;
+}
+
+.msg-row.me .yh-msg-action{
+    background:rgba(255,255,255,.15);
+    color:#fff;
+}
+
+.yh-msg-action:hover{
+    opacity:.8;
+}
+
+.yh-deleted-message{
+    opacity:.65;
+    font-style:italic;
+}
+
+.yh-edited{
+    font-size:8px;
+    opacity:.6;
+}
+
+.yh-seen-names{
+    cursor:help;
+}
+
+
+/* =========================================================
+   VOICE MESSAGE
+========================================================= */
+
+.yh-voice-compose{
+    grid-template-columns:
+        38px
+        38px
+        minmax(0,1fr)
+        auto !important;
+}
+
+.yh-voice-btn{
+    width:38px;
+    height:38px;
+    margin-bottom:2px;
+    border:0;
+    border-radius:50%;
+    background:#f0f2ec;
+    color:var(--olive-dark);
+    font-size:17px;
+    font-weight:900;
+}
+
+.yh-voice-btn.recording{
+    background:#fff0f0;
+    color:#c44;
+    animation:yhVoicePulse 1s infinite;
+}
+
+@keyframes yhVoicePulse{
+    50%{transform:scale(1.08)}
+}
+
+.yh-voice-message{
+    min-width:220px;
+}
+
+.yh-voice-message audio{
+    display:block;
+    width:100%;
+    max-width:300px;
+    height:38px;
+}
+
+.yh-voice-caption{
+    margin-bottom:5px;
+    font-size:9px;
+    font-weight:900;
+    opacity:.7;
+}
+
+.yh-voice-preview{
+    grid-column:1/-1;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto auto;
+    gap:7px;
+    align-items:center;
+    padding:9px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:#f7f8f4;
+}
+
+.yh-voice-preview audio{
+    width:100%;
+    height:37px;
+}
+
+.yh-voice-preview button{
+    min-height:37px;
+    border:0;
+    border-radius:10px;
+    padding:7px 10px;
+    font-size:10px;
+    font-weight:900;
+}
+
+.yh-voice-preview-send{
+    background:var(--olive);
+    color:#fff;
+}
+
+.yh-voice-preview-cancel{
+    background:#fff0f0;
+    color:#a54848;
+}
+
+
+/* =========================================================
+   CALL BUTTONS
+========================================================= */
+
+.yh-call-actions{
+    display:flex;
+    gap:6px;
+    align-items:center;
+}
+
+.yh-call-btn{
+    width:38px;
+    height:38px;
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:50%;
+    font-size:17px;
+}
+
+.yh-call-btn:hover{
+    background:var(--olive-soft);
+}
+
+
+/* =========================================================
+   CALL OVERLAY
+========================================================= */
+
+#yhCallOverlay{
+    position:fixed;
+    inset:0;
+    z-index:25000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    background:rgba(12,16,11,.88);
+    backdrop-filter:blur(12px);
+}
+
+#yhCallOverlay.open{
+    display:flex;
+}
+
+.yh-call-card{
+    position:relative;
+    width:min(850px,100%);
+    min-height:500px;
+    overflow:hidden;
+    border-radius:28px;
+    background:#151a15;
+    box-shadow:0 35px 100px rgba(0,0,0,.4);
+}
+
+.yh-call-top{
+    position:absolute;
+    left:0;
+    top:0;
+    right:0;
+    z-index:4;
+    padding:19px 20px;
+    color:#fff;
+    background:linear-gradient(
+        rgba(0,0,0,.55),
+        transparent
+    );
+}
+
+.yh-call-top strong{
+    display:block;
+    font-size:18px;
+}
+
+.yh-call-top small{
+    display:block;
+    margin-top:4px;
+    color:rgba(255,255,255,.65);
+}
+
+.yh-video-stage{
+    position:absolute;
+    inset:0;
+    background:#101410;
+}
+
+#yhRemoteVideo{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    background:#101410;
+}
+
+#yhLocalVideo{
+    position:absolute;
+    right:17px;
+    top:80px;
+    z-index:3;
+    width:155px;
+    height:205px;
+    object-fit:cover;
+    border-radius:20px;
+    background:#202820;
+    border:2px solid rgba(255,255,255,.2);
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+}
+
+.yh-audio-avatar{
+    display:none;
+    position:absolute;
+    inset:0;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:15px;
+    color:#fff;
+}
+
+.yh-audio-avatar-icon{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    background:var(--olive);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:47px;
+}
+
+.yh-call-card.audio-mode .yh-audio-avatar{
+    display:flex;
+}
+
+.yh-call-card.audio-mode #yhRemoteVideo,
+.yh-call-card.audio-mode #yhLocalVideo{
+    visibility:hidden;
+}
+
+.yh-call-controls{
+    position:absolute;
+    z-index:5;
+    left:0;
+    right:0;
+    bottom:0;
+    padding:22px;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    background:linear-gradient(
+        transparent,
+        rgba(0,0,0,.75)
+    );
+}
+
+.yh-call-control{
+    width:50px;
+    height:50px;
+    border:0;
+    border-radius:50%;
+    background:rgba(255,255,255,.15);
+    color:#fff;
+    font-size:20px;
+    backdrop-filter:blur(8px);
+}
+
+.yh-call-control.off{
+    background:#fff;
+    color:#222;
+}
+
+.yh-call-control.end{
+    background:#d94d4d;
+}
+
+.yh-call-incoming-actions{
+    display:none;
+    gap:12px;
+}
+
+.yh-call-incoming-actions.show{
+    display:flex;
+}
+
+.yh-call-accept,
+.yh-call-decline{
+    min-width:115px;
+    min-height:48px;
+    border:0;
+    border-radius:999px;
+    color:#fff;
+    font-weight:900;
+}
+
+.yh-call-accept{
+    background:#5f914b;
+}
+
+.yh-call-decline{
+    background:#d94d4d;
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+#yhMessengerToast{
+    position:fixed;
+    right:18px;
+    top:92px;
+    z-index:26000;
+    max-width:330px;
+    padding:13px 16px;
+    border-radius:15px;
+    background:#20261f;
+    color:#fff;
+    box-shadow:0 15px 45px rgba(0,0,0,.25);
+    font-size:12px;
+    line-height:1.45;
+    transform:translateY(-20px);
+    opacity:0;
+    pointer-events:none;
+    transition:.25s;
+}
+
+#yhMessengerToast.show{
+    opacity:1;
+    transform:none;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:700px){
+
+    .yh-voice-compose{
+        grid-template-columns:
+            36px
+            36px
+            minmax(0,1fr)
+            auto !important;
+    }
+
+    .yh-voice-btn{
+        width:36px;
+        height:36px;
+    }
+
+    .yh-call-actions{
+        gap:3px;
+    }
+
+    .yh-call-btn{
+        width:34px;
+        height:34px;
+        font-size:15px;
+    }
+
+    .yh-call-card{
+        height:calc(100dvh - 20px);
+        min-height:0;
+        border-radius:24px;
+    }
+
+    #yhLocalVideo{
+        width:105px;
+        height:145px;
+        right:12px;
+        top:75px;
+    }
+
+    .yh-voice-preview{
+        grid-template-columns:1fr auto;
+    }
+
+    .yh-voice-preview audio{
+        grid-column:1/-1;
+    }
+
+    #yhMessengerToast{
+        top:76px;
+        left:12px;
+        right:12px;
+        max-width:none;
+    }
+
+}
+
+</style>
+
+
+<div id="yhMessengerToast"></div>
+
+
+<div id="yhCallOverlay">
+
+    <div class="yh-call-card" id="yhCallCard">
+
+        <div class="yh-call-top">
+            <strong id="yhCallName">OWNER</strong>
+            <small id="yhCallStatus">ზარი...</small>
+        </div>
+
+        <div class="yh-video-stage">
+
+            <video
+                id="yhRemoteVideo"
+                autoplay
+                playsinline
+            ></video>
+
+            <video
+                id="yhLocalVideo"
+                autoplay
+                playsinline
+                muted
+            ></video>
+
+            <div class="yh-audio-avatar">
+                <div class="yh-audio-avatar-icon">👤</div>
+                <strong id="yhAudioCallName">OWNER</strong>
+            </div>
+
+        </div>
+
+        <div class="yh-call-controls">
+
+            <div
+                class="yh-call-incoming-actions"
+                id="yhIncomingActions"
+            >
+
+                <button
+                    class="yh-call-accept"
+                    id="yhAcceptCallBtn"
+                >
+                    ✅ მიღება
+                </button>
+
+                <button
+                    class="yh-call-decline"
+                    id="yhDeclineCallBtn"
+                >
+                    ❌ უარყოფა
+                </button>
+
+            </div>
+
+            <button
+                class="yh-call-control"
+                id="yhMuteCallBtn"
+                title="მიკროფონი"
+                hidden
+            >
+                🎙️
+            </button>
+
+            <button
+                class="yh-call-control"
+                id="yhCameraCallBtn"
+                title="კამერა"
+                hidden
+            >
+                📹
+            </button>
+
+            <button
+                class="yh-call-control"
+                id="yhSwitchCameraBtn"
+                title="კამერის გადართვა"
+                hidden
+            >
+                🔄
+            </button>
+
+            <button
+                class="yh-call-control end"
+                id="yhEndCallBtn"
+                title="ზარის დასრულება"
+                hidden
+            >
+                📞
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+(function(){
+
+if(window.__YH_COMPLETE_MESSENGER_FRONTEND_FINAL__){
+    return;
+}
+
+window.__YH_COMPLETE_MESSENGER_FRONTEND_FINAL__=true;
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+const yhVoiceUrlCache=new Map();
+
+let yhRecorder=null;
+
+let yhNotificationAudioContext=null;
+
+let yhNotifyReady=false;
+
+let yhToastTimer=null;
+
+let yhNotifyStarted=false;
+
+let yhPreviousSupportUnread=new Map();
+
+let yhPreviousTeamUnread=new Map();
+
+let yhPreviousGroupUnread=0;
+
+
+/* CALL STATE */
+
+let yhActiveCall=null;
+
+let yhIncomingCall=null;
+
+let yhCallPollTimer=null;
+
+let yhFacingMode="user";
+
+
+function yhMessengerToast(text){
+
+    const el=document.getElementById(
+        "yhMessengerToast"
+    );
+
+    if(!el)return;
+
+    el.textContent=text;
+
+    el.classList.add("show");
+
+    clearTimeout(yhToastTimer);
+
+    yhToastTimer=setTimeout(
+        ()=>el.classList.remove("show"),
+        3500
+    );
+}
+
+
+function yhFormatSeconds(sec){
+
+    sec=Math.max(
+        0,
+        Number(sec||0)
+    );
+
+    const m=
+        Math.floor(sec/60);
+
+    const s=
+        Math.floor(sec%60);
+
+    return(
+        m+
+        ":"+
+        String(s).padStart(2,"0")
+    );
+}
+
+
+function yhIsCurrentOwner(){
+
+    return(
+        String(
+            currentAdmin?.role||""
+        ).toLowerCase()
+        ===
+        "owner"
+    );
+}
+
+
+function yhOwnMessageActions(
+    type,
+    message,
+    allowEdit=true
+){
+
+    if(message.deleted_at){
+        return"";
+    }
+
+    return`
+
+        <div class="yh-msg-actions">
+
+            ${
+                allowEdit
+                &&
+                String(
+                    message.message_type||
+                    "text"
+                )==="text"
+
+                ?`
+                    <button
+                        class="yh-msg-action"
+                        data-yh-message-edit="${esc(message.id)}"
+                        data-yh-message-type="${type}"
+                    >
+                        ✏️ რედაქტირება
+                    </button>
+                `
+                :""
+            }
+
+            <button
+                class="yh-msg-action"
+                data-yh-message-delete="${esc(message.id)}"
+                data-yh-message-type="${type}"
+            >
+                🗑️ წაშლა
+            </button>
+
+        </div>
+
+    `;
+}
+
+
+/* =========================================================
+   SIGNED VOICE URLS
+========================================================= */
+
+async function yhVoiceSignedUrl(path){
+
+    if(!path){
+        return"";
+    }
+
+    const cached=
+        yhVoiceUrlCache.get(path);
+
+    if(
+        cached
+        &&
+        cached.expires>Date.now()
+    ){
+        return cached.url;
+    }
+
+    const{
+        data,
+        error
+    }=
+    await sb.storage
+        .from("admin-voice")
+        .createSignedUrl(
+            path,
+            3300
+        );
+
+    if(error){
+        console.error(
+            "Voice signed URL",
+            error
+        );
+        return"";
+    }
+
+    const url=
+        data?.signedUrl||"";
+
+    yhVoiceUrlCache.set(
+        path,
+        {
+            url,
+            expires:
+                Date.now()+
+                50*60*1000
+        }
+    );
+
+    return url;
+}
+
+
+async function yhHydrateVoicePlayers(container){
+
+    if(!container)return;
+
+    const players=
+        container.querySelectorAll(
+            "audio[data-yh-voice-path]"
+        );
+
+    for(const audio of players){
+
+        const path=
+            audio.dataset.yhVoicePath;
+
+        if(!path||audio.src){
+            continue;
+        }
+
+        const url=
+            await yhVoiceSignedUrl(path);
+
+        if(url){
+            audio.src=url;
+        }
+    }
+}
+
+
+/* =========================================================
+   SUPPORT — FINAL
+========================================================= */
+
+openSupportThread=async function(id){
+
+    supportThreadId=id;
+
+    $("supportShell")
+        .classList
+        .add("chat-open");
+
+    await loadSupportThreads();
+
+    try{
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            "yh_admin_support_messages_v3_final",
+            {
+                p_thread_id:String(id)
+            }
+        );
+
+        if(error){
+            throw error;
+        }
+
+        const list=rows(data);
+
+        $("supportMessages").innerHTML=
+            list.length
+            ?list.map(m=>{
+
+                const adminMessage=
+                    [
+                        "admin",
+                        "staff",
+                        "support"
+                    ]
+                    .includes(
+                        String(
+                            m.sender_type||""
+                        ).toLowerCase()
+                    );
+
+                const own=
+                    adminMessage
+                    &&
+                    String(
+                        m.admin_sender_id||""
+                    )
+                    ===
+                    currentAdminId();
+
+                let content="";
+
+                if(m.deleted_at){
+
+                    content=`
+                        <span class="yh-deleted-message">
+                            🗑️ შეტყობინება წაიშალა
+                        </span>
+                    `;
+
+                }else{
+
+                    content=
+                        esc(m.message||"");
+
+                }
+
+                let status="";
+
+                if(own){
+
+                    status=
+                        m.user_read_at
+                        ?"👁️ ნანახია"
+                        :"✓ გაგზავნილია";
+                }
+
+                return`
+
+                    <div class="msg-row ${adminMessage?"me":""}">
+
+                        <div class="msg-bubble">
+
+                            ${
+                                adminMessage
+                                &&
+                                m.admin_sender_name
+                                ?`
+                                    <div class="msg-sender">
+                                        ${esc(m.admin_sender_name)}
+                                    </div>
+                                `
+                                :""
+                            }
+
+                            <div>
+                                ${content}
+                            </div>
+
+                            <div class="yh-msg-footer">
+
+                                ${
+                                    m.edited_at
+                                    &&
+                                    !m.deleted_at
+                                    ?`
+                                        <span class="yh-edited">
+                                            რედაქტირებულია
+                                        </span>
+                                    `
+                                    :""
+                                }
+
+                                <span class="yh-msg-meta">
+                                    ${esc(dateText(m.created_at))}
+                                </span>
+
+                                ${
+                                    status
+                                    ?`
+                                        <span class="yh-msg-status">
+                                            ${status}
+                                        </span>
+                                    `
+                                    :""
+                                }
+
+                            </div>
+
+                            ${
+                                own
+                                ?yhOwnMessageActions(
+                                    "support",
+                                    {
+                                        ...m,
+                                        message_type:"text"
+                                    },
+                                    true
+                                )
+                                :""
+                            }
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("")
+
+            :`
+                <div class="msg-empty">
+                    მესიჯები არ არის.
+                </div>
+            `;
+
+        $("supportMessages").scrollTop=
+            $("supportMessages").scrollHeight;
+
+        await loadUnreadCounts();
+
+    }catch(error){
+
+        errorBox(
+            "supportMessages",
+            error
+        );
+    }
+};
+
+
+/* =========================================================
+   PRIVATE TEAM — FINAL
+========================================================= */
+
+openTeamChat=async function(id){
+
+    teamAdminId=id;
+
+    $("teamShell")
+        .classList
+        .add("chat-open");
+
+    const admin=
+        teamAdmins.find(
+            a=>
+            String(a.user_id)
+            ===
+            String(id)
+        );
+
+    $("teamChatName").textContent=
+        admin?.display_name||
+        "Admin";
+
+    $("teamChatRole").textContent=
+        roleLabel(admin?.role);
+
+    $("teamInput").disabled=false;
+    $("teamSendBtn").disabled=false;
+
+    yhUpdateCallButtons(admin);
+
+    try{
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            "yh_admin_team_messages_v3_final",
+            {
+                p_other_admin_id:id
+            }
+        );
+
+        if(error){
+            throw error;
+        }
+
+        const list=rows(data);
+
+        $("teamMessages").innerHTML=
+            list.length
+            ?list.map(m=>{
+
+                const mine=
+                    String(m.sender_id)
+                    ===
+                    currentAdminId();
+
+                let body="";
+
+                if(m.deleted_at){
+
+                    body=`
+                        <span class="yh-deleted-message">
+                            🗑️ შეტყობინება წაიშალა
+                        </span>
+                    `;
+
+                }else if(
+                    String(
+                        m.message_type||
+                        "text"
+                    )==="voice"
+                ){
+
+                    body=`
+
+                        <div class="yh-voice-message">
+
+                            <div class="yh-voice-caption">
+                                🎙️ ხმოვანი
+                                ${
+                                    m.voice_duration_seconds
+                                    ?`
+                                        ·
+                                        ${yhFormatSeconds(
+                                            m.voice_duration_seconds
+                                        )}
+                                    `
+                                    :""
+                                }
+                            </div>
+
+                            <audio
+                                controls
+                                preload="metadata"
+                                data-yh-voice-path="${esc(m.voice_path||"")}"
+                            ></audio>
+
+                        </div>
+                    `;
+
+                }else{
+
+                    body=
+                        esc(m.message||"");
+
+                }
+
+                let status="";
+
+                if(mine){
+
+                    if(m.read_at){
+
+                        status="✓✓ ნანახია";
+
+                    }else if(m.delivered_at){
+
+                        status="✓✓ მიწოდებულია";
+
+                    }else{
+
+                        status="✓ გაგზავნილია";
+                    }
+                }
+
+                return`
+
+                    <div class="msg-row ${mine?"me":""}">
+
+                        <div class="msg-bubble">
+
+                            <div>
+                                ${body}
+                            </div>
+
+                            <div class="yh-msg-footer">
+
+                                ${
+                                    m.edited_at
+                                    &&
+                                    !m.deleted_at
+                                    ?`
+                                        <span class="yh-edited">
+                                            რედაქტირებულია
+                                        </span>
+                                    `
+                                    :""
+                                }
+
+                                <span class="yh-msg-meta">
+                                    ${esc(dateText(m.created_at))}
+                                </span>
+
+                                ${
+                                    status
+                                    ?`
+                                        <span class="yh-msg-status">
+                                            ${status}
+                                        </span>
+                                    `
+                                    :""
+                                }
+
+                            </div>
+
+                            ${
+                                mine
+                                ?yhOwnMessageActions(
+                                    "team",
+                                    m,
+                                    true
+                                )
+                                :""
+                            }
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("")
+
+            :`
+                <div class="msg-empty">
+                    ჯერ მიმოწერა არ გაქვთ 🙂
+                </div>
+            `;
+
+        await yhHydrateVoicePlayers(
+            $("teamMessages")
+        );
+
+        $("teamMessages").scrollTop=
+            $("teamMessages").scrollHeight;
+
+        await loadTeamAdmins();
+        await loadUnreadCounts();
+
+    }catch(error){
+
+        errorBox(
+            "teamMessages",
+            error
+        );
+    }
+};
+
+
+/* =========================================================
+   GROUP CHAT — FINAL
+========================================================= */
+
+loadGroupMessages=async function(scroll=false){
+
+    try{
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            "yh_admin_group_messages_v3_final",
+            {
+                p_limit:200
+            }
+        );
+
+        if(error){
+            throw error;
+        }
+
+        const list=rows(data);
+
+        $("groupMessages").innerHTML=
+            list.length
+
+            ?list.map(m=>{
+
+                const mine=
+                    String(m.sender_id)
+                    ===
+                    currentAdminId();
+
+                let body="";
+
+                if(m.deleted_at){
+
+                    body=`
+                        <span class="yh-deleted-message">
+                            🗑️ შეტყობინება წაიშალა
+                        </span>
+                    `;
+
+                }else if(
+                    String(
+                        m.message_type||
+                        "text"
+                    )==="voice"
+                ){
+
+                    body=`
+
+                        <div class="yh-voice-message">
+
+                            <div class="yh-voice-caption">
+                                🎙️ ხმოვანი
+                                ${
+                                    m.voice_duration_seconds
+                                    ?`
+                                        ·
+                                        ${yhFormatSeconds(
+                                            m.voice_duration_seconds
+                                        )}
+                                    `
+                                    :""
+                                }
+                            </div>
+
+                            <audio
+                                controls
+                                preload="metadata"
+                                data-yh-voice-path="${esc(m.voice_path||"")}"
+                            ></audio>
+
+                        </div>
+                    `;
+
+                }else{
+
+                    body=
+                        esc(m.message||"");
+
+                }
+
+                const seenBy=
+                    Array.isArray(m.seen_by)
+                    ?m.seen_by
+                    :[];
+
+                const seenNames=
+                    seenBy
+                    .map(x=>x?.name)
+                    .filter(Boolean)
+                    .join(", ");
+
+                return`
+
+                    <div class="msg-row ${mine?"me":""}">
+
+                        <div class="msg-bubble">
+
+                            <div class="msg-sender">
+                                ${esc(m.sender_name||"Admin")}
+                                ·
+                                ${esc(roleLabel(m.sender_role))}
+                            </div>
+
+                            <div>
+                                ${body}
+                            </div>
+
+                            <div class="yh-msg-footer">
+
+                                ${
+                                    m.edited_at
+                                    &&
+                                    !m.deleted_at
+                                    ?`
+                                        <span class="yh-edited">
+                                            რედაქტირებულია
+                                        </span>
+                                    `
+                                    :""
+                                }
+
+                                <span class="yh-msg-meta">
+                                    ${esc(dateText(m.created_at))}
+                                </span>
+
+                                ${
+                                    mine
+                                    ?`
+                                        <span
+                                            class="yh-msg-status yh-seen-names"
+                                            title="${esc(seenNames)}"
+                                        >
+                                            ${
+                                                Number(m.seen_count||0)>0
+                                                ?`
+                                                    👁️
+                                                    ${Number(m.seen_count)}
+                                                    ნანახი
+                                                `
+                                                :"✓ გაგზავნილია"
+                                            }
+                                        </span>
+                                    `
+                                    :""
+                                }
+
+                            </div>
+
+                            ${
+                                mine
+                                ?yhOwnMessageActions(
+                                    "group",
+                                    m,
+                                    true
+                                )
+                                :""
+                            }
+
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("")
+
+            :`
+                <div class="msg-empty">
+                    დაწერე პირველი შეტყობინება 🙂
+                </div>
+            `;
+
+        await yhHydrateVoicePlayers(
+            $("groupMessages")
+        );
+
+        if(scroll){
+
+            $("groupMessages").scrollTop=
+                $("groupMessages").scrollHeight;
+        }
+
+        await loadGroupUnread();
+
+    }catch(error){
+
+        errorBox(
+            "groupMessages",
+            error
+        );
+    }
+};
+
+
+/* =========================================================
+   EDIT / DELETE EVENTS
+========================================================= */
+
+async function yhEditMessage(type,id){
+
+    let source=null;
+
+    if(type==="support"){
+
+        source=
+            document.querySelector(
+                `[data-yh-message-edit="${CSS.escape(String(id))}"]`
+            )
+            ?.closest(".msg-bubble")
+            ?.querySelector("div:nth-child(1)");
+
+    }
+
+    const next=
+        prompt(
+            "შეტყობინების ახალი ტექსტი:"
+        );
+
+    if(next===null){
+        return;
+    }
+
+    const text=next.trim();
+
+    if(!text){
+        alert("ტექსტი ცარიელი ვერ იქნება.");
+        return;
+    }
+
+    try{
+
+        let rpc="";
+        let args={};
+
+        if(type==="support"){
+
+            rpc=
+                "yh_admin_support_message_edit_final";
+
+            args={
+                p_message_id:String(id),
+                p_message:text
+            };
+
+        }else if(type==="team"){
+
+            rpc=
+                "yh_admin_team_message_edit_v2_final";
+
+            args={
+                p_message_id:String(id),
+                p_message:text
+            };
+
+        }else if(type==="group"){
+
+            rpc=
+                "yh_admin_group_message_edit_final";
+
+            args={
+                p_message_id:String(id),
+                p_message:text
+            };
+        }
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            rpc,
+            args
+        );
+
+        if(error){
+            throw error;
+        }
+
+        if(data?.ok!==true){
+            throw new Error(
+                "რედაქტირება ვერ მოხერხდა."
+            );
+        }
+
+        if(type==="support"){
+            await openSupportThread(
+                supportThreadId
+            );
+        }
+
+        if(type==="team"){
+            await openTeamChat(
+                teamAdminId
+            );
+        }
+
+        if(type==="group"){
+            await loadGroupMessages(false);
+        }
+
+    }catch(error){
+
+        alert(
+            "რედაქტირება ვერ მოხერხდა:\n\n"+
+            error.message
+        );
+    }
+}
+
+
+async function yhDeleteMessage(type,id){
+
+    if(
+        !confirm(
+            "შეტყობინება წაიშალოს?"
+        )
+    ){
+        return;
+    }
+
+    try{
+
+        let rpc="";
+
+        if(type==="support"){
+
+            rpc=
+                "yh_admin_support_message_delete_final";
+
+        }else if(type==="team"){
+
+            rpc=
+                "yh_admin_team_message_delete_v2_final";
+
+        }else if(type==="group"){
+
+            rpc=
+                "yh_admin_group_message_delete_final";
+        }
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            rpc,
+            {
+                p_message_id:String(id)
+            }
+        );
+
+        if(error){
+            throw error;
+        }
+
+        if(data?.ok!==true){
+            throw new Error(
+                "წაშლა ვერ მოხერხდა."
+            );
+        }
+
+        if(type==="support"){
+
+            await openSupportThread(
+                supportThreadId
+            );
+        }
+
+        if(type==="team"){
+
+            await openTeamChat(
+                teamAdminId
+            );
+        }
+
+        if(type==="group"){
+
+            await loadGroupMessages(false);
+        }
+
+    }catch(error){
+
+        alert(
+            "წაშლა ვერ მოხერხდა:\n\n"+
+            error.message
+        );
+    }
+}
+
+
+[
+    "supportMessages",
+    "teamMessages",
+    "groupMessages"
+]
+.forEach(id=>{
+
+    $(id)?.addEventListener(
+        "click",
+        event=>{
+
+            const edit=
+                event.target.closest(
+                    "[data-yh-message-edit]"
+                );
+
+            if(edit){
+
+                yhEditMessage(
+                    edit.dataset.yhMessageType,
+                    edit.dataset.yhMessageEdit
+                );
+
+                return;
+            }
+
+            const del=
+                event.target.closest(
+                    "[data-yh-message-delete]"
+                );
+
+            if(del){
+
+                yhDeleteMessage(
+                    del.dataset.yhMessageType,
+                    del.dataset.yhMessageDelete
+                );
+            }
+        }
+    );
+});
+
+
+/* =========================================================
+   VOICE RECORDER UI
+========================================================= */
+
+function yhPickAudioMime(){
+
+    if(
+        typeof MediaRecorder==="undefined"
+    ){
+        return"";
+    }
+
+    const options=[
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/ogg;codecs=opus",
+        "audio/mp4",
+        "audio/mpeg"
+    ];
+
+    for(const type of options){
+
+        try{
+
+            if(
+                MediaRecorder.isTypeSupported(type)
+            ){
+                return type;
+            }
+
+        }catch{}
+    }
+
+    return"";
+}
+
+
+function yhVoiceExtension(mime){
+
+    mime=String(mime||"");
+
+    if(mime.includes("ogg"))return"ogg";
+    if(mime.includes("mp4"))return"mp4";
+    if(mime.includes("mpeg"))return"mp3";
+    if(mime.includes("wav"))return"wav";
+
+    return"webm";
+}
+
+
+function yhRemoveVoicePreview(compose){
+
+    const preview=
+        compose?.querySelector(
+            ".yh-voice-preview"
+        );
+
+    if(preview){
+
+        const audio=
+            preview.querySelector("audio");
+
+        if(
+            audio?.src
+            &&
+            audio.src.startsWith("blob:")
+        ){
+            URL.revokeObjectURL(audio.src);
+        }
+
+        preview.remove();
+    }
+}
+
+
+async function yhStartVoiceRecording(
+    type,
+    button
+){
+
+    if(type==="team"&&!teamAdminId){
+
+        alert(
+            "ჯერ აირჩიე თანამშრომელი."
+        );
+
+        return;
+    }
+
+    if(
+        !navigator.mediaDevices
+        ||
+        !navigator.mediaDevices.getUserMedia
+        ||
+        typeof MediaRecorder==="undefined"
+    ){
+
+        alert(
+            "ამ ბრაუზერში ხმოვანი ჩაწერა არ არის მხარდაჭერილი."
+        );
+
+        return;
+    }
+
+    if(yhRecorder){
+
+        if(
+            yhRecorder.type===type
+        ){
+            yhRecorder.mediaRecorder.stop();
+        }
+
+        return;
+    }
+
+    try{
+
+        const stream=
+            await navigator.mediaDevices
+            .getUserMedia({
+                audio:true
+            });
+
+        const mime=
+            yhPickAudioMime();
+
+        const options=
+            mime
+            ?{mimeType:mime}
+            :undefined;
+
+        const recorder=
+            new MediaRecorder(
+                stream,
+                options
+            );
+
+        const chunks=[];
+
+        const startedAt=
+            Date.now();
+
+        const compose=
+            button.closest(
+                ".msg-compose"
+            );
+
+        yhRemoveVoicePreview(compose);
+
+        yhRecorder={
+            type,
+            button,
+            stream,
+            mediaRecorder:recorder,
+            chunks,
+            startedAt,
+            timer:null
+        };
+
+        button.classList.add(
+            "recording"
+        );
+
+        button.textContent="⏹️";
+
+        recorder.ondataavailable=
+            event=>{
+
+                if(
+                    event.data
+                    &&
+                    event.data.size>0
+                ){
+                    chunks.push(
+                        event.data
+                    );
+                }
+            };
+
+        recorder.onstop=()=>{
+
+            const duration=
+                Math.max(
+                    1,
+                    Math.round(
+                        (
+                            Date.now()-
+                            startedAt
+                        )/1000
+                    )
+                );
+
+            const finalMime=
+                recorder.mimeType
+                ||
+                mime
+                ||
+                "audio/webm";
+
+            const blob=
+                new Blob(
+                    chunks,
+                    {
+                        type:finalMime
+                    }
+                );
+
+            stream
+            .getTracks()
+            .forEach(
+                track=>track.stop()
+            );
+
+            clearInterval(
+                yhRecorder?.timer
+            );
+
+            button.classList.remove(
+                "recording"
+            );
+
+            button.textContent="🎙️";
+
+            yhRecorder=null;
+
+            yhShowVoicePreview(
+                type,
+                compose,
+                blob,
+                finalMime,
+                duration
+            );
+        };
+
+        recorder.start(250);
+
+        yhRecorder.timer=
+            setInterval(
+                ()=>{
+
+                    if(!yhRecorder){
+                        return;
+                    }
+
+                    const sec=
+                        Math.floor(
+                            (
+                                Date.now()-
+                                startedAt
+                            )/1000
+                        );
+
+                    button.title=
+                        "ჩაწერა "+
+                        yhFormatSeconds(sec);
+
+                },
+                500
+            );
+
+    }catch(error){
+
+        console.error(
+            "Voice recorder",
+            error
+        );
+
+        alert(
+            "მიკროფონის ჩართვა ვერ მოხერხდა. ბრაუზერში მიკროფონის ნებართვა შეამოწმე."
+        );
+    }
+}
+
+
+function yhShowVoicePreview(
+    type,
+    compose,
+    blob,
+    mime,
+    duration
+){
+
+    yhRemoveVoicePreview(compose);
+
+    const url=
+        URL.createObjectURL(blob);
+
+    const preview=
+        document.createElement("div");
+
+    preview.className=
+        "yh-voice-preview";
+
+    preview.innerHTML=`
+
+        <audio
+            controls
+            src="${url}"
+        ></audio>
+
+        <button
+            type="button"
+            class="yh-voice-preview-send"
+        >
+            ✅ გაგზავნა
+        </button>
+
+        <button
+            type="button"
+            class="yh-voice-preview-cancel"
+        >
+            🗑️
+        </button>
+    `;
+
+    compose.prepend(preview);
+
+    preview
+    .querySelector(
+        ".yh-voice-preview-cancel"
+    )
+    .onclick=()=>{
+
+        yhRemoveVoicePreview(
+            compose
+        );
+    };
+
+    preview
+    .querySelector(
+        ".yh-voice-preview-send"
+    )
+    .onclick=async event=>{
+
+        const sendBtn=
+            event.currentTarget;
+
+        sendBtn.disabled=true;
+        sendBtn.textContent="⏳";
+
+        try{
+
+            await yhUploadVoice(
+                type,
+                blob,
+                mime,
+                duration
+            );
+
+            yhRemoveVoicePreview(
+                compose
+            );
+
+        }catch(error){
+
+            console.error(
+                "Voice upload",
+                error
+            );
+
+            alert(
+                "ხმოვანი ვერ გაიგზავნა:\n\n"+
+                error.message
+            );
+
+            sendBtn.disabled=false;
+            sendBtn.textContent=
+                "✅ გაგზავნა";
+        }
+    };
+}
+
+
+async function yhUploadVoice(
+    type,
+    blob,
+    mime,
+    duration
+){
+
+    const uid=
+        currentAdminId();
+
+    if(!uid){
+        throw new Error(
+            "ADMIN_NOT_AUTHENTICATED"
+        );
+    }
+
+    const random=
+        crypto.randomUUID
+        ?crypto.randomUUID()
+        :(
+            Date.now()+
+            "-"+
+            Math.random()
+            .toString(36)
+            .slice(2)
+        );
+
+    const ext=
+        yhVoiceExtension(mime);
+
+    const path=
+        uid+
+        "/"+
+        type+
+        "/"+
+        Date.now()+
+        "-"+
+        random+
+        "."+
+        ext;
+
+    const{
+        error:uploadError
+    }=
+    await sb.storage
+        .from("admin-voice")
+        .upload(
+            path,
+            blob,
+            {
+                contentType:mime,
+                upsert:false,
+                cacheControl:"3600"
+            }
+        );
+
+    if(uploadError){
+        throw uploadError;
+    }
+
+    try{
+
+        let result;
+
+        if(type==="team"){
+
+            result=
+                await sb.rpc(
+                    "yh_admin_team_voice_send_final",
+                    {
+                        p_recipient_id:
+                            teamAdminId,
+
+                        p_voice_path:
+                            path,
+
+                        p_duration_seconds:
+                            duration,
+
+                        p_mime:
+                            mime
+                    }
+                );
+
+        }else{
+
+            result=
+                await sb.rpc(
+                    "yh_admin_group_voice_send_final",
+                    {
+                        p_voice_path:
+                            path,
+
+                        p_duration_seconds:
+                            duration,
+
+                        p_mime:
+                            mime
+                    }
+                );
+        }
+
+        if(result.error){
+            throw result.error;
+        }
+
+        if(result.data?.ok!==true){
+            throw new Error(
+                "VOICE_SEND_FAILED"
+            );
+        }
+
+    }catch(error){
+
+        try{
+
+            await sb.storage
+                .from("admin-voice")
+                .remove([path]);
+
+        }catch{}
+
+        throw error;
+    }
+
+    if(type==="team"){
+
+        await openTeamChat(
+            teamAdminId
+        );
+
+    }else{
+
+        await loadGroupMessages(true);
+    }
+}
+
+
+/* =========================================================
+   ADD MIC BUTTONS
+========================================================= */
+
+function yhInstallVoiceButton(
+    compose,
+    type
+){
+
+    if(
+        !compose
+        ||
+        compose.querySelector(
+            `[data-yh-voice-button="${type}"]`
+        )
+    ){
+        return;
+    }
+
+    compose.classList.add(
+        "yh-voice-compose"
+    );
+
+    const emoji=
+        compose.querySelector(
+            ".emoji-btn"
+        );
+
+    const btn=
+        document.createElement(
+            "button"
+        );
+
+    btn.type="button";
+
+    btn.className=
+        "yh-voice-btn";
+
+    btn.dataset.yhVoiceButton=
+        type;
+
+    btn.textContent="🎙️";
+
+    btn.title=
+        "ხმოვანი შეტყობინება";
+
+    emoji?.after(btn);
+
+    btn.onclick=()=>{
+
+        yhStartVoiceRecording(
+            type,
+            btn
+        );
+    };
+}
+
+
+yhInstallVoiceButton(
+    document.querySelector(
+        "#page-teamchat .msg-compose"
+    ),
+    "team"
+);
+
+yhInstallVoiceButton(
+    document.querySelector(
+        "#page-groupchat .msg-compose"
+    ),
+    "group"
+);
+
+
+/* =========================================================
+   NOTIFICATION SOUND
+========================================================= */
+
+function yhUnlockNotificationSound(){
+
+    try{
+
+        const AudioCtx=
+            window.AudioContext
+            ||
+            window.webkitAudioContext;
+
+        if(!AudioCtx){
+            return;
+        }
+
+        if(!yhNotificationAudioContext){
+
+            yhNotificationAudioContext=
+                new AudioCtx();
+        }
+
+        yhNotificationAudioContext
+        .resume()
+        .catch(()=>{});
+
+        yhNotifyReady=true;
+
+    }catch{}
+}
+
+
+document.addEventListener(
+    "pointerdown",
+    yhUnlockNotificationSound,
+    {
+        once:false,
+        passive:true
+    }
+);
+
+
+function yhPlayMessageSound(){
+
+    if(
+        !yhNotifyReady
+        ||
+        !yhNotificationAudioContext
+    ){
+        return;
+    }
+
+    try{
+
+        const ctx=
+            yhNotificationAudioContext;
+
+        const now=
+            ctx.currentTime;
+
+        [
+            {
+                time:now,
+                frequency:720
+            },
+            {
+                time:now+.12,
+                frequency:880
+            }
+        ]
+        .forEach(item=>{
+
+            const osc=
+                ctx.createOscillator();
+
+            const gain=
+                ctx.createGain();
+
+            osc.frequency.value=
+                item.frequency;
+
+            gain.gain.setValueAtTime(
+                .0001,
+                item.time
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                .13,
+                item.time+.015
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                .0001,
+                item.time+.11
+            );
+
+            osc.connect(gain);
+            gain.connect(
+                ctx.destination
+            );
+
+            osc.start(
+                item.time
+            );
+
+            osc.stop(
+                item.time+.12
+            );
+        });
+
+    }catch{}
+}
+
+
+/* =========================================================
+   NEW MESSAGE WATCH
+========================================================= */
+
+async function yhWatchNewMessages(){
+
+    if(
+        !currentUser
+        ||
+        !currentAdmin
+    ){
+        return;
+    }
+
+    try{
+
+        const[
+            supportResult,
+            teamResult,
+            groupResult
+        ]=
+        await Promise.all([
+
+            sb.rpc(
+                "yh_admin_support_threads_final"
+            ),
+
+            sb.rpc(
+                "yh_admin_team_list_final"
+            ),
+
+            sb.rpc(
+                "yh_admin_group_unread_final"
+            )
+        ]);
+
+        if(
+            supportResult.error
+            ||
+            teamResult.error
+            ||
+            groupResult.error
+        ){
+            return;
+        }
+
+        const support=
+            rows(
+                supportResult.data
+            );
+
+        const team=
+            rows(
+                teamResult.data
+            );
+
+        const group=
+            Number(
+                groupResult.data||0
+            );
+
+        if(!yhNotifyStarted){
+
+            support.forEach(t=>{
+
+                yhPreviousSupportUnread
+                .set(
+                    String(t.id),
+                    Number(
+                        t.unread_count||0
+                    )
+                );
+            });
+
+            team.forEach(a=>{
+
+                yhPreviousTeamUnread
+                .set(
+                    String(a.user_id),
+                    Number(
+                        a.unread_count||0
+                    )
+                );
+            });
+
+            yhPreviousGroupUnread=
+                group;
+
+            yhNotifyStarted=true;
+
+            return;
+        }
+
+        let notificationText="";
+
+
+        for(const t of support){
+
+            const key=
+                String(t.id);
+
+            const now=
+                Number(
+                    t.unread_count||0
+                );
+
+            const before=
+                Number(
+                    yhPreviousSupportUnread
+                    .get(key)||0
+                );
+
+            if(now>before){
+
+                notificationText=
+                    "💬 "+
+                    supportName(t)+
+                    " — ახალი შეტყობინება";
+
+                break;
+            }
+        }
+
+
+        if(!notificationText){
+
+            for(const a of team){
+
+                const key=
+                    String(a.user_id);
+
+                const now=
+                    Number(
+                        a.unread_count||0
+                    );
+
+                const before=
+                    Number(
+                        yhPreviousTeamUnread
+                        .get(key)||0
+                    );
+
+                if(now>before){
+
+                    notificationText=
+                        "🗨️ "+
+                        (
+                            a.display_name||
+                            "Admin"
+                        )+
+                        " მოგწერა";
+
+                    break;
+                }
+            }
+        }
+
+
+        if(
+            !notificationText
+            &&
+            group>yhPreviousGroupUnread
+        ){
+
+            notificationText=
+                "👥 გუნდის ჩატში ახალი შეტყობინებაა";
+        }
+
+
+        support.forEach(t=>{
+
+            yhPreviousSupportUnread
+            .set(
+                String(t.id),
+                Number(
+                    t.unread_count||0
+                )
+            );
+        });
+
+
+        team.forEach(a=>{
+
+            yhPreviousTeamUnread
+            .set(
+                String(a.user_id),
+                Number(
+                    a.unread_count||0
+                )
+            );
+        });
+
+
+        yhPreviousGroupUnread=
+            group;
+
+
+        if(notificationText){
+
+            yhPlayMessageSound();
+
+            yhMessengerToast(
+                notificationText
+            );
+        }
+
+    }catch(error){
+
+        console.error(
+            "Message notification",
+            error
+        );
+    }
+}
+
+
+setInterval(
+    yhWatchNewMessages,
+    6000
+);
+
+setTimeout(
+    yhWatchNewMessages,
+    1800
+);
+
+
+/* =========================================================
+   PRIVATE OWNER CALL BUTTONS
+========================================================= */
+
+function yhInstallCallButtons(){
+
+    const head=
+        document.querySelector(
+            "#page-teamchat .msg-head"
+        );
+
+    if(
+        !head
+        ||
+        document.getElementById(
+            "yhTeamCallActions"
+        )
+    ){
+        return;
+    }
+
+    const wrap=
+        document.createElement(
+            "div"
+        );
+
+    wrap.className=
+        "yh-call-actions";
+
+    wrap.id=
+        "yhTeamCallActions";
+
+    wrap.hidden=true;
+
+    wrap.innerHTML=`
+
+        <button
+            type="button"
+            class="yh-call-btn"
+            id="yhAudioCallBtn"
+            title="ხმოვანი ზარი"
+        >
+            📞
+        </button>
+
+        <button
+            type="button"
+            class="yh-call-btn"
+            id="yhVideoCallBtn"
+            title="ვიდეოზარი"
+        >
+            🎥
+        </button>
+    `;
+
+    head.appendChild(wrap);
+
+
+    document
+    .getElementById(
+        "yhAudioCallBtn"
+    )
+    .onclick=()=>{
+
+        yhStartOutgoingCall(
+            "audio"
+        );
+    };
+
+
+    document
+    .getElementById(
+        "yhVideoCallBtn"
+    )
+    .onclick=()=>{
+
+        yhStartOutgoingCall(
+            "video"
+        );
+    };
+}
+
+
+function yhUpdateCallButtons(admin){
+
+    const wrap=
+        document.getElementById(
+            "yhTeamCallActions"
+        );
+
+    if(!wrap){
+        return;
+    }
+
+    wrap.hidden=
+        !(
+            yhIsCurrentOwner()
+            &&
+            admin
+            &&
+            String(
+                admin.role||""
+            ).toLowerCase()
+            ===
+            "owner"
+        );
+}
+
+
+yhInstallCallButtons();
+
+
+/* =========================================================
+   WEBRTC
+========================================================= */
+
+const YH_RTC_CONFIG={
+
+    iceServers:[
+
+        {
+            urls:[
+                "stun:stun.l.google.com:19302",
+                "stun:stun1.l.google.com:19302"
+            ]
+        }
+
+    ]
+
+};
+
+
+function yhWaitForIceGathering(pc){
+
+    return new Promise(resolve=>{
+
+        if(
+            pc.iceGatheringState
+            ===
+            "complete"
+        ){
+            resolve();
+            return;
+        }
+
+        let done=false;
+
+        const finish=()=>{
+
+            if(done)return;
+
+            done=true;
+
+            pc.removeEventListener(
+                "icegatheringstatechange",
+                check
+            );
+
+            resolve();
+        };
+
+        const check=()=>{
+
+            if(
+                pc.iceGatheringState
+                ===
+                "complete"
+            ){
+                finish();
+            }
+        };
+
+        pc.addEventListener(
+            "icegatheringstatechange",
+            check
+        );
+
+        setTimeout(
+            finish,
+            8000
+        );
+    });
+}
+
+
+function yhCreatePeerConnection(){
+
+    const pc=
+        new RTCPeerConnection(
+            YH_RTC_CONFIG
+        );
+
+    pc.ontrack=event=>{
+
+        const stream=
+            event.streams?.[0];
+
+        if(stream){
+
+            $("yhRemoteVideo").srcObject=
+                stream;
+        }
+    };
+
+    pc.onconnectionstatechange=()=>{
+
+        if(
+            pc.connectionState
+            ===
+            "connected"
+        ){
+
+            $("yhCallStatus").textContent=
+                "დაკავშირებულია ✅";
+        }
+
+        if(
+            [
+                "failed",
+                "closed"
+            ]
+            .includes(
+                pc.connectionState
+            )
+        ){
+
+            yhCleanupCall(false);
+        }
+    };
+
+    return pc;
+}
+
+
+async function yhGetCallMedia(type){
+
+    return navigator.mediaDevices
+        .getUserMedia({
+
+            audio:true,
+
+            video:
+                type==="video"
+                ?{
+                    facingMode:{
+                        ideal:
+                            yhFacingMode
+                    }
+                }
+                :false
+        });
+}
+
+
+function yhSessionJSON(desc){
+
+    if(!desc){
+        return null;
+    }
+
+    if(
+        typeof desc.toJSON
+        ===
+        "function"
+    ){
+        return desc.toJSON();
+    }
+
+    return{
+        type:desc.type,
+        sdp:desc.sdp
+    };
+}
+
+
+/* =========================================================
+   CALL OVERLAY
+========================================================= */
+
+function yhShowCallOverlay({
+    name,
+    type,
+    incoming=false,
+    status=""
+}){
+
+    const overlay=
+        $("yhCallOverlay");
+
+    const card=
+        $("yhCallCard");
+
+    overlay.classList.add(
+        "open"
+    );
+
+    card.classList.toggle(
+        "audio-mode",
+        type==="audio"
+    );
+
+    $("yhCallName").textContent=
+        name||"OWNER";
+
+    $("yhAudioCallName").textContent=
+        name||"OWNER";
+
+    $("yhCallStatus").textContent=
+        status
+        ||
+        (
+            incoming
+            ?"შემომავალი ზარი..."
+            :"რეკავს..."
+        );
+
+    $("yhIncomingActions")
+        .classList
+        .toggle(
+            "show",
+            incoming
+        );
+
+    $("yhMuteCallBtn").hidden=
+        incoming;
+
+    $("yhEndCallBtn").hidden=
+        incoming;
+
+    $("yhCameraCallBtn").hidden=
+        incoming
+        ||
+        type!=="video";
+
+    $("yhSwitchCameraBtn").hidden=
+        incoming
+        ||
+        type!=="video";
+}
+
+
+function yhHideCallOverlay(){
+
+    $("yhCallOverlay")
+        .classList
+        .remove("open");
+
+    $("yhIncomingActions")
+        .classList
+        .remove("show");
+
+    $("yhRemoteVideo").srcObject=null;
+    $("yhLocalVideo").srcObject=null;
+}
+
+
+/* =========================================================
+   START OUTGOING CALL
+========================================================= */
+
+async function yhStartOutgoingCall(type){
+
+    if(
+        yhActiveCall
+        ||
+        yhIncomingCall
+    ){
+
+        alert(
+            "უკვე მიმდინარეობს სხვა ზარი."
+        );
+
+        return;
+    }
+
+    if(
+        !yhIsCurrentOwner()
+    ){
+        return;
+    }
+
+    const admin=
+        teamAdmins.find(
+            a=>
+            String(a.user_id)
+            ===
+            String(teamAdminId)
+        );
+
+    if(
+        !admin
+        ||
+        String(
+            admin.role||""
+        ).toLowerCase()
+        !==
+        "owner"
+    ){
+
+        alert(
+            "ზარი მხოლოდ OWNER-ებს შორის არის ხელმისაწვდომი."
+        );
+
+        return;
+    }
+
+    if(
+        !window.RTCPeerConnection
+        ||
+        !navigator.mediaDevices
+    ){
+
+        alert(
+            "ამ ბრაუზერში ვიდეო/ხმოვანი ზარი არ არის მხარდაჭერილი."
+        );
+
+        return;
+    }
+
+    yhShowCallOverlay({
+        name:
+            admin.display_name||
+            "OWNER",
+        type,
+        status:
+            "კამერის/მიკროფონის მომზადება..."
+    });
+
+    try{
+
+        const stream=
+            await yhGetCallMedia(
+                type
+            );
+
+        if(type==="video"){
+
+            $("yhLocalVideo").srcObject=
+                stream;
+        }
+
+        const pc=
+            yhCreatePeerConnection();
+
+        stream
+        .getTracks()
+        .forEach(track=>{
+
+            pc.addTrack(
+                track,
+                stream
+            );
+        });
+
+        const offer=
+            await pc.createOffer();
+
+        await pc.setLocalDescription(
+            offer
+        );
+
+        $("yhCallStatus").textContent=
+            "კავშირი მზადდება...";
+
+        await yhWaitForIceGathering(
+            pc
+        );
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            "yh_admin_call_create_final",
+            {
+                p_callee_id:
+                    admin.user_id,
+
+                p_call_type:
+                    type,
+
+                p_offer:
+                    yhSessionJSON(
+                        pc.localDescription
+                    )
+            }
+        );
+
+        if(error){
+            throw error;
+        }
+
+        if(
+            data?.ok!==true
+            ||
+            !data?.call_id
+        ){
+            throw new Error(
+                "CALL_CREATE_FAILED"
+            );
+        }
+
+        yhActiveCall={
+
+            id:
+                data.call_id,
+
+            type,
+
+            role:
+                "caller",
+
+            pc,
+
+            stream,
+
+            remoteSet:false,
+
+            otherName:
+                admin.display_name||
+                "OWNER"
+        };
+
+        $("yhCallStatus").textContent=
+            "რეკავს... 📞";
+
+        yhStartCallStatusPoll();
+
+    }catch(error){
+
+        console.error(
+            "Outgoing call",
+            error
+        );
+
+        alert(
+            "ზარის დაწყება ვერ მოხერხდა:\n\n"+
+            error.message
+        );
+
+        yhCleanupCall(false);
+    }
+}
+
+
+/* =========================================================
+   INCOMING CALL
+========================================================= */
+
+async function yhCheckIncomingCall(){
+
+    if(
+        !currentUser
+        ||
+        !currentAdmin
+        ||
+        !yhIsCurrentOwner()
+        ||
+        yhActiveCall
+        ||
+        yhIncomingCall
+    ){
+        return;
+    }
+
+    try{
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            "yh_admin_call_incoming_final"
+        );
+
+        if(error){
+            return;
+        }
+
+        if(
+            !data
+            ||
+            !data.id
+        ){
+            return;
+        }
+
+        yhIncomingCall=data;
+
+        yhShowCallOverlay({
+
+            name:
+                data.caller_name||
+                "OWNER",
+
+            type:
+                data.call_type,
+
+            incoming:true,
+
+            status:
+                data.call_type==="video"
+                ?"🎥 შემომავალი ვიდეოზარი"
+                :"📞 შემომავალი ხმოვანი ზარი"
+        });
+
+        yhPlayMessageSound();
+
+    }catch(error){
+
+        console.error(
+            "Incoming call",
+            error
+        );
+    }
+}
+
+
+setInterval(
+    yhCheckIncomingCall,
+    2500
+);
+
+setTimeout(
+    yhCheckIncomingCall,
+    2500
+);
+
+
+/* =========================================================
+   ACCEPT
+========================================================= */
+
+$("yhAcceptCallBtn").onclick=
+async()=>{
+
+    if(!yhIncomingCall){
+        return;
+    }
+
+    const call=
+        yhIncomingCall;
+
+    $("yhIncomingActions")
+        .classList
+        .remove("show");
+
+    $("yhCallStatus").textContent=
+        "ერთდება...";
+
+    try{
+
+        const stream=
+            await yhGetCallMedia(
+                call.call_type
+            );
+
+        if(
+            call.call_type==="video"
+        ){
+
+            $("yhLocalVideo").srcObject=
+                stream;
+        }
+
+        const pc=
+            yhCreatePeerConnection();
+
+        stream
+        .getTracks()
+        .forEach(track=>{
+
+            pc.addTrack(
+                track,
+                stream
+            );
+        });
+
+        await pc.setRemoteDescription(
+            call.offer
+        );
+
+        const answer=
+            await pc.createAnswer();
+
+        await pc.setLocalDescription(
+            answer
+        );
+
+        await yhWaitForIceGathering(
+            pc
+        );
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            "yh_admin_call_answer_final",
+            {
+                p_call_id:
+                    call.id,
+
+                p_answer:
+                    yhSessionJSON(
+                        pc.localDescription
+                    )
+            }
+        );
+
+        if(error){
+            throw error;
+        }
+
+        if(data?.ok!==true){
+            throw new Error(
+                "CALL_ANSWER_FAILED"
+            );
+        }
+
+        yhActiveCall={
+
+            id:
+                call.id,
+
+            type:
+                call.call_type,
+
+            role:
+                "callee",
+
+            pc,
+
+            stream,
+
+            remoteSet:true,
+
+            otherName:
+                call.caller_name||
+                "OWNER"
+        };
+
+        yhIncomingCall=null;
+
+        $("yhMuteCallBtn").hidden=false;
+        $("yhEndCallBtn").hidden=false;
+
+        $("yhCameraCallBtn").hidden=
+            call.call_type!=="video";
+
+        $("yhSwitchCameraBtn").hidden=
+            call.call_type!=="video";
+
+        $("yhCallStatus").textContent=
+            "დაკავშირება...";
+
+        yhStartCallStatusPoll();
+
+    }catch(error){
+
+        console.error(
+            "Accept call",
+            error
+        );
+
+        alert(
+            "ზარის მიღება ვერ მოხერხდა:\n\n"+
+            error.message
+        );
+
+        yhCleanupCall(false);
+    }
+};
+
+
+/* =========================================================
+   DECLINE
+========================================================= */
+
+$("yhDeclineCallBtn").onclick=
+async()=>{
+
+    if(!yhIncomingCall){
+        return;
+    }
+
+    const id=
+        yhIncomingCall.id;
+
+    try{
+
+        await sb.rpc(
+            "yh_admin_call_decline_final",
+            {
+                p_call_id:id
+            }
+        );
+
+    }catch{}
+
+    yhIncomingCall=null;
+
+    yhHideCallOverlay();
+};
+
+
+/* =========================================================
+   CALL STATUS POLLING
+========================================================= */
+
+function yhStartCallStatusPoll(){
+
+    clearInterval(
+        yhCallPollTimer
+    );
+
+    yhCallPollTimer=
+        setInterval(
+            yhPollActiveCall,
+            1400
+        );
+
+    yhPollActiveCall();
+}
+
+
+async function yhPollActiveCall(){
+
+    if(!yhActiveCall){
+        return;
+    }
+
+    try{
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            "yh_admin_call_get_final",
+            {
+                p_call_id:
+                    yhActiveCall.id
+            }
+        );
+
+        if(error){
+            return;
+        }
+
+        if(!data){
+            return;
+        }
+
+        if(
+            yhActiveCall.role==="caller"
+            &&
+            data.status==="accepted"
+            &&
+            data.answer
+            &&
+            !yhActiveCall.remoteSet
+        ){
+
+            await yhActiveCall.pc
+                .setRemoteDescription(
+                    data.answer
+                );
+
+            yhActiveCall.remoteSet=true;
+
+            $("yhCallStatus").textContent=
+                "ერთდება...";
+        }
+
+
+        if(
+            [
+                "declined",
+                "ended",
+                "missed"
+            ]
+            .includes(
+                data.status
+            )
+        ){
+
+            const statusText={
+
+                declined:
+                    "ზარი უარყოფილია",
+
+                ended:
+                    "ზარი დასრულდა",
+
+                missed:
+                    "უპასუხო ზარი"
+
+            }[data.status];
+
+            yhMessengerToast(
+                statusText
+            );
+
+            yhCleanupCall(false);
+        }
+
+    }catch(error){
+
+        console.error(
+            "Call status",
+            error
+        );
+    }
+}
+
+
+/* =========================================================
+   END CALL
+========================================================= */
+
+$("yhEndCallBtn").onclick=
+async()=>{
+
+    if(yhActiveCall){
+
+        try{
+
+            await sb.rpc(
+                "yh_admin_call_end_final",
+                {
+                    p_call_id:
+                        yhActiveCall.id
+                }
+            );
+
+        }catch{}
+    }
+
+    yhCleanupCall(false);
+};
+
+
+/* =========================================================
+   MUTE
+========================================================= */
+
+$("yhMuteCallBtn").onclick=()=>{
+
+    const stream=
+        yhActiveCall?.stream;
+
+    if(!stream){
+        return;
+    }
+
+    const tracks=
+        stream.getAudioTracks();
+
+    if(!tracks.length){
+        return;
+    }
+
+    const next=
+        !tracks[0].enabled;
+
+    tracks.forEach(
+        track=>{
+            track.enabled=next;
+        }
+    );
+
+    $("yhMuteCallBtn")
+        .classList
+        .toggle(
+            "off",
+            !next
+        );
+
+    $("yhMuteCallBtn").textContent=
+        next
+        ?"🎙️"
+        :"🔇";
+};
+
+
+/* =========================================================
+   CAMERA ON / OFF
+========================================================= */
+
+$("yhCameraCallBtn").onclick=()=>{
+
+    const stream=
+        yhActiveCall?.stream;
+
+    if(!stream){
+        return;
+    }
+
+    const tracks=
+        stream.getVideoTracks();
+
+    if(!tracks.length){
+        return;
+    }
+
+    const next=
+        !tracks[0].enabled;
+
+    tracks.forEach(
+        track=>{
+            track.enabled=next;
+        }
+    );
+
+    $("yhCameraCallBtn")
+        .classList
+        .toggle(
+            "off",
+            !next
+        );
+
+    $("yhCameraCallBtn").textContent=
+        next
+        ?"📹"
+        :"🚫";
+};
+
+
+/* =========================================================
+   SWITCH FRONT / BACK CAMERA
+========================================================= */
+
+$("yhSwitchCameraBtn").onclick=
+async()=>{
+
+    const call=
+        yhActiveCall;
+
+    if(
+        !call
+        ||
+        call.type!=="video"
+    ){
+        return;
+    }
+
+    try{
+
+        yhFacingMode=
+            yhFacingMode==="user"
+            ?"environment"
+            :"user";
+
+        const newStream=
+            await navigator.mediaDevices
+            .getUserMedia({
+
+                video:{
+                    facingMode:{
+                        ideal:
+                            yhFacingMode
+                    }
+                },
+
+                audio:false
+            });
+
+        const newTrack=
+            newStream
+            .getVideoTracks()[0];
+
+        if(!newTrack){
+            return;
+        }
+
+        const sender=
+            call.pc
+            .getSenders()
+            .find(
+                s=>
+                s.track
+                &&
+                s.track.kind==="video"
+            );
+
+        if(sender){
+
+            await sender.replaceTrack(
+                newTrack
+            );
+        }
+
+        const oldTrack=
+            call.stream
+            .getVideoTracks()[0];
+
+        if(oldTrack){
+
+            call.stream
+                .removeTrack(
+                    oldTrack
+                );
+
+            oldTrack.stop();
+        }
+
+        call.stream.addTrack(
+            newTrack
+        );
+
+        $("yhLocalVideo").srcObject=
+            call.stream;
+
+    }catch(error){
+
+        console.error(
+            "Switch camera",
+            error
+        );
+
+        alert(
+            "კამერის გადართვა ვერ მოხერხდა."
+        );
+    }
+};
+
+
+/* =========================================================
+   CLEANUP
+========================================================= */
+
+function yhCleanupCall(sendEnd=false){
+
+    clearInterval(
+        yhCallPollTimer
+    );
+
+    yhCallPollTimer=null;
+
+    if(
+        sendEnd
+        &&
+        yhActiveCall?.id
+    ){
+
+        sb.rpc(
+            "yh_admin_call_end_final",
+            {
+                p_call_id:
+                    yhActiveCall.id
+            }
+        )
+        .catch(()=>{});
+    }
+
+    try{
+
+        yhActiveCall
+        ?.stream
+        ?.getTracks()
+        ?.forEach(
+            track=>track.stop()
+        );
+
+    }catch{}
+
+
+    try{
+
+        yhActiveCall
+        ?.pc
+        ?.close();
+
+    }catch{}
+
+
+    yhActiveCall=null;
+    yhIncomingCall=null;
+
+    $("yhMuteCallBtn")
+        .classList
+        .remove("off");
+
+    $("yhCameraCallBtn")
+        .classList
+        .remove("off");
+
+    $("yhMuteCallBtn").textContent=
+        "🎙️";
+
+    $("yhCameraCallBtn").textContent=
+        "📹";
+
+    yhHideCallOverlay();
+}
+
+
+/* =========================================================
+   DELIVERY ACK WHILE ADMIN ONLINE
+========================================================= */
+
+async function yhDeliveryAck(){
+
+    if(
+        !currentUser
+        ||
+        !currentAdmin
+    ){
+        return;
+    }
+
+    try{
+
+        await sb.rpc(
+            "yh_admin_team_deliver_v2_final"
+        );
+
+    }catch{}
+}
+
+
+setInterval(
+    yhDeliveryAck,
+    5000
+);
+
+setTimeout(
+    yhDeliveryAck,
+    1800
+);
+
+
+/* =========================================================
+   FINAL READY
+========================================================= */
+
+console.log(
+    "YOUR HOME COMPLETE MESSENGER FRONTEND READY ✅"
+);
+
+})();
+
+</script>
+
+<!-- YOUR HOME COMPLETE ADMIN MESSENGER FRONTEND FINAL END -->
 </body>
 </html>
