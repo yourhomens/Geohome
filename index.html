@@ -43254,6 +43254,67 @@ body > header{
 
 })();
 </script> 
+    <script>
+(function(){
+
+    function yhGoToMainPage(event){
+
+        if(event){
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
+
+        /* რეკლამის გვერდის დახურვა */
+        if(typeof yhAdCloseModal === "function"){
+            yhAdCloseModal();
+        }
+
+        /* სხვა გახსნილი full-screen ფანჯრების დახურვა */
+        document.querySelectorAll(
+            ".yh-ad-modal.active, .yh-vip-modal.active, .listing-modal.active"
+        ).forEach(function(el){
+            el.classList.remove("active");
+        });
+
+        document.body.style.overflow = "";
+
+        /* რეალურად მთავარ გვერდზე დაბრუნება */
+        if(typeof showHomePage === "function"){
+            showHomePage(true);
+        }
+
+        window.scrollTo({
+            top:0,
+            behavior:"smooth"
+        });
+    }
+
+
+    const logo =
+    document.getElementById("homeLogo");
+
+    const home =
+    document.getElementById("homeButton");
+
+
+    if(logo){
+        logo.addEventListener(
+            "click",
+            yhGoToMainPage,
+            true
+        );
+    }
+
+    if(home){
+        home.addEventListener(
+            "click",
+            yhGoToMainPage,
+            true
+        );
+    }
+
+})();
+</script>
 </body>
 </html>
 
