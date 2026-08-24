@@ -43064,6 +43064,196 @@ if(
 }
 
 </style>
+   <!-- =========================================================
+     YOUR HOME — MAIN HEADER ALWAYS VISIBLE FINAL
+========================================================= -->
+
+<style id="yhMainHeaderAlwaysVisible">
+
+:root{
+    --yh-main-header-height:80px;
+}
+
+/* მთავარი საიტის Header ყოველთვის ყველაზე ზემოთ */
+body > header{
+    position:sticky !important;
+    top:0 !important;
+    z-index:2147483000 !important;
+    background:#fff !important;
+}
+
+
+/* განცხადების დეტალები, VIP და რეკლამის გვერდი
+   იწყება მთავარი Header-ის ქვემოდან */
+.listing-modal,
+.yh-vip-modal,
+.yh-ad-modal{
+    top:var(--yh-main-header-height) !important;
+    right:0 !important;
+    bottom:0 !important;
+    left:0 !important;
+}
+
+
+/* რეკლამის გვერდზე მეორე ლოგო აღარ გვჭირდება,
+   რადგან მთავარი Header უკვე ჩანს */
+.yh-ad-modal-topbar{
+    min-height:auto !important;
+    padding:10px max(18px,4vw) !important;
+    justify-content:flex-end !important;
+}
+
+.yh-ad-modal-brand{
+    display:none !important;
+}
+
+
+/* განცხადების შიგნით ზედმეტი "მთავარი" ღილაკი
+   აღარ გვჭირდება — მთავარი Header უკვე ზემოთაა */
+.listing-detail-home{
+    display:none !important;
+}
+
+
+/* განცხადების ზედა პატარა პანელი სწორად დარჩეს */
+.listing-detail-top{
+    flex-direction:row !important;
+    align-items:center !important;
+}
+
+
+/* Messenger-ს ფუნქციას არ ვეხებით */
+.yh-support-launcher{
+    z-index:2147483100 !important;
+}
+
+.yh-support-panel{
+    z-index:2147483200 !important;
+}
+
+
+/* ტელეფონზე */
+@media(max-width:600px){
+
+    .listing-detail-top{
+        gap:8px !important;
+    }
+
+    .listing-detail-top-left{
+        width:auto !important;
+        flex:0 0 auto !important;
+    }
+
+    .listing-detail-close{
+        flex:none !important;
+    }
+
+}
+
+</style>
+
+<script>
+(function(){
+
+    function yhSyncMainHeaderHeight(){
+
+        const header =
+        document.querySelector(
+            "body > header"
+        );
+
+        if(!header){
+            return;
+        }
+
+        const height =
+        Math.ceil(
+            header.getBoundingClientRect().height
+        );
+
+        if(height > 0){
+
+            document.documentElement
+            .style
+            .setProperty(
+                "--yh-main-header-height",
+                height + "px"
+            );
+
+        }
+
+    }
+
+
+    if(
+        document.readyState ===
+        "loading"
+    ){
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            yhSyncMainHeaderHeight,
+            {once:true}
+        );
+
+    }else{
+
+        yhSyncMainHeaderHeight();
+
+    }
+
+
+    window.addEventListener(
+        "resize",
+        yhSyncMainHeaderHeight
+    );
+
+
+    window.addEventListener(
+        "orientationchange",
+        function(){
+
+            setTimeout(
+                yhSyncMainHeaderHeight,
+                150
+            );
+
+        }
+    );
+
+
+    if(
+        "ResizeObserver" in window
+    ){
+
+        const header =
+        document.querySelector(
+            "body > header"
+        );
+
+        if(header){
+
+            const observer =
+            new ResizeObserver(
+                yhSyncMainHeaderHeight
+            );
+
+            observer.observe(
+                header
+            );
+
+        }
+
+    }
+
+
+    setTimeout(
+        yhSyncMainHeaderHeight,
+        300
+    );
+
+})();
+</script> 
 </body>
 </html>
 
