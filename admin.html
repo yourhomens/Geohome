@@ -14265,34 +14265,166 @@ console.log(
 
     function yhGroupOpenMeeting(url){
 
-        if(!url){
-            return;
-        }
+    if(!url) return;
 
-        const win =
-            window.open(
-                url,
-                "_blank"
-            );
+    const room =
+        decodeURIComponent(
+            new URL(url).pathname
+            .replace(/^\/+|\/+$/g,"")
+        );
 
-        if(win){
+    let overlay =
+        document.getElementById(
+            "yhJitsiOverlay"
+        );
+
+    if(!overlay){
+
+        overlay =
+            document.createElement("div");
+
+        overlay.id = "yhJitsiOverlay";
+
+        overlay.innerHTML = `
+            <div style="
+                height:55px;
+                background:#20261f;
+                color:white;
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+                padding:0 15px;
+            ">
+                <strong>
+                    🎥 გუნდის ვიდეოზარი
+                </strong>
+
+                <button
+                    id="yhJitsiClose"
+                    type="button"
+                    style="
+                        border:0;
+                        background:#fff;
+                        width:38px;
+                        height:38px;
+                        border-radius:50%;
+                        font-size:20px;
+                    "
+                >
+                    ✕
+                </button>
+            </div>
+
+            <div
+                id="yhJitsiMeeting"
+                style="flex:1;min-height:0;"
+            ></div>
+        `;
+
+        Object.assign(
+            overlay.style,
+            {
+                position:"fixed",
+                inset:"0",
+                zIndex:"999999",
+                background:"#111",
+                display:"flex",
+                flexDirection:"column"
+            }
+        );
+
+        document.body.appendChild(
+            overlay
+        );
+
+        document
+        .getElementById(
+            "yhJitsiClose"
+        )
+        .onclick = ()=>{
 
             try{
-                win.opener = null;
+                window.__yhJitsiApi?.dispose();
             }catch(e){}
 
-        }else{
+            window.__yhJitsiApi = null;
 
-            window.location.href =
-                url;
+            overlay.remove();
 
-        }
+            document.body.style.overflow="";
+        };
 
     }
 
+    document.body.style.overflow =
+        "hidden";
 
-    function yhGroupParseCall(value){
+    const startMeeting = ()=>{
 
+        const mount =
+            document.getElementById(
+                "yhJitsiMeeting"
+            );
+
+        mount.innerHTML="";
+
+        try{
+            window.__yhJitsiApi?.dispose();
+        }catch(e){}
+
+        window.__yhJitsiApi =
+            new JitsiMeetExternalAPI(
+                "meet.jit.si",
+                {
+                    roomName:room,
+
+                    parentNode:mount,
+
+                    width:"100%",
+
+                    height:"100%",
+
+                    userInfo:{
+                        displayName:
+                            yhGroupCurrentAdminName()
+                    }
+                }
+            );
+    };
+
+    if(
+        window.JitsiMeetExternalAPI
+    ){
+        startMeeting();
+        return;
+    }
+
+    const script =
+        document.createElement(
+            "script"
+        );
+
+    script.src =
+        "https://meet.jit.si/external_api.js";
+
+    script.onload =
+        startMeeting;
+
+    script.onerror = ()=>{
+
+        alert(
+            "ვიდეოზარი ვერ ჩაიტვირთა."
+        );
+
+        overlay.remove();
+
+        document.body.style.overflow="";
+    };
+
+    document.head.appendChild(
+        script
+    );
+}
         const text =
             String(value || "");
 
