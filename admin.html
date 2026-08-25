@@ -14771,63 +14771,7 @@ if(existing){
        START GROUP VIDEO CALL
     ========================================= */
 
-    async function yhGroupStartVideoCall(){
-
-        const button =
-            document.getElementById(
-                "yhGroupVideoCallBtn"
-            );
-
-
-        if(button){
-            button.disabled = true;
-        }
-
-
-        const room =
-            yhGroupCreateRoom();
-
-
-        const url =
-            "https://meet.jit.si/" +
-            encodeURIComponent(
-                room
-            );
-
-
-        const call = {
-
-            id:
-                yhGroupCreateId(),
-
-            room:
-                room,
-
-            url:
-                url,
-
-            starter_id:
-                yhGroupCurrentAdminId(),
-
-            starter_name:
-                yhGroupCurrentAdminName(),
-
-            created_at:
-                new Date()
-                .toISOString()
-
-        };
-
-
-    
-
-
-        try{
-
-            const result =
-                await sb.rpc(
-                    "yh_admin_group_send_final",
-async function yhGroupStartVideoCall(){
+    asyasync function yhGroupStartVideoCall(){
 
     const button =
         document.getElementById(
