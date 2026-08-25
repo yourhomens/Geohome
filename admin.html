@@ -8979,7 +8979,30 @@ async function yhStartVoiceRecording(
         if(
             yhRecorder.type===type
         ){
-            yhRecorder.mediaRecorder.stop();
+            const activeRecorder =
+    yhRecorder.mediaRecorder;
+
+if(
+    activeRecorder.state ===
+    "recording"
+){
+
+    try{
+        activeRecorder.requestData();
+    }catch(e){}
+
+    setTimeout(
+        ()=>{
+            if(
+                activeRecorder.state ===
+                "recording"
+            ){
+                activeRecorder.stop();
+            }
+        },
+        180
+    );
+}
         }
 
         return;
@@ -9104,7 +9127,7 @@ async function yhStartVoiceRecording(
             );
         };
 
-        recorder.start(250);
+        recorder.start();
 
         yhRecorder.timer=
             setInterval(
@@ -14538,13 +14561,25 @@ console.log(
 
     function yhGroupEnsureVideoButton(){
 
-        if(
-            document.getElementById(
-                "yhGroupVideoCallBtn"
-            )
-        ){
-            return;
-        }
+        const existing =
+    document.getElementById(
+        "yhGroupVideoCallBtn"
+    );
+
+if(existing){
+
+    const cleanButton =
+        existing.cloneNode(true);
+
+    existing.replaceWith(
+        cleanButton
+    );
+
+    cleanButton.onclick =
+        yhGroupStartVideoCall;
+
+    return;
+}
 
 
         const head =
