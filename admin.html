@@ -4725,7 +4725,7 @@ setInterval(async()=>{
         const groupActive=$("page-groupchat").classList.contains("active");
 
         if(groupActive){
-            await loadGroupMessages(false);
+            await yhGroupRefreshIfChanged();
         }else{
             await loadGroupUnread();
         }
@@ -15327,5 +15327,77 @@ if(existing){
 </script>
 
 <!-- YOUR HOME — GROUP VIDEO CALL FINAL END -->
+    <script>
+window.__yhGroupSmartSignature = null;
+window.__yhGroupSmartBusy = false;
+
+window.yhGroupRefreshIfChanged = async function(){
+
+    if(window.__yhGroupSmartBusy) return;
+
+    window.__yhGroupSmartBusy = true;
+
+    try{
+
+        const {data,error} =
+            await sb.rpc(
+                "yh_admin_group_messages_v3_final",
+                {p_limit:200}
+            );
+
+        if(error) return;
+
+        const list =
+            typeof rows === "function"
+            ? rows(data)
+            : (Array.isArray(data) ? data : []);
+
+        const signature =
+            JSON.stringify(
+                list.map(m=>[
+                    m.id,
+                    m.message,
+                    m.message_type,
+                    m.voice_path,
+                    m.voice_duration_seconds,
+                    m.file_path,
+                    m.file_name,
+                    m.edited_at,
+                    m.deleted_at,
+                    m.seen_count
+                ])
+            );
+
+        if(
+            window.__yhGroupSmartSignature === null
+        ){
+            window.__yhGroupSmartSignature =
+                signature;
+            return;
+        }
+
+        if(
+            signature !==
+            window.__yhGroupSmartSignature
+        ){
+            window.__yhGroupSmartSignature =
+                signature;
+
+            await loadGroupMessages(false);
+        }
+
+    }catch(e){
+
+        console.error(
+            "Group smart refresh",
+            e
+        );
+
+    }finally{
+
+        window.__yhGroupSmartBusy = false;
+    }
+};
+</script>
 </body>
 </html>
