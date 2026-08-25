@@ -4695,7 +4695,56 @@ $("refreshAdminsBtn").onclick=loadAdminManagement;
 $("refreshAdsBtn").onclick=loadAds;
 
 /* POLLING */
+/* =========================================================
+   SUPPORT — REFRESH WITHOUT FLICKER
+========================================================= */
 
+let yhSupportLastSignature = "";
+
+async function yhSupportRefreshIfChanged(){
+
+    if(!supportThreadId) return;
+
+    try{
+
+        const {data,error}=await sb.rpc(
+            "yh_admin_support_messages_final",
+            {
+                p_thread_id:supportThreadId
+            }
+        );
+
+        if(error) throw error;
+
+        const list=rows(data);
+
+        const signature=list.map(m=>[
+            m.id,
+            m.message,
+            m.created_at,
+            m.edited_at,
+            m.deleted_at,
+            m.user_read_at,
+            m.admin_sender_id
+        ].join("|")).join("||");
+
+        if(signature===yhSupportLastSignature){
+            return;
+        }
+
+        yhSupportLastSignature=signature;
+
+        await openSupportThread(supportThreadId);
+
+    }catch(error){
+
+        console.error(
+            "Support refresh without flicker",
+            error
+        );
+
+    }
+}
 setInterval(async()=>{
 
     if(
@@ -4720,12 +4769,12 @@ setInterval(async()=>{
 
         if($("page-support").classList.contains("active")){
 
-            await loadSupportThreads();
+    await loadSupportThreads();
 
-            if(supportThreadId){
-                await openSupportThread(supportThreadId);
-            }
-        }
+    if(supportThreadId){
+        await yhSupportRefreshIfChanged();
+    }
+}
 
         if($("page-teamchat").classList.contains("active")){
 
