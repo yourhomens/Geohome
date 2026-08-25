@@ -14827,67 +14827,224 @@ if(existing){
             const result =
                 await sb.rpc(
                     "yh_admin_group_send_final",
-                    {
-                        p_message:
-                            PREFIX +
-                            JSON.stringify(
-                                call
-                            )
-                    }
+async function yhGroupStartVideoCall(){
+
+    const button =
+        document.getElementById(
+            "yhGroupVideoCallBtn"
+        );
+
+    if(button){
+        button.disabled = true;
+    }
+
+    try{
+
+        /*
+           ჯერ ვამოწმებთ —
+           უკვე ხომ არ მიმდინარეობს
+           გუნდის ზარი.
+        */
+
+        const {
+            data,
+            error
+        } =
+        await sb.rpc(
+            "yh_admin_group_messages_v3_final",
+            {
+                p_limit:30
+            }
+        );
+
+        if(!error){
+
+            const list =
+                typeof rows === "function"
+                ? rows(data)
+                : (
+                    Array.isArray(data)
+                    ? data
+                    : []
+                );
+
+            const calls =
+                list
+                .filter(function(m){
+
+                    return(
+                        !m.deleted_at &&
+                        yhGroupParseCall(
+                            m.message
+                        )
+                    );
+
+                })
+                .map(function(m){
+
+                    const call =
+                        yhGroupParseCall(
+                            m.message
+                        );
+
+                    return{
+                        call:call,
+                        time:
+                            new Date(
+                                call.created_at ||
+                                m.created_at ||
+                                0
+                            ).getTime()
+                    };
+
+                })
+                .filter(
+                    item =>
+                    item.call &&
+                    item.call.url
+                )
+                .sort(
+                    (a,b)=>
+                    b.time-a.time
                 );
 
 
-            if(result.error){
-                throw result.error;
-            }
+            if(calls.length){
 
+                const latest =
+                    calls[0];
 
-            yhGroupMarkCallSeen(
-                call.id
-            );
+                const age =
+                    Date.now() -
+                    latest.time;
 
-
-            try{
+                /*
+                   ბოლო 30 წუთის ზარი
+                   ითვლება აქტიურად.
+                */
 
                 if(
-                    typeof loadGroupMessages ===
-                    "function"
+                    age >= 0 &&
+                    age < 30 * 60 * 1000
                 ){
 
-                    await loadGroupMessages(
-                        true
+                    yhGroupMarkCallSeen(
+                        latest.call.id
                     );
 
+                    yhGroupOpenMeeting(
+                        latest.call.url
+                    );
+
+                    return;
                 }
 
-            }catch(e){}
-
-
-            yhGroupOpenMeeting(
-    url
-);
-
-        }catch(error){
-
-            
-
-            alert(
-                "გუნდის ვიდეოზარის დაწყება ვერ მოხერხდა:\n\n" +
-                (
-                    error?.message ||
-                    String(error)
-                )
-            );
-
-        }finally{
-
-            if(button){
-                button.disabled = false;
             }
 
         }
 
+
+        /*
+           აქტიური ზარი არ არის —
+           მხოლოდ მაშინ ვქმნით ახალს.
+        */
+
+        const room =
+            yhGroupCreateRoom();
+
+        const url =
+            "https://meet.jit.si/" +
+            encodeURIComponent(
+                room
+            );
+
+        const call = {
+
+            id:
+                yhGroupCreateId(),
+
+            room:
+                room,
+
+            url:
+                url,
+
+            starter_id:
+                yhGroupCurrentAdminId(),
+
+            starter_name:
+                yhGroupCurrentAdminName(),
+
+            created_at:
+                new Date()
+                .toISOString()
+
+        };
+
+
+        const result =
+            await sb.rpc(
+                "yh_admin_group_send_final",
+                {
+                    p_message:
+                        PREFIX +
+                        JSON.stringify(
+                            call
+                        )
+                }
+            );
+
+
+        if(result.error){
+            throw result.error;
+        }
+
+
+        yhGroupMarkCallSeen(
+            call.id
+        );
+
+
+        try{
+
+            if(
+                typeof loadGroupMessages ===
+                "function"
+            ){
+
+                await loadGroupMessages(
+                    true
+                );
+
+            }
+
+        }catch(e){}
+
+
+        yhGroupOpenMeeting(
+            url
+        );
+
+
+    }catch(error){
+
+        alert(
+            "გუნდის ვიდეოზარის დაწყება ვერ მოხერხდა:\n\n" +
+            (
+                error?.message ||
+                String(error)
+            )
+        );
+
+    }finally{
+
+        if(button){
+            button.disabled = false;
+        }
+
     }
+
+}
 
 
     /* =========================================
