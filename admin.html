@@ -14686,33 +14686,7 @@ if(existing){
         };
 
 
-        /*
-           ბრაუზერმა popup არ დაბლოკოს,
-           ამიტომ ცარიელ ფანჯარას ჯერ ვხსნით.
-        */
-
-        let meetingWindow =
-            null;
-
-
-        try{
-
-            meetingWindow =
-                window.open(
-                    "about:blank",
-                    "_blank"
-                );
-
-            if(meetingWindow){
-
-                try{
-                    meetingWindow.opener =
-                        null;
-                }catch(e){}
-
-            }
-
-        }catch(e){}
+    
 
 
         try{
@@ -14756,26 +14730,13 @@ if(existing){
             }catch(e){}
 
 
-            if(meetingWindow){
-
-                meetingWindow.location.href =
-                    url;
-
-            }else{
-
-                yhGroupOpenMeeting(
-                    url
-                );
-
-            }
-
+            yhGroupOpenMeeting(
+    url
+);
 
         }catch(error){
 
-            try{
-                meetingWindow?.close();
-            }catch(e){}
-
+            
 
             alert(
                 "გუნდის ვიდეოზარის დაწყება ვერ მოხერხდა:\n\n" +
