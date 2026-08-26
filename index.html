@@ -10722,7 +10722,26 @@ document
 .value =
 "all";
 
+document
+.querySelectorAll(
+    ".filter-feature-option"
+)
+.forEach(
+    function(input){
+        input.checked = false;
+    }
+);
 
+updateFilterFeaturesButton();
+
+document
+.getElementById(
+    "filterFeaturesPanel"
+)
+?.classList
+.remove(
+    "active"
+);
     document
     .getElementById(
         "filterOwnerType"
@@ -11216,7 +11235,26 @@ if(
     return false;
 
 }
+if(
+    additionalFeatures.length &&
+    !additionalFeatures.every(
+        function(feature){
 
+            return (
+                Array.isArray(
+                    listing.additional_features
+                ) &&
+                listing.additional_features.includes(
+                    feature
+                )
+            );
+
+        }
+    )
+){
+
+    return false;
+}
 
     if(
         owner !==
@@ -26947,10 +26985,16 @@ function(
                 "maxFloor"
             ),
 
-            condition:
-            getValue(
-                "filterCondition"
-            ),
+            conditions:
+getSelectedConditions(),
+
+project_type:
+getValue(
+    "filterProject"
+),
+
+additional_features:
+getSelectedFilterFeatures(),
 
             owner_type:
             getValue(
@@ -27907,11 +27951,68 @@ function(
         );
 
 
-        setFieldValue(
-            "filterCondition",
-            f.condition ||
-            "all"
+        const savedConditions =
+Array.isArray(
+    f.conditions
+)
+?
+f.conditions
+:
+(
+    f.condition &&
+    f.condition !== "all"
+    ?
+    [f.condition]
+    :
+    []
+);
+
+document
+.querySelectorAll(
+    ".filter-condition-option"
+)
+.forEach(
+    function(input){
+
+        input.checked =
+        savedConditions.includes(
+            input.value
         );
+    }
+);
+
+updateFilterConditionButton();
+
+setFieldValue(
+    "filterProject",
+    f.project_type ||
+    "all"
+);
+
+const savedFeatures =
+Array.isArray(
+    f.additional_features
+)
+?
+f.additional_features
+:
+[];
+
+document
+.querySelectorAll(
+    ".filter-feature-option"
+)
+.forEach(
+    function(input){
+
+        input.checked =
+        savedFeatures.includes(
+            input.value
+        );
+    }
+);
+
+updateFilterFeaturesButton();
 
 
         setFieldValue(
