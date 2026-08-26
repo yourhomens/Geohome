@@ -440,7 +440,72 @@ nav button:hover{
     border-radius:8px;
     outline:none;
 }
+.multi-select-filter{
+    position:relative;
+    width:100%;
+}
 
+.multi-select-button{
+    width:100%;
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--dark);
+    padding:11px;
+    border-radius:8px;
+    text-align:left;
+    font-size:14px;
+    position:relative;
+}
+
+.multi-select-button::after{
+    content:"⌄";
+    position:absolute;
+    right:12px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--muted);
+}
+
+.multi-select-panel{
+    display:none;
+    position:absolute;
+    left:0;
+    right:0;
+    top:calc(100% + 5px);
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:8px;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+    z-index:3000;
+    max-height:280px;
+    overflow-y:auto;
+}
+
+.multi-select-panel.active{
+    display:block;
+}
+
+.multi-select-panel label{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:9px 8px;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:14px;
+    color:var(--dark);
+}
+
+.multi-select-panel label:hover{
+    background:var(--olive-light);
+}
+
+.multi-select-panel input{
+    width:auto;
+    margin:0;
+    accent-color:var(--olive);
+}
 .advanced-filter-actions{
     display:flex;
     justify-content:flex-end;
@@ -3545,42 +3610,136 @@ placeholder="მაგ. 10">
 მდგომარეობა
 </label>
 
-<select id="filterCondition">
+<div class="multi-select-filter" id="filterConditionWrap">
+
+<button
+type="button"
+class="multi-select-button"
+id="filterConditionButton">
+ნებისმიერი
+</button>
+
+<div
+class="multi-select-panel"
+id="filterConditionPanel">
+
+<label>
+<input type="checkbox" value="building" class="filter-condition-option">
+მშენებარე
+</label>
+
+<label>
+<input type="checkbox" value="new" class="filter-condition-option">
+ახალი აშენებული
+</label>
+
+<label>
+<input type="checkbox" value="oldbuilding" class="filter-condition-option">
+ძველი აშენებული
+</label>
+
+<label>
+<input type="checkbox" value="white" class="filter-condition-option">
+თეთრი კარკასი
+</label>
+
+<label>
+<input type="checkbox" value="green" class="filter-condition-option">
+მწვანე კარკასი
+</label>
+
+<label>
+<input type="checkbox" value="renovated" class="filter-condition-option">
+ახალი რემონტით
+</label>
+
+<label>
+<input type="checkbox" value="old" class="filter-condition-option">
+ძველი რემონტით
+</label>
+
+<label>
+<input type="checkbox" value="repair" class="filter-condition-option">
+სარემონტო
+</label>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="advanced-field">
+
+<label>
+პროექტი
+</label>
+
+<select id="filterProject">
 
 <option value="all">
-ნებისმიერი
+ყველა პროექტი
 </option>
 
-<option value="building">
-მშენებარე
+<option value="nonstandard">
+არასტანდარტული
 </option>
 
-<option value="new">
-ახალი აშენებული
+<option value="leningrad">
+ლენინგრადის
 </option>
 
-<option value="oldbuilding">
-ძველი აშენებული
+<option value="lvov">
+ლვოვის
 </option>
 
-<option value="white">
-თეთრი კარკასი
+<option value="kiev">
+კიევის
 </option>
 
-<option value="green">
-მწვანე კარკასი
+<option value="tbilisi_yard">
+თბილისური ეზო
 </option>
 
-<option value="renovated">
-ახალი რემონტით
+<option value="moscow">
+მოსკოვის
 </option>
 
-<option value="old">
-ძველი რემონტით
+<option value="city">
+ქალაქური
 </option>
 
-<option value="repair">
-სარემონტო
+<option value="czech">
+ჩეხური
+</option>
+
+<option value="khrushchev">
+ხრუშჩოვის
+</option>
+
+<option value="tukhareli">
+თუხარელის
+</option>
+
+<option value="vedzisi">
+ვეძისი
+</option>
+
+<option value="yugoslav">
+იუგოსლავიის
+</option>
+
+<option value="metromsheni">
+მეტრომშენის
+</option>
+
+<option value="kavlashvili">
+ყავლაშვილის
+</option>
+
+<option value="other">
+სხვა
 </option>
 
 </select>
@@ -9765,7 +9924,140 @@ document
     }
 );
 
+/* =========================
+   CONDITION MULTI SELECT
+========================= */
 
+function getSelectedConditions(){
+
+    return Array.from(
+        document.querySelectorAll(
+            ".filter-condition-option:checked"
+        )
+    )
+    .map(
+        function(input){
+            return input.value;
+        }
+    );
+}
+
+
+function updateFilterConditionButton(){
+
+    const button =
+    document.getElementById(
+        "filterConditionButton"
+    );
+
+    const selected =
+    Array.from(
+        document.querySelectorAll(
+            ".filter-condition-option:checked"
+        )
+    );
+
+    if(!button){
+        return;
+    }
+
+    if(
+        selected.length === 0
+    ){
+
+        button.textContent =
+        "ნებისმიერი";
+
+        return;
+    }
+
+    if(
+        selected.length === 1
+    ){
+
+        button.textContent =
+        selected[0]
+        .parentElement
+        .textContent
+        .trim();
+
+        return;
+    }
+
+    button.textContent =
+    selected.length +
+    " არჩეული";
+}
+
+
+document
+.getElementById(
+    "filterConditionButton"
+)
+?.addEventListener(
+    "click",
+    function(event){
+
+        event.stopPropagation();
+
+        document
+        .getElementById(
+            "filterConditionPanel"
+        )
+        ?.classList
+        .toggle(
+            "active"
+        );
+    }
+);
+
+
+document
+.querySelectorAll(
+    ".filter-condition-option"
+)
+.forEach(
+    function(input){
+
+        input.addEventListener(
+            "change",
+            function(){
+
+                updateFilterConditionButton();
+            }
+        );
+    }
+);
+
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        const wrap =
+        document.getElementById(
+            "filterConditionWrap"
+        );
+
+        const panel =
+        document.getElementById(
+            "filterConditionPanel"
+        );
+
+        if(
+            wrap &&
+            panel &&
+            !wrap.contains(
+                event.target
+            )
+        ){
+
+            panel.classList.remove(
+                "active"
+            );
+        }
+    }
+);
 /* =========================
    ADVANCED FILTER RESET
 ========================= */
@@ -9809,11 +10101,32 @@ function resetAdvancedFilters(){
 
 
     document
-    .getElementById(
-        "filterCondition"
-    )
-    .value =
-    "all";
+.querySelectorAll(
+    ".filter-condition-option"
+)
+.forEach(
+    function(input){
+        input.checked = false;
+    }
+);
+
+updateFilterConditionButton();
+
+document
+.getElementById(
+    "filterConditionPanel"
+)
+?.classList
+.remove(
+    "active"
+);
+
+document
+.getElementById(
+    "filterProject"
+)
+.value =
+"all";
 
 
     document
@@ -9978,13 +10291,17 @@ function listingMatchesCurrentFilters(
     0;
 
 
-    const condition =
-    document
-    .getElementById(
-        "filterCondition"
-    )
-    .value;
+    const conditions =
+getSelectedConditions();
 
+
+const project =
+document
+.getElementById(
+    "filterProject"
+)
+?.value ||
+"all";
 
     const owner =
     document
