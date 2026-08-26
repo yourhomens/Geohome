@@ -6799,6 +6799,28 @@ function projectLabel(
     :
     value || "";
 }
+        function listingFeatureLabel(
+    value
+){
+
+    const input =
+    Array.from(
+        document.querySelectorAll(
+            ".listing-feature-option"
+        )
+    )
+    .find(
+        function(item){
+            return item.value === value;
+        }
+    );
+
+    return input
+    ?
+    input.parentElement.textContent.trim()
+    :
+    value || "";
+}
 function ownerLabel(
     value
 ){
@@ -14033,7 +14055,41 @@ ${
 
 
             </div>
+${
+    Array.isArray(
+        listing.additional_features
+    ) &&
+    listing.additional_features.length
+    ?
+    `
+    <div class="listing-description">
 
+        <h3>
+        დამატებითი ინფორმაცია
+        </h3>
+
+        <p>
+        ${
+            listing.additional_features
+            .map(
+                function(feature){
+
+                    return escapeHtml(
+                        listingFeatureLabel(
+                            feature
+                        )
+                    );
+                }
+            )
+            .join(" • ")
+        }
+        </p>
+
+    </div>
+    `
+    :
+    ""
+}
 
             <div class="listing-description">
 
