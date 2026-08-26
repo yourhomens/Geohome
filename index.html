@@ -10972,19 +10972,21 @@ getSelectedFilterFeatures();
     0;
 
 
-    const activeQuick =
-    document
-    .querySelector(
+    const quickFilters =
+Array.from(
+    document.querySelectorAll(
         ".filter.active"
-    );
+    )
+)
+.map(
+    function(button){
+        return button.dataset.filter;
+    }
+);
 
-
-    const quick =
-    activeQuick
-    ?
-    activeQuick.dataset.filter
-    :
-    null;
+const quick =
+quickFilters[0] ||
+null;
 
 
     if(
@@ -11328,67 +11330,81 @@ if(
 
 
     if(quick){
+if(quickFilters.length){
 
-        const propertyFilters =
-        [
-            "apartment",
-            "house",
-            "land",
-            "commercial",
-            "cottage"
-        ];
+    const propertyFilterValues = [
+        "apartment",
+        "house",
+        "land",
+        "commercial",
+        "cottage"
+    ];
 
+    const ownerFilterValues = [
+        "owner",
+        "agent",
+        "developer"
+    ];
 
-        if(
-            propertyFilters
-            .includes(
-                quick
-            )
-        ){
-
-            if(
-                listing.property_type !==
-                quick
-            ){
-
-                return false;
-
-            }
-
-        }else if(
-            [
-                "owner",
-                "agent",
-                "developer"
-            ]
-            .includes(
-                quick
-            )
-        ){
-
-            if(
-                listing.owner_type !==
-                quick
-            ){
-
-                return false;
-
-            }
-
-        }else{
-
-            if(
-                listing.condition !==
-                quick
-            ){
-
-                return false;
-
-            }
-
+    const selectedProperties =
+    quickFilters.filter(
+        function(value){
+            return propertyFilterValues.includes(
+                value
+            );
         }
+    );
 
+    const selectedOwners =
+    quickFilters.filter(
+        function(value){
+            return ownerFilterValues.includes(
+                value
+            );
+        }
+    );
+
+    const selectedConditions =
+    quickFilters.filter(
+        function(value){
+            return (
+                !propertyFilterValues.includes(
+                    value
+                ) &&
+                !ownerFilterValues.includes(
+                    value
+                )
+            );
+        }
+    );
+
+    if(
+        selectedProperties.length &&
+        !selectedProperties.includes(
+            listing.property_type
+        )
+    ){
+        return false;
     }
+
+    if(
+        selectedOwners.length &&
+        !selectedOwners.includes(
+            listing.owner_type
+        )
+    ){
+        return false;
+    }
+
+    if(
+        selectedConditions.length &&
+        !selectedConditions.includes(
+            listing.condition
+        )
+    ){
+        return false;
+    }
+}
 
 
     return true;
