@@ -11329,6 +11329,7 @@ if(
     }
 
 
+    if(quick){
 if(quickFilters.length){
 
     const propertyFilterValues = [
@@ -27018,17 +27019,10 @@ function(
 
     function collectFilters(){
 
-        const quickFilters =
-Array.from(
-    document.querySelectorAll(
-        ".filter.active"
-    )
-)
-.map(
-    function(button){
-        return button.dataset.filter;
-    }
-);
+        const quick =
+        document.querySelector(
+            ".filter.active"
+        );
 
 
         return {
@@ -27112,11 +27106,12 @@ getSelectedFilterFeatures(),
                 "maxSqmPrice"
             ),
 
-            quick_filters:
-quickFilters,
-
-quick_filter:
-quickFilters[0] || ""
+            quick_filter:
+            quick
+            ?
+            quick.dataset.filter
+            :
+            ""
 
         };
 
@@ -28134,37 +28129,10 @@ updateFilterFeaturesButton();
         );
 
 
-        const savedQuickFilters =
-Array.isArray(
-    f.quick_filters
-)
-?
-f.quick_filters
-:
-(
-    f.quick_filter
-    ?
-    [f.quick_filter]
-    :
-    []
-);
-
-document
-.querySelectorAll(
-    ".filter"
-)
-.forEach(
-    function(button){
-
-        button.classList.toggle(
-            "active",
-            savedQuickFilters.includes(
-                button.dataset.filter
-            )
-        );
-
-    }
-);
+        document
+        .querySelectorAll(
+            ".filter"
+        )
         .forEach(
             function(button){
 
@@ -44959,6 +44927,18 @@ body > header{
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
