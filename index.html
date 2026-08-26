@@ -27018,10 +27018,17 @@ function(
 
     function collectFilters(){
 
-        const quick =
-        document.querySelector(
-            ".filter.active"
-        );
+        const quickFilters =
+Array.from(
+    document.querySelectorAll(
+        ".filter.active"
+    )
+)
+.map(
+    function(button){
+        return button.dataset.filter;
+    }
+);
 
 
         return {
@@ -27105,12 +27112,11 @@ getSelectedFilterFeatures(),
                 "maxSqmPrice"
             ),
 
-            quick_filter:
-            quick
-            ?
-            quick.dataset.filter
-            :
-            ""
+            quick_filters:
+quickFilters,
+
+quick_filter:
+quickFilters[0] || ""
 
         };
 
@@ -28128,10 +28134,37 @@ updateFilterFeaturesButton();
         );
 
 
-        document
-        .querySelectorAll(
-            ".filter"
-        )
+        const savedQuickFilters =
+Array.isArray(
+    f.quick_filters
+)
+?
+f.quick_filters
+:
+(
+    f.quick_filter
+    ?
+    [f.quick_filter]
+    :
+    []
+);
+
+document
+.querySelectorAll(
+    ".filter"
+)
+.forEach(
+    function(button){
+
+        button.classList.toggle(
+            "active",
+            savedQuickFilters.includes(
+                button.dataset.filter
+            )
+        );
+
+    }
+);
         .forEach(
             function(button){
 
