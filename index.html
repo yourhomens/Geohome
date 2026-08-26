@@ -10280,34 +10280,9 @@ document
             "click",
             function(){
 
-                const alreadyActive =
-                this.classList.contains(
-                    "active"
-                );
-
-
-                document
-                .querySelectorAll(
-                    ".filter"
-                )
-                .forEach(
-                    function(item){
-
-                        item.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-                if(!alreadyActive){
-
-                    this.classList.add(
-                        "active"
-                    );
-
-                }
+                this.classList.toggle(
+    "active"
+);
 
 
                 filterProperties();
