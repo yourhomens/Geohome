@@ -6770,7 +6770,35 @@ function conditionLabel(
 
 }
 
+function projectLabel(
+    value
+){
 
+    const select =
+    document.getElementById(
+        "projectType"
+    );
+
+    if(!select){
+        return value || "";
+    }
+
+    const option =
+    Array.from(
+        select.options
+    )
+    .find(
+        function(item){
+            return item.value === value;
+        }
+    );
+
+    return option
+    ?
+    option.textContent.trim()
+    :
+    value || "";
+}
 function ownerLabel(
     value
 ){
@@ -13892,7 +13920,27 @@ function openListing(
                     ""
                 }
 
+${
+    listing.project_type
+    ?
+    `
+    <div class="listing-feature">
 
+    <strong>
+    პროექტი
+    </strong>
+
+    ${escapeHtml(
+        projectLabel(
+            listing.project_type
+        )
+    )}
+
+    </div>
+    `
+    :
+    ""
+}
                 ${
                     listing.balconies !==
                     null &&
