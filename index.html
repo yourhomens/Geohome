@@ -1056,7 +1056,14 @@ nav button:hover{
     font-weight:700;
 }
 
-
+.form-group .multi-select-panel input[type="checkbox"]{
+    width:18px;
+    height:18px;
+    padding:0;
+    margin:0;
+    flex:0 0 auto;
+    accent-color:var(--olive);
+}
 /* =========================
    LOCATION PICKER
 ========================= */
@@ -4423,7 +4430,81 @@ type="button">
 
 </div>
 
+<div class="form-group">
 
+<label>
+პროექტი
+</label>
+
+<select id="projectType">
+
+<option value="">
+აირჩიეთ
+</option>
+
+<option value="nonstandard">
+არასტანდარტული
+</option>
+
+<option value="leningrad">
+ლენინგრადის
+</option>
+
+<option value="lvov">
+ლვოვის
+</option>
+
+<option value="kiev">
+კიევის
+</option>
+
+<option value="tbilisi_yard">
+თბილისური ეზო
+</option>
+
+<option value="moscow">
+მოსკოვის
+</option>
+
+<option value="city">
+ქალაქური
+</option>
+
+<option value="czech">
+ჩეხური
+</option>
+
+<option value="khrushchev">
+ხრუშჩოვის
+</option>
+
+<option value="tukhareli">
+თუხარელის
+</option>
+
+<option value="vedzisi">
+ვეძისი
+</option>
+
+<option value="yugoslav">
+იუგოსლავიის
+</option>
+
+<option value="metromsheni">
+მეტრომშენის
+</option>
+
+<option value="kavlashvili">
+ყავლაშვილის
+</option>
+
+<option value="other">
+სხვა
+</option>
+
+</select>
+
+</div>
 <div class="form-group">
 
 <label>
@@ -4552,7 +4633,210 @@ id="balconyArea"
 placeholder="მაგ. 12">
 
 </div>
+<div class="form-group full">
 
+<label>
+დამატებითი ინფორმაცია
+</label>
+
+<div class="multi-select-filter" id="listingFeaturesWrap">
+
+<button
+type="button"
+class="multi-select-button"
+id="listingFeaturesButton">
+აირჩიეთ
+</button>
+
+<div
+class="multi-select-panel"
+id="listingFeaturesPanel">
+
+<label>
+<input type="checkbox" value="yard_view" class="listing-feature-option">
+ხედი ეზოზე
+</label>
+
+<label>
+<input type="checkbox" value="street_view" class="listing-feature-option">
+ხედი ქუჩაზე
+</label>
+
+<label>
+<input type="checkbox" value="city_view" class="listing-feature-option">
+ქალაქის ხედი
+</label>
+
+<label>
+<input type="checkbox" value="mountain_view" class="listing-feature-option">
+მთის ხედი
+</label>
+
+<label>
+<input type="checkbox" value="bright" class="listing-feature-option">
+ნათელი
+</label>
+
+<label>
+<input type="checkbox" value="cozy" class="listing-feature-option">
+მყუდრო
+</label>
+
+<label>
+<input type="checkbox" value="central_heating" class="listing-feature-option">
+ცენტრალური გათბობა
+</label>
+
+<label>
+<input type="checkbox" value="floor_heating" class="listing-feature-option">
+იატაკქვეშა გათბობა
+</label>
+
+<label>
+<input type="checkbox" value="air_conditioner" class="listing-feature-option">
+კონდიციონერი
+</label>
+
+<label>
+<input type="checkbox" value="natural_gas" class="listing-feature-option">
+ბუნებრივი აირი
+</label>
+
+<label>
+<input type="checkbox" value="elevator" class="listing-feature-option">
+ლიფტი
+</label>
+
+<label>
+<input type="checkbox" value="freight_elevator" class="listing-feature-option">
+სატვირთო ლიფტი
+</label>
+
+<label>
+<input type="checkbox" value="garage" class="listing-feature-option">
+ავტოფარეხი
+</label>
+
+<label>
+<input type="checkbox" value="parking" class="listing-feature-option">
+პარკინგი
+</label>
+
+<label>
+<input type="checkbox" value="furniture" class="listing-feature-option">
+ავეჯი
+</label>
+
+<label>
+<input type="checkbox" value="appliances" class="listing-feature-option">
+ტექნიკა
+</label>
+
+<label>
+<input type="checkbox" value="built_in_kitchen" class="listing-feature-option">
+ჩაშენებული სამზარეულო
+</label>
+
+<label>
+<input type="checkbox" value="basement" class="listing-feature-option">
+სარდაფი
+</label>
+
+<label>
+<input type="checkbox" value="storage" class="listing-feature-option">
+სათავსო
+</label>
+
+<label>
+<input type="checkbox" value="terrace" class="listing-feature-option">
+ტერასა
+</label>
+
+<label>
+<input type="checkbox" value="yard" class="listing-feature-option">
+ეზო
+</label>
+
+<label>
+<input type="checkbox" value="security" class="listing-feature-option">
+დაცვა
+</label>
+
+<label>
+<input type="checkbox" value="intercom" class="listing-feature-option">
+დომოფონი
+</label>
+
+<label>
+<input type="checkbox" value="entrance_cctv" class="listing-feature-option">
+ვიდეომეთვალყურეობა სადარბაზოში
+</label>
+
+<label>
+<input type="checkbox" value="internet" class="listing-feature-option">
+ინტერნეტი
+</label>
+
+<label>
+<input type="checkbox" value="accessible" class="listing-feature-option">
+შეზღუდული შესაძლებლობის მქონე პირებისთვის ადაპტირებული
+</label>
+
+<label>
+<input type="checkbox" value="near_metro" class="listing-feature-option">
+მეტროსთან ახლოს
+</label>
+
+<label>
+<input type="checkbox" value="near_bus_stop" class="listing-feature-option">
+ავტობუსის გაჩერებასთან ახლოს
+</label>
+
+<label>
+<input type="checkbox" value="near_school" class="listing-feature-option">
+სკოლასთან ახლოს
+</label>
+
+<label>
+<input type="checkbox" value="near_kindergarten" class="listing-feature-option">
+საბავშვო ბაღთან ახლოს
+</label>
+
+<label>
+<input type="checkbox" value="near_supermarket" class="listing-feature-option">
+სუპერმარკეტთან ახლოს
+</label>
+
+<label>
+<input type="checkbox" value="near_pharmacy" class="listing-feature-option">
+აფთიაქთან ახლოს
+</label>
+
+<label>
+<input type="checkbox" value="near_clinic" class="listing-feature-option">
+კლინიკასთან ახლოს
+</label>
+
+<label>
+<input type="checkbox" value="near_park" class="listing-feature-option">
+პარკთან ახლოს
+</label>
+
+<label>
+<input type="checkbox" value="near_mall" class="listing-feature-option">
+სავაჭრო ცენტრთან ახლოს
+</label>
+
+<label>
+<input type="checkbox" value="near_university" class="listing-feature-option">
+უნივერსიტეტთან ახლოს
+</label>
+
+</div>
+
+</div>
+
+</div>
 </div>
 
 </div>
@@ -10058,6 +10342,131 @@ document.addEventListener(
         }
     }
 );
+        /* =========================
+   LISTING FEATURES MULTI SELECT
+========================= */
+
+function getSelectedListingFeatures(){
+
+    return Array.from(
+        document.querySelectorAll(
+            ".listing-feature-option:checked"
+        )
+    )
+    .map(
+        function(input){
+            return input.value;
+        }
+    );
+}
+
+
+function updateListingFeaturesButton(){
+
+    const button =
+    document.getElementById(
+        "listingFeaturesButton"
+    );
+
+    const selected =
+    Array.from(
+        document.querySelectorAll(
+            ".listing-feature-option:checked"
+        )
+    );
+
+    if(!button){
+        return;
+    }
+
+    if(selected.length === 0){
+
+        button.textContent =
+        "აირჩიეთ";
+
+    }else if(selected.length === 1){
+
+        button.textContent =
+        selected[0]
+        .parentElement
+        .textContent
+        .trim();
+
+    }else{
+
+        button.textContent =
+        selected.length +
+        " არჩეული";
+
+    }
+}
+
+
+document
+.getElementById(
+    "listingFeaturesButton"
+)
+?.addEventListener(
+    "click",
+    function(event){
+
+        event.stopPropagation();
+
+        document
+        .getElementById(
+            "listingFeaturesPanel"
+        )
+        ?.classList
+        .toggle(
+            "active"
+        );
+    }
+);
+
+
+document
+.querySelectorAll(
+    ".listing-feature-option"
+)
+.forEach(
+    function(input){
+
+        input.addEventListener(
+            "change",
+            updateListingFeaturesButton
+        );
+    }
+);
+
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        const wrap =
+        document.getElementById(
+            "listingFeaturesWrap"
+        );
+
+        const panel =
+        document.getElementById(
+            "listingFeaturesPanel"
+        );
+
+        if(
+            wrap &&
+            panel &&
+            !wrap.contains(
+                event.target
+            )
+        ){
+
+            panel.classList.remove(
+                "active"
+            );
+        }
+    }
+);
 /* =========================
    ADVANCED FILTER RESET
 ========================= */
@@ -10600,15 +11009,27 @@ document
 
 
     if(
-        condition !==
-        "all" &&
-        listing.condition !==
-        condition
-    ){
+    conditions.length &&
+    !conditions.includes(
+        listing.condition
+    )
+){
 
-        return false;
+    return false;
 
-    }
+}
+
+
+if(
+    project !==
+    "all" &&
+    listing.project_type !==
+    project
+){
+
+    return false;
+
+}
 
 
     if(
@@ -16269,7 +16690,16 @@ document
                 )
                 .value ||
                 null,
+project_type:
+document
+.getElementById(
+    "projectType"
+)
+?.value ||
+null,
 
+additional_features:
+getSelectedListingFeatures(),
                 rooms:
                 document
                 .getElementById(
