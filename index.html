@@ -28544,7 +28544,473 @@ updateFilterFeaturesButton();
         );
 
     }
+function yhListingMatchesSavedSearch(
+    listing,
+    item
+){
 
+    const f =
+    item.filters ||
+    {};
+
+    const dealType =
+    item.deal_type ||
+    "sale";
+
+
+    if(
+        (
+            listing.deal_type ||
+            "sale"
+        ) !==
+        dealType
+    ){
+        return false;
+    }
+
+
+    if(
+        f.location &&
+        !yhLocationMatches(
+            listing,
+            f.location
+        )
+    ){
+        return false;
+    }
+
+
+    if(
+        f.property_type &&
+        f.property_type !==
+        "all" &&
+        listing.property_type !==
+        f.property_type
+    ){
+        return false;
+    }
+
+
+    const rooms =
+    f.rooms ||
+    "all";
+
+    const listingRooms =
+    Number(
+        String(
+            listing.rooms ||
+            "0"
+        )
+        .replace(
+            "+",
+            ""
+        )
+    ) ||
+    0;
+
+
+    if(
+        rooms !==
+        "all"
+    ){
+
+        if(
+            rooms ===
+            "5"
+        ){
+
+            if(
+                listingRooms <
+                5
+            ){
+                return false;
+            }
+
+        }else if(
+            listingRooms !==
+            Number(
+                rooms
+            )
+        ){
+            return false;
+        }
+    }
+
+
+    const displayCurrency =
+    f.display_currency ||
+    "USD";
+
+    const listingPrice =
+    convertCurrency(
+        Number(
+            listing.price ||
+            0
+        ),
+        listing.currency ||
+        "USD",
+        displayCurrency
+    );
+
+
+    const minPrice =
+    Number(
+        f.min_price
+    ) ||
+    0;
+
+    const maxPrice =
+    Number(
+        f.max_price
+    ) ||
+    0;
+
+
+    if(
+        minPrice &&
+        listingPrice <
+        minPrice
+    ){
+        return false;
+    }
+
+
+    if(
+        maxPrice &&
+        listingPrice >
+        maxPrice
+    ){
+        return false;
+    }
+
+
+    const area =
+    Number(
+        listing.area ||
+        0
+    );
+
+    const minArea =
+    Number(
+        f.min_area
+    ) ||
+    0;
+
+    const maxArea =
+    Number(
+        f.max_area
+    ) ||
+    0;
+
+
+    if(
+        minArea &&
+        area <
+        minArea
+    ){
+        return false;
+    }
+
+
+    if(
+        maxArea &&
+        area >
+        maxArea
+    ){
+        return false;
+    }
+
+
+    const bedrooms =
+    f.bedrooms ||
+    "all";
+
+
+    if(
+        bedrooms !==
+        "all"
+    ){
+
+        if(
+            bedrooms ===
+            "studio"
+        ){
+
+            if(
+                listing.bedrooms !==
+                "studio"
+            ){
+                return false;
+            }
+
+        }else{
+
+            const bedroomCount =
+            Number(
+                String(
+                    listing.bedrooms ||
+                    "0"
+                )
+                .replace(
+                    "+",
+                    ""
+                )
+            ) ||
+            0;
+
+
+            if(
+                bedrooms ===
+                "5"
+            ){
+
+                if(
+                    bedroomCount <
+                    5
+                ){
+                    return false;
+                }
+
+            }else if(
+                bedroomCount !==
+                Number(
+                    bedrooms
+                )
+            ){
+                return false;
+            }
+        }
+    }
+
+
+    const floor =
+    Number(
+        listing.floor ||
+        0
+    );
+
+    const minFloor =
+    Number(
+        f.min_floor
+    ) ||
+    0;
+
+    const maxFloor =
+    Number(
+        f.max_floor
+    ) ||
+    0;
+
+
+    if(
+        minFloor &&
+        floor <
+        minFloor
+    ){
+        return false;
+    }
+
+
+    if(
+        maxFloor &&
+        floor >
+        maxFloor
+    ){
+        return false;
+    }
+
+
+    const conditions =
+    Array.isArray(
+        f.conditions
+    )
+    ?
+    f.conditions
+    :
+    (
+        f.condition &&
+        f.condition !==
+        "all"
+        ?
+        [
+            f.condition
+        ]
+        :
+        []
+    );
+
+
+    if(
+        conditions.length &&
+        !conditions.includes(
+            listing.condition
+        )
+    ){
+        return false;
+    }
+
+
+    if(
+        f.project_type &&
+        f.project_type !==
+        "all" &&
+        listing.project_type !==
+        f.project_type
+    ){
+        return false;
+    }
+
+
+    const additionalFeatures =
+    Array.isArray(
+        f.additional_features
+    )
+    ?
+    f.additional_features
+    :
+    [];
+
+
+    if(
+        additionalFeatures.length &&
+        !additionalFeatures.every(
+            function(feature){
+
+                return (
+                    Array.isArray(
+                        listing.additional_features
+                    ) &&
+                    listing.additional_features.includes(
+                        feature
+                    )
+                );
+
+            }
+        )
+    ){
+        return false;
+    }
+
+
+    if(
+        f.owner_type &&
+        f.owner_type !==
+        "all" &&
+        listing.owner_type !==
+        f.owner_type
+    ){
+        return false;
+    }
+
+
+    const minSqm =
+    Number(
+        f.min_sqm_price
+    ) ||
+    0;
+
+    const maxSqm =
+    Number(
+        f.max_sqm_price
+    ) ||
+    0;
+
+    const sqmPrice =
+    area > 0
+    ?
+    listingPrice /
+    area
+    :
+    null;
+
+
+    if(
+        minSqm &&
+        (
+            sqmPrice ===
+            null ||
+            sqmPrice <
+            minSqm
+        )
+    ){
+        return false;
+    }
+
+
+    if(
+        maxSqm &&
+        (
+            sqmPrice ===
+            null ||
+            sqmPrice >
+            maxSqm
+        )
+    ){
+        return false;
+    }
+
+
+    const quick =
+    f.quick_filter ||
+    "";
+
+
+    if(quick){
+
+        const propertyQuick = [
+            "apartment",
+            "house",
+            "land",
+            "commercial",
+            "cottage"
+        ];
+
+        const ownerQuick = [
+            "owner",
+            "agent",
+            "developer"
+        ];
+
+
+        if(
+            propertyQuick.includes(
+                quick
+            ) &&
+            listing.property_type !==
+            quick
+        ){
+            return false;
+        }
+
+
+        if(
+            ownerQuick.includes(
+                quick
+            ) &&
+            listing.owner_type !==
+            quick
+        ){
+            return false;
+        }
+
+
+        if(
+            !propertyQuick.includes(
+                quick
+            ) &&
+            !ownerQuick.includes(
+                quick
+            ) &&
+            listing.condition !==
+            quick
+        ){
+            return false;
+        }
+    }
+
+
+    return true;
+}
 function yhUpdateNotificationBell(){
 
     const wrap =
