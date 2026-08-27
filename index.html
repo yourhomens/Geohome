@@ -28545,7 +28545,66 @@ updateFilterFeaturesButton();
 
     }
 
+function yhUpdateNotificationBell(){
 
+    const wrap =
+    document.getElementById(
+        "yhNotificationWrap"
+    );
+
+    if(!wrap){
+        return;
+    }
+
+    wrap.style.display =
+    currentUser
+    ?
+    "inline-flex"
+    :
+    "none";
+}
+
+
+document
+.getElementById(
+    "yhNotificationButton"
+)
+?.addEventListener(
+    "click",
+    function(){
+
+        document
+        .getElementById(
+            "yhNotificationPanel"
+        )
+        ?.classList.toggle(
+            "active"
+        );
+
+    }
+);
+
+
+const yhPreviousUserChanged =
+window.yhAfterUserChanged;
+
+window.yhAfterUserChanged =
+async function(){
+
+    if(
+        typeof yhPreviousUserChanged ===
+        "function"
+    ){
+        await yhPreviousUserChanged
+        .apply(
+            this,
+            arguments
+        );
+    }
+
+    yhUpdateNotificationBell();
+
+};
 })();
 
 </script>
