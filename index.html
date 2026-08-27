@@ -29219,15 +29219,82 @@ document
 )
 ?.addEventListener(
     "click",
-    function(){
+    async function(){
 
-        document
-        .getElementById(
+        const panel =
+        document.getElementById(
             "yhNotificationPanel"
-        )
-        ?.classList.toggle(
+        );
+
+        const badge =
+        document.getElementById(
+            "yhNotificationBadge"
+        );
+
+
+        if(!panel){
+            return;
+        }
+
+
+        const willOpen =
+        !panel.classList.contains(
             "active"
         );
+
+
+        panel.classList.toggle(
+            "active"
+        );
+
+
+        if(
+            !willOpen ||
+            !currentUser
+        ){
+            return;
+        }
+
+
+        const result =
+        await supabaseClient
+        .from(
+            "saved_searches"
+        )
+        .update({
+            last_notified_at:
+            new Date().toISOString()
+        })
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .eq(
+            "alerts_enabled",
+            true
+        );
+
+
+        if(result.error){
+
+            console.error(
+                "Notification read error:",
+                result.error
+            );
+
+            return;
+        }
+
+
+        if(badge){
+
+            badge.style.display =
+            "none";
+
+            badge.textContent =
+            "0";
+
+        }
 
     }
 );
