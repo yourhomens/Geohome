@@ -29011,23 +29011,205 @@ function yhListingMatchesSavedSearch(
 
     return true;
 }
-function yhUpdateNotificationBell(){
+async function yhUpdateNotificationBell(){
 
     const wrap =
     document.getElementById(
         "yhNotificationWrap"
     );
 
-    if(!wrap){
+    const badge =
+    document.getElementById(
+        "yhNotificationBadge"
+    );
+
+    const panel =
+    document.getElementById(
+        "yhNotificationPanel"
+    );
+
+
+    if(
+        !wrap ||
+        !badge ||
+        !panel
+    ){
         return;
     }
 
+
+    if(!currentUser){
+
+        wrap.style.display =
+        "none";
+
+        badge.style.display =
+        "none";
+
+        badge.textContent =
+        "0";
+
+        panel.innerHTML =
+        "";
+
+        return;
+    }
+
+
     wrap.style.display =
-    currentUser
-    ?
-    "inline-flex"
-    :
-    "none";
+    "inline-flex";
+
+
+    const result =
+    await supabaseClient
+    .from(
+        "saved_searches"
+    )
+    .select(
+        "*"
+    )
+    .eq(
+        "user_id",
+        currentUser.id
+    )
+    .eq(
+        "alerts_enabled",
+        true
+    );
+
+
+    if(result.error){
+
+        console.error(
+            "Notification search error:",
+            result.error
+        );
+
+        return;
+    }
+
+
+    const savedSearches =
+    result.data ||
+    [];
+
+
+    const newListingIds =
+    new Set();
+
+
+    savedSearches
+    .forEach(
+        function(savedSearch){
+
+            const lastNotified =
+            savedSearch.last_notified_at
+            ?
+            new Date(
+                savedSearch.last_notified_at
+            )
+            :
+            new Date(0);
+
+
+            currentListings
+            .forEach(
+                function(listing){
+
+                    const createdAt =
+                    new Date(
+                        listing.created_at ||
+                        0
+                    );
+
+
+                    if(
+                        createdAt <=
+                        lastNotified
+                    ){
+                        return;
+                    }
+
+
+                    if(
+                        yhListingMatchesSavedSearch(
+                            listing,
+                            savedSearch
+                        )
+                    ){
+
+                        newListingIds.add(
+                            String(
+                                listing.id
+                            )
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    const count =
+    newListingIds.size;
+
+
+    if(count > 0){
+
+        badge.textContent =
+        count > 99
+        ?
+        "99+"
+        :
+        String(count);
+
+        badge.style.display =
+        "flex";
+
+        panel.innerHTML =
+        `
+        <div style="
+            padding:14px;
+            line-height:1.6;
+        ">
+            <strong>
+                🔔 ახალი განცხადებები
+            </strong>
+
+            <div style="
+                margin-top:7px;
+                color:var(--text);
+            ">
+                თქვენს შენახულ ძებნაში
+                <strong>${count}</strong>
+                ახალი განცხადებაა.
+            </div>
+        </div>
+        `;
+
+    }else{
+
+        badge.style.display =
+        "none";
+
+        badge.textContent =
+        "0";
+
+        panel.innerHTML =
+        `
+        <div style="
+            padding:14px;
+            color:var(--muted);
+        ">
+            ახალი შეტყობინებები არ არის.
+        </div>
+        `;
+
+    }
+
 }
 
 
