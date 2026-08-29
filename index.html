@@ -47316,7 +47316,149 @@ body > header{
 
     window.__YH_VIP_HOME_CAROUSEL_V1__ =
     true;
+/* =====================================================
+   LOCAL VIP HELPERS
+   ამ VIP carousel-ს საკუთარი helper-ები აქვს,
+   რომ ძველი VIP IIFE-ის შიდა ფუნქციებზე
+   დამოკიდებული აღარ იყოს.
+===================================================== */
 
+function yhNormalizePromotionPlan(
+    value
+){
+
+    const plan =
+    String(
+        value ||
+        "free"
+    )
+    .toLowerCase();
+
+
+    if(
+        plan === "vip" ||
+        plan === "vip_plus" ||
+        plan === "vip_pro"
+    ){
+
+        return plan;
+
+    }
+
+
+    return "free";
+
+}
+
+
+function yhGetEffectivePromotionPlan(
+    listing
+){
+
+    if(!listing){
+        return "free";
+    }
+
+
+    const plan =
+    yhNormalizePromotionPlan(
+        listing.promotion_plan
+    );
+
+
+    if(plan === "free"){
+        return "free";
+    }
+
+
+    const expires =
+    listing.promotion_expires_at;
+
+
+    if(!expires){
+        return plan;
+    }
+
+
+    const expiresTime =
+    new Date(
+        expires
+    )
+    .getTime();
+
+
+    if(
+        !Number.isFinite(
+            expiresTime
+        )
+    ){
+
+        return plan;
+
+    }
+
+
+    if(
+        expiresTime <=
+        Date.now()
+    ){
+
+        return "free";
+
+    }
+
+
+    return plan;
+
+}
+
+
+function yhPromotionPriority(
+    listing
+){
+
+    const priority = {
+        free:0,
+        vip:1,
+        vip_plus:2,
+        vip_pro:3
+    };
+
+
+    return (
+        priority[
+            yhGetEffectivePromotionPlan(
+                listing
+            )
+        ] ||
+        0
+    );
+
+}
+
+
+function yhPromotionClass(
+    plan
+){
+
+    if(plan === "vip_pro"){
+        return "yh-vip-pro";
+    }
+
+
+    if(plan === "vip_plus"){
+        return "yh-vip-plus";
+    }
+
+
+    if(plan === "vip"){
+        return "yh-vip";
+    }
+
+
+    return "";
+
+}
 
     /* =====================================================
        HEADER
