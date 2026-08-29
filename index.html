@@ -49443,6 +49443,322 @@ function yhPromotionClass(
 </script>
 
 <!-- YOUR HOME — SEARCH RESULTS SORT BAR V1 END -->
+    <!-- =====================================================
+     YOUR HOME — SEARCH RESULTS CHANGE FILTERS V1
+===================================================== -->
+
+<style id="yhSearchResultsChangeFiltersV1Style">
+
+.yh-search-change-filters{
+    border:1px solid var(--olive);
+    background:var(--olive-light);
+    color:var(--olive-dark);
+    padding:10px 15px;
+    border-radius:9px;
+    font-weight:800;
+    font-size:14px;
+    cursor:pointer;
+    white-space:nowrap;
+}
+
+.yh-search-change-filters:hover{
+    background:var(--olive);
+    color:#fff;
+}
+
+@media(max-width:650px){
+
+    .yh-search-change-filters{
+        width:100%;
+        margin-top:8px;
+    }
+
+}
+
+</style>
+
+
+<script id="yhSearchResultsChangeFiltersV1Script">
+
+(function(){
+
+    if(
+        window.__YH_SEARCH_RESULTS_CHANGE_FILTERS_V1__
+    ){
+        return;
+    }
+
+    window.__YH_SEARCH_RESULTS_CHANGE_FILTERS_V1__ =
+    true;
+
+
+    function getLanguage(){
+
+        const languageSelect =
+        document.querySelector(
+            ".language"
+        );
+
+        return (
+            languageSelect?.value ||
+            "ka"
+        );
+
+    }
+
+
+    function getButtonText(){
+
+        const lang =
+        getLanguage();
+
+        if(lang === "en"){
+            return "⚙ Change filters";
+        }
+
+        if(lang === "ru"){
+            return "⚙ Изменить фильтры";
+        }
+
+        return "⚙ ფილტრების შეცვლა";
+
+    }
+
+
+    function createButton(){
+
+        const resultsPage =
+        document.getElementById(
+            "yhSearchResultsPage"
+        );
+
+        if(!resultsPage){
+            return;
+        }
+
+
+        if(
+            document.getElementById(
+                "yhSearchChangeFilters"
+            )
+        ){
+            return;
+        }
+
+
+        const header =
+        resultsPage.querySelector(
+            ".yh-page-header"
+        );
+
+        if(!header){
+            return;
+        }
+
+
+        const button =
+        document.createElement(
+            "button"
+        );
+
+        button.type =
+        "button";
+
+        button.id =
+        "yhSearchChangeFilters";
+
+        button.className =
+        "yh-search-change-filters";
+
+        button.textContent =
+        getButtonText();
+
+
+        button.addEventListener(
+            "click",
+            function(){
+
+                /*
+                 * მხოლოდ მთავარ გვერდზე გვაბრუნებს.
+                 * ფილტრების მნიშვნელობებს არ ვასუფთავებთ.
+                 */
+
+                if(
+                    typeof showHomePage ===
+                    "function"
+                ){
+
+                    showHomePage(false);
+
+                }
+
+
+                setTimeout(
+                    function(){
+
+                        const hero =
+                        document.querySelector(
+                            ".hero"
+                        );
+
+                        if(hero){
+
+                            hero.scrollIntoView({
+                                behavior:"smooth",
+                                block:"start"
+                            });
+
+                        }
+
+
+                        const filterButton =
+                        document.getElementById(
+                            "mainFilterButton"
+                        );
+
+
+                        const advancedPanel =
+                        document.getElementById(
+                            "advancedFilterPanel"
+                        );
+
+
+                        if(
+                            filterButton &&
+                            advancedPanel &&
+                            !advancedPanel.classList.contains(
+                                "active"
+                            )
+                        ){
+
+                            filterButton.click();
+
+                        }
+
+                    },
+                    80
+                );
+
+            }
+        );
+
+
+        header.appendChild(
+            button
+        );
+
+    }
+
+
+    function updateButtonText(){
+
+        const button =
+        document.getElementById(
+            "yhSearchChangeFilters"
+        );
+
+        if(button){
+
+            button.textContent =
+            getButtonText();
+
+        }
+
+    }
+
+
+    /*
+     * Search Results გვერდი დინამიკურად იქმნება,
+     * ამიტომ რამდენიმე მცდელობით ვამოწმებთ.
+     */
+
+    let tries = 0;
+
+    const timer =
+    setInterval(
+        function(){
+
+            tries++;
+
+            createButton();
+
+            if(
+                document.getElementById(
+                    "yhSearchChangeFilters"
+                ) ||
+                tries >= 30
+            ){
+
+                clearInterval(
+                    timer
+                );
+
+            }
+
+        },
+        200
+    );
+
+
+    /*
+     * ძებნის დაჭერის შემდეგაც ვამოწმებთ,
+     * თუ Results გვერდი ჯერ არ იყო შექმნილი.
+     */
+
+    document.addEventListener(
+        "click",
+        function(event){
+
+            if(
+                event.target.closest(
+                    "#searchButton"
+                )
+            ){
+
+                setTimeout(
+                    createButton,
+                    100
+                );
+
+            }
+
+        },
+        true
+    );
+
+
+    const languageSelect =
+    document.querySelector(
+        ".language"
+    );
+
+
+    if(languageSelect){
+
+        languageSelect.addEventListener(
+            "change",
+            function(){
+
+                setTimeout(
+                    updateButtonText,
+                    0
+                );
+
+            }
+        );
+
+    }
+
+
+    console.log(
+        "YOUR HOME SEARCH RESULTS CHANGE FILTERS V1 READY ✅"
+    );
+
+})();
+
+</script>
+
+<!-- YOUR HOME — SEARCH RESULTS CHANGE FILTERS V1 END -->
 </body>
 </html>
 
