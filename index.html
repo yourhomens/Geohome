@@ -3169,7 +3169,112 @@ footer a{
     }
 
 }
+/* =========================
+   DEVELOPER PROFILE
+========================= */
 
+.yh-developer-profile-form{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+}
+
+.yh-developer-logo-block{
+    display:flex;
+    justify-content:center;
+    padding:8px 0 4px;
+}
+
+.yh-developer-logo-upload{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    text-align:center;
+}
+
+.yh-developer-logo-upload input{
+    display:none;
+}
+
+.yh-developer-logo-preview{
+    width:132px;
+    height:132px;
+    border-radius:50%;
+    border:2px dashed var(--olive);
+    background:var(--olive-light);
+    color:var(--olive-dark);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:42px;
+    font-weight:800;
+    overflow:hidden;
+    box-shadow:0 8px 22px rgba(0,0,0,.08);
+}
+
+.yh-developer-logo-preview img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.yh-developer-logo-upload strong{
+    font-size:15px;
+    color:var(--dark);
+}
+
+.yh-developer-logo-upload span{
+    font-size:12px;
+    color:var(--olive-dark);
+    font-weight:700;
+}
+
+.yh-developer-fields{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+}
+
+.yh-developer-fields .full{
+    grid-column:1/-1;
+}
+
+.yh-developer-review-note{
+    background:var(--olive-light);
+    border:1px solid #d9dfc9;
+    color:var(--olive-dark);
+    padding:14px 16px;
+    border-radius:11px;
+    font-size:13px;
+    line-height:1.5;
+}
+
+#yhDeveloperSaveButton{
+    align-self:flex-end;
+}
+
+@media(max-width:700px){
+
+    .yh-developer-fields{
+        grid-template-columns:1fr;
+    }
+
+    .yh-developer-fields .full{
+        grid-column:auto;
+    }
+
+    .yh-developer-logo-preview{
+        width:118px;
+        height:118px;
+    }
+
+    #yhDeveloperSaveButton{
+        width:100%;
+    }
+}
 </style>
 
 </head>
@@ -3365,7 +3470,12 @@ class="yh-account-extra"
 type="button">
 👤 აგენტის / სააგენტოს პროფილი
 </button>
-
+<button
+id="yhDeveloperMenuButton"
+class="yh-account-extra"
+type="button">
+🏗️ დეველოპერის პროფილი
+</button>
 <button
 class="logout-menu-button"
 id="logoutButton"
@@ -5675,7 +5785,183 @@ id="yhAgentSave">
 
 </section>
 
+<!-- =========================
+     DEVELOPER PROFILE EDITOR
+========================= -->
 
+<section
+class="yh-feature-page"
+id="yhDeveloperEditorPage">
+
+<div class="yh-page-header">
+
+<div>
+
+<h1>
+🏗️ დეველოპერის პროფილი
+</h1>
+
+<p class="yh-page-intro">
+შექმენით თქვენი კომპანიის პროფილი და გადმოაგზავნეთ ადმინისტრატორის დასამტკიცებლად.
+</p>
+
+</div>
+
+<button
+class="back-button"
+id="yhDeveloperEditorBack"
+type="button">
+← 🏠 მთავარი
+</button>
+
+</div>
+
+
+<div class="yh-page-card">
+
+<div class="yh-developer-profile-form">
+
+
+<div class="yh-developer-logo-block">
+
+<label
+class="yh-developer-logo-upload"
+for="yhDeveloperLogoInput">
+
+<div
+class="yh-developer-logo-preview"
+id="yhDeveloperLogoPreview">
+🏢
+</div>
+
+<strong>
+კომპანიის ლოგო
+</strong>
+
+<span>
+აირჩიეთ ფოტო
+</span>
+
+<input
+type="file"
+id="yhDeveloperLogoInput"
+accept="image/jpeg,image/png,image/webp">
+
+</label>
+
+</div>
+
+
+<div class="yh-developer-fields">
+
+<div class="form-group">
+
+<label>
+კომპანიის სახელი *
+</label>
+
+<input
+type="text"
+id="yhDeveloperCompanyName"
+placeholder="მაგ. Your Development">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+ტელეფონი
+</label>
+
+<input
+type="tel"
+id="yhDeveloperPhone"
+placeholder="+995">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+ელფოსტა
+</label>
+
+<input
+type="email"
+id="yhDeveloperEmail"
+placeholder="company@example.com">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+ვებგვერდი
+</label>
+
+<input
+type="url"
+id="yhDeveloperWebsite"
+placeholder="https://">
+
+</div>
+
+
+<div class="form-group full">
+
+<label>
+მისამართი
+</label>
+
+<input
+type="text"
+id="yhDeveloperAddress"
+placeholder="ოფისის მისამართი">
+
+</div>
+
+
+<div class="form-group full">
+
+<label>
+კომპანიის შესახებ
+</label>
+
+<textarea
+id="yhDeveloperDescription"
+placeholder="მოკლედ აღწერეთ თქვენი კომპანია..."></textarea>
+
+</div>
+
+</div>
+
+
+<div
+class="yh-developer-review-note"
+id="yhDeveloperReviewNote">
+
+ℹ️ პროფილი გამოქვეყნებამდე გაივლის ადმინისტრატორის შემოწმებას.
+
+</div>
+
+
+<button
+type="button"
+class="publish-button"
+id="yhDeveloperSaveButton">
+
+შენახვა და გადაგზავნა
+
+</button>
+
+</div>
+
+</div>
+
+</section>
 <!-- =========================
      PUBLIC AGENT
 ========================= -->
@@ -26001,7 +26287,63 @@ function(
         );
 
     }
+const developerMenu =
+document.getElementById(
+    "yhDeveloperMenuButton"
+);
 
+
+if(developerMenu){
+
+    developerMenu
+    .addEventListener(
+        "click",
+        function(event){
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            if(!requireLogin()){
+                return;
+            }
+
+            hideAllPages();
+
+            const developerPage =
+            document.getElementById(
+                "yhDeveloperEditorPage"
+            );
+
+            if(developerPage){
+                developerPage
+                .classList
+                .add(
+                    "active"
+                );
+            }
+
+            const accountMenu =
+            document.getElementById(
+                "accountMenu"
+            );
+
+            if(accountMenu){
+                accountMenu
+                .classList
+                .remove(
+                    "active"
+                );
+            }
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+
+        }
+    );
+
+}
 
     document
     .addEventListener(
