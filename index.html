@@ -3231,7 +3231,15 @@ footer a{
     color:var(--olive-dark);
     font-weight:700;
 }
-
+.yh-developer-logo-remove{
+    border:none;
+    background:transparent;
+    color:#b23b3b;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    padding:4px 8px;
+}
 .yh-developer-fields{
     display:grid;
     grid-template-columns:repeat(2,1fr);
@@ -5848,7 +5856,13 @@ id="yhDeveloperLogoInput"
 accept="image/jpeg,image/png,image/webp">
 
 </label>
-
+<button
+type="button"
+id="yhDeveloperLogoRemove"
+class="yh-developer-logo-remove"
+style="display:none;">
+✕ ლოგოს წაშლა
+</button>
 </div>
 
 
@@ -26391,6 +26405,44 @@ if(
             reader.readAsDataURL(
                 file
             );
+
+        }
+    );
+
+}
+    const developerLogoRemove =
+document.getElementById(
+    "yhDeveloperLogoRemove"
+);
+
+if(
+    developerLogoInput &&
+    developerLogoPreview &&
+    developerLogoRemove
+){
+
+    developerLogoInput
+    .addEventListener(
+        "change",
+        function(){
+
+            if(this.files?.[0]){
+                developerLogoRemove.style.display = "block";
+            }
+
+        }
+    );
+
+    developerLogoRemove
+    .addEventListener(
+        "click",
+        function(){
+
+            developerLogoInput.value = "";
+
+            developerLogoPreview.innerHTML = "🏢";
+
+            developerLogoRemove.style.display = "none";
 
         }
     );
