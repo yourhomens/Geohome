@@ -47150,6 +47150,762 @@ body > header{
 </script>
 
 <!-- YOUR HOME — SHOW ALL TO RESULTS V1.1 END -->
+    <!-- =========================================================
+     YOUR HOME — VIP HOME CAROUSEL V1
+========================================================= -->
+
+<style id="yhVipHomeCarouselV1Style">
+
+/* არსებული VIP სექცია */
+#yhFeaturedSection{
+    position:relative;
+    max-width:1200px;
+    margin:34px auto 10px;
+    padding:0 25px;
+}
+
+/* სათაური */
+#yhFeaturedSection .yh-featured-head{
+    align-items:center;
+    margin-bottom:17px;
+}
+
+#yhFeaturedSection .yh-featured-eyebrow{
+    color:var(--olive-dark);
+}
+
+#yhFeaturedSection .yh-featured-head h2{
+    font-size:28px;
+}
+
+/* ძველი grid → ჰორიზონტალური carousel */
+#yhFeaturedGrid{
+    display:flex !important;
+    grid-template-columns:none !important;
+    gap:18px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-behavior:smooth;
+    scroll-snap-type:x mandatory;
+    padding:4px 2px 14px;
+
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+}
+
+#yhFeaturedGrid::-webkit-scrollbar{
+    display:none;
+}
+
+/* VIP ბარათი ჩვეულებრივზე დიდი */
+#yhFeaturedGrid .yh-featured-card{
+    flex:0 0 360px;
+    width:360px;
+    scroll-snap-align:start;
+    border-radius:19px;
+    box-shadow:0 7px 22px rgba(0,0,0,.06);
+}
+
+#yhFeaturedGrid .yh-featured-image{
+    height:245px;
+}
+
+#yhFeaturedGrid .yh-featured-body{
+    padding:17px;
+}
+
+#yhFeaturedGrid .yh-featured-price{
+    font-size:24px;
+}
+
+/* ისრები */
+.yh-vip-carousel-controls{
+    display:flex;
+    gap:8px;
+    margin-left:auto;
+}
+
+.yh-vip-carousel-arrow{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--olive-dark);
+    font-size:22px;
+    font-weight:800;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 4px 14px rgba(0,0,0,.06);
+}
+
+.yh-vip-carousel-arrow:hover{
+    background:var(--olive-light);
+    border-color:var(--olive);
+}
+
+/* VIP-ის ცალკე badge */
+#yhFeaturedGrid
+.yh-featured-badge.yh-vip{
+    background:#eef2e3;
+    color:#59662f;
+    border:1px solid #cad4a8;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:650px){
+
+    #yhFeaturedSection{
+        margin-top:26px;
+        padding:0 14px;
+    }
+
+    #yhFeaturedSection .yh-featured-head{
+        margin-bottom:14px;
+    }
+
+    #yhFeaturedSection .yh-featured-head h2{
+        font-size:23px;
+    }
+
+    #yhFeaturedSection .yh-featured-head p{
+        font-size:13px;
+    }
+
+    #yhFeaturedGrid{
+        gap:13px;
+        margin-right:-14px;
+        padding-right:14px;
+    }
+
+    #yhFeaturedGrid .yh-featured-card{
+        /*
+          შემდეგი ბარათის პატარა ნაწილი ჩანს,
+          რათა მომხმარებელი მიხვდეს,
+          რომ გვერდულად სრიალდება.
+        */
+        flex:0 0 86%;
+        width:86%;
+    }
+
+    #yhFeaturedGrid .yh-featured-image{
+        height:235px;
+    }
+
+    .yh-vip-carousel-controls{
+        display:none;
+    }
+
+}
+
+</style>
+
+
+<script id="yhVipHomeCarouselV1Script">
+
+(function(){
+
+    if(window.__YH_VIP_HOME_CAROUSEL_V1__){
+        return;
+    }
+
+    window.__YH_VIP_HOME_CAROUSEL_V1__ =
+    true;
+
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    function yhVipCarouselPrepareHeader(){
+
+        const section =
+        document.getElementById(
+            "yhFeaturedSection"
+        );
+
+        if(!section){
+            return;
+        }
+
+        const head =
+        section.querySelector(
+            ".yh-featured-head"
+        );
+
+        if(!head){
+            return;
+        }
+
+
+        const eyebrow =
+        head.querySelector(
+            ".yh-featured-eyebrow"
+        );
+
+        const title =
+        head.querySelector(
+            "h2"
+        );
+
+        const description =
+        head.querySelector(
+            "p"
+        );
+
+
+        if(eyebrow){
+
+            eyebrow.textContent =
+            "✦ VIP";
+
+        }
+
+        if(title){
+
+            title.textContent =
+            "VIP განცხადებები";
+
+        }
+
+        if(description){
+
+            description.textContent =
+            "VIP+ PRO, VIP+ და VIP განცხადებები";
+
+        }
+
+
+        let controls =
+        head.querySelector(
+            ".yh-vip-carousel-controls"
+        );
+
+        if(!controls){
+
+            controls =
+            document.createElement(
+                "div"
+            );
+
+            controls.className =
+            "yh-vip-carousel-controls";
+
+            controls.innerHTML = `
+                <button
+                    type="button"
+                    class="yh-vip-carousel-arrow"
+                    data-yh-vip-direction="-1"
+                    aria-label="წინა">
+                    ‹
+                </button>
+
+                <button
+                    type="button"
+                    class="yh-vip-carousel-arrow"
+                    data-yh-vip-direction="1"
+                    aria-label="შემდეგი">
+                    ›
+                </button>
+            `;
+
+            head.appendChild(
+                controls
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       VIP BADGE TEXT
+    ===================================================== */
+
+    function yhVipBadgeText(
+        plan
+    ){
+
+        if(plan === "vip_pro"){
+            return "✦ VIP+ PRO";
+        }
+
+        if(plan === "vip_plus"){
+            return "VIP+";
+        }
+
+        return "VIP";
+
+    }
+
+
+    /* =====================================================
+       RENDER
+    ===================================================== */
+
+    function yhRenderVipHomeCarousel(){
+
+        if(
+            typeof yhEnsureFeaturedSection ===
+            "function"
+        ){
+
+            yhEnsureFeaturedSection();
+
+        }
+
+
+        const section =
+        document.getElementById(
+            "yhFeaturedSection"
+        );
+
+        const grid =
+        document.getElementById(
+            "yhFeaturedGrid"
+        );
+
+
+        if(
+            !section ||
+            !grid
+        ){
+            return;
+        }
+
+
+        yhVipCarouselPrepareHeader();
+
+
+        const listings =
+        Array.isArray(
+            currentListings
+        )
+        ?
+        currentListings
+        :
+        [];
+
+
+        const vipListings =
+        listings
+        .filter(
+            function(listing){
+
+                const plan =
+                yhGetEffectivePromotionPlan(
+                    listing
+                );
+
+                return (
+                    plan === "vip" ||
+                    plan === "vip_plus" ||
+                    plan === "vip_pro"
+                );
+
+            }
+        )
+        .sort(
+            function(a,b){
+
+                /*
+                  პირველი წესი:
+                  VIP+ PRO > VIP+ > VIP
+                */
+                const priority =
+                yhPromotionPriority(b) -
+                yhPromotionPriority(a);
+
+                if(priority){
+                    return priority;
+                }
+
+
+                /*
+                  ერთი და იგივე VIP დონის შიგნით
+                  ახალი განცხადება წინ.
+                */
+                return (
+                    new Date(
+                        b.created_at ||
+                        0
+                    ) -
+                    new Date(
+                        a.created_at ||
+                        0
+                    )
+                );
+
+            }
+        );
+
+
+        if(!vipListings.length){
+
+            section.hidden =
+            true;
+
+            grid.innerHTML =
+            "";
+
+            return;
+
+        }
+
+
+        section.hidden =
+        false;
+
+        grid.innerHTML =
+        "";
+
+
+        vipListings.forEach(
+            function(listing){
+
+                const plan =
+                yhGetEffectivePromotionPlan(
+                    listing
+                );
+
+
+                const photos =
+                Array.isArray(
+                    listing.photos
+                )
+                ?
+                listing.photos
+                :
+                [];
+
+
+                const photo =
+                photos[0] ||
+                "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80";
+
+
+                const location =
+                [
+                    listing.city,
+                    listing.district
+                ]
+                .filter(Boolean)
+                .join(", ");
+
+
+                const sqm =
+                typeof formatPricePerSqm ===
+                "function"
+                ?
+                formatPricePerSqm(
+                    listing
+                )
+                :
+                "";
+
+
+                const card =
+                document.createElement(
+                    "div"
+                );
+
+
+                card.className =
+                "yh-featured-card " +
+                yhPromotionClass(
+                    plan
+                );
+
+
+                card.dataset.id =
+                listing.id;
+
+
+                card.innerHTML = `
+
+                    <div
+                        class="yh-featured-image"
+                        style="
+                        background-image:url('${escapeHtml(
+                            photo
+                        )}');
+                        ">
+
+                        <div
+                            class="yh-featured-overlay">
+                        </div>
+
+                        <div
+                            class="
+                            yh-featured-badge
+                            ${yhPromotionClass(plan)}
+                            ">
+                            ${yhVipBadgeText(plan)}
+                        </div>
+
+                    </div>
+
+
+                    <div class="yh-featured-body">
+
+                        <div
+                            class="yh-featured-price">
+
+                            ${escapeHtml(
+                                formatPrice(
+                                    listing.price,
+                                    listing.currency
+                                )
+                            )}
+
+                            ${
+                                listing.deal_type ===
+                                "rent"
+                                ?
+                                " / თვე"
+                                :
+                                ""
+                            }
+
+                        </div>
+
+
+                        ${
+                            sqm
+                            ?
+                            `
+                            <div
+                                class="yh-featured-sqm">
+                                ${escapeHtml(sqm)}
+                            </div>
+                            `
+                            :
+                            ""
+                        }
+
+
+                        <div
+                            class="yh-featured-location">
+
+                            📍
+                            ${escapeHtml(
+                                location ||
+                                "საქართველო"
+                            )}
+
+                        </div>
+
+
+                        <div
+                            class="yh-featured-meta">
+
+                            ${
+                                listing.rooms
+                                ?
+                                `
+                                <span>
+                                    ${escapeHtml(
+                                        listing.rooms
+                                    )}
+                                    ოთახი
+                                </span>
+                                `
+                                :
+                                ""
+                            }
+
+                            ${
+                                listing.area
+                                ?
+                                `
+                                <span>
+                                    ${escapeHtml(
+                                        listing.area
+                                    )}
+                                    მ²
+                                </span>
+                                `
+                                :
+                                ""
+                            }
+
+                            <span>
+                                👁
+                                ${
+                                    typeof formatViews ===
+                                    "function"
+                                    ?
+                                    formatViews(
+                                        listing.views
+                                    )
+                                    :
+                                    Number(
+                                        listing.views ||
+                                        0
+                                    )
+                                }
+                            </span>
+
+                        </div>
+
+                    </div>
+                `;
+
+
+                grid.appendChild(
+                    card
+                );
+
+            }
+        );
+
+
+        /*
+          არსებული Favorite დეკორაციაც
+          ისევ გამოვიყენოთ.
+        */
+        if(
+            typeof decorateFavoriteButtons ===
+            "function"
+        ){
+
+            decorateFavoriteButtons();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       ARROWS
+    ===================================================== */
+
+    document.addEventListener(
+        "click",
+        function(event){
+
+            const arrow =
+            event.target.closest(
+                "[data-yh-vip-direction]"
+            );
+
+            if(!arrow){
+                return;
+            }
+
+
+            const grid =
+            document.getElementById(
+                "yhFeaturedGrid"
+            );
+
+            if(!grid){
+                return;
+            }
+
+
+            const direction =
+            Number(
+                arrow.dataset
+                .yhVipDirection
+            ) ||
+            1;
+
+
+            const firstCard =
+            grid.querySelector(
+                ".yh-featured-card"
+            );
+
+
+            const distance =
+            firstCard
+            ?
+            firstCard.getBoundingClientRect()
+            .width + 18
+            :
+            380;
+
+
+            grid.scrollBy({
+                left:
+                distance *
+                direction,
+
+                behavior:
+                "smooth"
+            });
+
+        }
+    );
+
+
+    /* =====================================================
+       AFTER LISTINGS LOAD
+    ===================================================== */
+
+    const previousAfterListingsLoaded =
+    window.yhAfterListingsLoaded;
+
+
+    window.yhAfterListingsLoaded =
+    function(){
+
+        if(
+            typeof previousAfterListingsLoaded ===
+            "function"
+        ){
+
+            previousAfterListingsLoaded();
+
+        }
+
+
+        setTimeout(
+            yhRenderVipHomeCarousel,
+            0
+        );
+
+    };
+
+
+    /*
+      თუ განცხადებები ამ კოდის ჩატვირთვამდე
+      უკვე მოსულია, მაშინვე ვხატავთ.
+    */
+    setTimeout(
+        function(){
+
+            if(
+                Array.isArray(
+                    currentListings
+                ) &&
+                currentListings.length
+            ){
+
+                yhRenderVipHomeCarousel();
+
+            }
+
+        },
+        100
+    );
+
+
+    console.log(
+        "YOUR HOME VIP HOME CAROUSEL V1 READY ✅"
+    );
+
+})();
+
+</script>
+
+<!-- YOUR HOME — VIP HOME CAROUSEL V1 END -->
 </body>
 </html>
 
