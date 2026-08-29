@@ -47906,6 +47906,927 @@ body > header{
 </script>
 
 <!-- YOUR HOME — VIP HOME CAROUSEL V1 END -->
+    <!-- =========================================================
+     YOUR HOME — NEW LISTINGS HOME PAGINATION V1
+     PAGE 1 = 9
+     PAGE 2+ = 20
+========================================================= -->
+
+<style id="yhHomeNewPaginationV1Style">
+
+/* ძველი "ყველას ნახვა" მთავარ ბლოკში აღარ გვჭირდება */
+#listingsSection #showAll{
+    display:none !important;
+}
+
+
+/* pagination */
+#yhHomeListingsPagination{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:7px;
+    margin:28px auto 10px;
+    padding:0 12px;
+}
+
+
+.yh-home-page-button{
+    min-width:38px;
+    height:38px;
+    padding:0 11px;
+
+    border:1px solid var(--border);
+    border-radius:9px;
+
+    background:#fff;
+    color:var(--text);
+
+    font-size:14px;
+    font-weight:700;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+}
+
+
+.yh-home-page-button:hover{
+    border-color:var(--olive);
+    color:var(--olive-dark);
+    background:var(--olive-light);
+}
+
+
+.yh-home-page-button.active{
+    background:var(--olive);
+    border-color:var(--olive);
+    color:#fff;
+}
+
+
+.yh-home-page-button:disabled{
+    opacity:.38;
+    cursor:default;
+}
+
+
+.yh-home-page-dots{
+    min-width:24px;
+    text-align:center;
+    color:var(--muted);
+    font-weight:700;
+}
+
+
+/* ამ pagination-ის მიერ დამალული ბარათები */
+#propertyCards
+.property-card.yh-home-page-hidden{
+    display:none !important;
+}
+
+
+@media(max-width:650px){
+
+    #yhHomeListingsPagination{
+        gap:5px;
+        margin-top:22px;
+        padding:0 5px;
+    }
+
+    .yh-home-page-button{
+        min-width:34px;
+        height:36px;
+        padding:0 9px;
+        font-size:13px;
+    }
+
+}
+
+</style>
+
+
+<script id="yhHomeNewPaginationV1Script">
+
+(function(){
+
+    if(window.__YH_HOME_NEW_PAGINATION_V1__){
+        return;
+    }
+
+    window.__YH_HOME_NEW_PAGINATION_V1__ =
+    true;
+
+
+    const FIRST_PAGE_SIZE = 9;
+    const OTHER_PAGE_SIZE = 20;
+
+    let currentHomePage = 1;
+
+
+    /* =====================================================
+       HELPERS
+    ===================================================== */
+
+    function yhHomeCreatedTime(listing){
+
+        const value =
+        listing &&
+        listing.created_at
+        ?
+        new Date(
+            listing.created_at
+        ).getTime()
+        :
+        0;
+
+        return Number.isFinite(value)
+        ?
+        value
+        :
+        0;
+
+    }
+
+
+    function yhHomeNewestListings(){
+
+        const listings =
+        Array.isArray(
+            currentListings
+        )
+        ?
+        currentListings.slice()
+        :
+        [];
+
+
+        return listings.sort(
+            function(a,b){
+
+                return (
+                    yhHomeCreatedTime(b) -
+                    yhHomeCreatedTime(a)
+                );
+
+            }
+        );
+
+    }
+
+
+    /*
+      პირველი გვერდი = 9
+
+      შემდეგი გვერდები:
+      page 2 = index 9-28
+      page 3 = index 29-48
+      და ა.შ.
+    */
+    function yhHomePageRange(page){
+
+        if(page <= 1){
+
+            return {
+                start:0,
+                end:FIRST_PAGE_SIZE
+            };
+
+        }
+
+
+        const start =
+        FIRST_PAGE_SIZE +
+        (
+            (page - 2) *
+            OTHER_PAGE_SIZE
+        );
+
+
+        return {
+            start:start,
+            end:start + OTHER_PAGE_SIZE
+        };
+
+    }
+
+
+    function yhHomeTotalPages(total){
+
+        if(total <= FIRST_PAGE_SIZE){
+            return 1;
+        }
+
+
+        return (
+            1 +
+            Math.ceil(
+                (
+                    total -
+                    FIRST_PAGE_SIZE
+                ) /
+                OTHER_PAGE_SIZE
+            )
+        );
+
+    }
+
+
+    /* =====================================================
+       TITLE
+    ===================================================== */
+
+    function yhHomePrepareTitle(){
+
+        const title =
+        document.getElementById(
+            "popularTitle"
+        );
+
+        if(title){
+
+            title.textContent =
+            "ახალი დამატებული";
+
+        }
+
+
+        /*
+          მთავარი გვერდის ამ ბლოკში sorting
+          მომხმარებელს აღარ სჭირდება —
+          ეს ბლოკი ყოველთვის ახალია.
+        */
+        const sort =
+        document.getElementById(
+            "sortListings"
+        );
+
+        if(sort){
+
+            sort.style.display =
+            "none";
+
+        }
+
+
+        const showAll =
+        document.getElementById(
+            "showAll"
+        );
+
+        if(showAll){
+
+            showAll.style.display =
+            "none";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       PAGINATION CONTAINER
+    ===================================================== */
+
+    function yhEnsureHomePagination(){
+
+        let pagination =
+        document.getElementById(
+            "yhHomeListingsPagination"
+        );
+
+
+        if(pagination){
+            return pagination;
+        }
+
+
+        const cards =
+        document.getElementById(
+            "propertyCards"
+        );
+
+
+        if(!cards){
+            return null;
+        }
+
+
+        pagination =
+        document.createElement(
+            "div"
+        );
+
+
+        pagination.id =
+        "yhHomeListingsPagination";
+
+
+        pagination.setAttribute(
+            "aria-label",
+            "განცხადებების გვერდები"
+        );
+
+
+        cards.insertAdjacentElement(
+            "afterend",
+            pagination
+        );
+
+
+        return pagination;
+
+    }
+
+
+    /* =====================================================
+       PAGE NUMBERS
+    ===================================================== */
+
+    function yhHomePageItems(
+        current,
+        total
+    ){
+
+        if(total <= 7){
+
+            return Array.from(
+                {
+                    length:total
+                },
+                function(_,index){
+
+                    return index + 1;
+
+                }
+            );
+
+        }
+
+
+        const items =
+        [
+            1
+        ];
+
+
+        if(current > 4){
+
+            items.push(
+                "dots-left"
+            );
+
+        }
+
+
+        const start =
+        Math.max(
+            2,
+            current - 1
+        );
+
+
+        const end =
+        Math.min(
+            total - 1,
+            current + 1
+        );
+
+
+        for(
+            let page = start;
+            page <= end;
+            page++
+        ){
+
+            items.push(
+                page
+            );
+
+        }
+
+
+        if(current < total - 3){
+
+            items.push(
+                "dots-right"
+            );
+
+        }
+
+
+        items.push(
+            total
+        );
+
+
+        return items;
+
+    }
+
+
+    /* =====================================================
+       DRAW PAGINATION
+    ===================================================== */
+
+    function yhDrawHomePagination(
+        totalPages
+    ){
+
+        const pagination =
+        yhEnsureHomePagination();
+
+
+        if(!pagination){
+            return;
+        }
+
+
+        if(totalPages <= 1){
+
+            pagination.innerHTML =
+            "";
+
+            pagination.style.display =
+            "none";
+
+            return;
+
+        }
+
+
+        pagination.style.display =
+        "flex";
+
+        pagination.innerHTML =
+        "";
+
+
+        /* PREVIOUS */
+
+        const previous =
+        document.createElement(
+            "button"
+        );
+
+
+        previous.type =
+        "button";
+
+
+        previous.className =
+        "yh-home-page-button";
+
+
+        previous.textContent =
+        "← წინა";
+
+
+        previous.disabled =
+        currentHomePage <= 1;
+
+
+        previous.dataset.page =
+        String(
+            currentHomePage - 1
+        );
+
+
+        pagination.appendChild(
+            previous
+        );
+
+
+        /* NUMBERS */
+
+        yhHomePageItems(
+            currentHomePage,
+            totalPages
+        )
+        .forEach(
+            function(item){
+
+                if(
+                    typeof item ===
+                    "string"
+                ){
+
+                    const dots =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                    dots.className =
+                    "yh-home-page-dots";
+
+
+                    dots.textContent =
+                    "…";
+
+
+                    pagination.appendChild(
+                        dots
+                    );
+
+                    return;
+
+                }
+
+
+                const button =
+                document.createElement(
+                    "button"
+                );
+
+
+                button.type =
+                "button";
+
+
+                button.className =
+                "yh-home-page-button";
+
+
+                if(
+                    item ===
+                    currentHomePage
+                ){
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                }
+
+
+                button.textContent =
+                String(item);
+
+
+                button.dataset.page =
+                String(item);
+
+
+                pagination.appendChild(
+                    button
+                );
+
+            }
+        );
+
+
+        /* NEXT */
+
+        const next =
+        document.createElement(
+            "button"
+        );
+
+
+        next.type =
+        "button";
+
+
+        next.className =
+        "yh-home-page-button";
+
+
+        next.textContent =
+        "შემდეგი →";
+
+
+        next.disabled =
+        currentHomePage >=
+        totalPages;
+
+
+        next.dataset.page =
+        String(
+            currentHomePage + 1
+        );
+
+
+        pagination.appendChild(
+            next
+        );
+
+    }
+
+
+    /* =====================================================
+       APPLY PAGE
+    ===================================================== */
+
+    function yhApplyHomePage(
+        page,
+        scrollToSection
+    ){
+
+        yhHomePrepareTitle();
+
+
+        const listings =
+        yhHomeNewestListings();
+
+
+        const totalPages =
+        yhHomeTotalPages(
+            listings.length
+        );
+
+
+        currentHomePage =
+        Math.min(
+            Math.max(
+                Number(page) || 1,
+                1
+            ),
+            totalPages
+        );
+
+
+        /*
+          ყველა განცხადება DOM-ში რჩება.
+          ეს მნიშვნელოვანია Search Results-ისთვის.
+          ჩვენ მხოლოდ მთავარ გვერდზე
+          ვმალავთ საჭირო ბარათებს.
+        */
+
+        const container =
+        document.getElementById(
+            "propertyCards"
+        );
+
+
+        if(!container){
+            return;
+        }
+
+
+        const cardsById =
+        new Map();
+
+
+        container
+        .querySelectorAll(
+            ".property-card[data-id]"
+        )
+        .forEach(
+            function(card){
+
+                cardsById.set(
+                    String(
+                        card.dataset.id
+                    ),
+                    card
+                );
+
+            }
+        );
+
+
+        /*
+          DOM-ის თანმიმდევრობაც
+          newest-first ხდება.
+        */
+        listings.forEach(
+            function(listing){
+
+                const card =
+                cardsById.get(
+                    String(
+                        listing.id
+                    )
+                );
+
+
+                if(card){
+
+                    container.appendChild(
+                        card
+                    );
+
+                }
+
+            }
+        );
+
+
+        const range =
+        yhHomePageRange(
+            currentHomePage
+        );
+
+
+        const visibleIds =
+        new Set(
+            listings
+            .slice(
+                range.start,
+                range.end
+            )
+            .map(
+                function(listing){
+
+                    return String(
+                        listing.id
+                    );
+
+                }
+            )
+        );
+
+
+        container
+        .querySelectorAll(
+            ".property-card[data-id]"
+        )
+        .forEach(
+            function(card){
+
+                const shouldShow =
+                visibleIds.has(
+                    String(
+                        card.dataset.id
+                    )
+                );
+
+
+                card.classList.toggle(
+                    "yh-home-page-hidden",
+                    !shouldShow
+                );
+
+            }
+        );
+
+
+        const noResults =
+        document.getElementById(
+            "noResults"
+        );
+
+
+        if(noResults){
+
+            noResults.style.display =
+            listings.length
+            ?
+            "none"
+            :
+            "";
+
+        }
+
+
+        yhDrawHomePagination(
+            totalPages
+        );
+
+
+        if(scrollToSection){
+
+            const section =
+            document.getElementById(
+                "listingsSection"
+            );
+
+
+            if(section){
+
+                section.scrollIntoView({
+                    behavior:"smooth",
+                    block:"start"
+                });
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       PAGINATION CLICK
+    ===================================================== */
+
+    document.addEventListener(
+        "click",
+        function(event){
+
+            const button =
+            event.target.closest(
+                "#yhHomeListingsPagination [data-page]"
+            );
+
+
+            if(
+                !button ||
+                button.disabled
+            ){
+                return;
+            }
+
+
+            event.preventDefault();
+
+
+            const page =
+            Number(
+                button.dataset.page
+            );
+
+
+            if(!page){
+                return;
+            }
+
+
+            yhApplyHomePage(
+                page,
+                true
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       KEEP IT AFTER LISTINGS LOAD
+    ===================================================== */
+
+    const previousAfterListingsLoaded =
+    window.yhAfterListingsLoaded;
+
+
+    window.yhAfterListingsLoaded =
+    function(){
+
+        if(
+            typeof previousAfterListingsLoaded ===
+            "function"
+        ){
+
+            previousAfterListingsLoaded();
+
+        }
+
+
+        setTimeout(
+            function(){
+
+                currentHomePage =
+                1;
+
+                yhApplyHomePage(
+                    1,
+                    false
+                );
+
+            },
+            20
+        );
+
+    };
+
+
+    /*
+      თუ განცხადებები უკვე ჩატვირთულია.
+    */
+    setTimeout(
+        function(){
+
+            if(
+                Array.isArray(
+                    currentListings
+                )
+            ){
+
+                yhApplyHomePage(
+                    1,
+                    false
+                );
+
+            }
+
+        },
+        150
+    );
+
+
+    console.log(
+        "YOUR HOME NEW LISTINGS HOME PAGINATION V1 READY ✅"
+    );
+
+})();
+
+</script>
+
+<!-- YOUR HOME — NEW LISTINGS HOME PAGINATION V1 END -->
 </body>
 </html>
 
