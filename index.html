@@ -48969,6 +48969,480 @@ function yhPromotionClass(
 </script>
 
 <!-- YOUR HOME — NEW LISTINGS HOME PAGINATION V1 END -->
+    <!-- =========================================================
+     YOUR HOME — SEARCH RESULTS SORT BAR V1
+========================================================= -->
+
+<style id="yhSearchResultsSortBarV1Style">
+
+.yh-search-results-tools{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:13px;
+
+    padding:12px 14px;
+    margin-bottom:22px;
+}
+
+.yh-search-results-tools-label{
+    color:var(--muted);
+    font-size:13px;
+    font-weight:700;
+}
+
+.yh-search-results-sort{
+    min-width:220px;
+
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--text);
+
+    padding:10px 12px;
+    border-radius:9px;
+
+    font-size:14px;
+    font-weight:700;
+    outline:none;
+}
+
+.yh-search-results-sort:focus{
+    border-color:var(--olive);
+}
+
+@media(max-width:650px){
+
+    .yh-search-results-tools{
+        align-items:stretch;
+        flex-direction:column;
+        gap:8px;
+        padding:11px;
+        margin-bottom:16px;
+    }
+
+    .yh-search-results-sort{
+        width:100%;
+        min-width:0;
+    }
+
+}
+
+</style>
+
+
+<script id="yhSearchResultsSortBarV1Script">
+
+(function(){
+
+    if(
+        window.__YH_SEARCH_RESULTS_SORT_BAR_V1__
+    ){
+        return;
+    }
+
+    window.__YH_SEARCH_RESULTS_SORT_BAR_V1__ =
+    true;
+
+
+    /* =====================================================
+       CREATE TOOLBAR
+    ===================================================== */
+
+    function yhEnsureSearchSortBar(){
+
+        const page =
+        document.getElementById(
+            "yhSearchResultsPage"
+        );
+
+        if(!page){
+            return null;
+        }
+
+
+        let toolbar =
+        document.getElementById(
+            "yhSearchResultsTools"
+        );
+
+
+        if(toolbar){
+            return toolbar;
+        }
+
+
+        const grid =
+        document.getElementById(
+            "yhSearchResultsGrid"
+        );
+
+
+        if(!grid){
+            return null;
+        }
+
+
+        toolbar =
+        document.createElement(
+            "div"
+        );
+
+        toolbar.id =
+        "yhSearchResultsTools";
+
+        toolbar.className =
+        "yh-search-results-tools";
+
+
+        toolbar.innerHTML = `
+            <div
+                class="yh-search-results-tools-label"
+                id="yhSearchSortLabel">
+                დალაგება
+            </div>
+
+            <select
+                class="yh-search-results-sort"
+                id="yhSearchResultsSort">
+
+                <option value="views">
+                    ყველაზე ნახვადი
+                </option>
+
+                <option value="newest">
+                    უახლესი
+                </option>
+
+                <option value="price_asc">
+                    ფასი: დაბლიდან მაღლა
+                </option>
+
+                <option value="price_desc">
+                    ფასი: მაღლიდან დაბლა
+                </option>
+
+                <option value="area_desc">
+                    ფართობი: დიდიდან პატარამდე
+                </option>
+
+            </select>
+        `;
+
+
+        grid.insertAdjacentElement(
+            "beforebegin",
+            toolbar
+        );
+
+
+        const select =
+        toolbar.querySelector(
+            "#yhSearchResultsSort"
+        );
+
+
+        const originalSort =
+        document.getElementById(
+            "sortListings"
+        );
+
+
+        if(
+            select &&
+            originalSort
+        ){
+
+            select.value =
+            originalSort.value ||
+            "views";
+
+        }
+
+
+        return toolbar;
+
+    }
+
+
+    /* =====================================================
+       LANGUAGE
+    ===================================================== */
+
+    function yhUpdateSearchSortLanguage(){
+
+        const label =
+        document.getElementById(
+            "yhSearchSortLabel"
+        );
+
+        const select =
+        document.getElementById(
+            "yhSearchResultsSort"
+        );
+
+
+        if(
+            !label ||
+            !select
+        ){
+            return;
+        }
+
+
+        const lang =
+        String(
+            document
+            .getElementById(
+                "language"
+            )
+            ?.value ||
+            "ka"
+        )
+        .toLowerCase();
+
+
+        if(lang === "en"){
+
+            label.textContent =
+            "Sort";
+
+            select.options[0].text =
+            "Most viewed";
+
+            select.options[1].text =
+            "Newest";
+
+            select.options[2].text =
+            "Price: low to high";
+
+            select.options[3].text =
+            "Price: high to low";
+
+            select.options[4].text =
+            "Area: largest first";
+
+            return;
+
+        }
+
+
+        if(lang === "ru"){
+
+            label.textContent =
+            "Сортировка";
+
+            select.options[0].text =
+            "Самые просматриваемые";
+
+            select.options[1].text =
+            "Новые";
+
+            select.options[2].text =
+            "Цена: по возрастанию";
+
+            select.options[3].text =
+            "Цена: по убыванию";
+
+            select.options[4].text =
+            "Площадь: сначала большая";
+
+            return;
+
+        }
+
+
+        label.textContent =
+        "დალაგება";
+
+        select.options[0].text =
+        "ყველაზე ნახვადი";
+
+        select.options[1].text =
+        "უახლესი";
+
+        select.options[2].text =
+        "ფასი: დაბლიდან მაღლა";
+
+        select.options[3].text =
+        "ფასი: მაღლიდან დაბლა";
+
+        select.options[4].text =
+        "ფართობი: დიდიდან პატარამდე";
+
+    }
+
+
+    /* =====================================================
+       SORT CHANGE
+    ===================================================== */
+
+    document.addEventListener(
+        "change",
+        function(event){
+
+            const select =
+            event.target.closest(
+                "#yhSearchResultsSort"
+            );
+
+
+            if(!select){
+                return;
+            }
+
+
+            const originalSort =
+            document.getElementById(
+                "sortListings"
+            );
+
+
+            if(!originalSort){
+                return;
+            }
+
+
+            /*
+              მთავარ საიტში არსებული sort value
+              იცვლება — ახალ sorting ფუნქციას
+              თავიდან არ ვწერთ.
+            */
+            originalSort.value =
+            select.value;
+
+
+            /*
+              Search Results V1 უკვე იცის:
+              ფილტრაცია + sorting + 20-იანი pagination.
+              ამიტომ მისივე Search ღილაკს ვიყენებთ.
+            */
+            const searchButton =
+            document.getElementById(
+                "searchButton"
+            );
+
+
+            if(searchButton){
+
+                searchButton.click();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       KEEP TOOLBAR VISIBLE
+    ===================================================== */
+
+    function yhRefreshSearchSortBar(){
+
+        const toolbar =
+        yhEnsureSearchSortBar();
+
+
+        if(!toolbar){
+            return;
+        }
+
+
+        const originalSort =
+        document.getElementById(
+            "sortListings"
+        );
+
+        const select =
+        document.getElementById(
+            "yhSearchResultsSort"
+        );
+
+
+        if(
+            originalSort &&
+            select &&
+            select.value !==
+            originalSort.value
+        ){
+
+            select.value =
+            originalSort.value;
+
+        }
+
+
+        yhUpdateSearchSortLanguage();
+
+    }
+
+
+    /*
+      Search Results გვერდი უკვე დინამიკურად იქმნება,
+      ამიტომ რამდენიმე მცირე ცდა სრულიად უსაფრთხოა.
+    */
+    setTimeout(
+        yhRefreshSearchSortBar,
+        100
+    );
+
+    setTimeout(
+        yhRefreshSearchSortBar,
+        500
+    );
+
+
+    document.addEventListener(
+        "click",
+        function(event){
+
+            if(
+                event.target.closest(
+                    "#searchButton"
+                )
+            ){
+
+                setTimeout(
+                    yhRefreshSearchSortBar,
+                    50
+                );
+
+            }
+
+        },
+        false
+    );
+
+
+    document
+    .getElementById(
+        "language"
+    )
+    ?.addEventListener(
+        "change",
+        function(){
+
+            setTimeout(
+                yhRefreshSearchSortBar,
+                30
+            );
+
+        }
+    );
+
+
+    console.log(
+        "YOUR HOME SEARCH RESULTS SORT BAR V1 READY ✅"
+    );
+
+})();
+
+</script>
+
+<!-- YOUR HOME — SEARCH RESULTS SORT BAR V1 END -->
 </body>
 </html>
 
