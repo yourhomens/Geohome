@@ -46988,6 +46988,168 @@ body > header{
 </script>
 
 <!-- YOUR HOME — SEARCH RESULTS + PAGINATION V1 END -->
+    <!-- =========================================================
+     YOUR HOME — SHOW ALL TO RESULTS V1.1
+========================================================= -->
+
+<script id="yhShowAllResultsV11">
+
+(function(){
+
+    if(window.__YH_SHOW_ALL_RESULTS_V11__){
+        return;
+    }
+
+    window.__YH_SHOW_ALL_RESULTS_V11__ = true;
+
+
+    document.addEventListener(
+        "click",
+        function(event){
+
+            const button =
+            event.target.closest(
+                "#showAll"
+            );
+
+            if(!button){
+                return;
+            }
+
+            /*
+              ძველი SHOW ALL handler-ები ამ click-ზე
+              აღარ გაეშვება.
+            */
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+
+            const location =
+            document.getElementById(
+                "locationInput"
+            );
+
+            const property =
+            document.getElementById(
+                "propertyType"
+            );
+
+            const rooms =
+            document.getElementById(
+                "rooms"
+            );
+
+            const min =
+            document.getElementById(
+                "minPriceInput"
+            );
+
+            const max =
+            document.getElementById(
+                "maxPriceInput"
+            );
+
+
+            if(location){
+                location.value = "";
+            }
+
+            if(property){
+                property.value = "all";
+            }
+
+            if(rooms){
+                rooms.value = "all";
+            }
+
+            if(min){
+                min.value = "";
+            }
+
+            if(max){
+                max.value = "";
+            }
+
+
+            document
+            .querySelectorAll(
+                ".filter"
+            )
+            .forEach(
+                function(item){
+
+                    item.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+
+
+            if(
+                typeof resetAdvancedFilters ===
+                "function"
+            ){
+
+                resetAdvancedFilters();
+
+            }
+
+
+            const sort =
+            document.getElementById(
+                "sortListings"
+            );
+
+            if(sort){
+
+                sort.value =
+                "views";
+
+            }
+
+
+            if(
+                typeof updateMinPriceForDealType ===
+                "function"
+            ){
+
+                updateMinPriceForDealType();
+
+            }
+
+
+            /*
+              უკვე გაკეთებულ Search Results V1-ს
+              ვიყენებთ — ახალ სისტემას არ ვქმნით.
+            */
+            setTimeout(
+                function(){
+
+                    document
+                    .getElementById(
+                        "searchButton"
+                    )
+                    ?.click();
+
+                },
+                0
+            );
+
+        },
+        true
+    );
+
+
+    console.log(
+        "YOUR HOME SHOW ALL RESULTS V1.1 READY ✅"
+    );
+
+})();
+
+</script>
+
+<!-- YOUR HOME — SHOW ALL TO RESULTS V1.1 END -->
 </body>
 </html>
 
