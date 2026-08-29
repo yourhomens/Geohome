@@ -4522,7 +4522,7 @@ type="button">
 <div class="form-group">
 
 <label>
-მდგომარეობა
+შენობის მდგომარეობა
 </label>
 
 <select id="condition">
@@ -4543,12 +4543,33 @@ type="button">
 ძველი აშენებული
 </option>
 
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+ბინის მდგომარეობა
+</label>
+
+<select id="apartmentCondition">
+
+<option value="">
+აირჩიეთ
+</option>
+
 <option value="white">
 თეთრი კარკასი
 </option>
 
 <option value="green">
 მწვანე კარკასი
+</option>
+
+<option value="black">
+შავი კარკასი
 </option>
 
 <option value="renovated">
@@ -6836,6 +6857,7 @@ function conditionLabel(
         oldbuilding:"ძველი აშენებული",
         white:"თეთრი კარკასი",
         green:"მწვანე კარკასი",
+        black:"შავი კარკასი",
         renovated:"ახალი რემონტით",
         old:"ძველი რემონტით",
         repair:"სარემონტო"
@@ -17118,6 +17140,13 @@ document
                 )
                 .value ||
                 null,
+                apartment_condition:
+document
+.getElementById(
+    "apartmentCondition"
+)
+?.value ||
+null,
 project_type:
 document
 .getElementById(
