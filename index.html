@@ -26448,6 +26448,173 @@ if(
     );
 
 }
+    const developerSaveButton =
+document.getElementById(
+    "yhDeveloperSaveButton"
+);
+
+
+if(developerSaveButton){
+
+    developerSaveButton
+    .addEventListener(
+        "click",
+        async function(){
+
+            if(!currentUser){
+                requireLogin();
+                return;
+            }
+
+
+            const companyName =
+            document
+            .getElementById(
+                "yhDeveloperCompanyName"
+            )
+            ?.value
+            ?.trim();
+
+
+            if(!companyName){
+
+                alert(
+                    "გთხოვთ შეიყვანოთ კომპანიის სახელი"
+                );
+
+                document
+                .getElementById(
+                    "yhDeveloperCompanyName"
+                )
+                ?.focus();
+
+                return;
+            }
+
+
+            developerSaveButton.disabled =
+            true;
+
+            developerSaveButton.textContent =
+            "ინახება...";
+
+
+            try{
+
+                const profile = {
+
+                    user_id:
+                    currentUser.id,
+
+                    company_name:
+                    companyName,
+
+                    phone:
+                    document
+                    .getElementById(
+                        "yhDeveloperPhone"
+                    )
+                    ?.value
+                    ?.trim() ||
+                    null,
+
+                    email:
+                    document
+                    .getElementById(
+                        "yhDeveloperEmail"
+                    )
+                    ?.value
+                    ?.trim() ||
+                    null,
+
+                    website:
+                    document
+                    .getElementById(
+                        "yhDeveloperWebsite"
+                    )
+                    ?.value
+                    ?.trim() ||
+                    null,
+
+                    address:
+                    document
+                    .getElementById(
+                        "yhDeveloperAddress"
+                    )
+                    ?.value
+                    ?.trim() ||
+                    null,
+
+                    description:
+                    document
+                    .getElementById(
+                        "yhDeveloperDescription"
+                    )
+                    ?.value
+                    ?.trim() ||
+                    null,
+
+                    updated_at:
+                    new Date()
+                    .toISOString()
+
+                };
+
+
+                const result =
+                await supabaseClient
+                .from(
+                    "developer_profiles"
+                )
+                .upsert(
+                    profile,
+                    {
+                        onConflict:
+                        "user_id"
+                    }
+                );
+
+
+                if(result.error){
+
+                    throw new Error(
+                        result.error.message
+                    );
+
+                }
+
+
+                alert(
+                    "დეველოპერის პროფილი წარმატებით გაიგზავნა დასამტკიცებლად ✅"
+                );
+
+
+            }catch(error){
+
+                console.error(
+                    "Developer profile error:",
+                    error
+                );
+
+                alert(
+                    "პროფილის შენახვა ვერ მოხერხდა: " +
+                    error.message
+                );
+
+            }finally{
+
+                developerSaveButton.disabled =
+                false;
+
+                developerSaveButton.textContent =
+                "შენახვა და გადაგზავნა";
+
+            }
+
+        }
+    );
+
+}
     document
     .addEventListener(
         "click",
