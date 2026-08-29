@@ -45934,6 +45934,1060 @@ body > header{
 
 })();
 </script>
+    <!-- =========================================================
+     YOUR HOME — SEARCH RESULTS + PAGINATION V1
+     SAFE ADD-ON
+========================================================= -->
+
+<style id="yhSearchResultsV1Style">
+
+.yh-search-results-page{
+    display:none;
+    max-width:1200px;
+    margin:35px auto;
+    padding:0 25px 70px;
+}
+
+.yh-search-results-page.active{
+    display:block;
+}
+
+.yh-search-results-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:18px;
+    margin-bottom:22px;
+}
+
+.yh-search-results-head h1{
+    font-size:30px;
+    margin-bottom:7px;
+}
+
+.yh-search-results-sub{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.5;
+}
+
+.yh-search-results-back{
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--olive-dark);
+    border-radius:9px;
+    padding:11px 15px;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.yh-search-results-back:hover{
+    background:var(--olive-light);
+}
+
+.yh-search-results-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.yh-search-results-grid .property-card{
+    display:block !important;
+}
+
+.yh-search-results-empty{
+    grid-column:1/-1;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:45px 20px;
+    text-align:center;
+    color:var(--muted);
+}
+
+.yh-search-pagination{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:34px;
+}
+
+.yh-search-pagination button{
+    min-width:40px;
+    height:40px;
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--text);
+    border-radius:9px;
+    padding:0 10px;
+    font-weight:700;
+}
+
+.yh-search-pagination button:hover{
+    background:var(--olive-light);
+    border-color:var(--olive);
+}
+
+.yh-search-pagination button.active{
+    background:var(--olive);
+    border-color:var(--olive);
+    color:#fff;
+}
+
+.yh-search-pagination button:disabled{
+    opacity:.4;
+    cursor:default;
+}
+
+.yh-search-pagination-dots{
+    padding:0 4px;
+    color:var(--muted);
+    font-weight:700;
+}
+
+@media(max-width:900px){
+
+    .yh-search-results-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:650px){
+
+    .yh-search-results-page{
+        margin:22px auto;
+        padding:0 14px 55px;
+    }
+
+    .yh-search-results-head{
+        align-items:flex-start;
+    }
+
+    .yh-search-results-head h1{
+        font-size:24px;
+    }
+
+    .yh-search-results-grid{
+        grid-template-columns:1fr;
+        gap:16px;
+    }
+
+    .yh-search-results-grid .card-image{
+        height:250px;
+    }
+
+    .yh-search-results-back{
+        padding:9px 11px;
+        font-size:13px;
+    }
+
+    .yh-search-pagination{
+        gap:5px;
+        margin-top:26px;
+    }
+
+    .yh-search-pagination button{
+        min-width:36px;
+        height:36px;
+        padding:0 8px;
+        font-size:13px;
+    }
+
+}
+
+</style>
+
+
+<script id="yhSearchResultsV1Script">
+
+(function(){
+
+    if(window.__YH_SEARCH_RESULTS_V1__){
+        return;
+    }
+
+    window.__YH_SEARCH_RESULTS_V1__ = true;
+
+    const RESULTS_PER_PAGE = 20;
+
+    let currentSearchPage = 1;
+    let currentSearchListings = [];
+
+
+    /* =====================================================
+       TEXT
+    ===================================================== */
+
+    function yhSearchLang(){
+
+        return String(
+            document
+            .getElementById("language")
+            ?.value ||
+            "ka"
+        ).toLowerCase();
+
+    }
+
+
+    function yhSearchText(){
+
+        const lang = yhSearchLang();
+
+        if(lang === "en"){
+
+            return {
+                title:"Search results",
+                found:"listings found",
+                back:"← Home",
+                empty:"No listings match the selected filters.",
+                previous:"‹",
+                next:"›"
+            };
+
+        }
+
+        if(lang === "ru"){
+
+            return {
+                title:"Результаты поиска",
+                found:"объявлений найдено",
+                back:"← Главная",
+                empty:"По выбранным фильтрам объявления не найдены.",
+                previous:"‹",
+                next:"›"
+            };
+
+        }
+
+        return {
+            title:"ძებნის შედეგები",
+            found:"განცხადება მოიძებნა",
+            back:"← მთავარი",
+            empty:"არჩეული ფილტრებით განცხადება ვერ მოიძებნა.",
+            previous:"‹",
+            next:"›"
+        };
+
+    }
+
+
+    /* =====================================================
+       CREATE PAGE
+    ===================================================== */
+
+    function yhEnsureSearchResultsPage(){
+
+        let page =
+        document.getElementById(
+            "yhSearchResultsPage"
+        );
+
+        if(page){
+            return page;
+        }
+
+        page =
+        document.createElement(
+            "section"
+        );
+
+        page.id =
+        "yhSearchResultsPage";
+
+        /*
+          yh-feature-page კლასს განზრახ ვამატებთ,
+          რადგან არსებული hideAllPages()
+          ასეთ გვერდებს უკვე სწორად მალავს.
+        */
+        page.className =
+        "yh-feature-page yh-search-results-page";
+
+        page.innerHTML = `
+            <div class="yh-search-results-head">
+
+                <div>
+                    <h1 id="yhSearchResultsTitle">
+                        ძებნის შედეგები
+                    </h1>
+
+                    <div
+                        class="yh-search-results-sub"
+                        id="yhSearchResultsCount">
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    class="yh-search-results-back"
+                    id="yhSearchResultsBack">
+                    ← მთავარი
+                </button>
+
+            </div>
+
+            <div
+                class="yh-search-results-grid"
+                id="yhSearchResultsGrid">
+            </div>
+
+            <div
+                class="yh-search-pagination"
+                id="yhSearchPagination">
+            </div>
+        `;
+
+        const footer =
+        document.querySelector(
+            "footer"
+        );
+
+        if(footer){
+
+            footer.insertAdjacentElement(
+                "beforebegin",
+                page
+            );
+
+        }else{
+
+            document.body.appendChild(
+                page
+            );
+
+        }
+
+        page
+        .querySelector(
+            "#yhSearchResultsBack"
+        )
+        ?.addEventListener(
+            "click",
+            function(){
+
+                if(
+                    window.history.length >
+                    1
+                ){
+
+                    window.history.back();
+
+                }else{
+
+                    showHomePage(
+                        false
+                    );
+
+                }
+
+            }
+        );
+
+
+        page
+        .querySelector(
+            "#yhSearchResultsGrid"
+        )
+        ?.addEventListener(
+            "click",
+            function(event){
+
+                /*
+                  გულზე დაჭერას არ ვუშლით ხელს —
+                  Favorite-ის არსებული სისტემა
+                  თავისით იმუშავებს.
+                */
+                if(
+                    event.target.closest(
+                        ".favorite"
+                    )
+                ){
+                    return;
+                }
+
+                const card =
+                event.target.closest(
+                    ".property-card"
+                );
+
+                if(!card){
+                    return;
+                }
+
+                if(
+                    typeof openListingById ===
+                    "function"
+                ){
+
+                    openListingById(
+                        card.dataset.id
+                    );
+
+                }
+
+            }
+        );
+
+        return page;
+
+    }
+
+
+    /* =====================================================
+       SOURCE CARD
+    ===================================================== */
+
+    function yhGetOriginalCard(
+        listingId
+    ){
+
+        const cards =
+        document
+        .getElementById(
+            "propertyCards"
+        )
+        ?.querySelectorAll(
+            ".property-card"
+        ) ||
+        [];
+
+        return Array
+        .from(cards)
+        .find(
+            function(card){
+
+                return String(
+                    card.dataset.id
+                ) ===
+                String(
+                    listingId
+                );
+
+            }
+        ) ||
+        null;
+
+    }
+
+
+    /* =====================================================
+       PAGE NUMBERS
+    ===================================================== */
+
+    function yhPageNumbers(
+        current,
+        total
+    ){
+
+        if(total <= 7){
+
+            return Array.from(
+                {
+                    length:total
+                },
+                (_,index) =>
+                index + 1
+            );
+
+        }
+
+        const result =
+        [];
+
+        result.push(1);
+
+        if(current > 4){
+            result.push("...");
+        }
+
+        const start =
+        Math.max(
+            2,
+            current - 1
+        );
+
+        const end =
+        Math.min(
+            total - 1,
+            current + 1
+        );
+
+        for(
+            let page = start;
+            page <= end;
+            page++
+        ){
+
+            result.push(
+                page
+            );
+
+        }
+
+        if(
+            current <
+            total - 3
+        ){
+
+            result.push(
+                "..."
+            );
+
+        }
+
+        result.push(
+            total
+        );
+
+        return [
+            ...new Set(
+                result
+            )
+        ];
+
+    }
+
+
+    /* =====================================================
+       RENDER PAGINATION
+    ===================================================== */
+
+    function yhRenderSearchPagination(){
+
+        const container =
+        document.getElementById(
+            "yhSearchPagination"
+        );
+
+        if(!container){
+            return;
+        }
+
+        const totalPages =
+        Math.max(
+            1,
+            Math.ceil(
+                currentSearchListings.length /
+                RESULTS_PER_PAGE
+            )
+        );
+
+        if(
+            currentSearchListings.length <=
+            RESULTS_PER_PAGE
+        ){
+
+            container.innerHTML =
+            "";
+
+            return;
+
+        }
+
+        const text =
+        yhSearchText();
+
+        let html = `
+            <button
+                type="button"
+                data-yh-search-page="${
+                    Math.max(
+                        1,
+                        currentSearchPage - 1
+                    )
+                }"
+                ${
+                    currentSearchPage === 1
+                    ?
+                    "disabled"
+                    :
+                    ""
+                }>
+                ${text.previous}
+            </button>
+        `;
+
+        yhPageNumbers(
+            currentSearchPage,
+            totalPages
+        )
+        .forEach(
+            function(page){
+
+                if(page === "..."){
+
+                    html += `
+                        <span
+                            class="yh-search-pagination-dots">
+                            …
+                        </span>
+                    `;
+
+                    return;
+                }
+
+                html += `
+                    <button
+                        type="button"
+                        data-yh-search-page="${page}"
+                        class="${
+                            page ===
+                            currentSearchPage
+                            ?
+                            "active"
+                            :
+                            ""
+                        }">
+                        ${page}
+                    </button>
+                `;
+
+            }
+        );
+
+        html += `
+            <button
+                type="button"
+                data-yh-search-page="${
+                    Math.min(
+                        totalPages,
+                        currentSearchPage + 1
+                    )
+                }"
+                ${
+                    currentSearchPage ===
+                    totalPages
+                    ?
+                    "disabled"
+                    :
+                    ""
+                }>
+                ${text.next}
+            </button>
+        `;
+
+        container.innerHTML =
+        html;
+
+    }
+
+
+    /* =====================================================
+       RENDER RESULTS
+    ===================================================== */
+
+    function yhRenderSearchResults(){
+
+        const page =
+        yhEnsureSearchResultsPage();
+
+        const grid =
+        document.getElementById(
+            "yhSearchResultsGrid"
+        );
+
+        const title =
+        document.getElementById(
+            "yhSearchResultsTitle"
+        );
+
+        const count =
+        document.getElementById(
+            "yhSearchResultsCount"
+        );
+
+        const back =
+        document.getElementById(
+            "yhSearchResultsBack"
+        );
+
+        if(
+            !page ||
+            !grid
+        ){
+            return;
+        }
+
+        const text =
+        yhSearchText();
+
+        if(title){
+            title.textContent =
+            text.title;
+        }
+
+        if(count){
+
+            count.textContent =
+            currentSearchListings.length +
+            " " +
+            text.found;
+
+        }
+
+        if(back){
+            back.textContent =
+            text.back;
+        }
+
+        const totalPages =
+        Math.max(
+            1,
+            Math.ceil(
+                currentSearchListings.length /
+                RESULTS_PER_PAGE
+            )
+        );
+
+        if(
+            currentSearchPage >
+            totalPages
+        ){
+            currentSearchPage =
+            totalPages;
+        }
+
+        if(
+            currentSearchPage <
+            1
+        ){
+            currentSearchPage =
+            1;
+        }
+
+        const start =
+        (
+            currentSearchPage - 1
+        ) *
+        RESULTS_PER_PAGE;
+
+        const visibleListings =
+        currentSearchListings
+        .slice(
+            start,
+            start +
+            RESULTS_PER_PAGE
+        );
+
+        grid.innerHTML =
+        "";
+
+        if(
+            !visibleListings.length
+        ){
+
+            grid.innerHTML = `
+                <div
+                    class="yh-search-results-empty">
+                    ${text.empty}
+                </div>
+            `;
+
+        }else{
+
+            visibleListings
+            .forEach(
+                function(listing){
+
+                    const source =
+                    yhGetOriginalCard(
+                        listing.id
+                    );
+
+                    if(!source){
+                        return;
+                    }
+
+                    const clone =
+                    source.cloneNode(
+                        true
+                    );
+
+                    clone.classList.remove(
+                        "hidden"
+                    );
+
+                    grid.appendChild(
+                        clone
+                    );
+
+                }
+            );
+
+        }
+
+        yhRenderSearchPagination();
+
+    }
+
+
+    /* =====================================================
+       OPEN RESULTS
+    ===================================================== */
+
+    function yhOpenSearchResults(
+        pageNumber = 1,
+        pushHistory = true
+    ){
+
+        /*
+          არსებული ფილტრაციის ფუნქციას ვიყენებთ.
+          თავიდან არაფერს ვწერთ.
+        */
+        currentSearchListings =
+        typeof getFilteredCurrentListings ===
+        "function"
+        ?
+        getFilteredCurrentListings()
+        :
+        [];
+
+        currentSearchPage =
+        Number(
+            pageNumber
+        ) ||
+        1;
+
+
+        /*
+          ძველი card-ები საიტში რჩება,
+          უბრალოდ Home იმალება.
+        */
+        hideAllPages();
+
+        const page =
+        yhEnsureSearchResultsPage();
+
+        page.classList.add(
+            "active"
+        );
+
+        yhRenderSearchResults();
+
+
+        if(pushHistory){
+
+            window.history.pushState(
+                {
+                    yourHomeView:
+                    "search-results",
+
+                    page:
+                    currentSearchPage
+                },
+                "",
+                APP_URL +
+                "#search-results"
+            );
+
+        }
+
+        window.scrollTo({
+            top:0,
+            behavior:"smooth"
+        });
+
+    }
+
+
+    /* =====================================================
+       PAGINATION CLICK
+    ===================================================== */
+
+    document
+    .addEventListener(
+        "click",
+        function(event){
+
+            const button =
+            event.target.closest(
+                "[data-yh-search-page]"
+            );
+
+            if(
+                !button ||
+                button.disabled
+            ){
+                return;
+            }
+
+            const page =
+            Number(
+                button.dataset
+                .yhSearchPage
+            );
+
+            if(
+                !Number.isFinite(
+                    page
+                )
+            ){
+                return;
+            }
+
+            currentSearchPage =
+            page;
+
+            yhRenderSearchResults();
+
+            window.history
+            .replaceState(
+                {
+                    yourHomeView:
+                    "search-results",
+
+                    page:
+                    currentSearchPage
+                },
+                "",
+                APP_URL +
+                "#search-results"
+            );
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+
+        }
+    );
+
+
+    /* =====================================================
+       SEARCH BUTTON — CAPTURE
+       ძველ click handler-ს არ ვშლით.
+    ===================================================== */
+
+    document
+    .addEventListener(
+        "click",
+        function(event){
+
+            const button =
+            event.target.closest(
+                "#searchButton"
+            );
+
+            if(!button){
+                return;
+            }
+
+            /*
+              ძველ handler-მდე მივდივართ
+              capture რეჟიმში და მხოლოდ ამ
+              კონკრეტული click-ის ძველ ქცევას
+              ვაჩერებთ.
+            */
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            yhOpenSearchResults(
+                1,
+                true
+            );
+
+        },
+        true
+    );
+
+
+    /* =====================================================
+       BROWSER BACK / HISTORY
+    ===================================================== */
+
+    const previousCustomHistory =
+    window.yhHandleCustomHistory;
+
+    window.yhHandleCustomHistory =
+    async function(
+        view,
+        state
+    ){
+
+        if(
+            view ===
+            "search-results"
+        ){
+
+            yhOpenSearchResults(
+                state?.page ||
+                1,
+                false
+            );
+
+            return true;
+
+        }
+
+        if(
+            typeof previousCustomHistory ===
+            "function"
+        ){
+
+            return await
+            previousCustomHistory(
+                view,
+                state
+            );
+
+        }
+
+        return false;
+
+    };
+
+
+    /* =====================================================
+       LANGUAGE UPDATE
+    ===================================================== */
+
+    document
+    .getElementById(
+        "language"
+    )
+    ?.addEventListener(
+        "change",
+        function(){
+
+            const page =
+            document.getElementById(
+                "yhSearchResultsPage"
+            );
+
+            if(
+                page
+                ?.classList
+                .contains(
+                    "active"
+                )
+            ){
+
+                yhRenderSearchResults();
+
+            }
+
+        }
+    );
+
+
+    /*
+      ვქმნით გვერდს წინასწარ,
+      მაგრამ იგი დამალული რჩება.
+    */
+    yhEnsureSearchResultsPage();
+
+    console.log(
+        "YOUR HOME SEARCH RESULTS V1 READY ✅"
+    );
+
+})();
+
+</script>
+
+<!-- YOUR HOME — SEARCH RESULTS + PAGINATION V1 END -->
 </body>
 </html>
 
