@@ -2071,7 +2071,7 @@ let tasksData=[];
 let adminsData=[];
 let adsData=[];
 let packagesData=[];
-
+let developersData=[];
 let pollBusy=false;
 
 const $=id=>document.getElementById(id);
@@ -2809,7 +2809,224 @@ $("adminListings").onclick=async event=>{
         }
     }
 };
+/* DEVELOPERS */
 
+async function loadDevelopers(){
+
+    setLoading("adminDevelopers");
+
+    try{
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            "yh_admin_developers_final",
+            {
+                p_limit:300
+            }
+        );
+
+        if(error){
+            throw error;
+        }
+
+        developersData=
+        rows(data);
+
+        renderDevelopersAdmin();
+
+    }catch(error){
+
+        errorBox(
+            "adminDevelopers",
+            error
+        );
+
+    }
+
+}
+
+
+function renderDevelopersAdmin(){
+
+    const search=
+    $("developerSearch")
+    ?.value
+    ?.trim()
+    ?.toLowerCase()
+    ||"";
+
+    const status=
+    $("developerStatusFilter")
+    ?.value
+    ||"all";
+
+
+    const list=
+    developersData
+    .filter(
+        developer=>{
+
+            const matchesStatus=
+            status==="all"
+            ||
+            String(
+                developer.status||""
+            )===status;
+
+            const matchesSearch=
+            !search
+            ||
+            String(
+                developer.company_name||""
+            )
+            .toLowerCase()
+            .includes(search)
+            ||
+            String(
+                developer.email||""
+            )
+            .toLowerCase()
+            .includes(search)
+            ||
+            String(
+                developer.phone||""
+            )
+            .toLowerCase()
+            .includes(search);
+
+            return(
+                matchesStatus
+                &&
+                matchesSearch
+            );
+
+        }
+    );
+
+
+    $("adminDevelopers").innerHTML=
+    list.length
+    ?list.map(
+        developer=>`
+
+        <article class="data-card">
+
+            <div class="data-title">
+                ${esc(
+                    developer.company_name
+                    ||
+                    "დეველოპერი"
+                )}
+            </div>
+
+            <div class="data-sub">
+                სტატუსი:
+                ${esc(
+                    developer.status
+                    ||
+                    "pending"
+                )}
+            </div>
+
+            <div class="data-sub">
+                📧
+                ${esc(
+                    developer.email
+                    ||
+                    "—"
+                )}
+            </div>
+
+            <div class="data-sub">
+                📞
+                ${esc(
+                    developer.phone
+                    ||
+                    "—"
+                )}
+            </div>
+
+            <div class="data-sub">
+                📍
+                ${esc(
+                    developer.address
+                    ||
+                    "—"
+                )}
+            </div>
+
+            ${
+                developer.description
+                ?`
+                    <div class="data-sub"
+                    style="margin-top:8px;">
+                        ${esc(
+                            developer.description
+                        )}
+                    </div>
+                `
+                :""
+            }
+
+        </article>
+
+        `
+    ).join("")
+    :`
+        <div class="empty-state">
+            დეველოპერები ვერ მოიძებნა.
+        </div>
+    `;
+
+}
+
+
+$("developerSearch")
+?.addEventListener(
+    "input",
+    renderDevelopersAdmin
+);
+
+
+$("developerStatusFilter")
+?.addEventListener(
+    "change",
+    renderDevelopersAdmin
+);
+
+
+$("refreshDevelopersBtn")
+?.addEventListener(
+    "click",
+    loadDevelopers
+);
+
+
+document
+.querySelectorAll(
+    '.nav-btn[data-page="developers"]'
+)
+.forEach(
+    button=>{
+
+        button
+        .addEventListener(
+            "click",
+            function(){
+
+                setTimeout(
+                    loadDevelopers,
+                    40
+                );
+
+            }
+        );
+
+    }
+);
 /* USERS */
 
 async function loadUsers(){
