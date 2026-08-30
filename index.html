@@ -1349,7 +1349,87 @@ nav button:hover{
 /* =========================
    DEVELOPERS / PROJECTS
 ========================= */
+/* =========================
+   NEW PROJECTS HERO
+========================= */
 
+.yh-projects-hero{
+    position:relative;
+    width:100%;
+    min-height:360px;
+    border-radius:28px;
+    overflow:hidden;
+    background:#e9ecdf;
+    margin-bottom:30px;
+    box-shadow:0 12px 35px rgba(37,42,36,0.10);
+}
+
+.yh-projects-hero-image{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.yh-projects-hero-overlay{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        90deg,
+        rgba(255,255,255,0.72) 0%,
+        rgba(255,255,255,0.32) 38%,
+        rgba(255,255,255,0.04) 70%
+    );
+}
+
+.yh-projects-hero-content{
+    position:relative;
+    z-index:2;
+    min-height:360px;
+    display:flex;
+    align-items:center;
+    padding:50px 7%;
+}
+
+.yh-projects-hero-content h1{
+    max-width:520px;
+    margin:0;
+    color:#2f352d;
+    font-size:46px;
+    line-height:1.12;
+    font-weight:800;
+    letter-spacing:-1px;
+}
+
+@media(max-width:750px){
+
+    .yh-projects-hero{
+        min-height:300px;
+        border-radius:22px;
+    }
+
+    .yh-projects-hero-content{
+        min-height:300px;
+        padding:35px 24px;
+        align-items:flex-end;
+    }
+
+    .yh-projects-hero-content h1{
+        max-width:300px;
+        font-size:34px;
+        line-height:1.15;
+    }
+
+    .yh-projects-hero-overlay{
+        background:linear-gradient(
+            180deg,
+            rgba(255,255,255,0.05) 20%,
+            rgba(255,255,255,0.78) 100%
+        );
+    }
+}
 .new-projects-page{
     display:none;
     max-width:1200px;
@@ -4459,7 +4539,24 @@ id="developersCards">
 <section
 class="new-projects-page"
 id="newProjectsPage">
+<!-- NEW PROJECTS HERO -->
+<div class="yh-projects-hero">
 
+    <img
+    src=""
+    alt=""
+    class="yh-projects-hero-image"
+    id="yhProjectsHeroImage">
+
+    <div class="yh-projects-hero-overlay"></div>
+
+    <div class="yh-projects-hero-content">
+        <h1 id="yhProjectsHeroTitle">
+            იპოვე შენი ახალი სახლი
+        </h1>
+    </div>
+
+</div>
 <div class="projects-header">
 
 <div>
