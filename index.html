@@ -27694,13 +27694,12 @@ document.getElementById(
     "yhDeveloperMenuButton"
 );
 
-
 if(developerMenu){
 
     developerMenu
     .addEventListener(
         "click",
-        function(event){
+        async function(event){
 
             event.preventDefault();
             event.stopPropagation();
@@ -27708,6 +27707,227 @@ if(developerMenu){
             if(!requireLogin()){
                 return;
             }
+
+            const result =
+            await supabaseClient
+            .from(
+                "developer_profiles"
+            )
+            .select(
+                "company_name,logo_url,description,phone,email,website,address,status"
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+            if(result.error){
+
+                console.error(
+                    "Developer profile load error:",
+                    result.error
+                );
+
+                showMessage(
+                    "დეველოპერის პროფილის ჩატვირთვა ვერ მოხერხდა."
+                );
+
+                return;
+            }
+
+
+            const profile =
+            result.data;
+
+
+            const companyName =
+            document.getElementById(
+                "yhDeveloperCompanyName"
+            );
+
+            const phone =
+            document.getElementById(
+                "yhDeveloperPhone"
+            );
+
+            const email =
+            document.getElementById(
+                "yhDeveloperEmail"
+            );
+
+            const website =
+            document.getElementById(
+                "yhDeveloperWebsite"
+            );
+
+            const address =
+            document.getElementById(
+                "yhDeveloperAddress"
+            );
+
+            const description =
+            document.getElementById(
+                "yhDeveloperDescription"
+            );
+
+            const reviewNote =
+            document.getElementById(
+                "yhDeveloperReviewNote"
+            );
+
+            const saveButton =
+            document.getElementById(
+                "yhDeveloperSaveButton"
+            );
+
+            const logoPreview =
+            document.getElementById(
+                "yhDeveloperLogoPreview"
+            );
+
+
+            if(profile){
+
+                if(companyName){
+                    companyName.value =
+                    profile.company_name || "";
+                }
+
+                if(phone){
+                    phone.value =
+                    profile.phone || "";
+                }
+
+                if(email){
+                    email.value =
+                    profile.email || "";
+                }
+
+                if(website){
+                    website.value =
+                    profile.website || "";
+                }
+
+                if(address){
+                    address.value =
+                    profile.address || "";
+                }
+
+                if(description){
+                    description.value =
+                    profile.description || "";
+                }
+
+
+                if(
+                    logoPreview &&
+                    profile.logo_url
+                ){
+
+                    logoPreview.innerHTML =
+                    `
+                    <img
+                    src="${profile.logo_url}"
+                    alt="კომპანიის ლოგო">
+                    `;
+
+                }
+
+
+                if(reviewNote){
+
+                    if(
+                        profile.status ===
+                        "approved"
+                    ){
+
+                        reviewNote.innerHTML =
+                        "✅ თქვენი დეველოპერის პროფილი დამტკიცებულია.";
+
+                    }else if(
+                        profile.status ===
+                        "pending"
+                    ){
+
+                        reviewNote.innerHTML =
+                        "⏳ თქვენი პროფილი ადმინისტრატორის განხილვაშია.";
+
+                    }else if(
+                        profile.status ===
+                        "rejected"
+                    ){
+
+                        reviewNote.innerHTML =
+                        "❌ პროფილი უარყოფილია. შეგიძლიათ მონაცემები შეასწოროთ და ხელახლა შეინახოთ.";
+
+                    }else if(
+                        profile.status ===
+                        "blocked"
+                    ){
+
+                        reviewNote.innerHTML =
+                        "🚫 დეველოპერის პროფილი დაბლოკილია.";
+
+                    }
+
+                }
+
+
+                if(saveButton){
+
+                    saveButton.textContent =
+                    profile.status === "approved"
+                    ?
+                    "ცვლილებების შენახვა"
+                    :
+                    "შენახვა და გადაგზავნა";
+
+                }
+
+            }else{
+
+                if(companyName){
+                    companyName.value = "";
+                }
+
+                if(phone){
+                    phone.value = "";
+                }
+
+                if(email){
+                    email.value = "";
+                }
+
+                if(website){
+                    website.value = "";
+                }
+
+                if(address){
+                    address.value = "";
+                }
+
+                if(description){
+                    description.value = "";
+                }
+
+                if(logoPreview){
+                    logoPreview.innerHTML =
+                    "🏢";
+                }
+
+                if(reviewNote){
+                    reviewNote.innerHTML =
+                    "ℹ️ პროფილი გამოქვეყნებამდე გაივლის ადმინისტრატორის შემოწმებას.";
+                }
+
+                if(saveButton){
+                    saveButton.textContent =
+                    "შენახვა და გადაგზავნა";
+                }
+
+            }
+
 
             hideAllPages();
 
@@ -27717,12 +27937,15 @@ if(developerMenu){
             );
 
             if(developerPage){
+
                 developerPage
                 .classList
                 .add(
                     "active"
                 );
+
             }
+
 
             const accountMenu =
             document.getElementById(
@@ -27730,12 +27953,15 @@ if(developerMenu){
             );
 
             if(accountMenu){
+
                 accountMenu
                 .classList
                 .remove(
                     "active"
                 );
+
             }
+
 
             window.scrollTo({
                 top:0,
