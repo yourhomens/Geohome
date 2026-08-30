@@ -2997,7 +2997,20 @@ function renderDevelopersAdmin(){
         `
         :""
     }
-
+${
+    ["owner","admin"].includes(
+        String(currentAdmin?.role||"")
+        .toLowerCase()
+    )
+    ?`
+        <button
+            class="action-btn danger"
+            data-delete-developer="${esc(developer.id)}">
+            🗑️ წაშლა
+        </button>
+    `
+    :""
+}
 </div>
             ${
                 developer.description
