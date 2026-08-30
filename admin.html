@@ -3024,7 +3024,92 @@ function renderDevelopersAdmin(){
 
 }
 
+$("adminDevelopers")
+?.addEventListener(
+    "click",
+    async function(event){
 
+        const button =
+        event.target.closest(
+            "[data-developer-status]"
+        );
+
+        if(!button){
+            return;
+        }
+
+
+        const developerId =
+        button.dataset.developerId;
+
+        const newStatus =
+        button.dataset.developerStatus;
+
+
+        const statusText = {
+
+            approved:
+            "დამტკიცება",
+
+            rejected:
+            "უარყოფა",
+
+            blocked:
+            "დაბლოკვა"
+
+        }[newStatus]
+        || newStatus;
+
+
+        if(
+            !confirm(
+                `ნამდვილად გსურს დეველოპერის ${statusText}?`
+            )
+        ){
+            return;
+        }
+
+
+        button.disabled = true;
+
+
+        try{
+
+            const{
+                error
+            }=
+            await sb.rpc(
+                "yh_admin_developer_status_final",
+                {
+                    p_developer_id:
+                    developerId,
+
+                    p_status:
+                    newStatus
+                }
+            );
+
+
+            if(error){
+                throw error;
+            }
+
+
+            await loadDevelopers();
+
+
+        }catch(error){
+
+            alert(
+                error.message
+            );
+
+            button.disabled = false;
+
+        }
+
+    }
+);
 $("developerSearch")
 ?.addEventListener(
     "input",
