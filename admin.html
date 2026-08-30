@@ -2957,7 +2957,48 @@ function renderDevelopersAdmin(){
                     "—"
                 )}
             </div>
+<div class="actions" style="margin-top:12px;">
 
+    ${
+        developer.status !== "approved"
+        ?`
+            <button
+                class="action-btn primary"
+                data-developer-status="approved"
+                data-developer-id="${esc(developer.id)}">
+                ✅ დამტკიცება
+            </button>
+        `
+        :""
+    }
+
+    ${
+        developer.status !== "rejected"
+        ?`
+            <button
+                class="action-btn"
+                data-developer-status="rejected"
+                data-developer-id="${esc(developer.id)}">
+                ❌ უარყოფა
+            </button>
+        `
+        :""
+    }
+
+    ${
+        developer.status !== "blocked"
+        ?`
+            <button
+                class="action-btn danger"
+                data-developer-status="blocked"
+                data-developer-id="${esc(developer.id)}">
+                🚫 დაბლოკვა
+            </button>
+        `
+        :""
+    }
+
+</div>
             ${
                 developer.description
                 ?`
