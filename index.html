@@ -6010,6 +6010,18 @@ id="yhDeveloperSaveButton">
 შენახვა და გადაგზავნა
 
 </button>
+    <button
+type="button"
+class="back-button"
+id="yhDeveloperProjectsButton"
+style="
+margin-top:12px;
+width:100%;
+">
+
+🏗️ ჩემი პროექტები
+
+</button>
 
 </div>
 
@@ -27618,6 +27630,213 @@ if(developerMenu){
             });
 
         }
+    );
+
+}
+    const developerProjectsButton =
+document.getElementById(
+    "yhDeveloperProjectsButton"
+);
+
+const developerProjectsBack =
+document.getElementById(
+    "yhDeveloperProjectsBack"
+);
+
+const developerAddProjectButton =
+document.getElementById(
+    "yhDeveloperAddProjectButton"
+);
+
+const developerProjectFormBack =
+document.getElementById(
+    "yhDeveloperProjectFormBack"
+);
+
+const developerProjectCancelButton =
+document.getElementById(
+    "yhProjectCancelButton"
+);
+
+
+if(developerProjectsButton){
+
+    developerProjectsButton
+    .addEventListener(
+        "click",
+        async function(){
+
+            if(!requireLogin()){
+                return;
+            }
+
+            const result =
+            await supabaseClient
+            .from(
+                "developer_profiles"
+            )
+            .select(
+                "id,status"
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+            if(result.error){
+
+                console.error(
+                    "Developer profile check error:",
+                    result.error
+                );
+
+                showMessage(
+                    "დეველოპერის პროფილის შემოწმება ვერ მოხერხდა."
+                );
+
+                return;
+            }
+
+            if(!result.data){
+
+                showMessage(
+                    "ჯერ შექმენით დეველოპერის პროფილი."
+                );
+
+                return;
+            }
+
+            if(
+                result.data.status !==
+                "approved"
+            ){
+
+                showMessage(
+                    "პროექტების დამატება შესაძლებელი იქნება პროფილის დამტკიცების შემდეგ."
+                );
+
+                return;
+            }
+
+            hideAllPages();
+
+            document
+            .getElementById(
+                "yhDeveloperProjectsPage"
+            )
+            ?.classList
+            .add(
+                "active"
+            );
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+
+        }
+    );
+
+}
+
+
+if(developerProjectsBack){
+
+    developerProjectsBack
+    .addEventListener(
+        "click",
+        function(){
+
+            hideAllPages();
+
+            document
+            .getElementById(
+                "yhDeveloperEditorPage"
+            )
+            ?.classList
+            .add(
+                "active"
+            );
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+
+        }
+    );
+
+}
+
+
+if(developerAddProjectButton){
+
+    developerAddProjectButton
+    .addEventListener(
+        "click",
+        function(){
+
+            hideAllPages();
+
+            document
+            .getElementById(
+                "yhDeveloperProjectFormPage"
+            )
+            ?.classList
+            .add(
+                "active"
+            );
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+
+        }
+    );
+
+}
+
+
+function yhBackToDeveloperProjects(){
+
+    hideAllPages();
+
+    document
+    .getElementById(
+        "yhDeveloperProjectsPage"
+    )
+    ?.classList
+    .add(
+        "active"
+    );
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+if(developerProjectFormBack){
+
+    developerProjectFormBack
+    .addEventListener(
+        "click",
+        yhBackToDeveloperProjects
+    );
+
+}
+
+
+if(developerProjectCancelButton){
+
+    developerProjectCancelButton
+    .addEventListener(
+        "click",
+        yhBackToDeveloperProjects
     );
 
 }
