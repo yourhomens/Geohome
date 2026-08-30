@@ -6904,6 +6904,7 @@ let searchType =
 let selectedFiles = [];
 
 let currentListings = [];
+let currentDeveloperProjects = [];
 
 let currentMyListings = [];
 
@@ -14986,7 +14987,41 @@ document
 /* =========================
    LOAD LISTINGS
 ========================= */
+async function loadDeveloperProjects(){
 
+    const result =
+    await supabaseClient
+    .from(
+        "developer_projects"
+    )
+    .select(
+        "*"
+    )
+    .eq(
+        "status",
+        "approved"
+    )
+    .order(
+        "created_at",
+        {
+            ascending:false
+        }
+    );
+
+    if(result.error){
+
+        console.error(
+            "Developer projects load error:",
+            result.error
+        );
+
+        currentDeveloperProjects = [];
+        return;
+    }
+
+    currentDeveloperProjects =
+    result.data || [];
+}
 async function loadListings(){
 
     const result =
@@ -16364,18 +16399,9 @@ district || city;
     0;
 
 
-    return currentListings
-    .filter(
-        function(listing){
-
-            if(
-                listing.owner_type !==
-                "developer"
-            ){
-
-                return false;
-
-            }
+    return currentDeveloperProjects
+.filter(
+    function(listing){
 
 
             if(
@@ -37430,6 +37456,7 @@ async function(){
     try{
 
         await loadListings();
+        await loadDeveloperProjects();
 
     }catch(error){
 
