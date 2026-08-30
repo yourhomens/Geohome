@@ -16365,447 +16365,83 @@ district || city;
 
 
     return currentListings
-async function getFilteredProjects(){
+    .filter(
+        function(listing){
 
-    const city =
-    document
-    .getElementById(
-        "projectLocationFilter"
-    )
-    ?.value || "";
+            if(
+                listing.owner_type !==
+                "developer"
+            ){
 
-    const district =
-    document
-    .getElementById(
-        "projectDistrictFilter"
-    )
-    ?.value || "";
+                return false;
 
-    const minPrice =
-    Number(
-        document
-        .getElementById(
-            "projectMinPrice"
-        )
-        ?.value || 0
-    );
+            }
 
-    const maxPrice =
-    Number(
-        document
-        .getElementById(
-            "projectMaxPrice"
-        )
-        ?.value || 0
-    );
 
-    const constructionStatus =
-    document
-    .getElementById(
-        "projectConstructionStatus"
-    )
-    ?.value || "";
+            if(
+                !yhLocationMatches(
+                    listing,
+                    location
+                )
+            ){
 
+                return false;
 
-    let query =
-    supabaseClient
-    .from(
-        "developer_projects"
-    )
-    .select(
-        "*"
-    )
-    .eq(
-        "status",
-        "approved"
-    );
+            }
 
 
-    if(city){
-
-        query =
-        query.eq(
-            "city",
-            city
-        );
-
-    }
-
-
-    if(district){
-
-        query =
-        query.eq(
-            "district",
-            district
-        );
-
-    }
-
-
-    if(constructionStatus){
-
-        query =
-        query.eq(
-            "construction_status",
-            constructionStatus
-        );
-
-    }
-
-
-    if(minPrice){
-
-        query =
-        query.gte(
-            "max_price",
-            minPrice
-        );
-
-    }
-
-
-    if(maxPrice){
-
-        query =
-        query.lte(
-            "min_price",
-            maxPrice
-        );
-
-    }
-
-
-    query =
-    query.order(
-        "created_at",
-        {
-            ascending:false
-        }
-    );
-
-
-    const result =
-    await query;
-
-
-    if(result.error){
-
-        console.error(
-            "Developer projects error:",
-            result.error
-        );
-
-        return [];
-
-    }
-
-
-    return (
-        result.data ||
-        []
-    );
-
-}
-
-
-
-async function renderNewProjects(){
-
-    const container =
-    document.getElementById(
-        "newProjectsCards"
-    );
-
-
-    if(!container){
-        return;
-    }
-
-
-    container.innerHTML =
-    `
-    <div class="projects-empty">
-        იტვირთება...
-    </div>
-    `;
-
-
-    const projects =
-    await getFilteredProjects();
-
-
-    container.innerHTML =
-    "";
-
-
-    if(
-        !projects.length
-    ){
-
-        container.innerHTML =
-        `
-        <div class="projects-empty">
-
-            <div style="
-            font-size:40px;
-            margin-bottom:12px;
-            ">
-            🏗️
-            </div>
-
-            <strong>
-            შერჩეული პარამეტრებით პროექტი ვერ მოიძებნა
-            </strong>
-
-            <p style="
-            margin-top:8px;
-            ">
-            შეცვალეთ ფილტრები და სცადეთ თავიდან.
-            </p>
-
-        </div>
-        `;
-
-        return;
-
-    }
-
-
-    projects.forEach(
-        function(project){
-
-            const card =
-            document.createElement(
-                "div"
-            );
-
-
-            card.className =
-            "project-card";
-
-
-            card.dataset.id =
-            project.id;
-
-
-            const photos =
-            Array.isArray(
-                project.photos
+            const developerText =
+            String(
+                listing.contact_name ||
+                ""
             )
-            ?
-            project.photos
-            :
-            [];
-
-
-            const firstPhoto =
-            photos[0] ||
-            "https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=900&q=80";
-
-
-            const address =
-            [
-                project.city,
-                project.district
-            ]
-            .filter(Boolean)
-            .join(", ");
-
-
-            let statusText =
-            "";
+            .toLowerCase();
 
 
             if(
-                project.construction_status ===
-                "planned"
-            ){
-                statusText =
-                "დაგეგმილი";
-            }
-
-
-            if(
-                project.construction_status ===
-                "under_construction"
-            ){
-                statusText =
-                "მშენებარე";
-            }
-
-
-            if(
-                project.construction_status ===
-                "completed"
-            ){
-                statusText =
-                "დასრულებული";
-            }
-
-
-            let priceText =
-            "";
-
-
-            if(
-                project.min_price
+                developer &&
+                !developerText.includes(
+                    developer
+                )
             ){
 
-                priceText =
-                formatPrice(
-                    project.min_price,
-                    project.currency ||
-                    "GEL"
-                );
-
-            }else if(
-                project.price_per_sqm
-            ){
-
-                priceText =
-                formatPrice(
-                    project.price_per_sqm,
-                    project.currency ||
-                    "GEL"
-                ) +
-                " / მ²";
-
-            }else{
-
-                priceText =
-                "ფასი შეთანხმებით";
+                return false;
 
             }
 
 
-            card.innerHTML =
-            `
-
-            <div
-            class="card-image"
-            style="background-image:url('${escapeHtml(firstPhoto)}')">
-
-                <div class="badge">
-                🏗️ ${escapeHtml(
-                    statusText ||
-                    "ახალი პროექტი"
-                )}
-                </div>
-
-            </div>
-
-
-            <div class="card-body">
-
-                <h3 style="
-                margin-bottom:8px;
-                ">
-                ${escapeHtml(
-                    project.title ||
-                    "ახალი პროექტი"
-                )}
-                </h3>
-
-
-                <div class="price">
-                ${escapeHtml(
-                    priceText
-                )}
-                </div>
-
-
-                ${
-                    project.price_per_sqm
-                    ?
-                    `
-                    <div class="price-per-sqm">
-                    ${escapeHtml(
-                        formatPrice(
-                            project.price_per_sqm,
-                            project.currency ||
-                            "GEL"
-                        )
-                    )} / მ²
-                    </div>
-                    `
-                    :
-                    ""
-                }
-
-
-                <div class="address">
-                📍 ${escapeHtml(
-                    address ||
-                    project.address ||
-                    ""
-                )}
-                </div>
-
-
-                <div class="details">
-
-                    ${
-                        statusText
-                        ?
-                        `
-                        <span>
-                        ${escapeHtml(statusText)}
-                        </span>
-                        `
-                        :
-                        ""
-                    }
-
-                    ${
-                        project.completion_date
-                        ?
-                        `
-                        <span>
-                        დასრულება:
-                        ${escapeHtml(
-                            project.completion_date
-                        )}
-                        </span>
-                        `
-                        :
-                        ""
-                    }
-
-                </div>
-
-
-                <div class="owner">
-                    <span>
-                    🏗️ დეველოპერი
-                    </span>
-                </div>
-
-            </div>
-            `;
-
-
-            container
-            .appendChild(
-                card
+            const price =
+            convertCurrency(
+                Number(
+                    listing.price ||
+                    0
+                ),
+                listing.currency ||
+                "USD",
+                yhDisplayCurrency
             );
 
-        }
-    );
+
+            if(
+                minPrice &&
+                price <
+                minPrice
+            ){
+
+                return false;
+
+            }
 
 
-    if(
-        typeof window
-        .yhAfterProjectsRender ===
-        "function"
-    ){
+            if(
+                maxPrice &&
+                price >
+                maxPrice
+            ){
 
-        window
-        .yhAfterProjectsRender();
+                return false;
 
-    }
-
-}
+            }
 
 
             return true;
@@ -51300,6 +50936,42 @@ function yhPromotionClass(
 <!-- YOUR HOME — SEARCH RESULTS CHANGE FILTERS V1 END -->
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
