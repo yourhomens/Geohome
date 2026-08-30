@@ -16740,7 +16740,324 @@ document
     renderNewProjects
 );
 
+function openDeveloperProjectById(projectId){
 
+    const project =
+    currentDeveloperProjects.find(
+        function(item){
+            return String(item.id) ===
+            String(projectId);
+        }
+    );
+
+    if(!project){
+        showMessage(
+            "პროექტი ვერ მოიძებნა."
+        );
+        return;
+    }
+
+    let page =
+    document.getElementById(
+        "developerProjectDetailPage"
+    );
+
+    if(!page){
+
+        page =
+        document.createElement(
+            "section"
+        );
+
+        page.id =
+        "developerProjectDetailPage";
+
+        page.style.cssText =
+        `
+        position:fixed;
+        inset:0;
+        z-index:4400;
+        background:#f6f7f3;
+        overflow-y:auto;
+        padding:20px;
+        `;
+
+        document.body.appendChild(
+            page
+        );
+    }
+
+
+    const photos =
+    Array.isArray(project.photos)
+    ?
+    project.photos
+    :
+    [];
+
+
+    const firstPhoto =
+    photos[0] || "";
+
+
+    const location =
+    [
+        project.city,
+        project.district,
+        project.address
+    ]
+    .filter(Boolean)
+    .join(", ");
+
+
+    let constructionText =
+    "სტატუსი უცნობია";
+
+    if(
+        project.construction_status ===
+        "planned"
+    ){
+        constructionText =
+        "დაგეგმილი";
+    }
+
+    if(
+        project.construction_status ===
+        "under_construction"
+    ){
+        constructionText =
+        "მშენებარე";
+    }
+
+    if(
+        project.construction_status ===
+        "completed"
+    ){
+        constructionText =
+        "დასრულებული";
+    }
+
+
+    page.innerHTML =
+    `
+    <div style="
+        max-width:1100px;
+        margin:0 auto;
+    ">
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:12px;
+            margin-bottom:20px;
+        ">
+
+            <button
+                type="button"
+                id="developerProjectBackButton"
+                style="
+                    border:1px solid var(--border);
+                    background:#fff;
+                    padding:11px 16px;
+                    border-radius:9px;
+                    font-weight:700;
+                ">
+                ← უკან
+            </button>
+
+            <strong style="
+                color:var(--olive-dark);
+            ">
+                ახალი პროექტი
+            </strong>
+
+        </div>
+
+
+        ${
+            firstPhoto
+            ?
+            `
+            <img
+                src="${escapeHtml(firstPhoto)}"
+                alt=""
+                style="
+                    width:100%;
+                    max-height:520px;
+                    object-fit:cover;
+                    border-radius:18px;
+                    display:block;
+                ">
+            `
+            :
+            ""
+        }
+
+
+        <div style="
+            margin-top:20px;
+            background:#fff;
+            border:1px solid var(--border);
+            border-radius:18px;
+            padding:24px;
+        ">
+
+            <h1 style="
+                margin-bottom:12px;
+            ">
+                ${escapeHtml(
+                    project.title ||
+                    "ახალი პროექტი"
+                )}
+            </h1>
+
+
+            <div style="
+                color:var(--muted);
+                margin-bottom:18px;
+            ">
+                📍 ${escapeHtml(
+                    location ||
+                    "მისამართი მითითებული არ არის"
+                )}
+            </div>
+
+
+            <div style="
+                display:flex;
+                flex-wrap:wrap;
+                gap:10px;
+                margin-bottom:20px;
+            ">
+
+                <span style="
+                    background:var(--olive-light);
+                    color:var(--olive-dark);
+                    padding:8px 11px;
+                    border-radius:8px;
+                    font-weight:700;
+                ">
+                    🏗️ ${escapeHtml(
+                        constructionText
+                    )}
+                </span>
+
+                ${
+                    project.completion_date
+                    ?
+                    `
+                    <span style="
+                        background:#f5f5f5;
+                        padding:8px 11px;
+                        border-radius:8px;
+                    ">
+                        დასრულება:
+                        ${escapeHtml(
+                            project.completion_date
+                        )}
+                    </span>
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+
+
+            ${
+                project.min_price
+                ?
+                `
+                <div style="
+                    font-size:25px;
+                    font-weight:800;
+                    margin-bottom:8px;
+                ">
+                    ფასი ${escapeHtml(
+                        String(
+                            project.min_price
+                        )
+                    )}
+                    ${escapeHtml(
+                        project.currency ||
+                        "GEL"
+                    )}-დან
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            ${
+                project.price_per_sqm
+                ?
+                `
+                <div style="
+                    color:var(--olive-dark);
+                    font-weight:700;
+                    margin-bottom:20px;
+                ">
+                    ${escapeHtml(
+                        String(
+                            project.price_per_sqm
+                        )
+                    )}
+                    ${escapeHtml(
+                        project.currency ||
+                        "GEL"
+                    )} / მ²
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            ${
+                project.description
+                ?
+                `
+                <div style="
+                    border-top:1px solid var(--border);
+                    padding-top:20px;
+                    line-height:1.7;
+                    white-space:pre-wrap;
+                ">
+                    ${escapeHtml(
+                        project.description
+                    )}
+                </div>
+                `
+                :
+                ""
+            }
+
+        </div>
+
+    </div>
+    `;
+
+
+    page.style.display =
+    "block";
+
+
+    document
+    .getElementById(
+        "developerProjectBackButton"
+    )
+    ?.addEventListener(
+        "click",
+        function(){
+
+            page.style.display =
+            "none";
+
+        }
+    );
+}
 document
 .getElementById(
     "newProjectsCards"
@@ -16760,9 +17077,9 @@ document
         }
 
 
-        openListingById(
-            card.dataset.id
-        );
+        openDeveloperProjectById(
+    card.dataset.id
+);
 
     }
 );
