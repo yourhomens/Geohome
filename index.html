@@ -15966,340 +15966,267 @@ function renderListings(
    DEVELOPERS
 ========================= */
 
-function renderDevelopers(){
+async function renderDevelopers(){
 
     const container =
     document.getElementById(
         "developersCards"
     );
 
+    if(!container){
+        return;
+    }
+
 
     container.innerHTML =
-    "";
+    `
+    <div class="projects-empty">
+        დეველოპერები იტვირთება...
+    </div>
+    `;
 
 
-    const developerListings =
-    currentListings
-    .filter(
-        function(listing){
+    try{
 
-            return (
-                listing.owner_type ===
-                "developer"
+        const result =
+        await supabaseClient
+        .from(
+            "developer_profiles"
+        )
+        .select(
+            "id,company_name,logo_url,description,phone,email,website,address,status"
+        )
+        .eq(
+            "status",
+            "approved"
+        )
+        .order(
+            "company_name",
+            {
+                ascending:true
+            }
+        );
+
+
+        if(result.error){
+
+            console.error(
+                "Developers load error:",
+                result.error
             );
 
+            container.innerHTML =
+            `
+            <div class="projects-empty">
+                დეველოპერების ჩატვირთვა ვერ მოხერხდა.
+            </div>
+            `;
+
+            return;
         }
-    );
 
 
-    const developers =
-    new Map();
+        const developers =
+        result.data || [];
 
 
-    developerListings
-    .forEach(
-        function(listing){
-
-            const developerName =
-            String(
-                listing.contact_name ||
-                "დეველოპერი"
-            )
-            .trim();
+        container.innerHTML =
+        "";
 
 
-            const key =
-            developerName
-            .toLowerCase();
+        if(!developers.length){
+
+            container.innerHTML =
+            `
+            <div class="projects-empty">
+
+                <div style="
+                    font-size:42px;
+                    margin-bottom:12px;
+                ">
+                    🏢
+                </div>
+
+                <strong>
+                    დეველოპერები ჯერ არ არიან დამატებული
+                </strong>
+
+                <p style="
+                    margin-top:8px;
+                    line-height:1.6;
+                ">
+                    დამტკიცებული დეველოპერული კომპანიები
+                    აქ გამოჩნდება.
+                </p>
+
+            </div>
+            `;
+
+            return;
+        }
 
 
-            if(
-                !developers.has(
-                    key
+        developers.forEach(
+            function(developer){
+
+                const companyName =
+                String(
+                    developer.company_name ||
+                    "დეველოპერი"
                 )
-            ){
+                .trim();
 
-                developers.set(
-                    key,
-                    {
-                        name:
-                        developerName,
 
-                        listings:
-                        []
+                const initials =
+                companyName
+                .split(/\s+/)
+                .filter(Boolean)
+                .slice(0,2)
+                .map(
+                    function(word){
+                        return word
+                        .charAt(0)
+                        .toUpperCase();
                     }
+                )
+                .join("");
+
+
+                const card =
+                document.createElement(
+                    "div"
+                );
+
+
+                card.className =
+                "developer-card";
+
+
+                card.style.cssText =
+                `
+                padding:24px 18px;
+                text-align:center;
+                display:flex;
+                flex-direction:column;
+                align-items:center;
+                justify-content:center;
+                min-height:220px;
+                `;
+
+
+                const logoHtml =
+                developer.logo_url
+                ?
+                `
+                <img
+                    src="${escapeHtml(
+                        developer.logo_url
+                    )}"
+                    alt="${escapeHtml(
+                        companyName
+                    )}"
+                    style="
+                        width:100px;
+                        height:100px;
+                        border-radius:50%;
+                        object-fit:cover;
+                        border:1px solid var(--border);
+                        background:#fff;
+                        margin-bottom:15px;
+                    "
+                >
+                `
+                :
+                `
+                <div
+                    style="
+                        width:100px;
+                        height:100px;
+                        border-radius:50%;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        background:var(--olive-light);
+                        color:var(--olive-dark);
+                        border:1px solid #d9dfc9;
+                        font-size:28px;
+                        font-weight:800;
+                        margin-bottom:15px;
+                    "
+                >
+                    ${escapeHtml(
+                        initials || "🏢"
+                    )}
+                </div>
+                `;
+
+
+                card.innerHTML =
+                `
+                ${logoHtml}
+
+                <div
+                    style="
+                        font-size:18px;
+                        font-weight:800;
+                        line-height:1.35;
+                        color:var(--dark);
+                    "
+                >
+                    ${escapeHtml(
+                        companyName
+                    )}
+                </div>
+
+                <button
+                    type="button"
+                    class="developer-projects-button"
+                    data-developer="${escapeHtml(
+                        companyName
+                    )}"
+                    style="
+                        margin-top:16px;
+                    "
+                >
+                    პროექტების ნახვა →
+                </button>
+                `;
+
+
+                container
+                .appendChild(
+                    card
                 );
 
             }
+        );
 
 
-            developers
-            .get(
-                key
-            )
-            .listings
-            .push(
-                listing
-            );
+        if(
+            typeof window
+            .yhAfterDevelopersRender ===
+            "function"
+        ){
+
+            window
+            .yhAfterDevelopersRender();
 
         }
-    );
 
 
-    if(
-        !developers.size
-    ){
+    }catch(error){
+
+        console.error(
+            "Developers load error:",
+            error
+        );
 
         container.innerHTML =
         `
         <div class="projects-empty">
-
-        <div style="
-        font-size:42px;
-        margin-bottom:12px;
-        ">
-        🏢
-        </div>
-
-        <strong>
-        დეველოპერები ჯერ არ არიან დამატებული
-        </strong>
-
-        <p style="
-        margin-top:8px;
-        line-height:1.6;
-        ">
-        როდესაც განცხადება გამოქვეყნდება
-        დეველოპერის სახელით, კომპანია აქ
-        ავტომატურად გამოჩნდება.
-        </p>
-
+            დეველოპერების ჩატვირთვა ვერ მოხერხდა.
         </div>
         `;
-
-
-        return;
-
-    }
-
-
-    developers
-    .forEach(
-        function(developer){
-
-            const listings =
-            developer.listings;
-
-
-            const firstListing =
-            listings[0];
-
-
-            const photos =
-            Array.isArray(
-                firstListing.photos
-            )
-            ?
-            firstListing.photos
-            :
-            [];
-
-
-            const firstPhoto =
-            photos[0] ||
-            "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=80";
-
-
-            const locations =
-            [
-                ...new Set(
-                    listings
-                    .map(
-                        function(item){
-
-                            return item.city;
-
-                        }
-                    )
-                    .filter(Boolean)
-                )
-            ];
-
-
-            const pricedListings =
-            listings
-            .filter(
-                function(item){
-
-                    return Number(
-                        item.price ||
-                        0
-                    ) >
-                    0;
-
-                }
-            );
-
-
-            let minListing =
-            null;
-
-
-            if(
-                pricedListings.length
-            ){
-
-                minListing =
-                [
-                    ...pricedListings
-                ]
-                .sort(
-                    function(a,b){
-
-                        const priceA =
-                        convertCurrency(
-                            a.price,
-                            a.currency ||
-                            "USD"
-                        );
-
-
-                        const priceB =
-                        convertCurrency(
-                            b.price,
-                            b.currency ||
-                            "USD"
-                        );
-
-
-                        return priceA -
-                        priceB;
-
-                    }
-                )[0];
-
-            }
-
-
-            const card =
-            document.createElement(
-                "div"
-            );
-
-
-            card.className =
-            "developer-card";
-
-
-            card.innerHTML =
-            `
-
-            <div
-            class="card-image"
-            style="background-image:url('${escapeHtml(firstPhoto)}')">
-
-                <div class="badge">
-                🏢 დეველოპერი
-                </div>
-
-            </div>
-
-
-            <div class="card-body">
-
-                <div class="price">
-                ${escapeHtml(
-                    developer.name
-                )}
-                </div>
-
-
-                <div class="address">
-
-                ${
-                    locations.length
-                    ?
-                    "📍 " +
-                    escapeHtml(
-                        locations.join(
-                            ", "
-                        )
-                    )
-                    :
-                    "📍 საქართველო"
-                }
-
-                </div>
-
-
-                <div class="details">
-
-                    <span>
-                    🏗️
-                    ${listings.length}
-                    პროექტი / განცხადება
-                    </span>
-
-                    ${
-                        minListing
-                        ?
-                        `
-                        <span>
-                        ფასი:
-                        ${escapeHtml(
-                            formatPrice(
-                                minListing.price,
-                                minListing.currency
-                            )
-                        )}-დან
-                        </span>
-                        `
-                        :
-                        ""
-                    }
-
-                </div>
-
-
-                <div
-                class="owner"
-                style="margin-top:17px;">
-
-                    <button
-                    type="button"
-                    class="developer-projects-button"
-                    data-developer="${escapeHtml(
-                        developer.name
-                    )}">
-
-                    პროექტების ნახვა →
-
-                    </button>
-
-                </div>
-
-            </div>
-
-            `;
-
-
-            container
-            .appendChild(
-                card
-            );
-
-        }
-    );
-
-
-    if(
-        typeof window
-        .yhAfterDevelopersRender ===
-        "function"
-    ){
-
-        window
-        .yhAfterDevelopersRender();
 
     }
 
