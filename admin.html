@@ -1534,18 +1534,67 @@ button{cursor:pointer}
 <section class="admin-page" id="page-developers">
 
     <div class="page-head">
+
         <div>
             <h2>🏗️ დეველოპერები</h2>
-            <p>კომპანიებისა და ახალი პროექტების ადმინისტრირება.</p>
+            <p>
+                დეველოპერული კომპანიების პროფილების
+                შემოწმება და მართვა.
+            </p>
         </div>
+
+        <button
+            class="refresh-btn"
+            id="refreshDevelopersBtn"
+            type="button">
+            🔄 განახლება
+        </button>
+
     </div>
 
-    <div class="empty-state">
-        <div>
-            🏗️ <strong>Developer Management</strong><br><br>
-            მომხმარებლის მხარეს დეველოპერებისა და პროექტების ფუნქცია რჩება.<br>
-            ამ ადმინისტრაციულ ნაწილს პროექტების არსებული ცხრილების საბოლოო სტრუქტურაზე მივაბამთ.
+
+    <div class="toolbar">
+
+        <select id="developerStatusFilter">
+
+            <option value="all">
+                ყველა
+            </option>
+
+            <option value="pending" selected>
+                ⏳ დასამტკიცებელი
+            </option>
+
+            <option value="approved">
+                ✅ დამტკიცებული
+            </option>
+
+            <option value="rejected">
+                ❌ უარყოფილი
+            </option>
+
+            <option value="blocked">
+                🚫 დაბლოკილი
+            </option>
+
+        </select>
+
+        <input
+            id="developerSearch"
+            type="search"
+            placeholder="კომპანიის მოძებნა...">
+
+    </div>
+
+
+    <div
+        class="list-container"
+        id="adminDevelopers">
+
+        <div class="empty-state">
+            დეველოპერები იტვირთება...
         </div>
+
     </div>
 
 </section>
