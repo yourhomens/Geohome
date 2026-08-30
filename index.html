@@ -1394,15 +1394,15 @@ nav button:hover{
 }
 
 .yh-projects-hero-content h1{
-    max-width:520px;
+    max-width:420px;
     margin:0;
-    color:#2f352d;
-    font-size:46px;
-    line-height:1.12;
-    font-weight:800;
-    letter-spacing:-1px;
+    color:#fff;
+    font-size:30px;
+    line-height:1.2;
+    font-weight:600;
+    letter-spacing:0.2px;
+    text-shadow:0 2px 12px rgba(0,0,0,0.28);
 }
-
 @media(max-width:750px){
 
     .yh-projects-hero{
@@ -1417,10 +1417,12 @@ nav button:hover{
     }
 
     .yh-projects-hero-content h1{
-        max-width:300px;
-        font-size:34px;
-        line-height:1.15;
-    }
+    max-width:260px;
+    font-size:24px;
+    line-height:1.2;
+    font-weight:600;
+    letter-spacing:0.1px;
+}
 
     .yh-projects-hero-overlay{
         background:linear-gradient(
@@ -1458,15 +1460,23 @@ nav button:hover{
     margin-top:7px;
 }
 
-.project-filters{
+..project-filters{
     background:#fff;
     border:1px solid var(--border);
-    border-radius:14px;
-    padding:16px;
+    border-radius:20px;
+    padding:18px;
     display:grid;
     grid-template-columns:1.3fr 1.3fr 1fr 1fr auto;
     gap:10px;
-    margin-bottom:25px;
+
+    position:relative;
+    z-index:5;
+    margin-top:-55px;
+    margin-left:18px;
+    margin-right:18px;
+    margin-bottom:35px;
+
+    box-shadow:0 12px 32px rgba(37,42,36,0.12);
 }
 
 .project-filters input{
