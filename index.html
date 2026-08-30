@@ -27840,6 +27840,1282 @@ if(developerProjectCancelButton){
     );
 
 }
+    /* =========================
+   DEVELOPER PROJECT PHOTOS
+========================= */
+
+const yhProjectPhotosInput =
+document.getElementById(
+    "yhProjectPhotos"
+);
+
+const yhProjectPhotosPreview =
+document.getElementById(
+    "yhProjectPhotosPreview"
+);
+
+let yhSelectedProjectPhotos = [];
+
+function yhRenderProjectPhotosPreview(){
+
+    if(!yhProjectPhotosPreview){
+        return;
+    }
+
+    yhProjectPhotosPreview.innerHTML = "";
+
+    yhSelectedProjectPhotos
+    .forEach(
+        function(file,index){
+
+            const item =
+            document.createElement(
+                "div"
+            );
+
+            item.className =
+            "preview-item";
+
+            const image =
+            document.createElement(
+                "img"
+            );
+
+            const objectUrl =
+            URL.createObjectURL(
+                file
+            );
+
+            image.src = objectUrl;
+
+            image.onload =
+            function(){
+
+                URL.revokeObjectURL(
+                    objectUrl
+                );
+
+            };
+
+            image.alt =
+            "Project photo";
+
+            const removeButton =
+            document.createElement(
+                "span"
+            );
+
+            removeButton.textContent =
+            "×";
+
+            removeButton.title =
+            "ფოტოს წაშლა";
+
+            removeButton.addEventListener(
+                "click",
+                function(event){
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    yhSelectedProjectPhotos
+                    .splice(
+                        index,
+                        1
+                    );
+
+                    yhRenderProjectPhotosPreview();
+
+                }
+            );
+
+            item.appendChild(
+                image
+            );
+
+            item.appendChild(
+                removeButton
+            );
+
+            yhProjectPhotosPreview
+            .appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+if(yhProjectPhotosInput){
+
+    yhProjectPhotosInput
+    .addEventListener(
+        "change",
+        function(){
+
+            const selectedFiles =
+            Array.from(
+                yhProjectPhotosInput.files || []
+            );
+
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+            const validFiles =
+            selectedFiles.filter(
+                function(file){
+
+                    return allowedTypes
+                    .includes(
+                        file.type
+                    );
+
+                }
+            );
+
+            if(
+                validFiles.length !==
+                selectedFiles.length
+            ){
+
+                showMessage(
+                    "შეგიძლიათ ატვირთოთ მხოლოდ JPG, PNG ან WEBP ფოტოები."
+                );
+
+            }
+
+            const availablePlaces =
+            30 -
+            yhSelectedProjectPhotos.length;
+
+            if(
+                availablePlaces <= 0
+            ){
+
+                showMessage(
+                    "პროექტზე მაქსიმუმ 30 ფოტოს დამატება შეგიძლიათ."
+                );
+
+                yhProjectPhotosInput.value =
+                "";
+
+                return;
+            }
+
+            if(
+                validFiles.length >
+                availablePlaces
+            ){
+
+                showMessage(
+                    "პროექტზე მაქსიმუმ 30 ფოტოს დამატება შეგიძლიათ."
+                );
+
+            }
+
+            yhSelectedProjectPhotos.push(
+                ...validFiles.slice(
+                    0,
+                    availablePlaces
+                )
+            );
+
+            yhProjectPhotosInput.value =
+            "";
+
+            yhRenderProjectPhotosPreview();
+
+        }
+    );
+
+}
+    /* =========================
+   SAVE DEVELOPER PROJECT
+========================= */
+
+const yhProjectSaveButton =
+document.getElementById(
+    "yhProjectSaveButton"
+);
+
+
+function yhProjectNumberValue(id){
+
+    const value =
+    document
+    .getElementById(id)
+    ?.value;
+
+    if(
+        value === "" ||
+        value === null ||
+        typeof value ===
+        "undefined"
+    ){
+        return null;
+    }
+
+    const number =
+    Number(value);
+
+    return Number.isFinite(number)
+        ? number
+        : null;
+}
+
+
+async function yhUploadDeveloperProjectPhotos(){
+
+    if(
+        !yhSelectedProjectPhotos.length
+    ){
+        return {
+            urls:[],
+            paths:[]
+        };
+    }
+
+
+    if(!currentUser){
+
+        throw new Error(
+            "ავტორიზაცია საჭიროა."
+        );
+
+    }
+
+
+    const urls = [];
+    const paths = [];
+
+
+    for(
+        let i = 0;
+        i <
+        yhSelectedProjectPhotos.length;
+        i++
+    ){
+
+        const file =
+        yhSelectedProjectPhotos[i];
+
+
+        if(
+            file.size >
+            10 * 1024 * 1024
+        ){
+
+            throw new Error(
+                "თითოეული ფოტო უნდა იყოს მაქსიმუმ 10MB."
+            );
+
+        }
+
+
+        const rawExtension =
+        (
+            file.name
+            .split(".")
+            .pop() ||
+            "jpg"
+        )
+        .toLowerCase();
+
+
+        const extension =
+        rawExtension
+        .replace(
+            /[^a-z0-9]/g,
+            ""
+        ) ||
+        "jpg";
+
+
+        const uniquePart =
+        (
+            typeof crypto !==
+            "undefined" &&
+            crypto.randomUUID
+        )
+        ?
+        crypto.randomUUID()
+        :
+        Math.random()
+        .toString(36)
+        .slice(2);
+
+
+        const path =
+        currentUser.id +
+        "/" +
+        Date.now() +
+        "-" +
+        uniquePart +
+        "-" +
+        i +
+        "." +
+        extension;
+
+
+        const uploadResult =
+        await supabaseClient
+        .storage
+        .from(
+            "developer-media"
+        )
+        .upload(
+            path,
+            file,
+            {
+                cacheControl:
+                "3600",
+
+                upsert:false,
+
+                contentType:
+                file.type ||
+                undefined
+            }
+        );
+
+
+        if(uploadResult.error){
+
+            throw new Error(
+                "ფოტოს ატვირთვა ვერ მოხერხდა: " +
+                uploadResult.error.message
+            );
+
+        }
+
+
+        paths.push(
+            path
+        );
+
+
+        const publicResult =
+        supabaseClient
+        .storage
+        .from(
+            "developer-media"
+        )
+        .getPublicUrl(
+            path
+        );
+
+
+        urls.push(
+            publicResult
+            .data
+            .publicUrl
+        );
+
+    }
+
+
+    return {
+        urls,
+        paths
+    };
+
+}
+
+
+async function yhRemoveUploadedProjectPhotos(
+    paths
+){
+
+    if(
+        !Array.isArray(paths) ||
+        !paths.length
+    ){
+        return;
+    }
+
+
+    const result =
+    await supabaseClient
+    .storage
+    .from(
+        "developer-media"
+    )
+    .remove(
+        paths
+    );
+
+
+    if(result.error){
+
+        console.error(
+            "Developer project photo cleanup error:",
+            result.error
+        );
+
+    }
+
+}
+
+
+function yhResetDeveloperProjectForm(){
+
+    const ids = [
+
+        "yhProjectTitle",
+        "yhProjectCity",
+        "yhProjectDistrict",
+        "yhProjectAddress",
+        "yhProjectCompletionDate",
+        "yhProjectMinPrice",
+        "yhProjectMaxPrice",
+        "yhProjectPricePerSqm",
+        "yhProjectDescription"
+
+    ];
+
+
+    ids.forEach(
+        function(id){
+
+            const element =
+            document
+            .getElementById(id);
+
+            if(element){
+                element.value = "";
+            }
+
+        }
+    );
+
+
+    const constructionStatus =
+    document.getElementById(
+        "yhProjectConstructionStatus"
+    );
+
+    if(constructionStatus){
+        constructionStatus.value = "";
+    }
+
+
+    const currency =
+    document.getElementById(
+        "yhProjectCurrency"
+    );
+
+    if(currency){
+        currency.value = "GEL";
+    }
+
+
+    yhSelectedProjectPhotos = [];
+
+    if(yhProjectPhotosInput){
+        yhProjectPhotosInput.value = "";
+    }
+
+    yhRenderProjectPhotosPreview();
+
+}
+
+
+if(yhProjectSaveButton){
+
+    yhProjectSaveButton
+    .addEventListener(
+        "click",
+        async function(){
+
+            if(!currentUser){
+
+                requireLogin();
+                return;
+
+            }
+
+
+            const title =
+            document
+            .getElementById(
+                "yhProjectTitle"
+            )
+            ?.value
+            ?.trim();
+
+
+            const city =
+            document
+            .getElementById(
+                "yhProjectCity"
+            )
+            ?.value
+            ?.trim();
+
+
+            const constructionStatus =
+            document
+            .getElementById(
+                "yhProjectConstructionStatus"
+            )
+            ?.value;
+
+
+            if(!title){
+
+                showMessage(
+                    "შეიყვანეთ პროექტის დასახელება."
+                );
+
+                document
+                .getElementById(
+                    "yhProjectTitle"
+                )
+                ?.focus();
+
+                return;
+            }
+
+
+            if(!city){
+
+                showMessage(
+                    "შეიყვანეთ ქალაქი."
+                );
+
+                document
+                .getElementById(
+                    "yhProjectCity"
+                )
+                ?.focus();
+
+                return;
+            }
+
+
+            if(!constructionStatus){
+
+                showMessage(
+                    "აირჩიეთ მშენებლობის სტატუსი."
+                );
+
+                document
+                .getElementById(
+                    "yhProjectConstructionStatus"
+                )
+                ?.focus();
+
+                return;
+            }
+
+
+            if(
+                yhSelectedProjectPhotos.length >
+                30
+            ){
+
+                showMessage(
+                    "პროექტზე მაქსიმუმ 30 ფოტოს დამატება შეგიძლიათ."
+                );
+
+                return;
+            }
+
+
+            const minPrice =
+            yhProjectNumberValue(
+                "yhProjectMinPrice"
+            );
+
+            const maxPrice =
+            yhProjectNumberValue(
+                "yhProjectMaxPrice"
+            );
+
+
+            if(
+                minPrice !== null &&
+                maxPrice !== null &&
+                minPrice > maxPrice
+            ){
+
+                showMessage(
+                    "მაქსიმალური ფასი მინიმალურ ფასზე ნაკლები ვერ იქნება."
+                );
+
+                return;
+            }
+
+
+            yhProjectSaveButton.disabled =
+            true;
+
+            yhProjectSaveButton.textContent =
+            "იტვირთება...";
+
+
+            let uploadedPaths = [];
+
+
+            try{
+
+                const profileResult =
+                await supabaseClient
+                .from(
+                    "developer_profiles"
+                )
+                .select(
+                    "id,status"
+                )
+                .eq(
+                    "user_id",
+                    currentUser.id
+                )
+                .maybeSingle();
+
+
+                if(profileResult.error){
+
+                    throw new Error(
+                        profileResult.error.message
+                    );
+
+                }
+
+
+                if(!profileResult.data){
+
+                    throw new Error(
+                        "დეველოპერის პროფილი ვერ მოიძებნა."
+                    );
+
+                }
+
+
+                if(
+                    profileResult
+                    .data
+                    .status !==
+                    "approved"
+                ){
+
+                    throw new Error(
+                        "პროექტის დამატება შესაძლებელია მხოლოდ დამტკიცებული დეველოპერის პროფილით."
+                    );
+
+                }
+
+
+                const uploaded =
+                await yhUploadDeveloperProjectPhotos();
+
+
+                uploadedPaths =
+                uploaded.paths;
+
+
+                const project = {
+
+                    developer_id:
+                    profileResult.data.id,
+
+                    title:
+                    title,
+
+                    description:
+                    document
+                    .getElementById(
+                        "yhProjectDescription"
+                    )
+                    ?.value
+                    ?.trim() ||
+                    null,
+
+                    city:
+                    city,
+
+                    district:
+                    document
+                    .getElementById(
+                        "yhProjectDistrict"
+                    )
+                    ?.value
+                    ?.trim() ||
+                    null,
+
+                    address:
+                    document
+                    .getElementById(
+                        "yhProjectAddress"
+                    )
+                    ?.value
+                    ?.trim() ||
+                    null,
+
+                    construction_status:
+                    constructionStatus,
+
+                    completion_date:
+                    document
+                    .getElementById(
+                        "yhProjectCompletionDate"
+                    )
+                    ?.value ||
+                    null,
+
+                    min_price:
+                    minPrice,
+
+                    max_price:
+                    maxPrice,
+
+                    price_per_sqm:
+                    yhProjectNumberValue(
+                        "yhProjectPricePerSqm"
+                    ),
+
+                    currency:
+                    document
+                    .getElementById(
+                        "yhProjectCurrency"
+                    )
+                    ?.value ||
+                    "GEL",
+
+                    photos:
+                    uploaded.urls
+
+                };
+
+
+                const insertResult =
+                await supabaseClient
+                .from(
+                    "developer_projects"
+                )
+                .insert(
+                    project
+                )
+                .select(
+                    "id"
+                )
+                .single();
+
+
+                if(insertResult.error){
+
+                    await yhRemoveUploadedProjectPhotos(
+                        uploadedPaths
+                    );
+
+                    uploadedPaths = [];
+
+                    throw new Error(
+                        insertResult.error.message
+                    );
+
+                }
+
+
+                yhResetDeveloperProjectForm();
+
+
+                showMessage(
+                    "პროექტი წარმატებით გაიგზავნა დასამტკიცებლად ✅"
+                );
+
+
+                yhBackToDeveloperProjects();
+
+
+            }catch(error){
+
+                if(uploadedPaths.length){
+
+                    await yhRemoveUploadedProjectPhotos(
+                        uploadedPaths
+                    );
+
+                }
+
+
+                console.error(
+                    "Developer project save error:",
+                    error
+                );
+
+
+                showMessage(
+                    "პროექტის შენახვა ვერ მოხერხდა: " +
+                    error.message
+                );
+
+
+            }finally{
+
+                yhProjectSaveButton.disabled =
+                false;
+
+                yhProjectSaveButton.textContent =
+                "შენახვა და გადაგზავნა";
+
+            }
+
+        }
+    );
+
+}
+    /* =========================
+   MY DEVELOPER PROJECTS
+========================= */
+
+async function yhLoadMyDeveloperProjects(){
+
+    const list =
+    document.getElementById(
+        "yhDeveloperProjectsList"
+    );
+
+    if(!list){
+        return;
+    }
+
+
+    if(!currentUser){
+
+        list.innerHTML =
+        `
+        <div class="yh-empty">
+            ავტორიზაცია საჭიროა.
+        </div>
+        `;
+
+        return;
+    }
+
+
+    list.innerHTML =
+    `
+    <div class="yh-empty">
+        იტვირთება...
+    </div>
+    `;
+
+
+    try{
+
+        const profileResult =
+        await supabaseClient
+        .from(
+            "developer_profiles"
+        )
+        .select(
+            "id"
+        )
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .maybeSingle();
+
+
+        if(profileResult.error){
+
+            throw new Error(
+                profileResult.error.message
+            );
+
+        }
+
+
+        if(!profileResult.data){
+
+            list.innerHTML =
+            `
+            <div class="yh-empty">
+                დეველოპერის პროფილი ვერ მოიძებნა.
+            </div>
+            `;
+
+            return;
+        }
+
+
+        const projectsResult =
+        await supabaseClient
+        .from(
+            "developer_projects"
+        )
+        .select(
+            "*"
+        )
+        .eq(
+            "developer_id",
+            profileResult.data.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
+
+        if(projectsResult.error){
+
+            throw new Error(
+                projectsResult.error.message
+            );
+
+        }
+
+
+        const projects =
+        projectsResult.data || [];
+
+
+        if(!projects.length){
+
+            list.innerHTML =
+            `
+            <div class="yh-empty">
+                🏗️ პროექტები ჯერ არ გაქვთ დამატებული.
+            </div>
+            `;
+
+            return;
+        }
+
+
+        list.innerHTML = "";
+
+
+        projects.forEach(
+            function(project){
+
+                const statusMap = {
+
+                    pending:
+                    "⏳ განხილვის პროცესში",
+
+                    approved:
+                    "✅ დამტკიცებული",
+
+                    rejected:
+                    "❌ უარყოფილი",
+
+                    blocked:
+                    "🚫 დაბლოკილი"
+
+                };
+
+
+                const constructionMap = {
+
+                    planned:
+                    "დაგეგმილი",
+
+                    under_construction:
+                    "მშენებარე",
+
+                    completed:
+                    "დასრულებული"
+
+                };
+
+
+                const currencyMap = {
+
+                    GEL:"₾",
+                    USD:"$",
+                    EUR:"€"
+
+                };
+
+
+                const photo =
+                Array.isArray(
+                    project.photos
+                ) &&
+                project.photos.length
+                ?
+                project.photos[0]
+                :
+                "";
+
+
+                const card =
+                document.createElement(
+                    "div"
+                );
+
+
+                card.style.cssText =
+                `
+                display:grid;
+                grid-template-columns:180px 1fr;
+                gap:18px;
+                background:#fff;
+                border:1px solid var(--border);
+                border-radius:16px;
+                padding:14px;
+                margin-bottom:14px;
+                align-items:center;
+                `;
+
+
+                const imageHtml =
+                photo
+                ?
+                `
+                <img
+                src="${photo}"
+                alt=""
+                style="
+                width:100%;
+                height:130px;
+                object-fit:cover;
+                border-radius:12px;
+                display:block;
+                ">
+                `
+                :
+                `
+                <div
+                style="
+                width:100%;
+                height:130px;
+                border-radius:12px;
+                background:var(--olive-light);
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:38px;
+                ">
+                🏗️
+                </div>
+                `;
+
+
+                let priceText = "";
+
+
+                if(
+                    project.min_price !== null &&
+                    typeof project.min_price !==
+                    "undefined"
+                ){
+
+                    priceText =
+                    "ფასი: " +
+                    Number(
+                        project.min_price
+                    )
+                    .toLocaleString() +
+                    " " +
+                    (
+                        currencyMap[
+                            project.currency
+                        ] ||
+                        project.currency ||
+                        ""
+                    );
+
+                }
+
+
+                if(
+                    project.max_price !== null &&
+                    typeof project.max_price !==
+                    "undefined"
+                ){
+
+                    priceText +=
+                    " – " +
+                    Number(
+                        project.max_price
+                    )
+                    .toLocaleString() +
+                    " " +
+                    (
+                        currencyMap[
+                            project.currency
+                        ] ||
+                        project.currency ||
+                        ""
+                    );
+
+                }
+
+
+                const location =
+                [
+                    project.city,
+                    project.district,
+                    project.address
+                ]
+                .filter(Boolean)
+                .join(", ");
+
+
+                card.innerHTML =
+                `
+                <div>
+                    ${imageHtml}
+                </div>
+
+                <div>
+
+                    <div
+                    style="
+                    display:flex;
+                    justify-content:space-between;
+                    gap:12px;
+                    align-items:flex-start;
+                    flex-wrap:wrap;
+                    ">
+
+                        <div>
+
+                            <h3
+                            style="
+                            margin:0 0 7px;
+                            font-size:20px;
+                            ">
+                            ${escapeHtml(
+                                project.title ||
+                                ""
+                            )}
+                            </h3>
+
+                            <div
+                            style="
+                            color:var(--muted);
+                            font-size:13px;
+                            line-height:1.5;
+                            ">
+                            ${escapeHtml(
+                                location ||
+                                "მისამართი მითითებული არ არის"
+                            )}
+                            </div>
+
+                        </div>
+
+                        <div
+                        style="
+                        padding:7px 10px;
+                        border-radius:8px;
+                        background:var(--olive-light);
+                        color:var(--olive-dark);
+                        font-size:12px;
+                        font-weight:800;
+                        ">
+                        ${
+                            statusMap[
+                                project.status
+                            ] ||
+                            project.status ||
+                            ""
+                        }
+                        </div>
+
+                    </div>
+
+
+                    <div
+                    style="
+                    display:flex;
+                    flex-wrap:wrap;
+                    gap:8px 14px;
+                    margin-top:14px;
+                    font-size:13px;
+                    color:var(--text);
+                    ">
+
+                        <span>
+                        🏢 ${
+                            constructionMap[
+                                project
+                                .construction_status
+                            ] ||
+                            "სტატუსი მითითებული არ არის"
+                        }
+                        </span>
+
+                        ${
+                            priceText
+                            ?
+                            `
+                            <span>
+                            💰 ${priceText}
+                            </span>
+                            `
+                            :
+                            ""
+                        }
+
+                        ${
+                            project.price_per_sqm
+                            ?
+                            `
+                            <span>
+                            📐 ${
+                                Number(
+                                    project
+                                    .price_per_sqm
+                                )
+                                .toLocaleString()
+                            } ${
+                                currencyMap[
+                                    project.currency
+                                ] ||
+                                project.currency ||
+                                ""
+                            } / მ²
+                            </span>
+                            `
+                            :
+                            ""
+                        }
+
+                    </div>
+
+                </div>
+                `;
+
+
+                list.appendChild(
+                    card
+                );
+
+            }
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "My developer projects error:",
+            error
+        );
+
+
+        list.innerHTML =
+        `
+        <div class="yh-empty">
+            პროექტების ჩატვირთვა ვერ მოხერხდა.
+        </div>
+        `;
+
+    }
+
+}
 const developerLogoInput =
 document.getElementById(
     "yhDeveloperLogoInput"
