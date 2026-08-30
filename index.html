@@ -6016,6 +6016,392 @@ id="yhDeveloperSaveButton">
 </div>
 
 </section>
+    <!-- =========================
+     DEVELOPER PROJECT CABINET
+========================= -->
+
+<section
+class="yh-feature-page"
+id="yhDeveloperProjectsPage">
+
+<div class="yh-page-header">
+
+<div>
+
+<h1>
+🏗️ ჩემი პროექტები
+</h1>
+
+<p class="yh-page-intro">
+მართეთ თქვენი სამშენებლო პროექტები და დაამატეთ ახალი პროექტი.
+</p>
+
+</div>
+
+<button
+class="back-button"
+id="yhDeveloperProjectsBack"
+type="button">
+← დეველოპერის პროფილი
+</button>
+
+</div>
+
+
+<div
+class="yh-page-card"
+style="
+margin-bottom:18px;
+">
+
+<div
+style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+flex-wrap:wrap;
+">
+
+<div>
+
+<h2
+style="
+margin-bottom:6px;
+">
+თქვენი პროექტები
+</h2>
+
+<p
+style="
+color:var(--muted);
+font-size:14px;
+">
+აქ გამოჩნდება თქვენ მიერ დამატებული პროექტები.
+</p>
+
+</div>
+
+<button
+type="button"
+class="publish-button"
+id="yhDeveloperAddProjectButton">
+
+＋ პროექტის დამატება
+
+</button>
+
+</div>
+
+</div>
+
+
+<div
+id="yhDeveloperProjectsList">
+
+<div class="yh-empty">
+
+🏗️ პროექტები ჯერ არ გაქვთ დამატებული.
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     DEVELOPER PROJECT FORM
+========================= -->
+
+<section
+class="yh-feature-page"
+id="yhDeveloperProjectFormPage">
+
+<div class="yh-page-header">
+
+<div>
+
+<h1>
+🏢 პროექტის დამატება
+</h1>
+
+<p class="yh-page-intro">
+შეავსეთ პროექტის ინფორმაცია და გადმოაგზავნეთ ადმინისტრატორის დასამტკიცებლად.
+</p>
+
+</div>
+
+<button
+class="back-button"
+id="yhDeveloperProjectFormBack"
+type="button">
+← ჩემი პროექტები
+</button>
+
+</div>
+
+
+<div class="yh-page-card">
+
+<div class="form-grid">
+
+
+<div class="form-group full">
+
+<label>
+პროექტის დასახელება *
+</label>
+
+<input
+type="text"
+id="yhProjectTitle"
+placeholder="მაგ. Green Residence">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+ქალაქი *
+</label>
+
+<input
+type="text"
+id="yhProjectCity"
+placeholder="მაგ. თბილისი">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+უბანი
+</label>
+
+<input
+type="text"
+id="yhProjectDistrict"
+placeholder="მაგ. საბურთალო">
+
+</div>
+
+
+<div class="form-group full">
+
+<label>
+მისამართი
+</label>
+
+<input
+type="text"
+id="yhProjectAddress"
+placeholder="პროექტის მისამართი">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+მშენებლობის სტატუსი *
+</label>
+
+<select
+id="yhProjectConstructionStatus">
+
+<option value="">
+აირჩიეთ
+</option>
+
+<option value="planned">
+დაგეგმილი
+</option>
+
+<option value="under_construction">
+მშენებარე
+</option>
+
+<option value="completed">
+დასრულებული
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+დასრულების თარიღი
+</label>
+
+<input
+type="date"
+id="yhProjectCompletionDate">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+მინიმალური ფასი
+</label>
+
+<input
+type="number"
+id="yhProjectMinPrice"
+min="0"
+placeholder="0">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+მაქსიმალური ფასი
+</label>
+
+<input
+type="number"
+id="yhProjectMaxPrice"
+min="0"
+placeholder="0">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+ფასი მ²-ზე
+</label>
+
+<input
+type="number"
+id="yhProjectPricePerSqm"
+min="0"
+placeholder="0">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+ვალუტა
+</label>
+
+<select
+id="yhProjectCurrency">
+
+<option value="GEL">
+GEL ₾
+</option>
+
+<option value="USD">
+USD $
+</option>
+
+<option value="EUR">
+EUR €
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group full">
+
+<label>
+პროექტის აღწერა
+</label>
+
+<textarea
+id="yhProjectDescription"
+placeholder="აღწერეთ პროექტი..."></textarea>
+
+</div>
+
+
+<div class="form-group full">
+
+<label>
+პროექტის ფოტოები
+</label>
+
+<div class="photo-upload">
+
+<strong>
+📷 დაამატეთ ფოტოები
+</strong>
+
+<p>
+მაქსიმუმ 30 ფოტო — JPG, PNG ან WEBP.
+</p>
+
+<label
+class="photo-button"
+for="yhProjectPhotos">
+
+ფოტოების არჩევა
+
+</label>
+
+<input
+type="file"
+id="yhProjectPhotos"
+accept="image/jpeg,image/png,image/webp"
+multiple>
+
+</div>
+
+<div
+class="preview"
+id="yhProjectPhotosPreview">
+</div>
+
+</div>
+
+
+</div>
+
+
+<div
+class="form-actions"
+style="
+margin-top:22px;
+">
+
+<button
+type="button"
+class="cancel-button"
+id="yhProjectCancelButton">
+
+გაუქმება
+
+</button>
+
+<button
+type="button"
+class="publish-button"
+id="yhProjectSaveButton">
+
+შენახვა და გადაგზავნა
+
+</button>
+
+</div>
+
+</div>
+
+</section>
 <!-- =========================
      PUBLIC AGENT
 ========================= -->
