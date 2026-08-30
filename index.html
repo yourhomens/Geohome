@@ -4484,33 +4484,73 @@ type="button">
 </div>
 
 
-<div class="project-filters">
+<div class="project-filters yh-project-filters">
 
-<input
-type="text"
-id="projectLocationFilter"
-placeholder="ქალაქი ან უბანი">
+    <!-- ქალაქი -->
+    <select id="projectLocationFilter">
+        <option value="">ქალაქი</option>
+    </select>
 
-<input
-type="text"
-id="projectDeveloperFilter"
-placeholder="დეველოპერის სახელი">
+    <!-- უბანი -->
+    <select id="projectDistrictFilter" disabled>
+        <option value="">უბანი</option>
+    </select>
 
-<input
-type="number"
-id="projectMinPrice"
-placeholder="მინ. ფასი $">
+    <!-- ძველი JS-ის თავსებადობისთვის ვტოვებთ -->
+    <input
+    type="hidden"
+    id="projectDeveloperFilter"
+    value="">
 
-<input
-type="number"
-id="projectMaxPrice"
-placeholder="მაქს. ფასი $">
+    <!-- ფასი -->
+    <input
+    type="number"
+    id="projectMinPrice"
+    min="0"
+    placeholder="ფასი დან">
 
-<button
-id="projectSearchButton"
-type="button">
-ძებნა
-</button>
+    <input
+    type="number"
+    id="projectMaxPrice"
+    min="0"
+    placeholder="ფასი მდე">
+
+    <!-- ოთახები -->
+    <select id="projectRoomsFilter">
+        <option value="">ოთახები</option>
+        <option value="1">1 ოთახი</option>
+        <option value="2">2 ოთახი</option>
+        <option value="3">3 ოთახი</option>
+        <option value="4">4 ოთახი</option>
+        <option value="5+">5+ ოთახი</option>
+    </select>
+
+    <!-- ფართობი -->
+    <input
+    type="number"
+    id="projectMinArea"
+    min="0"
+    placeholder="მ² დან">
+
+    <input
+    type="number"
+    id="projectMaxArea"
+    min="0"
+    placeholder="მ² მდე">
+
+    <!-- მშენებლობის სტატუსი -->
+    <select id="projectConstructionStatus">
+        <option value="">მშენებლობის სტატუსი</option>
+        <option value="planned">დაგეგმილი</option>
+        <option value="under_construction">მშენებარე</option>
+        <option value="completed">დასრულებული</option>
+    </select>
+
+    <button
+    id="projectSearchButton"
+    type="button">
+        🔎 ძებნა
+    </button>
 
 </div>
 
@@ -15787,15 +15827,298 @@ document
 /* =========================
    NEW PROJECTS
 ========================= */
+/* =========================
+   PROJECT CITY / DISTRICT FILTER
+========================= */
 
+const yhProjectLocations = {
+
+    "თბილისი":[
+        "ვაკე",
+        "საბურთალო",
+        "მთაწმინდა",
+        "კრწანისი",
+        "ისანი",
+        "სამგორი",
+        "ჩუღურეთი",
+        "დიდუბე",
+        "ნაძალადევი",
+        "გლდანი"
+    ],
+
+    "ბათუმი":[
+        "ძველი ბათუმი",
+        "რუსთაველი",
+        "ბაგრატიონი",
+        "აღმაშენებელი",
+        "ჯავახიშვილი",
+        "ხიმშიაშვილი",
+        "აეროპორტის უბანი",
+        "ბონი-გოროდოკი",
+        "თამარის დასახლება",
+        "მწვანე კონცხი"
+    ],
+
+    "ქუთაისი":[
+        "ცენტრი",
+        "ბალახვანი",
+        "საფიჩხია",
+        "ავტოქარხანა",
+        "ნიკეა",
+        "ჭომა",
+        "მუხნარი"
+    ],
+
+    "რუსთავი":[
+        "ძველი რუსთავი",
+        "ახალი რუსთავი",
+        "მეგობრობის გამზირი",
+        "მე-12 მიკრორაიონი",
+        "მე-19 მიკრორაიონი",
+        "მე-20 მიკრორაიონი",
+        "მე-21 მიკრორაიონი"
+    ],
+
+    "გორი":[
+        "ცენტრი",
+        "კომბინატი",
+        "ჭალა",
+        "ვერხვები"
+    ],
+
+    "ზუგდიდი":[
+        "ცენტრი",
+        "ბოტანიკური ბაღის მიმდებარე",
+        "ენგურქაღალდკომბინატი"
+    ],
+
+    "ფოთი":[
+        "ცენტრი",
+        "ნაბადა",
+        "მალთაყვა"
+    ],
+
+    "თელავი":[],
+    "ახალციხე":[],
+    "ქობულეთი":[],
+    "ოზურგეთი":[],
+    "სამტრედია":[],
+    "ხაშური":[],
+    "სენაკი":[],
+    "ზესტაფონი":[],
+    "მარნეული":[],
+    "კასპი":[],
+    "ჭიათურა":[],
+    "წყალტუბო":[],
+    "საგარეჯო":[],
+    "ბორჯომი":[],
+    "ახალქალაქი":[],
+    "გურჯაანი":[],
+    "ყვარელი":[],
+    "ლაგოდეხი":[],
+    "დედოფლისწყარო":[],
+    "სიღნაღი":[],
+    "მცხეთა":[],
+    "დუშეთი":[],
+    "თიანეთი":[],
+    "ამბროლაური":[],
+    "ონი":[],
+    "ცაგერი":[],
+    "ლანჩხუთი":[],
+    "ჩოხატაური":[],
+    "აბაშა":[],
+    "მარტვილი":[],
+    "ხობი":[],
+    "წალენჯიხა":[],
+    "ჩხოროწყუ":[],
+    "საჩხერე":[],
+    "ტყიბული":[],
+    "თერჯოლა":[],
+    "ბაღდათი":[],
+    "ვანი":[],
+    "ხონი":[],
+    "ქარელი":[],
+    "ბოლნისი":[],
+    "გარდაბანი":[],
+    "დმანისი":[],
+    "თეთრიწყარო":[],
+    "წალკა":[],
+    "ნინოწმინდა":[],
+    "ახმეტა":[],
+    "ადიგენი":[]
+};
+
+
+function yhInitProjectLocationFilters(){
+
+    const citySelect =
+    document.getElementById(
+        "projectLocationFilter"
+    );
+
+    const districtSelect =
+    document.getElementById(
+        "projectDistrictFilter"
+    );
+
+    if(
+        !citySelect ||
+        !districtSelect
+    ){
+        return;
+    }
+
+
+    citySelect.innerHTML =
+    `<option value="">ქალაქი</option>`;
+
+
+    Object
+    .keys(yhProjectLocations)
+    .sort((a,b)=>
+        a.localeCompare(
+            b,
+            "ka"
+        )
+    )
+    .forEach(function(city){
+
+        const option =
+        document.createElement(
+            "option"
+        );
+
+        option.value =
+        city;
+
+        option.textContent =
+        city;
+
+        citySelect.appendChild(
+            option
+        );
+
+    });
+
+
+    function updateDistricts(){
+
+        const city =
+        citySelect.value;
+
+        const districts =
+        yhProjectLocations[
+            city
+        ] || [];
+
+
+        districtSelect.innerHTML =
+        `<option value="">უბანი</option>`;
+
+
+        if(
+            !city
+        ){
+
+            districtSelect.disabled =
+            true;
+
+            return;
+        }
+
+
+        if(
+            !districts.length
+        ){
+
+            districtSelect.innerHTML =
+            `<option value="">
+                უბანი არ არის მითითებული
+            </option>`;
+
+            districtSelect.disabled =
+            true;
+
+            return;
+        }
+
+
+        districtSelect.disabled =
+        false;
+
+
+        districts.forEach(
+            function(district){
+
+                const option =
+                document.createElement(
+                    "option"
+                );
+
+                option.value =
+                district;
+
+                option.textContent =
+                district;
+
+                districtSelect
+                .appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+
+    citySelect.addEventListener(
+        "change",
+        updateDistricts
+    );
+
+
+    updateDistricts();
+
+}
+
+
+if(
+    document.readyState ===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        yhInitProjectLocationFilters,
+        {
+            once:true
+        }
+    );
+
+}else{
+
+    yhInitProjectLocationFilters();
+
+}
 function getFilteredProjects(){
 
-    const location =
-    document
-    .getElementById(
-        "projectLocationFilter"
-    )
-    .value;
+    const city =
+document
+.getElementById(
+    "projectLocationFilter"
+)
+?.value || "";
+
+const district =
+document
+.getElementById(
+    "projectDistrictFilter"
+)
+?.value || "";
+
+const location =
+district || city;
 
 
     const developer =
