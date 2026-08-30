@@ -27858,20 +27858,47 @@ if(developerMenu){
 
             hideAllPages();
 
-            const developerPage =
-            document.getElementById(
-                "yhDeveloperEditorPage"
-            );
+if(
+    profile &&
+    profile.status ===
+    "approved"
+){
 
-            if(developerPage){
+    const projectsPage =
+    document.getElementById(
+        "yhDeveloperProjectsPage"
+    );
 
-                developerPage
-                .classList
-                .add(
-                    "active"
-                );
+    if(projectsPage){
 
-            }
+        projectsPage
+        .classList
+        .add(
+            "active"
+        );
+
+    }
+
+    await yhLoadMyDeveloperProjects();
+
+}else{
+
+    const developerPage =
+    document.getElementById(
+        "yhDeveloperEditorPage"
+    );
+
+    if(developerPage){
+
+        developerPage
+        .classList
+        .add(
+            "active"
+        );
+
+    }
+
+}
 
 
             const accountMenu =
