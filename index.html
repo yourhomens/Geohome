@@ -55809,6 +55809,33 @@ function yhPromotionClass(
 </script>
 
 <!-- YOUR HOME — SEARCH RESULTS CHANGE FILTERS V1 END -->
+    <script>
+document.addEventListener("click", function(event){
+
+    const homeButton = event.target.closest("#homeButton");
+
+    if(!homeButton){
+        return;
+    }
+
+    const projectPage =
+    document.getElementById("developerProjectDetailPage");
+
+    if(projectPage){
+        projectPage.style.display = "none";
+    }
+
+    if(typeof showHomePage === "function"){
+        showHomePage(true);
+    }
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}, true);
+</script>
 </body>
 </html>
 
