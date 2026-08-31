@@ -16219,7 +16219,125 @@ function renderListings(
 /* =========================
    DEVELOPERS
 ========================= */
+async function renderNewProjectsDevelopers(){
 
+    const container =
+    document.getElementById(
+        "newProjectsDevelopersRow"
+    );
+
+    if(!container){
+        return;
+    }
+
+    container.innerHTML = "";
+
+    try{
+
+        const result =
+        await supabaseClient
+        .from("developer_profiles")
+        .select("id,company_name,logo_url,status")
+        .eq("status","approved")
+        .order("company_name",{
+            ascending:true
+        });
+
+        if(result.error){
+            console.error(
+                "New projects developers load error:",
+                result.error
+            );
+            return;
+        }
+
+        const developers =
+        result.data || [];
+
+        if(!developers.length){
+            return;
+        }
+
+        developers.forEach(
+            function(developer){
+
+                const companyName =
+                String(
+                    developer.company_name ||
+                    "დეველოპერი"
+                ).trim();
+
+                const initials =
+                companyName
+                .split(/\s+/)
+                .filter(Boolean)
+                .slice(0,2)
+                .map(function(word){
+                    return word
+                    .charAt(0)
+                    .toUpperCase();
+                })
+                .join("");
+
+                const item =
+                document.createElement(
+                    "button"
+                );
+
+                item.type = "button";
+
+                item.className =
+                "yh-project-developer-item";
+
+                item.dataset.developerId =
+                developer.id;
+
+                item.dataset.developer =
+                companyName;
+
+                item.style.border = "0";
+                item.style.background = "transparent";
+                item.style.padding = "0";
+
+                const logoHtml =
+                developer.logo_url
+                ?
+                `
+                <div class="yh-project-developer-logo">
+                    <img
+                    src="${escapeHtml(developer.logo_url)}"
+                    alt="${escapeHtml(companyName)}">
+                </div>
+                `
+                :
+                `
+                <div class="yh-project-developer-logo">
+                    ${escapeHtml(initials || "🏢")}
+                </div>
+                `;
+
+                item.innerHTML =
+                `
+                ${logoHtml}
+
+                <div class="yh-project-developer-name">
+                    ${escapeHtml(companyName)}
+                </div>
+                `;
+
+                container.appendChild(item);
+            }
+        );
+
+    }catch(error){
+
+        console.error(
+            "New projects developers load error:",
+            error
+        );
+
+    }
+}
 async function renderDevelopers(){
 
     const container =
