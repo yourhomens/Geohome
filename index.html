@@ -16604,7 +16604,561 @@ async function renderDevelopers(){
     }
 
 }
+async function openPublicDeveloperPage(
+    developerId,
+    origin = "developers"
+){
 
+    if(!developerId){
+        return;
+    }
+
+    hideAllPages();
+
+    let page =
+    document.getElementById(
+        "publicDeveloperPage"
+    );
+
+    if(!page){
+
+        page =
+        document.createElement(
+            "section"
+        );
+
+        page.id =
+        "publicDeveloperPage";
+
+        page.className =
+        "yh-feature-page";
+
+        const footer =
+        document.querySelector(
+            "footer"
+        );
+
+        if(footer){
+
+            footer.parentNode
+            .insertBefore(
+                page,
+                footer
+            );
+
+        }else{
+
+            document.body
+            .appendChild(
+                page
+            );
+
+        }
+    }
+
+    page.innerHTML =
+    `
+    <div class="projects-empty">
+        დეველოპერის გვერდი იტვირთება...
+    </div>
+    `;
+
+    page.classList.add(
+        "active"
+    );
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+    try{
+
+        const profileResult =
+        await supabaseClient
+        .from(
+            "developer_profiles"
+        )
+        .select(
+            "id,company_name,logo_url,description,phone,email,website,address,status"
+        )
+        .eq(
+            "id",
+            developerId
+        )
+        .eq(
+            "status",
+            "approved"
+        )
+        .maybeSingle();
+
+
+        if(
+            profileResult.error ||
+            !profileResult.data
+        ){
+
+            page.innerHTML =
+            `
+            <div class="projects-empty">
+                დეველოპერი ვერ მოიძებნა.
+            </div>
+            `;
+
+            return;
+        }
+
+
+        await loadDeveloperProjects();
+
+
+        const developer =
+        profileResult.data;
+
+        const companyName =
+        String(
+            developer.company_name ||
+            "დეველოპერი"
+        ).trim();
+
+
+        const initials =
+        companyName
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0,2)
+        .map(function(word){
+
+            return word
+            .charAt(0)
+            .toUpperCase();
+
+        })
+        .join("");
+
+
+        const projects =
+        currentDeveloperProjects
+        .filter(function(project){
+
+            return String(
+                project.developer_id
+            ) ===
+            String(
+                developerId
+            );
+
+        });
+
+
+        const logoHtml =
+        developer.logo_url
+        ?
+        `
+        <img
+            src="${escapeHtml(developer.logo_url)}"
+            alt="${escapeHtml(companyName)}"
+            style="
+                width:90px;
+                height:90px;
+                border-radius:50%;
+                object-fit:cover;
+                border:1px solid var(--border);
+                background:#fff;
+            "
+        >
+        `
+        :
+        `
+        <div style="
+            width:90px;
+            height:90px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:var(--olive-light);
+            color:var(--olive-dark);
+            border:1px solid var(--border);
+            font-size:28px;
+            font-weight:800;
+        ">
+            ${escapeHtml(initials || "🏢")}
+        </div>
+        `;
+
+
+        page.innerHTML =
+        `
+        <div class="yh-page-header">
+
+            <div style="
+                display:flex;
+                align-items:center;
+                gap:18px;
+            ">
+
+                ${logoHtml}
+
+                <div>
+
+                    <h1 style="
+                        margin:0 0 5px;
+                    ">
+                        ${escapeHtml(companyName)}
+                    </h1>
+
+                    ${
+                        developer.address
+                        ?
+                        `
+                        <div style="
+                            color:var(--muted);
+                            font-size:14px;
+                        ">
+                            📍 ${escapeHtml(developer.address)}
+                        </div>
+                        `
+                        :
+                        ""
+                    }
+
+                </div>
+
+            </div>
+
+            <button
+                class="back-button"
+                id="publicDeveloperBackButton"
+                type="button">
+                ← უკან
+            </button>
+
+        </div>
+
+
+        ${
+            developer.description
+            ?
+            `
+            <div style="
+                background:#fff;
+                border:1px solid var(--border);
+                border-radius:14px;
+                padding:18px;
+                margin-bottom:28px;
+                line-height:1.6;
+            ">
+                ${escapeHtml(developer.description)}
+            </div>
+            `
+            :
+            ""
+        }
+
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:15px;
+        ">
+
+            <h2 style="margin:0;">
+                პროექტები
+            </h2>
+
+            <span style="
+                color:var(--muted);
+                font-size:14px;
+            ">
+                ${projects.length} პროექტი
+            </span>
+
+        </div>
+
+
+        <div
+            class="cards"
+            id="publicDeveloperProjects">
+        </div>
+        `;
+
+
+        const projectsContainer =
+        document.getElementById(
+            "publicDeveloperProjects"
+        );
+
+
+        if(!projects.length){
+
+            projectsContainer.innerHTML =
+            `
+            <div class="projects-empty">
+                <div style="
+                    font-size:38px;
+                    margin-bottom:10px;
+                ">
+                    🏗️
+                </div>
+
+                ამ დეველოპერს ჯერ
+                გამოქვეყნებული პროექტი არ აქვს.
+            </div>
+            `;
+
+        }else{
+
+            projects.forEach(
+                function(project){
+
+                    const card =
+                    document.createElement(
+                        "div"
+                    );
+
+                    card.className =
+                    "project-card";
+
+                    card.dataset.id =
+                    project.id;
+
+
+                    const photos =
+                    Array.isArray(
+                        project.photos
+                    )
+                    ?
+                    project.photos
+                    :
+                    [];
+
+
+                    const firstPhoto =
+                    photos[0] || "";
+
+
+                    const location =
+                    [
+                        project.city,
+                        project.district,
+                        project.address
+                    ]
+                    .filter(Boolean)
+                    .join(", ");
+
+
+                    const currency =
+                    project.currency ||
+                    "USD";
+
+
+                    let priceText =
+                    "ფასი შეთანხმებით";
+
+
+                    if(
+                        project.min_price &&
+                        project.max_price
+                    ){
+
+                        priceText =
+                        formatPrice(
+                            project.min_price,
+                            currency
+                        ) +
+                        " – " +
+                        formatPrice(
+                            project.max_price,
+                            currency
+                        );
+
+                    }else if(
+                        project.min_price
+                    ){
+
+                        priceText =
+                        "დან " +
+                        formatPrice(
+                            project.min_price,
+                            currency
+                        );
+
+                    }
+
+
+                    let constructionText =
+                    "";
+
+                    if(
+                        project.construction_status ===
+                        "planned"
+                    ){
+                        constructionText =
+                        "დაგეგმილი";
+                    }
+
+                    if(
+                        project.construction_status ===
+                        "under_construction"
+                    ){
+                        constructionText =
+                        "მშენებარე";
+                    }
+
+                    if(
+                        project.construction_status ===
+                        "completed"
+                    ){
+                        constructionText =
+                        "დასრულებული";
+                    }
+
+
+                    card.innerHTML =
+                    `
+                    <div
+                        class="card-image"
+                        ${
+                            firstPhoto
+                            ?
+                            `style="background-image:url('${escapeHtml(firstPhoto)}')"`
+                            :
+                            ""
+                        }
+                    >
+
+                        <div class="badge">
+                            🏗️ პროექტი
+                        </div>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div style="
+                            font-size:17px;
+                            font-weight:800;
+                            margin-bottom:8px;
+                        ">
+                            ${escapeHtml(
+                                project.title ||
+                                "ახალი პროექტი"
+                            )}
+                        </div>
+
+                        <div class="price">
+                            ${escapeHtml(priceText)}
+                        </div>
+
+                        ${
+                            location
+                            ?
+                            `
+                            <div class="address">
+                                📍 ${escapeHtml(location)}
+                            </div>
+                            `
+                            :
+                            ""
+                        }
+
+                        ${
+                            constructionText
+                            ?
+                            `
+                            <div class="details">
+                                <span>
+                                    ${escapeHtml(constructionText)}
+                                </span>
+                            </div>
+                            `
+                            :
+                            ""
+                        }
+
+                    </div>
+                    `;
+
+
+                    projectsContainer
+                    .appendChild(
+                        card
+                    );
+
+                }
+            );
+        }
+
+
+        document
+        .getElementById(
+            "publicDeveloperBackButton"
+        )
+        .addEventListener(
+            "click",
+            function(){
+
+                if(
+                    origin ===
+                    "projects"
+                ){
+
+                    openNewProjectsPage(
+                        false
+                    );
+
+                }else{
+
+                    openDevelopersPage(
+                        false
+                    );
+
+                }
+
+            }
+        );
+
+
+        projectsContainer
+        .addEventListener(
+            "click",
+            function(event){
+
+                const card =
+                event.target.closest(
+                    ".project-card"
+                );
+
+                if(!card){
+                    return;
+                }
+
+                openDeveloperProjectById(
+                    card.dataset.id
+                );
+
+            }
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "Public developer page error:",
+            error
+        );
+
+        page.innerHTML =
+        `
+        <div class="projects-empty">
+            დეველოპერის გვერდის ჩატვირთვა ვერ მოხერხდა.
+        </div>
+        `;
+
+    }
+}
 
 document
 .getElementById(
