@@ -1954,7 +1954,97 @@ button{cursor:pointer}
     <div class="list-container" id="adsList">
         <div class="empty-state">იტვირთება...</div>
     </div>
+<!-- =========================
+     DEVELOPER BANNER ADS
+========================= -->
 
+<div
+style="
+margin-top:32px;
+padding-top:26px;
+border-top:1px solid var(--border);
+">
+
+    <div
+    class="page-head"
+    style="
+    margin-bottom:16px;
+    ">
+
+        <div>
+
+            <h2
+            style="
+            font-size:24px;
+            ">
+                🏗️ Developer Banners
+            </h2>
+
+            <p>
+                „ახალი პროექტების“ მთავარი ბანერის რეკლამები.
+            </p>
+
+        </div>
+
+        <button
+        type="button"
+        class="refresh-btn"
+        id="refreshDeveloperBannerAdsBtn">
+            🔄 განახლება
+        </button>
+
+    </div>
+
+
+    <div class="toolbar">
+
+        <select
+        id="developerBannerStatusFilter">
+
+            <option value="">
+                ყველა სტატუსი
+            </option>
+
+            <option value="pending">
+                ⏳ განხილვაში
+            </option>
+
+            <option value="approved">
+                ✅ დამტკიცებული
+            </option>
+
+            <option value="active">
+                🟢 აქტიური
+            </option>
+
+            <option value="rejected">
+                ❌ უარყოფილი
+            </option>
+
+            <option value="expired">
+                ⌛ ვადაგასული
+            </option>
+
+            <option value="cancelled">
+                🚫 გაუქმებული
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div
+    class="list-container"
+    id="developerBannerAdsList">
+
+        <div class="empty-state">
+            Developer Banner რეკლამები იტვირთება...
+        </div>
+
+    </div>
+
+</div>
 </section>
 
 <!-- ADMIN MANAGEMENT -->
