@@ -18104,27 +18104,93 @@ document
     renderNewProjects
 );
 
-function openDeveloperProjectById(projectId){
+async function openDeveloperProjectById(projectId){
 
     const project =
     currentDeveloperProjects.find(
         function(item){
+
             return String(item.id) ===
             String(projectId);
+
         }
     );
 
+
     if(!project){
+
         showMessage(
             "პროექტი ვერ მოიძებნა."
         );
+
         return;
     }
+
+
+    /* =========================
+       DEVELOPER
+    ========================= */
+
+    let developer = null;
+
+    if(project.developer_id){
+
+        try{
+
+            const developerResult =
+            await supabaseClient
+            .from(
+                "developer_profiles"
+            )
+            .select(
+                "id,company_name,logo_url,description,phone,email,website,address,status"
+            )
+            .eq(
+                "id",
+                project.developer_id
+            )
+            .eq(
+                "status",
+                "approved"
+            )
+            .maybeSingle();
+
+
+            if(!developerResult.error){
+
+                developer =
+                developerResult.data ||
+                null;
+
+            }else{
+
+                console.error(
+                    "Project developer load error:",
+                    developerResult.error
+                );
+
+            }
+
+        }catch(error){
+
+            console.error(
+                "Project developer load error:",
+                error
+            );
+
+        }
+    }
+
+
+    /* =========================
+       DETAIL PAGE
+    ========================= */
 
     let page =
     document.getElementById(
         "developerProjectDetailPage"
     );
+
 
     if(!page){
 
@@ -18153,15 +18219,13 @@ function openDeveloperProjectById(projectId){
 
 
     const photos =
-    Array.isArray(project.photos)
+    Array.isArray(
+        project.photos
+    )
     ?
-    project.photos
+    project.photos.filter(Boolean)
     :
     [];
-
-
-    const firstPhoto =
-    photos[0] || "";
 
 
     const location =
@@ -18174,40 +18238,459 @@ function openDeveloperProjectById(projectId){
     .join(", ");
 
 
+    /* =========================
+       STATUS
+    ========================= */
+
     let constructionText =
     "სტატუსი უცნობია";
+
 
     if(
         project.construction_status ===
         "planned"
     ){
+
         constructionText =
         "დაგეგმილი";
+
     }
+
 
     if(
         project.construction_status ===
         "under_construction"
     ){
+
         constructionText =
         "მშენებარე";
+
     }
+
 
     if(
         project.construction_status ===
         "completed"
     ){
+
         constructionText =
         "დასრულებული";
+
     }
 
+
+    /* =========================
+       PRICE
+    ========================= */
+
+    const currency =
+    project.currency ||
+    "GEL";
+
+
+    const currencySymbol =
+    currency === "GEL"
+    ?
+    "₾"
+    :
+    currency === "USD"
+    ?
+    "$"
+    :
+    currency === "EUR"
+    ?
+    "€"
+    :
+    currency;
+
+
+    function projectMoney(value){
+
+        const number =
+        Number(value);
+
+        if(!number){
+            return "";
+        }
+
+        return (
+            number.toLocaleString(
+                "ka-GE"
+            ) +
+            " " +
+            currencySymbol
+        );
+    }
+
+
+    let priceText =
+    "ფასი შეთანხმებით";
+
+
+    if(
+        project.min_price &&
+        project.max_price
+    ){
+
+        priceText =
+        projectMoney(
+            project.min_price
+        ) +
+        " – " +
+        projectMoney(
+            project.max_price
+        );
+
+    }else if(
+        project.min_price
+    ){
+
+        priceText =
+        "დან " +
+        projectMoney(
+            project.min_price
+        );
+
+    }else if(
+        project.max_price
+    ){
+
+        priceText =
+        "მდე " +
+        projectMoney(
+            project.max_price
+        );
+
+    }
+
+
+    /* =========================
+       PHOTO GALLERY
+    ========================= */
+
+    const galleryHtml =
+    photos.length
+    ?
+    `
+    <div style="
+        margin-bottom:22px;
+    ">
+
+        <img
+            id="developerProjectMainPhoto"
+            src="${escapeHtml(photos[0])}"
+            alt="${escapeHtml(
+                project.title ||
+                "პროექტი"
+            )}"
+            style="
+                width:100%;
+                height:min(520px,55vw);
+                min-height:260px;
+                object-fit:cover;
+                border-radius:18px;
+                display:block;
+                background:#e9ecdf;
+            "
+        >
+
+
+        ${
+            photos.length > 1
+            ?
+            `
+            <div
+                id="developerProjectGallery"
+                style="
+                    display:grid;
+                    grid-template-columns:
+                    repeat(
+                        auto-fit,
+                        minmax(85px,1fr)
+                    );
+                    gap:8px;
+                    margin-top:10px;
+                "
+            >
+
+                ${
+                    photos
+                    .map(
+                        function(photo,index){
+
+                            return `
+                            <button
+                                type="button"
+                                class="developer-project-thumb"
+                                data-photo="${escapeHtml(photo)}"
+                                style="
+                                    border:0;
+                                    padding:0;
+                                    background:transparent;
+                                    cursor:pointer;
+                                "
+                            >
+
+                                <img
+                                    src="${escapeHtml(photo)}"
+                                    alt="ფოტო ${index + 1}"
+                                    style="
+                                        width:100%;
+                                        height:82px;
+                                        object-fit:cover;
+                                        border-radius:9px;
+                                        display:block;
+                                        border:1px solid var(--border);
+                                    "
+                                >
+
+                            </button>
+                            `;
+
+                        }
+                    )
+                    .join("")
+                }
+
+            </div>
+            `
+            :
+            ""
+        }
+
+    </div>
+    `
+    :
+    `
+    <div style="
+        height:260px;
+        border-radius:18px;
+        background:#e9ecdf;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:55px;
+        margin-bottom:22px;
+    ">
+        🏗️
+    </div>
+    `;
+
+
+    /* =========================
+       DEVELOPER CARD
+    ========================= */
+
+    let developerHtml =
+    "";
+
+
+    if(developer){
+
+        const companyName =
+        String(
+            developer.company_name ||
+            "დეველოპერი"
+        ).trim();
+
+
+        const initials =
+        companyName
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0,2)
+        .map(
+            function(word){
+
+                return word
+                .charAt(0)
+                .toUpperCase();
+
+            }
+        )
+        .join("");
+
+
+        const logoHtml =
+        developer.logo_url
+        ?
+        `
+        <img
+            src="${escapeHtml(developer.logo_url)}"
+            alt="${escapeHtml(companyName)}"
+            style="
+                width:64px;
+                height:64px;
+                object-fit:cover;
+                border-radius:50%;
+                border:1px solid var(--border);
+                background:#fff;
+                flex:none;
+            "
+        >
+        `
+        :
+        `
+        <div style="
+            width:64px;
+            height:64px;
+            border-radius:50%;
+            background:var(--olive-light);
+            color:var(--olive-dark);
+            border:1px solid var(--border);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:22px;
+            font-weight:800;
+            flex:none;
+        ">
+            ${escapeHtml(
+                initials ||
+                "🏢"
+            )}
+        </div>
+        `;
+
+
+        developerHtml =
+        `
+        <div style="
+            margin-top:24px;
+        ">
+
+            <div style="
+                font-size:13px;
+                color:var(--muted);
+                font-weight:700;
+                margin-bottom:9px;
+            ">
+                დეველოპერი
+            </div>
+
+
+            <button
+                type="button"
+                id="developerProjectDeveloperButton"
+                style="
+                    width:100%;
+                    border:1px solid var(--border);
+                    background:#fff;
+                    border-radius:14px;
+                    padding:16px;
+                    display:flex;
+                    align-items:center;
+                    gap:14px;
+                    text-align:left;
+                    cursor:pointer;
+                "
+            >
+
+                ${logoHtml}
+
+                <div style="
+                    flex:1;
+                    min-width:0;
+                ">
+
+                    <div style="
+                        font-size:18px;
+                        font-weight:800;
+                        color:var(--dark);
+                        margin-bottom:5px;
+                    ">
+                        ${escapeHtml(companyName)}
+                    </div>
+
+
+                    ${
+                        developer.address
+                        ?
+                        `
+                        <div style="
+                            font-size:13px;
+                            color:var(--muted);
+                            margin-bottom:3px;
+                        ">
+                            📍
+                            ${escapeHtml(
+                                developer.address
+                            )}
+                        </div>
+                        `
+                        :
+                        ""
+                    }
+
+
+                    ${
+                        developer.phone
+                        ?
+                        `
+                        <div style="
+                            font-size:13px;
+                            color:var(--muted);
+                            margin-bottom:3px;
+                        ">
+                            📞
+                            ${escapeHtml(
+                                developer.phone
+                            )}
+                        </div>
+                        `
+                        :
+                        ""
+                    }
+
+
+                    ${
+                        developer.email
+                        ?
+                        `
+                        <div style="
+                            font-size:13px;
+                            color:var(--muted);
+                        ">
+                            ✉️
+                            ${escapeHtml(
+                                developer.email
+                            )}
+                        </div>
+                        `
+                        :
+                        ""
+                    }
+
+                </div>
+
+
+                <div style="
+                    font-size:22px;
+                    color:var(--olive-dark);
+                    flex:none;
+                ">
+                    ›
+                </div>
+
+            </button>
+
+        </div>
+        `;
+    }
+
+
+    /* =========================
+       PAGE HTML
+    ========================= */
 
     page.innerHTML =
     `
     <div style="
         max-width:1100px;
         margin:0 auto;
+        padding-bottom:45px;
     ">
+
 
         <div style="
             display:flex;
@@ -18226,9 +18709,12 @@ function openDeveloperProjectById(projectId){
                     padding:11px 16px;
                     border-radius:9px;
                     font-weight:700;
-                ">
+                    cursor:pointer;
+                "
+            >
                 ← უკან
             </button>
+
 
             <strong style="
                 color:var(--olive-dark);
@@ -18239,36 +18725,21 @@ function openDeveloperProjectById(projectId){
         </div>
 
 
-        ${
-            firstPhoto
-            ?
-            `
-            <img
-                src="${escapeHtml(firstPhoto)}"
-                alt=""
-                style="
-                    width:100%;
-                    max-height:520px;
-                    object-fit:cover;
-                    border-radius:18px;
-                    display:block;
-                ">
-            `
-            :
-            ""
-        }
+        ${galleryHtml}
 
 
         <div style="
-            margin-top:20px;
             background:#fff;
             border:1px solid var(--border);
             border-radius:18px;
-            padding:24px;
+            padding:clamp(18px,4vw,28px);
         ">
 
+
             <h1 style="
-                margin-bottom:12px;
+                margin:0 0 10px;
+                font-size:clamp(25px,5vw,36px);
+                line-height:1.2;
             ">
                 ${escapeHtml(
                     project.title ||
@@ -18279,9 +18750,11 @@ function openDeveloperProjectById(projectId){
 
             <div style="
                 color:var(--muted);
-                margin-bottom:18px;
+                margin-bottom:22px;
+                line-height:1.5;
             ">
-                📍 ${escapeHtml(
+                📍
+                ${escapeHtml(
                     location ||
                     "მისამართი მითითებული არ არის"
                 )}
@@ -18291,8 +18764,8 @@ function openDeveloperProjectById(projectId){
             <div style="
                 display:flex;
                 flex-wrap:wrap;
-                gap:10px;
-                margin-bottom:20px;
+                gap:9px;
+                margin-bottom:24px;
             ">
 
                 <span style="
@@ -18302,10 +18775,12 @@ function openDeveloperProjectById(projectId){
                     border-radius:8px;
                     font-weight:700;
                 ">
-                    🏗️ ${escapeHtml(
+                    🏗️
+                    ${escapeHtml(
                         constructionText
                     )}
                 </span>
+
 
                 ${
                     project.completion_date
@@ -18329,74 +18804,84 @@ function openDeveloperProjectById(projectId){
             </div>
 
 
-            ${
-                project.min_price
-                ?
-                `
+            <div style="
+                border-top:1px solid var(--border);
+                border-bottom:1px solid var(--border);
+                padding:20px 0;
+                margin-bottom:22px;
+            ">
+
                 <div style="
-                    font-size:25px;
+                    font-size:13px;
+                    color:var(--muted);
+                    margin-bottom:5px;
+                ">
+                    ფასი
+                </div>
+
+                <div style="
+                    font-size:clamp(22px,5vw,30px);
                     font-weight:800;
-                    margin-bottom:8px;
+                    color:var(--dark);
                 ">
-                    ფასი ${escapeHtml(
-                        String(
-                            project.min_price
-                        )
-                    )}
-                    ${escapeHtml(
-                        project.currency ||
-                        "GEL"
-                    )}-დან
+                    ${escapeHtml(priceText)}
                 </div>
-                `
-                :
-                ""
-            }
 
 
-            ${
-                project.price_per_sqm
-                ?
-                `
-                <div style="
-                    color:var(--olive-dark);
-                    font-weight:700;
-                    margin-bottom:20px;
-                ">
-                    ${escapeHtml(
-                        String(
-                            project.price_per_sqm
-                        )
-                    )}
-                    ${escapeHtml(
-                        project.currency ||
-                        "GEL"
-                    )} / მ²
-                </div>
-                `
-                :
-                ""
-            }
+                ${
+                    project.price_per_sqm
+                    ?
+                    `
+                    <div style="
+                        color:var(--olive-dark);
+                        font-weight:700;
+                        margin-top:7px;
+                    ">
+                        ${escapeHtml(
+                            projectMoney(
+                                project.price_per_sqm
+                            )
+                        )}
+                        / მ²
+                    </div>
+                    `
+                    :
+                    ""
+                }
+
+            </div>
 
 
             ${
                 project.description
                 ?
                 `
-                <div style="
-                    border-top:1px solid var(--border);
-                    padding-top:20px;
-                    line-height:1.7;
-                    white-space:pre-wrap;
-                ">
-                    ${escapeHtml(
-                        project.description
-                    )}
+                <div>
+
+                    <h3 style="
+                        margin:0 0 12px;
+                    ">
+                        პროექტის შესახებ
+                    </h3>
+
+                    <div style="
+                        line-height:1.75;
+                        white-space:pre-wrap;
+                        color:var(--text);
+                    ">
+                        ${escapeHtml(
+                            project.description
+                        )}
+                    </div>
+
                 </div>
                 `
                 :
                 ""
             }
+
+
+            ${developerHtml}
 
         </div>
 
@@ -18408,6 +18893,10 @@ function openDeveloperProjectById(projectId){
     "block";
 
 
+    /* =========================
+       BACK
+    ========================= */
+
     document
     .getElementById(
         "developerProjectBackButton"
@@ -18418,6 +18907,82 @@ function openDeveloperProjectById(projectId){
 
             page.style.display =
             "none";
+
+        }
+    );
+
+
+    /* =========================
+       PHOTO SWITCH
+    ========================= */
+
+    document
+    .getElementById(
+        "developerProjectGallery"
+    )
+    ?.addEventListener(
+        "click",
+        function(event){
+
+            const button =
+            event.target.closest(
+                ".developer-project-thumb"
+            );
+
+            if(!button){
+                return;
+            }
+
+            const photo =
+            button.dataset.photo;
+
+            const mainPhoto =
+            document.getElementById(
+                "developerProjectMainPhoto"
+            );
+
+            if(
+                photo &&
+                mainPhoto
+            ){
+
+                mainPhoto.src =
+                photo;
+
+                mainPhoto.scrollIntoView({
+                    behavior:"smooth",
+                    block:"nearest"
+                });
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       OPEN DEVELOPER
+    ========================= */
+
+    document
+    .getElementById(
+        "developerProjectDeveloperButton"
+    )
+    ?.addEventListener(
+        "click",
+        function(){
+
+            if(!project.developer_id){
+                return;
+            }
+
+            page.style.display =
+            "none";
+
+            openPublicDeveloperPage(
+                project.developer_id,
+                "projects"
+            );
 
         }
     );
