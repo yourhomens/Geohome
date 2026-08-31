@@ -1519,6 +1519,24 @@ border-radius:0;
     z-index: 10;
 }
 
+@media (min-width: 992px) {
+    .project-filters {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 140px !important;
+        gap: 12px !important;
+        align-items: center !important;
+        margin-top: -65px !important;
+    }
+}
+
+@media (max-width: 991px) {
+    .project-filters {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        margin-top: -30px !important;
+    }
+}
 
 /* ძებნის ღილაკის მწვანე დიზაინი და სწორი ზომა */
 .project-filters button, 
