@@ -9051,7 +9051,282 @@ function openDevelopersPage(
     });
 
 }
+let yhProjectsBannerAds = [];
+let yhProjectsBannerIndex = 0;
+let yhProjectsBannerTimer = null;
 
+function yhResetProjectsHero(){
+
+    const image =
+    document.getElementById(
+        "yhProjectsHeroImage"
+    );
+
+    const title =
+    document.getElementById(
+        "yhProjectsHeroTitle"
+    );
+
+    const hero =
+    document.querySelector(
+        ".yh-projects-hero"
+    );
+
+    if(image){
+        image.src =
+        "new-projects-banner.png";
+    }
+
+    if(title){
+        title.textContent =
+        "იპოვე შენი ახალი სახლი";
+    }
+
+    if(hero){
+        hero.style.cursor =
+        "default";
+
+        hero.removeAttribute(
+            "data-project-id"
+        );
+
+        hero.removeAttribute(
+            "data-developer-id"
+        );
+    }
+}
+
+
+function yhShowProjectsBannerAd(
+    ad
+){
+
+    if(!ad){
+        yhResetProjectsHero();
+        return;
+    }
+
+    const image =
+    document.getElementById(
+        "yhProjectsHeroImage"
+    );
+
+    const title =
+    document.getElementById(
+        "yhProjectsHeroTitle"
+    );
+
+    const hero =
+    document.querySelector(
+        ".yh-projects-hero"
+    );
+
+    if(image){
+        image.src =
+        ad.image_url ||
+        "new-projects-banner.png";
+    }
+
+    if(title){
+        title.textContent =
+        ad.title ||
+        "ახალი პროექტი";
+    }
+
+    if(hero){
+
+        hero.style.cursor =
+        "pointer";
+
+        hero.dataset.projectId =
+        ad.project_id ||
+        "";
+
+        hero.dataset.developerId =
+        ad.developer_id ||
+        "";
+    }
+}
+
+
+function yhStartProjectsBannerRotation(){
+
+    if(yhProjectsBannerTimer){
+
+        clearInterval(
+            yhProjectsBannerTimer
+        );
+
+        yhProjectsBannerTimer =
+        null;
+    }
+
+    if(
+        yhProjectsBannerAds.length <= 1
+    ){
+        return;
+    }
+
+    yhProjectsBannerTimer =
+    setInterval(
+        function(){
+
+            yhProjectsBannerIndex =
+            (
+                yhProjectsBannerIndex + 1
+            )
+            %
+            yhProjectsBannerAds.length;
+
+            yhShowProjectsBannerAd(
+                yhProjectsBannerAds[
+                    yhProjectsBannerIndex
+                ]
+            );
+
+        },
+        10000
+    );
+}
+
+
+async function yhLoadProjectsBannerAds(){
+
+    try{
+
+        const now =
+        new Date()
+        .toISOString();
+
+        const result =
+        await supabaseClient
+        .from(
+            "developer_banner_ads"
+        )
+        .select(
+            "id,developer_id,project_id,title,subtitle,image_url,status,is_active,starts_at,ends_at,created_at"
+        )
+        .eq(
+            "status",
+            "active"
+        )
+        .eq(
+            "is_active",
+            true
+        )
+        .or(
+            "starts_at.is.null,starts_at.lte." +
+            now
+        )
+        .or(
+            "ends_at.is.null,ends_at.gt." +
+            now
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
+
+        if(result.error){
+
+            console.error(
+                "Projects banner ads load error:",
+                result.error
+            );
+
+            yhProjectsBannerAds = [];
+
+            yhResetProjectsHero();
+
+            return;
+        }
+
+
+        yhProjectsBannerAds =
+        result.data ||
+        [];
+
+
+        if(
+            !yhProjectsBannerAds.length
+        ){
+
+            yhProjectsBannerIndex =
+            0;
+
+            yhResetProjectsHero();
+
+            return;
+        }
+
+
+        yhProjectsBannerIndex =
+        0;
+
+
+        yhShowProjectsBannerAd(
+            yhProjectsBannerAds[0]
+        );
+
+
+        yhStartProjectsBannerRotation();
+
+
+    }catch(error){
+
+        console.error(
+            "Projects banner ads load error:",
+            error
+        );
+
+        yhProjectsBannerAds = [];
+
+        yhResetProjectsHero();
+
+    }
+}
+
+
+document
+.querySelector(
+    ".yh-projects-hero"
+)
+?.addEventListener(
+    "click",
+    function(){
+
+        const projectId =
+        this.dataset.projectId ||
+        "";
+
+        const developerId =
+        this.dataset.developerId ||
+        "";
+
+
+        if(projectId){
+
+            openDeveloperProjectById(
+                projectId
+            );
+
+            return;
+        }
+
+
+        if(developerId){
+
+            openPublicDeveloperPage(
+                developerId,
+                "projects"
+            );
+        }
+
+    }
+);
 
 function openNewProjectsPage(
     pushHistory = false
@@ -9078,6 +9353,7 @@ function openNewProjectsPage(
 
     renderNewProjects();
 renderNewProjectsDevelopers();
+    yhLoadProjectsBannerAds();
 
     window.scrollTo({
         top:0,
