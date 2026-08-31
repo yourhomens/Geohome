@@ -1506,6 +1506,18 @@ border-radius:0;
 .project-filters > div:first-child:not(input):not(select):not(button) {
     display: none !important;
 }
+/* „მთავარი“-ს სრული წაშლა და ბანერთან მიკვრა */
+.project-filters + div,
+.project-filters ~ div:nth-of-type(1),
+.project-filters-breadcrumb {
+    display: none !important;
+}
+
+.project-filters {
+    margin-top: -80px !important;
+    position: relative;
+    z-index: 10;
+}
 
 
 /* ძებნის ღილაკის მწვანე დიზაინი და სწორი ზომა */
