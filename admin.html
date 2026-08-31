@@ -3313,6 +3313,907 @@ document
 
     }
 );
+    /* =========================================================
+   DEVELOPER PROJECT MODERATION
+========================================================= */
+
+let developerProjectsData = [];
+
+
+/* =========================
+   LOAD PROJECTS
+========================= */
+
+async function loadDeveloperProjectsAdmin(){
+
+    const container =
+    $("adminDeveloperProjects");
+
+    if(!container){
+        return;
+    }
+
+    setLoading(
+        "adminDeveloperProjects"
+    );
+
+
+    try{
+
+        const{
+            data,
+            error
+        }=
+        await sb.rpc(
+            "yh_admin_developer_projects_final"
+        );
+
+
+        if(error){
+            throw error;
+        }
+
+
+        developerProjectsData =
+        rows(data);
+
+
+        renderDeveloperProjectsAdmin();
+
+
+    }catch(error){
+
+        console.error(
+            "Developer projects admin:",
+            error
+        );
+
+        errorBox(
+            "adminDeveloperProjects",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   PHOTOS
+========================= */
+
+function yhAdminProjectPhotos(value){
+
+    if(
+        Array.isArray(value)
+    ){
+        return value;
+    }
+
+
+    if(
+        typeof value ===
+        "string"
+    ){
+
+        try{
+
+            const parsed =
+            JSON.parse(value);
+
+            return Array.isArray(parsed)
+            ?
+            parsed
+            :
+            [];
+
+        }catch(error){
+
+            return value
+            ?
+            [value]
+            :
+            [];
+
+        }
+
+    }
+
+
+    return [];
+}
+
+
+/* =========================
+   RENDER
+========================= */
+
+function renderDeveloperProjectsAdmin(){
+
+    const container =
+    $("adminDeveloperProjects");
+
+    if(!container){
+        return;
+    }
+
+
+    const status =
+    $("developerProjectStatusFilter")
+    ?.value
+    || "";
+
+
+    const search =
+    $("developerProjectSearch")
+    ?.value
+    ?.trim()
+    ?.toLowerCase()
+    || "";
+
+
+    const list =
+    developerProjectsData
+    .filter(
+        project=>{
+
+            const matchesStatus =
+            !status
+            ||
+            String(
+                project.status ||
+                ""
+            ) === status;
+
+
+            const haystack =
+            [
+                project.title,
+                project.company_name,
+                project.city,
+                project.district,
+                project.address
+            ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+
+
+            const matchesSearch =
+            !search
+            ||
+            haystack.includes(
+                search
+            );
+
+
+            return (
+                matchesStatus
+                &&
+                matchesSearch
+            );
+
+        }
+    );
+
+
+    if(!list.length){
+
+        container.innerHTML =
+        `
+        <div class="empty-state">
+            პროექტები ვერ მოიძებნა.
+        </div>
+        `;
+
+        return;
+    }
+
+
+    const statusMap = {
+
+        pending:
+        "⏳ განხილვაში",
+
+        approved:
+        "✅ დამტკიცებული",
+
+        rejected:
+        "❌ უარყოფილი",
+
+        blocked:
+        "🚫 დაბლოკილი"
+
+    };
+
+
+    const constructionMap = {
+
+        planned:
+        "დაგეგმილი",
+
+        under_construction:
+        "მშენებარე",
+
+        completed:
+        "დასრულებული"
+
+    };
+
+
+    const currencyMap = {
+
+        GEL:"₾",
+        USD:"$",
+        EUR:"€"
+
+    };
+
+
+    container.innerHTML =
+    list.map(
+        project=>{
+
+            const photos =
+            yhAdminProjectPhotos(
+                project.photos
+            );
+
+
+            const firstPhoto =
+            photos[0] || "";
+
+
+            const currency =
+            currencyMap[
+                project.currency
+            ]
+            ||
+            project.currency
+            ||
+            "";
+
+
+            const location =
+            [
+                project.city,
+                project.district,
+                project.address
+            ]
+            .filter(Boolean)
+            .join(", ");
+
+
+            let priceText =
+            "—";
+
+
+            if(
+                project.min_price !== null
+                &&
+                project.min_price !==
+                undefined
+            ){
+
+                priceText =
+                Number(
+                    project.min_price
+                )
+                .toLocaleString()
+                +
+                " "
+                +
+                currency;
+
+
+                if(
+                    project.max_price !== null
+                    &&
+                    project.max_price !==
+                    undefined
+                ){
+
+                    priceText +=
+                    " – "
+                    +
+                    Number(
+                        project.max_price
+                    )
+                    .toLocaleString()
+                    +
+                    " "
+                    +
+                    currency;
+
+                }
+
+            }
+
+
+            return `
+            <article
+            class="data-card"
+            data-admin-project="${esc(
+                project.id
+            )}"
+            style="
+            overflow:hidden;
+            ">
+
+
+                <div
+                style="
+                display:grid;
+                grid-template-columns:
+                minmax(180px,260px)
+                minmax(0,1fr);
+                gap:18px;
+                align-items:start;
+                ">
+
+
+                    <div>
+
+                        ${
+                            firstPhoto
+                            ?
+                            `
+                            <img
+                            src="${esc(firstPhoto)}"
+                            alt=""
+                            style="
+                            width:100%;
+                            height:180px;
+                            object-fit:cover;
+                            border-radius:15px;
+                            display:block;
+                            ">
+                            `
+                            :
+                            `
+                            <div
+                            style="
+                            width:100%;
+                            height:180px;
+                            border-radius:15px;
+                            background:var(--olive-soft);
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:42px;
+                            ">
+                                🏗️
+                            </div>
+                            `
+                        }
+
+
+                        ${
+                            photos.length > 1
+                            ?
+                            `
+                            <div
+                            class="data-sub"
+                            style="
+                            margin-top:7px;
+                            text-align:center;
+                            ">
+                                📷 ${photos.length} ფოტო
+                            </div>
+                            `
+                            :
+                            ""
+                        }
+
+                    </div>
+
+
+                    <div>
+
+
+                        <div
+                        class="data-title"
+                        style="
+                        font-size:19px;
+                        ">
+                            ${esc(
+                                project.title
+                                ||
+                                "უსახელო პროექტი"
+                            )}
+                        </div>
+
+
+                        <div
+                        class="data-sub"
+                        style="
+                        margin-top:5px;
+                        font-weight:800;
+                        ">
+                            🏢 ${esc(
+                                project.company_name
+                                ||
+                                "დეველოპერი"
+                            )}
+                        </div>
+
+
+                        <div
+                        class="pills"
+                        style="
+                        margin-top:10px;
+                        ">
+
+                            <span
+                            class="pill ${
+                                project.status ===
+                                "rejected"
+                                ?
+                                "red"
+                                :
+                                project.status ===
+                                "pending"
+                                ?
+                                "orange"
+                                :
+                                "olive"
+                            }">
+
+                                ${esc(
+                                    statusMap[
+                                        project.status
+                                    ]
+                                    ||
+                                    project.status
+                                    ||
+                                    "pending"
+                                )}
+
+                            </span>
+
+
+                            <span class="pill">
+
+                                🏗️ ${esc(
+                                    constructionMap[
+                                        project
+                                        .construction_status
+                                    ]
+                                    ||
+                                    project
+                                    .construction_status
+                                    ||
+                                    "—"
+                                )}
+
+                            </span>
+
+                        </div>
+
+
+                        <div
+                        class="data-sub"
+                        style="
+                        margin-top:12px;
+                        font-size:12px;
+                        ">
+                            📍 ${esc(
+                                location ||
+                                "მისამართი მითითებული არ არის"
+                            )}
+                        </div>
+
+
+                        <div
+                        class="data-sub"
+                        style="
+                        margin-top:6px;
+                        font-size:12px;
+                        ">
+                            💰 ფასი:
+                            ${esc(
+                                priceText
+                            )}
+                        </div>
+
+
+                        ${
+                            project.price_per_sqm
+                            ?
+                            `
+                            <div
+                            class="data-sub"
+                            style="
+                            margin-top:6px;
+                            font-size:12px;
+                            ">
+                                📐
+                                ${Number(
+                                    project
+                                    .price_per_sqm
+                                )
+                                .toLocaleString()}
+                                ${esc(currency)}
+                                / მ²
+                            </div>
+                            `
+                            :
+                            ""
+                        }
+
+
+                        ${
+                            project.completion_date
+                            ?
+                            `
+                            <div
+                            class="data-sub"
+                            style="
+                            margin-top:6px;
+                            font-size:12px;
+                            ">
+                                📅 დასრულება:
+                                ${esc(
+                                    project
+                                    .completion_date
+                                )}
+                            </div>
+                            `
+                            :
+                            ""
+                        }
+
+
+                        ${
+                            project.description
+                            ?
+                            `
+                            <div
+                            class="report-details"
+                            style="
+                            margin-top:12px;
+                            ">
+                                ${esc(
+                                    project.description
+                                )}
+                            </div>
+                            `
+                            :
+                            ""
+                        }
+
+
+                        ${
+                            project.admin_note
+                            ?
+                            `
+                            <div
+                            class="note"
+                            style="
+                            margin-top:10px;
+                            ">
+                                📝 Admin:
+                                ${esc(
+                                    project.admin_note
+                                )}
+                            </div>
+                            `
+                            :
+                            ""
+                        }
+
+
+                        <div
+                        class="card-actions"
+                        style="
+                        margin-top:16px;
+                        ">
+
+
+                            <button
+                            type="button"
+                            class="action-btn primary"
+                            data-project-action="approve"
+                            data-project-id="${esc(
+                                project.id
+                            )}">
+                                ✅ დამტკიცება
+                            </button>
+
+
+                            <button
+                            type="button"
+                            class="action-btn warn"
+                            data-project-action="reject"
+                            data-project-id="${esc(
+                                project.id
+                            )}">
+                                ❌ უარყოფა
+                            </button>
+
+
+                            <button
+                            type="button"
+                            class="action-btn danger"
+                            data-project-action="delete"
+                            data-project-id="${esc(
+                                project.id
+                            )}">
+                                🗑️ წაშლა
+                            </button>
+
+
+                        </div>
+
+
+                        <div
+                        class="data-sub"
+                        style="
+                        margin-top:10px;
+                        ">
+                            გაგზავნილია:
+                            ${esc(
+                                dateText(
+                                    project.created_at
+                                )
+                            )}
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </article>
+            `;
+
+        }
+    )
+    .join("");
+
+}
+
+
+/* =========================
+   FILTERS
+========================= */
+
+$("developerProjectStatusFilter")
+?.addEventListener(
+    "change",
+    renderDeveloperProjectsAdmin
+);
+
+
+$("developerProjectSearch")
+?.addEventListener(
+    "input",
+    renderDeveloperProjectsAdmin
+);
+
+
+$("refreshDeveloperProjectsBtn")
+?.addEventListener(
+    "click",
+    loadDeveloperProjectsAdmin
+);
+
+
+/* =========================
+   ACTIONS
+========================= */
+
+$("adminDeveloperProjects")
+?.addEventListener(
+    "click",
+    async function(event){
+
+        const button =
+        event.target.closest(
+            "[data-project-action]"
+        );
+
+
+        if(!button){
+            return;
+        }
+
+
+        const projectId =
+        button.dataset.projectId;
+
+
+        const action =
+        button.dataset.projectAction;
+
+
+        let note =
+        null;
+
+
+        if(
+            action ===
+            "approve"
+        ){
+
+            if(
+                !confirm(
+                    "✅ ნამდვილად გსურს პროექტის დამტკიცება?"
+                )
+            ){
+                return;
+            }
+
+        }
+
+
+        if(
+            action ===
+            "reject"
+        ){
+
+            if(
+                !confirm(
+                    "❌ ნამდვილად გსურს პროექტის უარყოფა?"
+                )
+            ){
+                return;
+            }
+
+
+            note =
+            prompt(
+                "უარყოფის მიზეზი / კომენტარი:"
+            );
+
+
+            if(
+                note === null
+            ){
+                return;
+            }
+
+        }
+
+
+        if(
+            action ===
+            "delete"
+        ){
+
+            if(
+                !confirm(
+                    "⚠️ პროექტი სრულად წაიშლება.\n\nნამდვილად გსურს წაშლა?"
+                )
+            ){
+                return;
+            }
+
+        }
+
+
+        button.disabled =
+        true;
+
+
+        try{
+
+            const{
+                data,
+                error
+            }=
+            await sb.rpc(
+                "yh_admin_developer_project_action_final",
+                {
+
+                    p_project_id:
+                    projectId,
+
+                    p_action:
+                    action,
+
+                    p_note:
+                    note
+
+                }
+            );
+
+
+            if(error){
+                throw error;
+            }
+
+
+            if(
+                data?.ok ===
+                false
+            ){
+                throw new Error(
+                    "მოქმედება ვერ შესრულდა."
+                );
+            }
+
+
+            await loadDeveloperProjectsAdmin();
+
+
+            if(
+                action ===
+                "approve"
+            ){
+
+                alert(
+                    "✅ პროექტი დამტკიცდა."
+                );
+
+            }else if(
+                action ===
+                "reject"
+            ){
+
+                alert(
+                    "❌ პროექტი უარყოფილია."
+                );
+
+            }else{
+
+                alert(
+                    "🗑️ პროექტი წაიშალა."
+                );
+
+            }
+
+
+        }catch(error){
+
+            console.error(
+                "Project moderation:",
+                error
+            );
+
+
+            alert(
+                error.message
+                ||
+                "მოქმედება ვერ შესრულდა."
+            );
+
+
+            button.disabled =
+            false;
+
+        }
+
+    }
+);
+
+
+/* =========================
+   LOAD WHEN DEVELOPERS OPENS
+========================= */
+
+document
+.querySelectorAll(
+    '.nav-btn[data-page="developers"]'
+)
+.forEach(
+    button=>{
+
+        button
+        .addEventListener(
+            "click",
+            function(){
+
+                setTimeout(
+                    loadDeveloperProjectsAdmin,
+                    60
+                );
+
+            }
+        );
+
+    }
+);
 /* USERS */
 
 async function loadUsers(){
