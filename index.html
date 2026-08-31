@@ -1472,7 +1472,7 @@ border-radius:0;
 
     background: #fff;
     border: 1px solid var(--border);
-    border-radius: 16px; /* ოთხივე მხრიდან მრგვალი, როგორც ფოტოზეა */
+    border-radius: 16px;
 
     padding: 18px 20px;
 
@@ -1484,7 +1484,7 @@ border-radius:0;
         1fr
         1fr
         1.2fr
-        140px; /* ძებნის ღილაკისთვის ზუსტი სიგანე */
+        140px;
 
     gap: 12px;
     align-items: center;
@@ -1492,14 +1492,21 @@ border-radius:0;
     position: relative;
     z-index: 10;
 
-    /* უარყოფითი მარგინი, რომ აიწიოს და ბანერს გადაფაროს */
-    margin-top: -45px; 
+    margin-top: -45px !important;
     margin-left: calc(50% - 50vw + 32px);
     margin-right: calc(50% - 50vw + 32px);
     margin-bottom: 30px;
 
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
+
+/* რომ გაქრეს „მთავარი“ წარწერა ფილტრების თავიდან */
+.project-filters-breadcrumb,
+.project-filters ~ .breadcrumb,
+.project-filters > div:first-child:not(input):not(select):not(button) {
+    display: none !important;
+}
+
 
 /* ძებნის ღილაკის მწვანე დიზაინი და სწორი ზომა */
 .project-filters button, 
