@@ -1466,175 +1466,125 @@ border-radius:0;
     margin-top:7px;
 }
 
-.project-filters {
-    width: calc(100vw - 64px);
-    max-width: none;
+.project-filters{
+    width:calc(100vw - 64px);
+    max-width:none;
 
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 16px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:14px;
 
-    padding: 18px 20px;
+    padding:10px 12px;
 
-    display: grid;
+    display:grid;
     grid-template-columns:
-        1.1fr
-        1.1fr
+        1.15fr
+        1.15fr
         1fr
         1fr
+        .9fr
         1fr
-        1.2fr
-        140px;
+        1fr
+        1.35fr
+        130px;
 
-    gap: 12px;
-    align-items: center;
+    gap:8px;
+    align-items:center;
 
-    position: relative;
-    z-index: 10;
+    position:relative;
+    z-index:10;
 
-    margin-top: -45px !important;
-    margin-left: calc(50% - 50vw + 32px);
-    margin-right: calc(50% - 50vw + 32px);
-    margin-bottom: 30px;
+    margin-top:-52px;
+    margin-left:calc(50% - 50vw + 32px);
+    margin-right:calc(50% - 50vw + 32px);
+    margin-bottom:30px;
 
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    box-shadow:0 8px 24px rgba(37,42,36,.12);
 }
 
-/* რომ გაქრეს „მთავარი“ წარწერა ფილტრების თავიდან */
-.project-filters-breadcrumb,
-.project-filters ~ .breadcrumb,
-.project-filters > div:first-child:not(input):not(select):not(button) {
-    display: none !important;
-}
-/* „მთავარი“-ს სრული წაშლა და ბანერთან მიკვრა */
-.project-filters + div,
-.project-filters ~ div:nth-of-type(1),
-.project-filters-breadcrumb {
-    display: none !important;
-}
-
-.project-filters {
-    margin-top: -80px !important;
-    position: relative;
-    z-index: 10;
-}
-
-@media (min-width: 992px) {
-    .project-filters {
-        display: grid !important;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 140px !important;
-        gap: 12px !important;
-        align-items: center !important;
-        margin-top: -65px !important;
-    }
-}
-
-
-@media (max-width: 991px) {
-    .project-filters {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 10px !important;
-        margin-top: -30px !important;
-    }
-}
-@media (max-width: 991px) {
-    .project-filters > a:first-child,
-    .project-filters > div:first-child:not(select):not(input):not(button),
-    .project-filters .breadcrumb,
-    .project-filters span:first-child {
-        display: none !important;
-    }
-}
-@media (min-width: 992px) {
-    .project-filters {
-        display: grid !important;
-        grid-template-columns: repeat(7, 1fr) !important;
-        gap: 10px !important;
-        align-items: center !important;
-        width: calc(100vw - 64px) !important;
-        max-width: 1400px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        margin-top: -65px !important;
-        position: relative !important;
-        z-index: 10 !important;
-    }
-}
-
-/* ძებნის ღილაკის მწვანე დიზაინი და სწორი ზომა */
-.project-filters button, 
-.project-filters .search-btn {
-    width: 100%;
-    height: 48px;
-    background-color: #556b2f; /* ზუსტი მწვანე ფერი, რასაც ხედავ (ან შენი ღილაკის ფერი) */
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-sizing: border-box;
-    margin: 0;
-}
-
-.project-filters button:hover {
-    background-color: #445824;
-}
-
-/* შიდა ელემენტების (ინპუტების, სელექტებისა და ღილაკების) ვიზუალური ერთიანობა */
+/* ყველა ფილტრი ერთნაირი ზომის */
 .project-filters input,
-.project-filters select,
-.project-filters button {
-    width: 100%;
-    height: 44px;
-    padding: 0 12px;
-    font-size: 14px;
-    border: 1px solid var(--border, #e0e0e0);
-    border-radius: 10px;
-    background-color: #fafafa;
-    outline: none;
-    box-sizing: border-box;
-    transition: all 0.2s ease;
+.project-filters select{
+    width:100%;
+    min-width:0;
+    height:42px;
+
+    padding:0 11px;
+
+    border:1px solid var(--border);
+    border-radius:8px;
+
+    background:#fff;
+    color:var(--dark);
+
+    font-size:13px;
+    outline:none;
+    box-sizing:border-box;
 }
 
 .project-filters input:focus,
-.project-filters select:focus {
-    border-color: #007aff;
-    background-color: #fff;
+.project-filters select:focus{
+    border-color:var(--olive);
 }
 
-.project-filters button {
-    background-color: #111;
-    color: #fff;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-}
-
-.project-filters button:hover {
-    background-color: #333;
-}
-
-
-.project-filters input{
-    border:1px solid var(--border);
-    border-radius:8px;
-    padding:12px;
-    outline:none;
+/* ძებნა — ყოველთვის ბოლოში */
+.project-filters #projectSearchButton{
     width:100%;
-}
+    height:42px;
 
-.project-filters button{
+    margin:0;
+    padding:0 15px;
+
     border:0;
+    border-radius:8px;
+
     background:var(--olive);
     color:#fff;
-    border-radius:8px;
-    padding:12px 18px;
+
+    font-size:14px;
     font-weight:700;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    white-space:nowrap;
+}
+
+.project-filters #projectSearchButton:hover{
+    background:var(--olive-dark);
+}
+
+
+/* =========================
+   MOBILE / TABLET
+========================= */
+@media(max-width:991px){
+
+    .project-filters{
+        width:calc(100vw - 24px) !important;
+
+        display:flex !important;
+        flex-direction:column !important;
+
+        gap:10px !important;
+        padding:12px !important;
+
+        margin-top:-18px !important;
+        margin-left:calc(50% - 50vw + 12px) !important;
+        margin-right:calc(50% - 50vw + 12px) !important;
+        margin-bottom:25px !important;
+
+        border-radius:14px;
+    }
+
+    .project-filters input,
+    .project-filters select,
+    .project-filters #projectSearchButton{
+        width:100% !important;
+        height:44px !important;
+        flex:none !important;
+    }
 }
 
 .projects-empty{
