@@ -17173,53 +17173,22 @@ document
             ".developer-projects-button"
         );
 
-
         if(!button){
             return;
         }
 
-
-        const developer =
-        button.dataset.developer ||
+        const developerId =
+        button.dataset.developerId ||
         "";
 
+        if(!developerId){
+            return;
+        }
 
-        document
-        .getElementById(
-            "projectDeveloperFilter"
-        )
-        .value =
-        developer;
-
-
-        document
-        .getElementById(
-            "projectLocationFilter"
-        )
-        .value =
-        "";
-
-
-        document
-        .getElementById(
-            "projectMinPrice"
-        )
-        .value =
-        "";
-
-
-        document
-        .getElementById(
-            "projectMaxPrice"
-        )
-        .value =
-        "";
-
-
-        openNewProjectsPage(
-            true
+        openPublicDeveloperPage(
+            developerId,
+            "developers"
         );
-
     }
 );
 
