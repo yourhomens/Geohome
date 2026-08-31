@@ -1587,7 +1587,54 @@ border-radius:0;
         flex:none !important;
     }
 }
+.yh-new-projects-title{
+    margin:26px 0 14px;
+}
 
+.yh-new-projects-title h2{
+    margin:0;
+    font-size:20px;
+    font-weight:800;
+    color:var(--dark);
+}
+
+#newProjectsCards{
+    display:flex;
+    gap:16px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:4px 2px 14px;
+    scroll-snap-type:x proximity;
+    scrollbar-width:thin;
+}
+
+#newProjectsCards .project-card{
+    flex:0 0 300px;
+    width:300px;
+    scroll-snap-align:start;
+}
+
+@media(max-width:750px){
+
+    .yh-new-projects-title{
+        margin:22px 0 12px;
+    }
+
+    .yh-new-projects-title h2{
+        font-size:18px;
+    }
+
+    #newProjectsCards{
+        gap:12px;
+        margin-right:-25px;
+        padding-right:25px;
+    }
+
+    #newProjectsCards .project-card{
+        flex:0 0 82%;
+        width:82%;
+    }
+}
 .projects-empty{
     grid-column:1/-1;
     background:#fff;
@@ -4742,7 +4789,9 @@ type="button">
 
 </div>
 
-
+<div class="yh-new-projects-title">
+    <h2>ახალი პროექტები</h2>
+</div>
 <div
 class="cards"
 id="newProjectsCards">
