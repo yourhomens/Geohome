@@ -1596,7 +1596,74 @@ button{cursor:pointer}
         </div>
 
     </div>
+<!-- =========================  
+     DEVELOPER PROJECT MODERATION  
+========================= -->  <div  
+style="  
+margin-top:36px;  
+padding-top:28px;  
+border-top:1px solid var(--border);  
+">  <div class="page-head" style="margin-bottom:16px;">  
 
+    <div>  
+        <h2 style="font-size:26px;">  
+            🏢 დეველოპერების პროექტები  
+        </h2>  
+
+        <p>  
+            დეველოპერების მიერ გამოგზავნილი პროექტების შემოწმება და დამტკიცება.  
+        </p>  
+    </div>  
+
+    <button  
+    type="button"  
+    class="refresh-btn"  
+    id="refreshDeveloperProjectsBtn">  
+        🔄 განახლება  
+    </button>  
+
+</div>  
+
+<div class="toolbar">  
+
+    <select id="developerProjectStatusFilter">  
+
+        <option value="pending" selected>  
+            ⏳ დასამტკიცებელი  
+        </option>  
+
+        <option value="">  
+            ყველა სტატუსი  
+        </option>  
+
+        <option value="approved">  
+            ✅ დამტკიცებული  
+        </option>  
+
+        <option value="rejected">  
+            ❌ უარყოფილი  
+        </option>  
+
+    </select>  
+
+    <input  
+    type="search"  
+    id="developerProjectSearch"  
+    placeholder="პროექტის ან კომპანიის მოძებნა...">  
+
+</div>  
+
+<div  
+class="list-container"  
+id="adminDeveloperProjects">  
+
+    <div class="empty-state">  
+        პროექტები იტვირთება...  
+    </div>  
+
+</div>
+
+</div>
 </section>
 
 <!-- VIP -->
