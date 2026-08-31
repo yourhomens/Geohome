@@ -17191,7 +17191,37 @@ document
         );
     }
 );
+document
+.getElementById(
+    "newProjectsDevelopersRow"
+)
+.addEventListener(
+    "click",
+    function(event){
 
+        const item =
+        event.target.closest(
+            ".yh-project-developer-item"
+        );
+
+        if(!item){
+            return;
+        }
+
+        const developerId =
+        item.dataset.developerId ||
+        "";
+
+        if(!developerId){
+            return;
+        }
+
+        openPublicDeveloperPage(
+            developerId,
+            "projects"
+        );
+    }
+);
 
 /* =========================
    NEW PROJECTS
