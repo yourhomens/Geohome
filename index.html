@@ -1466,13 +1466,14 @@ border-radius:0;
     margin-top:7px;
 }
 
-.project-filters {
+.project-filters{
     width: calc(100vw - 64px);
     max-width: none;
 
     background: #fff;
     border: 1px solid var(--border);
-    border-radius: 16px;
+    /* თუ გსურთ, რომ ზედა კუთხეები ბანერს მიჰყვეს და მრგვალი არ იყოს, შეგიძლიათ ზედა რადიუსი 0-ზე დასვათ */
+    border-radius: 0 0 16px 16px; 
 
     padding: 16px 14px;
 
@@ -1484,21 +1485,35 @@ border-radius:0;
         1fr
         1fr
         1.25fr
-        135px;
+        1fr;
 
-    gap: 12px;
+    gap: 10px;
     align-items: center;
 
     position: relative;
     z-index: 5;
 
-    margin-top: -6px;
+    /* მოვხსენით უარყოფითი მარგინი და გავასწორეთ განლაგება */
+    margin-top: 0;
     margin-left: calc(50% - 50vw + 32px);
     margin-right: calc(50% - 50vw + 32px);
     margin-bottom: 26px;
 
     box-shadow: 0 8px 24px rgba(37,42,36,0.10);
 }
+
+/* ძებნის ღილაკის სრული გაწელვა ბოლო სვეტში */
+.project-filters button, 
+.project-filters .search-btn {
+    width: 100%;
+    height: 44px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
 
 /* შიდა ელემენტების (ინპუტების, სელექტებისა და ღილაკების) ვიზუალური ერთიანობა */
 .project-filters input,
