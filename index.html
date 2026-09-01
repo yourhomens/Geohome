@@ -17127,13 +17127,24 @@ async function renderDevelopers(){
 }
 async function openPublicDeveloperPage(
     developerId,
-    origin = "developers"
+    origin = "developers",
+    pushHistory = true
 ){
 
     if(!developerId){
         return;
     }
+if(pushHistory){
 
+    setHistoryState(
+        "developer",
+        {
+            developerId:developerId,
+            origin:origin
+        }
+    );
+
+}
     hideAllPages();
 
 
