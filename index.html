@@ -29997,7 +29997,94 @@ document.getElementById(
     "yhDeveloperBannerPreviewImage"
 );
 
+async function yhLoadDeveloperBannerPackages(){
 
+    const select =
+    document.getElementById(
+        "yhDeveloperBannerDuration"
+    );
+
+    if(!select){
+        return;
+    }
+
+    select.innerHTML = `
+        <option value="">
+            პერიოდი აირჩიეთ
+        </option>
+    `;
+
+    try{
+
+        const { data, error } =
+        await supabaseClient
+        .from(
+            "developer_banner_packages"
+        )
+        .select(
+            "id,title,duration_days,price_gel"
+        )
+        .eq(
+            "is_active",
+            true
+        )
+        .order(
+            "duration_days",
+            {
+                ascending:true
+            }
+        );
+
+        if(error){
+            throw error;
+        }
+
+        (data || []).forEach(
+            function(packageItem){
+
+                const option =
+                document.createElement(
+                    "option"
+                );
+
+                option.value =
+                packageItem.id;
+
+                option.dataset.days =
+                packageItem.duration_days;
+
+                option.dataset.price =
+                packageItem.price_gel;
+
+                option.textContent =
+                packageItem.duration_days +
+                " დღე — " +
+                Number(
+                    packageItem.price_gel
+                ).toLocaleString() +
+                " ₾";
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }catch(error){
+
+        console.error(
+            "Developer banner packages error:",
+            error
+        );
+
+        showMessage(
+            "ბანერის პერიოდების ჩატვირთვა ვერ მოხერხდა."
+        );
+
+    }
+
+}
 async function yhOpenDeveloperBannerAdModal(){
 
     if(!currentUser){
