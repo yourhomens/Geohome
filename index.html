@@ -19352,7 +19352,10 @@ document
     renderNewProjects
 );
 
-async function openDeveloperProjectById(projectId){
+async function openDeveloperProjectById(
+    projectId,
+    pushHistory = true
+){
 
     const project =
     currentDeveloperProjects.find(
@@ -19373,7 +19376,17 @@ async function openDeveloperProjectById(projectId){
 
         return;
     }
+if(pushHistory){
 
+    setHistoryState(
+        "developer-project",
+        {
+            projectId:project.id,
+            developerId:project.developer_id
+        }
+    );
+
+}
 
     /* =========================
        DEVELOPER
