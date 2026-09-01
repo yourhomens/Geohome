@@ -20183,23 +20183,47 @@ if(window.innerWidth <= 600){
 
     if(mobileProjectPhoto){
 
-        mobileProjectPhoto.style.width =
-"100%";
+mobileProjectPhoto.style.setProperty(
+    "width",
+    "auto",
+    "important"
+);
 
-mobileProjectPhoto.style.height =
-"65vh";
+mobileProjectPhoto.style.setProperty(
+    "max-width",
+    "100%",
+    "important"
+);
 
-mobileProjectPhoto.style.minHeight =
-"0";
+mobileProjectPhoto.style.setProperty(
+    "height",
+    "auto",
+    "important"
+);
 
-mobileProjectPhoto.style.maxHeight =
-"650px";
+mobileProjectPhoto.style.setProperty(
+    "max-height",
+    "70vh",
+    "important"
+);
 
-mobileProjectPhoto.style.objectFit =
-"contain";
+mobileProjectPhoto.style.setProperty(
+    "min-height",
+    "0",
+    "important"
+);
 
-mobileProjectPhoto.style.background =
-"#f6f7f3";
+mobileProjectPhoto.style.setProperty(
+    "object-fit",
+    "contain",
+    "important"
+);
+
+mobileProjectPhoto.style.setProperty(
+    "margin",
+    "0 auto",
+    "important"
+);
 
     }
 
