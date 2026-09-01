@@ -20172,7 +20172,25 @@ if(pushHistory){
     </div>
     `;
 
+const mainHeader =
+document.querySelector(
+    "body > header"
+);
 
+if(mainHeader){
+
+    const headerHeight =
+    Math.ceil(
+        mainHeader.getBoundingClientRect().height
+    );
+
+    page.style.setProperty(
+        "top",
+        headerHeight + "px",
+        "important"
+    );
+
+}
     page.style.display =
     "block";
 page.scrollTop = 0;
