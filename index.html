@@ -57175,7 +57175,64 @@ document.addEventListener(
                 price +
                 " ₾"
             );
+const vipDetails =
+optionButton.closest("div")
+?.parentElement;
 
+if(vipDetails){
+
+    let continueButton =
+    vipDetails.querySelector(
+        "[data-project-vip-continue]"
+    );
+
+    if(!continueButton){
+
+        continueButton =
+        document.createElement(
+            "button"
+        );
+
+        continueButton.type =
+        "button";
+
+        continueButton.setAttribute(
+            "data-project-vip-continue",
+            ""
+        );
+
+        continueButton.style.cssText = `
+            width:100%;
+            margin-top:14px;
+            border:0;
+            border-radius:10px;
+            padding:13px 16px;
+            background:var(--olive);
+            color:#fff;
+            font-size:15px;
+            font-weight:800;
+            cursor:pointer;
+        `;
+
+        vipDetails.appendChild(
+            continueButton
+        );
+    }
+
+    continueButton.textContent =
+    "გაგრძელება — " +
+    price +
+    " ₾";
+
+    continueButton.dataset.plan =
+    plan || "";
+
+    continueButton.dataset.days =
+    days || "";
+
+    continueButton.dataset.price =
+    price || "";
+}
         }
 
     },
