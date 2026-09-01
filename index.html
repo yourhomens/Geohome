@@ -32814,7 +32814,60 @@ const projectVipPlans = {
 promotionBox.addEventListener(
     "click",
     function(event){
+const optionButton =
+event.target.closest(
+    "[data-project-vip-option]"
+);
 
+if(optionButton){
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    promotionBox
+    .querySelectorAll(
+        "[data-project-vip-option]"
+    )
+    .forEach(function(item){
+
+        item.style.background =
+        "#fff";
+
+        item.style.color =
+        "var(--olive-dark)";
+
+    });
+
+    optionButton.style.background =
+    "var(--olive)";
+
+    optionButton.style.color =
+    "#fff";
+
+    const selectedPlan =
+    optionButton.dataset.plan;
+
+    const selectedDays =
+    Number(
+        optionButton.dataset.days
+    );
+
+    const selectedPrice =
+    Number(
+        optionButton.dataset.price
+    );
+
+    promotionBox.dataset.selectedPlan =
+    selectedPlan;
+
+    promotionBox.dataset.selectedDays =
+    selectedDays;
+
+    promotionBox.dataset.selectedPrice =
+    selectedPrice;
+
+    return;
+}
         const button =
         event.target.closest(
             "[data-project-vip]"
