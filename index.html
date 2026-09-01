@@ -31939,7 +31939,146 @@ if(project.status === "approved"){
         );
 
     }
+const vipDetails =
+document.createElement("div");
 
+vipDetails.style.cssText = `
+    display:none;
+    margin-top:14px;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    background:#fafbf8;
+`;
+
+promotionBox.appendChild(
+    vipDetails
+);
+
+
+const projectVipPlans = {
+
+    vip:{
+        title:"VIP",
+        description:
+        "პროექტი მიიღებს უპირატეს პოზიციას ჩვეულებრივ პროექტებთან შედარებით.",
+        options:[
+            {days:7, price:5},
+            {days:15, price:8},
+            {days:30, price:12}
+        ]
+    },
+
+    vip_plus:{
+        title:"VIP+",
+        description:
+        "უფრო მაღალი პრიორიტეტი და გამოჩენა გამორჩეული პროექტების ბლოკში.",
+        options:[
+            {days:3, price:5},
+            {days:7, price:9},
+            {days:15, price:15},
+            {days:30, price:25}
+        ]
+    },
+
+    vip_pro:{
+        title:"✦ VIP+ PRO",
+        description:
+        "ყველაზე მაღალი პრიორიტეტი, პრემიუმ გამოყოფა და გამორჩეული პოზიცია.",
+        options:[
+            {days:7, price:15},
+            {days:15, price:25},
+            {days:30, price:39}
+        ]
+    }
+
+};
+
+
+promotionBox
+.querySelectorAll(
+    "[data-project-vip]"
+)
+.forEach(
+    function(button){
+
+        button.addEventListener(
+            "click",
+            function(event){
+
+                event.stopPropagation();
+
+                const plan =
+                projectVipPlans[
+                    button.dataset.projectVip
+                ];
+
+                if(!plan){
+                    return;
+                }
+
+                vipDetails.style.display =
+                "block";
+
+                vipDetails.innerHTML = `
+                    <div style="
+                        font-size:16px;
+                        font-weight:800;
+                        margin-bottom:6px;
+                    ">
+                        ${plan.title}
+                    </div>
+
+                    <div style="
+                        font-size:13px;
+                        color:var(--muted);
+                        line-height:1.5;
+                        margin-bottom:12px;
+                    ">
+                        ${plan.description}
+                    </div>
+
+                    <div style="
+                        display:flex;
+                        flex-wrap:wrap;
+                        gap:8px;
+                    ">
+                        ${
+                            plan.options
+                            .map(
+                                function(option){
+
+                                    return `
+                                    <button
+                                        type="button"
+                                        data-project-vip-option
+                                        data-plan="${button.dataset.projectVip}"
+                                        data-days="${option.days}"
+                                        data-price="${option.price}"
+                                        style="
+                                            border:1px solid var(--olive);
+                                            background:#fff;
+                                            color:var(--olive-dark);
+                                            padding:9px 12px;
+                                            border-radius:8px;
+                                            font-weight:700;
+                                        ">
+                                        ${option.days} დღე — ${option.price} ₾
+                                    </button>
+                                    `;
+
+                                }
+                            )
+                            .join("")
+                        }
+                    </div>
+                `;
+
+            }
+        );
+
+    }
+);
 }
                 list.appendChild(
                     card
