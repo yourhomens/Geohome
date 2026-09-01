@@ -57079,6 +57079,109 @@ document.addEventListener("click", function(event){
 
 }, true);
 </script>
+    <script>
+document.addEventListener(
+    "click",
+    function(event){
+
+        const optionButton =
+        event.target.closest(
+            "[data-project-vip-option]"
+        );
+
+        if(!optionButton){
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const vipDetails =
+        optionButton.closest(
+            "div"
+        )?.parentElement;
+
+        document
+        .querySelectorAll(
+            "[data-project-vip-option]"
+        )
+        .forEach(function(item){
+
+            item.style.setProperty(
+                "background",
+                "#fff",
+                "important"
+            );
+
+            item.style.setProperty(
+                "color",
+                "var(--olive-dark)",
+                "important"
+            );
+
+        });
+
+        optionButton.style.setProperty(
+            "background",
+            "var(--olive)",
+            "important"
+        );
+
+        optionButton.style.setProperty(
+            "color",
+            "#fff",
+            "important"
+        );
+
+        const plan =
+        optionButton.dataset.plan;
+
+        const days =
+        optionButton.dataset.days;
+
+        const price =
+        optionButton.dataset.price;
+
+        const promotionBox =
+        optionButton.closest(
+            "[data-project-promotion-box]"
+        ) ||
+        optionButton.parentElement
+        ?.parentElement
+        ?.parentElement;
+
+        if(promotionBox){
+
+            promotionBox.dataset.selectedPlan =
+            plan || "";
+
+            promotionBox.dataset.selectedDays =
+            days || "";
+
+            promotionBox.dataset.selectedPrice =
+            price || "";
+
+        }
+
+        if(
+            typeof showMessage ===
+            "function"
+        ){
+
+            showMessage(
+                "✅ არჩეულია: " +
+                days +
+                " დღე — " +
+                price +
+                " ₾"
+            );
+
+        }
+
+    },
+    true
+);
+</script>
 </body>
 </html>
 
