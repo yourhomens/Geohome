@@ -32742,87 +32742,95 @@ const projectVipPlans = {
 };
 
 
-promotionBox
-.querySelectorAll(
-    "[data-project-vip]"
-)
-.forEach(
-    function(button){
+promotionBox.addEventListener(
+    "click",
+    function(event){
 
-        button.addEventListener(
-            "click",
-            function(event){
-
-                event.stopPropagation();
-
-                const plan =
-                projectVipPlans[
-                    button.dataset.projectVip
-                ];
-
-                if(!plan){
-                    return;
-                }
-
-                vipDetails.style.display =
-                "block";
-
-                vipDetails.innerHTML = `
-                    <div style="
-                        font-size:16px;
-                        font-weight:800;
-                        margin-bottom:6px;
-                    ">
-                        ${plan.title}
-                    </div>
-
-                    <div style="
-                        font-size:13px;
-                        color:var(--muted);
-                        line-height:1.5;
-                        margin-bottom:12px;
-                    ">
-                        ${plan.description}
-                    </div>
-
-                    <div style="
-                        display:flex;
-                        flex-wrap:wrap;
-                        gap:8px;
-                    ">
-                        ${
-                            plan.options
-                            .map(
-                                function(option){
-
-                                    return `
-                                    <button
-                                        type="button"
-                                        data-project-vip-option
-                                        data-plan="${button.dataset.projectVip}"
-                                        data-days="${option.days}"
-                                        data-price="${option.price}"
-                                        style="
-                                            border:1px solid var(--olive);
-                                            background:#fff;
-                                            color:var(--olive-dark);
-                                            padding:9px 12px;
-                                            border-radius:8px;
-                                            font-weight:700;
-                                        ">
-                                        ${option.days} დღე — ${option.price} ₾
-                                    </button>
-                                    `;
-
-                                }
-                            )
-                            .join("")
-                        }
-                    </div>
-                `;
-
-            }
+        const button =
+        event.target.closest(
+            "[data-project-vip]"
         );
+
+        if(
+            !button ||
+            !promotionBox.contains(button)
+        ){
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const planKey =
+        button.getAttribute(
+            "data-project-vip"
+        );
+
+        const plan =
+        projectVipPlans[
+            planKey
+        ];
+
+        if(!plan){
+            return;
+        }
+
+        vipDetails.style.display =
+        "block";
+
+        vipDetails.innerHTML = `
+            <div style="
+                font-size:16px;
+                font-weight:800;
+                margin-bottom:6px;
+            ">
+                ${plan.title}
+            </div>
+
+            <div style="
+                font-size:13px;
+                color:var(--muted);
+                line-height:1.5;
+                margin-bottom:12px;
+            ">
+                ${plan.description}
+            </div>
+
+            <div style="
+                display:flex;
+                flex-wrap:wrap;
+                gap:8px;
+            ">
+                ${
+                    plan.options
+                    .map(
+                        function(option){
+
+                            return `
+                            <button
+                                type="button"
+                                data-project-vip-option
+                                data-plan="${planKey}"
+                                data-days="${option.days}"
+                                data-price="${option.price}"
+                                style="
+                                    border:1px solid var(--olive);
+                                    background:#fff;
+                                    color:var(--olive-dark);
+                                    padding:9px 12px;
+                                    border-radius:8px;
+                                    font-weight:700;
+                                ">
+                                ${option.days} დღე — ${option.price} ₾
+                            </button>
+                            `;
+
+                        }
+                    )
+                    .join("")
+                }
+            </div>
+        `;
 
     }
 );
