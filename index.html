@@ -31739,7 +31739,121 @@ async function yhLoadMyDeveloperProjects(){
                 </div>
                 `;
 
+if(project.status === "approved"){
 
+    const promotionBox =
+    document.createElement("div");
+
+    promotionBox.style.cssText = `
+        grid-column:1 / -1;
+        border-top:1px solid var(--border);
+        padding-top:14px;
+        margin-top:2px;
+    `;
+
+    promotionBox.innerHTML = `
+        <div style="
+            font-size:13px;
+            font-weight:800;
+            margin-bottom:10px;
+            color:var(--dark);
+        ">
+            📢 პროექტის რეკლამირება
+        </div>
+
+        <div style="
+            display:flex;
+            flex-wrap:wrap;
+            gap:8px;
+        ">
+
+            <button
+                type="button"
+                data-project-vip="vip"
+                style="
+                    border:1px solid var(--olive);
+                    background:#fff;
+                    color:var(--olive-dark);
+                    padding:9px 13px;
+                    border-radius:8px;
+                    font-weight:700;
+                ">
+                VIP
+            </button>
+
+            <button
+                type="button"
+                data-project-vip="vip_plus"
+                style="
+                    border:1px solid var(--olive);
+                    background:var(--olive-light);
+                    color:var(--olive-dark);
+                    padding:9px 13px;
+                    border-radius:8px;
+                    font-weight:700;
+                ">
+                VIP+
+            </button>
+
+            <button
+                type="button"
+                data-project-vip="vip_pro"
+                style="
+                    border:1px solid #2e3428;
+                    background:#2e3428;
+                    color:#f4d994;
+                    padding:9px 13px;
+                    border-radius:8px;
+                    font-weight:700;
+                ">
+                ✦ VIP+ PRO
+            </button>
+
+            <button
+                type="button"
+                data-project-banner
+                style="
+                    border:0;
+                    background:var(--olive);
+                    color:#fff;
+                    padding:9px 13px;
+                    border-radius:8px;
+                    font-weight:700;
+                ">
+                📢 Banner
+            </button>
+
+        </div>
+    `;
+
+    card.appendChild(
+        promotionBox
+    );
+
+    const bannerButton =
+    promotionBox.querySelector(
+        "[data-project-banner]"
+    );
+
+    if(bannerButton){
+
+        bannerButton.addEventListener(
+            "click",
+            async function(){
+
+                await yhOpenDeveloperBannerAdModal();
+
+                if(yhDeveloperBannerProject){
+                    yhDeveloperBannerProject.value =
+                    project.id;
+                }
+
+            }
+        );
+
+    }
+
+}
                 list.appendChild(
                     card
                 );
