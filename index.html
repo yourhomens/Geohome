@@ -54090,7 +54090,32 @@ body > header{
             return true;
 
         }
+if(
+    view === "developer" &&
+    state?.developerId
+){
 
+    await openPublicDeveloperPage(
+        state.developerId,
+        state.origin || "developers",
+        false
+    );
+
+    return true;
+}
+
+if(
+    view === "developer-project" &&
+    state?.projectId
+){
+
+    await openDeveloperProjectById(
+        state.projectId,
+        false
+    );
+
+    return true;
+}
         if(
             typeof previousCustomHistory ===
             "function"
