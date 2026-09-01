@@ -19951,7 +19951,13 @@ async function openDeveloperProjectById(projectId){
             >
                 ← უკან
             </button>
-
+<button
+    type="button"
+    id="developerProjectHomeButton"
+    class="home-button"
+>
+    🏠 მთავარი
+</button>
 
             <strong style="
                 color:var(--olive-dark);
@@ -20157,7 +20163,23 @@ async function openDeveloperProjectById(projectId){
     }
 );
 
+document
+.getElementById(
+    "developerProjectHomeButton"
+)
+?.addEventListener(
+    "click",
+    function(){
 
+        page.style.display =
+        "none";
+
+        showHomePage(
+            true
+        );
+
+    }
+);
     /* =========================
        PHOTO SWITCH
     ========================= */
