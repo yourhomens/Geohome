@@ -20135,18 +20135,27 @@ async function openDeveloperProjectById(projectId){
     ========================= */
 
     document
-    .getElementById(
-        "developerProjectBackButton"
-    )
-    ?.addEventListener(
-        "click",
-        function(){
+.getElementById(
+    "developerProjectBackButton"
+)
+?.addEventListener(
+    "click",
+    function(){
 
-            page.style.display =
-            "none";
+        page.style.display =
+        "none";
+
+        if(project.developer_id){
+
+            openPublicDeveloperPage(
+                project.developer_id,
+                "projects"
+            );
 
         }
-    );
+
+    }
+);
 
 
     /* =========================
