@@ -8934,7 +8934,23 @@ function setHistoryState(
     if(view === "projects"){
         hash = "#new-projects";
     }
+if(
+    view === "developer" &&
+    extra.developerId
+){
+    hash =
+    "#developer-" +
+    extra.developerId;
+}
 
+if(
+    view === "developer-project" &&
+    extra.projectId
+){
+    hash =
+    "#developer-project-" +
+    extra.projectId;
+}
 
     if(view === "my"){
         hash = "#my-listings";
