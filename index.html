@@ -51335,23 +51335,23 @@ function yhAdChooseWeighted(
    TRACK
 ========================================================= */
 
-function yhAdTrackImpression(id){
+async function yhAdTrackImpression(id){
 
     if(!id){
         return;
     }
 
+    try{
 
-    yhAdDb.rpc(
-        "yh_public_ad_impression_final",
-        {
-            p_ad_id:
-                Number(id)
-        }
-    )
-    .catch(
-        () => {}
-    );
+        await yhAdDb.rpc(
+            "yh_public_ad_impression_final",
+            {
+                p_ad_id:
+                    Number(id)
+            }
+        );
+
+    }catch(error){}
 
 }
 
