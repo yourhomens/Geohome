@@ -52440,7 +52440,198 @@ function yhAdAttachUIEvents(){
 
         }
     );
+const yhAdDragPreview =
+    document.getElementById(
+        "yhAdPreviewImage"
+    );
 
+if(yhAdDragPreview){
+
+    yhAdDragPreview.style.cursor =
+        "grab";
+
+    yhAdDragPreview.style.touchAction =
+        "none";
+
+    let dragging =
+        false;
+
+    let startX =
+        0;
+
+    let startY =
+        0;
+
+    let startPosX =
+        50;
+
+    let startPosY =
+        50;
+
+
+    const applyAdPhotoPosition =
+        () => {
+
+            const position =
+                yhAdPhotoPosX
+                + "% "
+                + yhAdPhotoPosY
+                + "%";
+
+            yhAdDragPreview
+            .style
+            .backgroundPosition =
+                position;
+
+            const uploadPreview =
+                document.getElementById(
+                    "yhAdUploadPreview"
+                );
+
+            if(uploadPreview){
+
+                uploadPreview
+                .style
+                .backgroundPosition =
+                    position;
+            }
+        };
+
+
+    yhAdDragPreview
+    .addEventListener(
+        "pointerdown",
+        event => {
+
+            if(!yhAdPhotoObjectUrl){
+                return;
+            }
+
+            dragging =
+                true;
+
+            startX =
+                event.clientX;
+
+            startY =
+                event.clientY;
+
+            startPosX =
+                yhAdPhotoPosX;
+
+            startPosY =
+                yhAdPhotoPosY;
+
+            yhAdDragPreview
+            .style
+            .cursor =
+                "grabbing";
+
+            yhAdDragPreview
+            .setPointerCapture?.(
+                event.pointerId
+            );
+
+            event.preventDefault();
+        }
+    );
+
+
+    yhAdDragPreview
+    .addEventListener(
+        "pointermove",
+        event => {
+
+            if(!dragging){
+                return;
+            }
+
+            const rect =
+                yhAdDragPreview
+                .getBoundingClientRect();
+
+            const dx =
+                event.clientX
+                -
+                startX;
+
+            const dy =
+                event.clientY
+                -
+                startY;
+
+            yhAdPhotoPosX =
+                Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        startPosX
+                        -
+                        (
+                            dx
+                            /
+                            Math.max(
+                                rect.width,
+                                1
+                            )
+                        )
+                        *
+                        100
+                    )
+                );
+
+            yhAdPhotoPosY =
+                Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        startPosY
+                        -
+                        (
+                            dy
+                            /
+                            Math.max(
+                                rect.height,
+                                1
+                            )
+                        )
+                        *
+                        100
+                    )
+                );
+
+            applyAdPhotoPosition();
+
+            event.preventDefault();
+        }
+    );
+
+
+    const stopAdPhotoDrag =
+        () => {
+
+            dragging =
+                false;
+
+            yhAdDragPreview
+            .style
+            .cursor =
+                "grab";
+        };
+
+
+    yhAdDragPreview
+    .addEventListener(
+        "pointerup",
+        stopAdPhotoDrag
+    );
+
+    yhAdDragPreview
+    .addEventListener(
+        "pointercancel",
+        stopAdPhotoDrag
+    );
+}
 
     document
     .getElementById(
