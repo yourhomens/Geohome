@@ -9107,7 +9107,14 @@ function showHomePage(
     .remove(
         "hidden"
     );
+setTimeout(
+    async function(){
 
+        await yhAdLoadHomeAds();
+
+    },
+    100
+);
 
     setListingsView(
         "list",
