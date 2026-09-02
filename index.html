@@ -48996,26 +48996,25 @@ function yhAdCreateUI(){
             "yh-ad-home-wrap yh-ad-hidden";
 
 
-        const hero =
-            homePage.querySelector(
-                ".hero"
-            );
+        const filters =
+    homePage.querySelector(
+        ".filters"
+    );
 
+if(filters){
 
-        if(hero){
+    filters.insertAdjacentElement(
+        "afterend",
+        slot
+    );
 
-            hero.insertAdjacentElement(
-                "afterend",
-                slot
-            );
+}else{
 
-        }else{
+    homePage.prepend(
+        slot
+    );
 
-            homePage.prepend(
-                slot
-            );
-
-        }
+}
 
     }
 
