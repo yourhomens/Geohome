@@ -4770,26 +4770,177 @@ type="button">
 class="new-projects-page"
 id="developersPage">
 
-<div class="projects-header">
+<style>
 
-<div>
+#developersPage .yh-developers-banner{
+    position:relative;
+    width:100vw;
+    height:clamp(190px,24vw,280px);
 
-<h1>
-🏢 დეველოპერები
-</h1>
+    margin-left:calc(50% - 50vw);
+    margin-right:calc(50% - 50vw);
+    margin-bottom:24px;
 
-<p class="projects-intro">
-გაეცანი დეველოპერულ კომპანიებს და მათ პროექტებს
-</p>
+    overflow:hidden;
+
+    background:
+        radial-gradient(
+            circle at 12% 30%,
+            rgba(125,139,69,0.22) 0 18px,
+            transparent 19px
+        ),
+        radial-gradient(
+            circle at 86% 26%,
+            rgba(125,139,69,0.18) 0 14px,
+            transparent 15px
+        ),
+        linear-gradient(
+            135deg,
+            #fbfaf4 0%,
+            #f5f2e6 48%,
+            #eef1e3 100%
+        );
+
+    box-shadow:
+        0 12px 32px
+        rgba(37,42,36,0.08);
+}
+
+
+/* ქვედა აბსტრაქტული ტალღები */
+
+#developersPage .yh-developers-wave{
+    position:absolute;
+    left:-10%;
+    bottom:-115px;
+
+    width:72%;
+    height:210px;
+
+    border-radius:50% 55% 0 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(125,139,69,0.72),
+            rgba(125,139,69,0.28)
+        );
+
+    transform:rotate(4deg);
+}
+
+
+#developersPage .yh-developers-wave.two{
+    left:auto;
+    right:-12%;
+    bottom:-105px;
+
+    width:60%;
+
+    background:
+        linear-gradient(
+            220deg,
+            rgba(93,105,51,0.68),
+            rgba(125,139,69,0.24)
+        );
+
+    transform:rotate(-5deg);
+}
+
+
+/* დეკორატიული ხაზები */
+
+#developersPage .yh-developers-lines{
+    position:absolute;
+
+    width:340px;
+    height:340px;
+
+    border:
+        1px solid
+        rgba(125,139,69,0.22);
+
+    border-radius:50%;
+
+    right:-110px;
+    top:-210px;
+
+    box-shadow:
+        0 0 0 18px rgba(125,139,69,0.035),
+        0 0 0 38px rgba(125,139,69,0.025),
+        0 0 0 60px rgba(125,139,69,0.018);
+}
+
+
+/* სათაური */
+
+#developersPage .yh-developers-banner-title{
+    position:absolute;
+    inset:0;
+
+    z-index:5;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+
+    color:var(--olive-dark);
+    font-size:clamp(34px,6vw,58px);
+    font-weight:900;
+    text-align:center;
+    letter-spacing:-1px;
+}
+
+
+#developersPage .yh-developers-banner-title::after{
+    content:"";
+
+    position:absolute;
+    top:calc(50% + 46px);
+
+    width:58px;
+    height:4px;
+
+    border-radius:999px;
+
+    background:var(--olive);
+}
+
+
+#developersPage .yh-developers-back{
+    margin-bottom:28px;
+}
+
+</style>
+
+
+<div class="yh-developers-banner">
+
+    <div class="yh-developers-wave"></div>
+
+    <div class="yh-developers-wave two"></div>
+
+    <div class="yh-developers-lines"></div>
+
+    <div class="yh-developers-banner-title">
+        დეველოპერები
+    </div>
 
 </div>
 
-<button
-class="back-button"
-id="developersBackButton"
-type="button">
-← 🏠 მთავარი
-</button>
+
+<div class="yh-developers-back">
+
+    <button
+    class="back-button"
+    id="developersBackButton"
+    type="button">
+        ← 🏠 მთავარი
+    </button>
+
+</div>
 
 </div>
 
