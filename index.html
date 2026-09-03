@@ -4775,7 +4775,7 @@ id="developersPage">
 #developersPage .yh-developers-banner{
     position:relative;
     width:100vw;
-    height:390px;
+    height:430px;
 
     margin-left:calc(50% - 50vw);
     margin-right:calc(50% - 50vw);
@@ -4784,32 +4784,39 @@ id="developersPage">
     overflow:hidden;
 
     background:
+        radial-gradient(
+            circle at 18% 20%,
+            rgba(218,190,105,.32) 0 34px,
+            transparent 35px
+        ),
         linear-gradient(
             135deg,
-            #fbf8ef 0%,
-            #fffdf8 48%,
-            #f5f1e5 100%
+            #f3ead7 0%,
+            #fbf6eb 45%,
+            #eee4cf 100%
         );
 
-    border-top:1px solid rgba(125,139,69,.08);
-    border-bottom:1px solid rgba(125,139,69,.10);
+    border-top:1px solid rgba(93,105,51,.15);
+    border-bottom:1px solid rgba(93,105,51,.18);
 }
 
 
-/* დეკორაცია */
+/* არქიტექტურული დეკორი */
 
-#developersPage .yh-developers-art{
+#developersPage .yh-dev-art{
     position:absolute;
     inset:0;
+
     width:100%;
     height:100%;
+
     pointer-events:none;
 }
 
 
 /* ტექსტი */
 
-#developersPage .yh-developers-banner-content{
+#developersPage .yh-dev-content{
     position:absolute;
     inset:0;
     z-index:5;
@@ -4819,59 +4826,53 @@ id="developersPage">
     align-items:center;
     justify-content:center;
 
-    padding-bottom:32px;
-
     text-align:center;
+
+    padding:20px 20px 32px;
 }
 
 
-#developersPage .yh-developers-banner-title{
-    color:var(--olive-dark);
+#developersPage .yh-dev-title{
+    color:#4f592f;
 
     font-family:
         "Sylfaen",
         "Noto Serif Georgian",
         serif;
 
-    font-size:52px;
-    line-height:1.15;
-
+    font-size:56px;
     font-weight:400;
+    line-height:1.1;
     letter-spacing:0;
 }
 
 
-#developersPage .yh-developers-divider{
+#developersPage .yh-dev-divider{
     display:flex;
     align-items:center;
-    justify-content:center;
-
     gap:12px;
-    margin:17px 0 15px;
 
-    color:#a6ad7b;
-    font-size:8px;
+    margin:18px 0 16px;
+
+    color:#7d8b45;
+    font-size:9px;
 }
 
 
-#developersPage .yh-developers-divider span{
-    display:block;
-
-    width:70px;
+#developersPage .yh-dev-divider span{
+    width:78px;
     height:1px;
 
-    background:
-        rgba(125,139,69,.35);
+    background:#8d9660;
 }
 
 
-#developersPage .yh-developers-banner-subtitle{
-    color:#777d75;
+#developersPage .yh-dev-subtitle{
+    font-size:17px;
+    line-height:1.5;
 
-    font-size:16px;
+    color:#666b61;
     font-weight:400;
-
-    line-height:1.6;
 }
 
 
@@ -4885,29 +4886,24 @@ id="developersPage">
 @media(max-width:750px){
 
     #developersPage .yh-developers-banner{
-        height:230px;
+        height:235px;
     }
 
-    #developersPage .yh-developers-banner-content{
-        padding:0 18px 22px;
-    }
-
-    #developersPage .yh-developers-banner-title{
+    #developersPage .yh-dev-title{
         font-size:34px;
-        font-weight:400;
     }
 
-    #developersPage .yh-developers-divider{
+    #developersPage .yh-dev-subtitle{
+        font-size:13px;
+        max-width:320px;
+    }
+
+    #developersPage .yh-dev-divider{
         margin:11px 0;
     }
 
-    #developersPage .yh-developers-divider span{
-        width:44px;
-    }
-
-    #developersPage .yh-developers-banner-subtitle{
-        max-width:320px;
-        font-size:13px;
+    #developersPage .yh-dev-divider span{
+        width:42px;
     }
 }
 
@@ -4916,263 +4912,289 @@ id="developersPage">
 
 <div class="yh-developers-banner">
 
-    <svg
-    class="yh-developers-art"
-    viewBox="0 0 1600 390"
-    preserveAspectRatio="xMidYMid slice"
-    aria-hidden="true">
 
-        <defs>
-
-            <linearGradient
-            id="yhDevWave1"
-            x1="0"
-            y1="0"
-            x2="1"
-            y2="0">
-
-                <stop
-                offset="0%"
-                stop-color="#ebe3c4"
-                stop-opacity=".88"/>
-
-                <stop
-                offset="100%"
-                stop-color="#b2bb79"
-                stop-opacity=".62"/>
-
-            </linearGradient>
+<svg
+class="yh-dev-art"
+viewBox="0 0 1600 430"
+preserveAspectRatio="xMidYMid slice"
+aria-hidden="true">
 
 
-            <linearGradient
-            id="yhDevWave2"
-            x1="0"
-            y1="0"
-            x2="1"
-            y2="0">
+<!-- ზედა მარცხენა ხაზები -->
 
-                <stop
-                offset="0%"
-                stop-color="#c9cf9b"
-                stop-opacity=".62"/>
+<g
+fill="none"
+stroke="#9a8d5e"
+stroke-width="1.4"
+opacity=".38">
 
-                <stop
-                offset="100%"
-                stop-color="#7d8b45"
-                stop-opacity=".94"/>
+<path d="M0 5 C180 120 340 120 510 0"/>
+<path d="M0 22 C175 140 325 140 490 0"/>
+<path d="M0 40 C165 155 310 155 470 0"/>
+<path d="M0 58 C155 170 295 170 450 0"/>
+<path d="M0 76 C145 184 280 184 430 0"/>
 
-            </linearGradient>
-
-        </defs>
+</g>
 
 
-        <!-- მარცხენა შენობები -->
+<!-- მარცხენა შენობები -->
 
-        <g
-        fill="none"
-        stroke="#7d8b45"
-        stroke-width="1.3"
-        opacity=".23">
+<g
+fill="none"
+stroke="#69743b"
+stroke-width="1.5"
+opacity=".45">
 
-            <path d="
-                M0 315
-                L58 270
-                L58 200
-                L115 168
-                L115 315
-            "/>
+<path d="
+M0 350
+L0 185
+L62 150
+L62 350
+"/>
 
-            <path d="
-                M72 315
-                L72 185
-                L130 155
-                L130 315
-            "/>
+<path d="
+M62 350
+L62 220
+L120 190
+L120 350
+"/>
 
-            <path d="
-                M145 315
-                L145 210
-                L225 174
-                L225 315
-            "/>
+<path d="
+M120 350
+L120 170
+L190 135
+L190 350
+"/>
 
-            <path d="
-                M242 315
-                L242 145
-                L328 112
-                L328 315
-            "/>
+<path d="
+M190 350
+L190 210
+L270 168
+L270 350
+"/>
 
+<path d="M20 210 V335"/>
+<path d="M42 198 V338"/>
 
-            <path d="M91 205 V296"/>
-            <path d="M108 196 V296"/>
+<path d="M82 230 V338"/>
+<path d="M102 220 V340"/>
 
-            <path d="M163 222 V296"/>
-            <path d="M185 212 V296"/>
-            <path d="M207 202 V296"/>
+<path d="M143 182 V340"/>
+<path d="M165 170 V342"/>
 
-            <path d="M263 160 V296"/>
-            <path d="M286 151 V296"/>
-            <path d="M307 143 V296"/>
+<path d="M215 220 V342"/>
+<path d="M242 205 V345"/>
 
+<path d="M120 220 H190"/>
+<path d="M120 262 H190"/>
+<path d="M120 304 H190"/>
 
-            <path d="M242 180 H328"/>
-            <path d="M242 216 H328"/>
-            <path d="M242 252 H328"/>
+<path d="M190 250 H270"/>
+<path d="M190 292 H270"/>
 
-        </g>
-
-
-        <!-- მარჯვენა შენობები -->
-
-        <g
-        fill="none"
-        stroke="#7d8b45"
-        stroke-width="1.3"
-        opacity=".22">
-
-            <path d="
-                M1270 315
-                L1270 155
-                L1360 124
-                L1360 315
-            "/>
-
-            <path d="
-                M1342 315
-                L1342 188
-                L1428 152
-                L1428 315
-            "/>
-
-            <path d="
-                M1410 315
-                L1410 112
-                L1510 72
-                L1510 315
-            "/>
-
-            <path d="
-                M1495 315
-                L1495 180
-                L1600 140
-                L1600 315
-            "/>
+</g>
 
 
-            <path d="M1292 176 V296"/>
-            <path d="M1317 168 V296"/>
-            <path d="M1340 160 V296"/>
+<!-- მარჯვენა შენობები -->
 
-            <path d="M1365 198 V296"/>
-            <path d="M1390 188 V296"/>
-            <path d="M1415 178 V296"/>
+<g
+fill="none"
+stroke="#69743b"
+stroke-width="1.5"
+opacity=".48">
 
-            <path d="M1438 130 V296"/>
-            <path d="M1466 118 V296"/>
-            <path d="M1492 108 V296"/>
+<path d="
+M1210 355
+L1210 185
+L1280 145
+L1280 355
+"/>
 
+<path d="
+M1280 355
+L1280 145
+L1360 100
+L1360 355
+"/>
 
-            <path d="M1410 166 H1510"/>
-            <path d="M1410 210 H1510"/>
-            <path d="M1410 254 H1510"/>
+<path d="
+M1360 355
+L1360 190
+L1435 148
+L1435 355
+"/>
 
-        </g>
+<path d="
+M1435 355
+L1435 105
+L1520 60
+L1520 355
+"/>
 
-
-        <!-- პატარა მზე -->
-
-        <circle
-        cx="190"
-        cy="65"
-        r="32"
-        fill="#d8c98f"
-        opacity=".18"/>
-
-
-        <!-- წერტილები -->
-
-        <g
-        fill="#7d8b45"
-        opacity=".28">
-
-            <circle cx="1440" cy="65" r="2"/>
-            <circle cx="1458" cy="65" r="2"/>
-            <circle cx="1476" cy="65" r="2"/>
-            <circle cx="1494" cy="65" r="2"/>
-
-            <circle cx="1440" cy="83" r="2"/>
-            <circle cx="1458" cy="83" r="2"/>
-            <circle cx="1476" cy="83" r="2"/>
-            <circle cx="1494" cy="83" r="2"/>
-
-            <circle cx="1440" cy="101" r="2"/>
-            <circle cx="1458" cy="101" r="2"/>
-            <circle cx="1476" cy="101" r="2"/>
-            <circle cx="1494" cy="101" r="2"/>
-
-        </g>
+<path d="
+M1520 355
+L1520 170
+L1600 128
+L1600 355
+"/>
 
 
-        <!-- ქვედა ნაზი ფორმები -->
+<path d="M1235 195 V340"/>
+<path d="M1260 180 V342"/>
 
-        <path
-        d="
-            M0 330
-            C220 280,
-             400 300,
-             620 335
-            C810 365,
-             1010 330,
-             1190 305
-            C1360 280,
-             1500 300,
-             1600 330
-            L1600 390
-            L0 390
-            Z
-        "
-        fill="url(#yhDevWave1)"/>
+<path d="M1305 158 V342"/>
+<path d="M1333 142 V345"/>
 
+<path d="M1385 205 V342"/>
+<path d="M1412 190 V345"/>
 
-        <path
-        d="
-            M0 365
-            C260 335,
-             470 350,
-             690 375
-            C920 400,
-             1110 350,
-             1290 325
-            C1430 305,
-             1530 320,
-             1600 345
-            L1600 390
-            L0 390
-            Z
-        "
-        fill="url(#yhDevWave2)"/>
+<path d="M1462 120 V344"/>
+<path d="M1492 104 V347"/>
 
-    </svg>
+<path d="M1280 200 H1360"/>
+<path d="M1280 245 H1360"/>
+<path d="M1280 290 H1360"/>
+
+<path d="M1435 160 H1520"/>
+<path d="M1435 210 H1520"/>
+<path d="M1435 260 H1520"/>
+<path d="M1435 310 H1520"/>
+
+</g>
 
 
-    <div class="yh-developers-banner-content">
+<!-- მარჯვენა რკალი -->
 
-        <div class="yh-developers-banner-title">
-            დეველოპერები
-        </div>
+<path
+d="
+M1600 75
+C1480 110
+1390 205
+1340 355
+"
+fill="none"
+stroke="#667132"
+stroke-width="2"
+opacity=".62"
+/>
 
-        <div class="yh-developers-divider">
-            <span></span>
-            ◆
-            <span></span>
-        </div>
 
-        <div class="yh-developers-banner-subtitle">
-            გაეცანი დეველოპერულ კომპანიებს და მათ პროექტებს
-        </div>
+<!-- წერტილები -->
 
+<g fill="#667132" opacity=".55">
+
+<circle cx="1390" cy="55" r="2"/>
+<circle cx="1410" cy="55" r="2"/>
+<circle cx="1430" cy="55" r="2"/>
+<circle cx="1450" cy="55" r="2"/>
+
+<circle cx="1390" cy="75" r="2"/>
+<circle cx="1410" cy="75" r="2"/>
+<circle cx="1430" cy="75" r="2"/>
+<circle cx="1450" cy="75" r="2"/>
+
+<circle cx="1390" cy="95" r="2"/>
+<circle cx="1410" cy="95" r="2"/>
+<circle cx="1430" cy="95" r="2"/>
+<circle cx="1450" cy="95" r="2"/>
+
+</g>
+
+
+<!-- ქვედა კრემისფერი ფორმა -->
+
+<path
+d="
+M0 365
+C210 330
+400 345
+600 390
+C760 420
+900 385
+1060 340
+C1240 290
+1410 300
+1600 340
+L1600 430
+L0 430
+Z
+"
+fill="#d9cfaa"
+opacity=".72"
+/>
+
+
+<!-- ქვედა olive ფორმა -->
+
+<path
+d="
+M780 430
+C930 345
+1080 315
+1220 330
+C1380 345
+1510 300
+1600 265
+L1600 430
+Z
+"
+fill="#737d3d"
+opacity=".92"
+/>
+
+
+<!-- მარჯვენა მუქი ფორმა -->
+
+<path
+d="
+M1320 430
+C1410 345
+1500 285
+1600 245
+L1600 430
+Z
+"
+fill="#555f2e"
+opacity=".92"
+/>
+
+
+<!-- თხელი ქვედა ხაზები -->
+
+<g
+fill="none"
+stroke="#ffffff"
+stroke-width="1"
+opacity=".40">
+
+<path d="M0 400 C300 350 520 380 700 430"/>
+<path d="M830 430 C1020 345 1240 340 1600 390"/>
+<path d="M910 430 C1100 365 1330 350 1600 410"/>
+
+</g>
+
+
+</svg>
+
+
+<div class="yh-dev-content">
+
+    <div class="yh-dev-title">
+        დეველოპერები
     </div>
+
+    <div class="yh-dev-divider">
+        <span></span>
+        ◆
+        <span></span>
+    </div>
+
+    <div class="yh-dev-subtitle">
+        გაეცანი დეველოპერულ კომპანიებს და მათ პროექტებს
+    </div>
+
+</div>
+
 
 </div>
 
