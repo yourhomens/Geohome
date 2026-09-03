@@ -49696,50 +49696,114 @@ function yhAdOpenDetail(ad){
         return;
     }
 
-    let detail =
+
+    let page =
         document.getElementById(
-            "yhBusinessAdDetailModal"
+            "yhBusinessAdDetailPage"
         );
 
-    if(!detail){
 
-        detail =
+    if(!page){
+
+        page =
             document.createElement(
-                "div"
+                "section"
             );
 
-        detail.id =
-            "yhBusinessAdDetailModal";
+        page.id =
+            "yhBusinessAdDetailPage";
 
-        detail.style.cssText = `
+        page.style.cssText = `
             display:none;
             position:fixed;
             top:var(--yh-main-header-height,0px);
             right:0;
             bottom:0;
             left:0;
-            z-index:2147482500;
+            z-index:4600;
             background:#f6f7f3;
             overflow-y:auto;
-            padding:20px;
         `;
 
         document.body.appendChild(
-            detail
+            page
         );
     }
 
-    detail.innerHTML = `
+
+    const phone =
+        String(
+            ad.phone || ""
+        ).trim();
+
+    const phoneHref =
+        phone.replace(
+            /[^\d+]/g,
+            ""
+        );
+
+    const email =
+        String(
+            ad.email || ""
+        ).trim();
+
+    const website =
+        ad.target_url
+        ?
+        yhAdNormalizeUrl(
+            ad.target_url
+        )
+        :
+        "";
+
+
+    page.innerHTML = `
+
         <div
             style="
-                max-width:900px;
-                margin:0 auto 60px;
-                background:#fff;
-                border:1px solid #e1e5dc;
-                border-radius:18px;
-                overflow:hidden;
+                width:min(1100px,calc(100% - 28px));
+                margin:0 auto;
+                padding:18px 0 60px;
             "
         >
+
+            <div
+                style="
+                    display:flex;
+                    align-items:center;
+                    justify-content:space-between;
+                    gap:15px;
+                    margin-bottom:18px;
+                "
+            >
+
+                <button
+                    type="button"
+                    id="yhBusinessAdDetailBack"
+                    style="
+                        border:1px solid #e1e5dc;
+                        background:#fff;
+                        color:#252a24;
+                        padding:11px 15px;
+                        border-radius:10px;
+                        font-weight:800;
+                    "
+                >
+                    ← უკან
+                </button>
+
+                <span
+                    style="
+                        color:#777d75;
+                        font-size:12px;
+                        font-weight:700;
+                    "
+                >
+                    რეკლამა
+                </span>
+
+            </div>
+
 
             ${
                 ad.image_url
@@ -49750,10 +49814,11 @@ function yhAdOpenDetail(ad){
                         alt=""
                         style="
                             width:100%;
-                            height:auto;
-                            max-height:520px;
-                            object-fit:cover;
+                            height:clamp(230px,48vw,520px);
                             display:block;
+                            object-fit:cover;
+                            border-radius:18px;
+                            background:#e9ece6;
                         "
                     >
                 `
@@ -49761,77 +49826,202 @@ function yhAdOpenDetail(ad){
                 ""
             }
 
-            <div style="padding:22px;">
 
-                <div
+            <div
+                style="
+                    margin-top:24px;
+                    display:flex;
+                    flex-wrap:wrap;
+                    gap:20px;
+                    align-items:flex-start;
+                "
+            >
+
+                <main
                     style="
-                        display:flex;
-                        justify-content:space-between;
-                        align-items:flex-start;
-                        gap:15px;
+                        flex:1 1 600px;
+                        min-width:0;
                     "
                 >
 
-                    <div>
-
-                        <div
-                            style="
-                                color:#7d8b45;
-                                font-size:13px;
-                                font-weight:900;
-                                margin-bottom:7px;
-                            "
-                        >
-                            ${yhAdEsc(
-                                ad.company_name || ""
-                            )}
-                        </div>
-
-                        <h2
-                            style="
-                                margin:0;
-                                color:#252a24;
-                            "
-                        >
-                            ${yhAdEsc(
-                                ad.title || ""
-                            )}
-                        </h2>
-
-                    </div>
-
-                    <button
-                        type="button"
-                        id="yhBusinessAdDetailClose"
+                    <div
                         style="
-                            border:1px solid #e1e5dc;
-                            background:#fff;
-                            border-radius:10px;
-                            padding:9px 12px;
-                            font-weight:800;
+                            color:#7d8b45;
+                            font-size:14px;
+                            font-weight:900;
+                            margin-bottom:9px;
                         "
                     >
-                        ✕
-                    </button>
+                        ${yhAdEsc(
+                            ad.company_name || ""
+                        )}
+                    </div>
 
-                </div>
+
+                    <h1
+                        style="
+                            margin:0;
+                            color:#252a24;
+                            font-size:clamp(26px,5vw,38px);
+                            line-height:1.25;
+                        "
+                    >
+                        ${yhAdEsc(
+                            ad.title || ""
+                        )}
+                    </h1>
+
+
+                    ${
+                        ad.description
+                        ?
+                        `
+                            <div
+                                style="
+                                    margin-top:24px;
+                                    padding:22px;
+                                    background:#fff;
+                                    border:1px solid #e1e5dc;
+                                    border-radius:16px;
+                                "
+                            >
+
+                                <h3
+                                    style="
+                                        margin:0 0 12px;
+                                        color:#252a24;
+                                    "
+                                >
+                                    აღწერა
+                                </h3>
+
+                                <p
+                                    style="
+                                        margin:0;
+                                        color:#444a42;
+                                        line-height:1.75;
+                                        white-space:pre-wrap;
+                                        word-break:break-word;
+                                    "
+                                >
+                                    ${yhAdEsc(
+                                        ad.description
+                                    )}
+                                </p>
+
+                            </div>
+                        `
+                        :
+                        ""
+                    }
+
+                </main>
+
 
                 ${
-                    ad.description
+                    phone ||
+                    email ||
+                    website
                     ?
                     `
-                        <p
+                        <aside
                             style="
-                                margin:20px 0;
-                                color:#444a42;
-                                line-height:1.7;
-                                white-space:pre-wrap;
+                                flex:1 1 280px;
+                                background:#fff;
+                                border:1px solid #e1e5dc;
+                                border-radius:16px;
+                                padding:20px;
                             "
                         >
-                            ${yhAdEsc(
-                                ad.description
-                            )}
-                        </p>
+
+                            <h3
+                                style="
+                                    margin:0 0 16px;
+                                    color:#252a24;
+                                "
+                            >
+                                საკონტაქტო ინფორმაცია
+                            </h3>
+
+
+                            ${
+                                phone
+                                ?
+                                `
+                                    <a
+                                        href="tel:${yhAdEsc(phoneHref)}"
+                                        style="
+                                            display:block;
+                                            margin-bottom:10px;
+                                            padding:13px;
+                                            border:1px solid #e1e5dc;
+                                            border-radius:10px;
+                                            color:#252a24;
+                                            text-decoration:none;
+                                            font-weight:700;
+                                            word-break:break-word;
+                                        "
+                                    >
+                                        📞 ${yhAdEsc(phone)}
+                                    </a>
+                                `
+                                :
+                                ""
+                            }
+
+
+                            ${
+                                email
+                                ?
+                                `
+                                    <a
+                                        href="mailto:${yhAdEsc(email)}"
+                                        style="
+                                            display:block;
+                                            margin-bottom:10px;
+                                            padding:13px;
+                                            border:1px solid #e1e5dc;
+                                            border-radius:10px;
+                                            color:#252a24;
+                                            text-decoration:none;
+                                            font-weight:700;
+                                            word-break:break-word;
+                                        "
+                                    >
+                                        ✉️ ${yhAdEsc(email)}
+                                    </a>
+                                `
+                                :
+                                ""
+                            }
+
+
+                            ${
+                                website
+                                ?
+                                `
+                                    <button
+                                        type="button"
+                                        id="yhBusinessAdDetailWebsite"
+                                        style="
+                                            width:100%;
+                                            border:0;
+                                            background:#7d8b45;
+                                            color:#fff;
+                                            padding:14px;
+                                            border-radius:10px;
+                                            font-weight:900;
+                                            margin-top:4px;
+                                        "
+                                    >
+                                        ვებგვერდზე გადასვლა →
+                                    </button>
+                                `
+                                :
+                                ""
+                            }
+
+                        </aside>
                     `
                     :
                     ""
@@ -49842,20 +50032,66 @@ function yhAdOpenDetail(ad){
         </div>
     `;
 
-    detail.style.display =
+
+    page.style.display =
         "block";
 
-    detail
+    page.scrollTop =
+        0;
+
+
+    page
     .querySelector(
-        "#yhBusinessAdDetailClose"
+        "#yhBusinessAdDetailBack"
     )
     ?.addEventListener(
         "click",
-        () => {
-            detail.style.display =
+        function(){
+
+            page.style.display =
                 "none";
+
         }
     );
+
+
+    if(website){
+
+        page
+        .querySelector(
+            "#yhBusinessAdDetailWebsite"
+        )
+        ?.addEventListener(
+            "click",
+            function(){
+
+                window.open(
+                    website,
+                    "_blank",
+                    "noopener,noreferrer"
+                );
+
+            }
+        );
+
+    }
+
+
+    (async function(){
+
+        try{
+
+            await yhAdDb.rpc(
+                "yh_public_ad_click_final",
+                {
+                    p_ad_id:
+                        Number(ad.id)
+                }
+            );
+
+        }catch(error){}
+
+    })();
 }
 
 /* =========================================================
