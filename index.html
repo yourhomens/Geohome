@@ -24445,10 +24445,10 @@ setDisplayCurrency(
   "bog-create-order",
   {
     body: {
-      plan: yhSelectedPromotion.plan,
-      days: yhSelectedPromotion.days,
-      service_type: "listing_promotion",
-      target_id: String(yhPromotionListingId)
+      plan: pending.plan,
+days: pending.days,
+service_type: "listing_promotion",
+target_id: String(pending.listingId)
     }
   }
 ).then(({ data, error }) => {
