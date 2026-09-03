@@ -4775,137 +4775,103 @@ id="developersPage">
 #developersPage .yh-developers-banner{
     position:relative;
     width:100vw;
-    height:clamp(190px,24vw,280px);
+    height:390px;
 
     margin-left:calc(50% - 50vw);
     margin-right:calc(50% - 50vw);
-    margin-bottom:24px;
+    margin-bottom:28px;
 
     overflow:hidden;
 
     background:
-        radial-gradient(
-            circle at 12% 30%,
-            rgba(125,139,69,0.22) 0 18px,
-            transparent 19px
-        ),
-        radial-gradient(
-            circle at 86% 26%,
-            rgba(125,139,69,0.18) 0 14px,
-            transparent 15px
-        ),
         linear-gradient(
             135deg,
-            #fbfaf4 0%,
-            #f5f2e6 48%,
-            #eef1e3 100%
+            #fbf8ef 0%,
+            #fffdf8 48%,
+            #f5f1e5 100%
         );
 
-    box-shadow:
-        0 12px 32px
-        rgba(37,42,36,0.08);
+    border-top:1px solid rgba(125,139,69,.08);
+    border-bottom:1px solid rgba(125,139,69,.10);
 }
 
 
-/* ქვედა აბსტრაქტული ტალღები */
+/* დეკორაცია */
 
-#developersPage .yh-developers-wave{
-    position:absolute;
-    left:-10%;
-    bottom:-115px;
-
-    width:72%;
-    height:210px;
-
-    border-radius:50% 55% 0 0;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(125,139,69,0.72),
-            rgba(125,139,69,0.28)
-        );
-
-    transform:rotate(4deg);
-}
-
-
-#developersPage .yh-developers-wave.two{
-    left:auto;
-    right:-12%;
-    bottom:-105px;
-
-    width:60%;
-
-    background:
-        linear-gradient(
-            220deg,
-            rgba(93,105,51,0.68),
-            rgba(125,139,69,0.24)
-        );
-
-    transform:rotate(-5deg);
-}
-
-
-/* დეკორატიული ხაზები */
-
-#developersPage .yh-developers-lines{
-    position:absolute;
-
-    width:340px;
-    height:340px;
-
-    border:
-        1px solid
-        rgba(125,139,69,0.22);
-
-    border-radius:50%;
-
-    right:-110px;
-    top:-210px;
-
-    box-shadow:
-        0 0 0 18px rgba(125,139,69,0.035),
-        0 0 0 38px rgba(125,139,69,0.025),
-        0 0 0 60px rgba(125,139,69,0.018);
-}
-
-
-/* სათაური */
-
-#developersPage .yh-developers-banner-title{
+#developersPage .yh-developers-art{
     position:absolute;
     inset:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+}
 
+
+/* ტექსტი */
+
+#developersPage .yh-developers-banner-content{
+    position:absolute;
+    inset:0;
     z-index:5;
 
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    padding-bottom:32px;
+
+    text-align:center;
+}
+
+
+#developersPage .yh-developers-banner-title{
+    color:var(--olive-dark);
+
+    font-family:
+        "Sylfaen",
+        "Noto Serif Georgian",
+        serif;
+
+    font-size:52px;
+    line-height:1.15;
+
+    font-weight:400;
+    letter-spacing:0;
+}
+
+
+#developersPage .yh-developers-divider{
     display:flex;
     align-items:center;
     justify-content:center;
 
-    padding:20px;
+    gap:12px;
+    margin:17px 0 15px;
 
-    color:var(--olive-dark);
-    font-size:clamp(34px,6vw,58px);
-    font-weight:900;
-    text-align:center;
-    letter-spacing:-1px;
+    color:#a6ad7b;
+    font-size:8px;
 }
 
 
-#developersPage .yh-developers-banner-title::after{
-    content:"";
+#developersPage .yh-developers-divider span{
+    display:block;
 
-    position:absolute;
-    top:calc(50% + 46px);
+    width:70px;
+    height:1px;
 
-    width:58px;
-    height:4px;
+    background:
+        rgba(125,139,69,.35);
+}
 
-    border-radius:999px;
 
-    background:var(--olive);
+#developersPage .yh-developers-banner-subtitle{
+    color:#777d75;
+
+    font-size:16px;
+    font-weight:400;
+
+    line-height:1.6;
 }
 
 
@@ -4913,19 +4879,299 @@ id="developersPage">
     margin-bottom:28px;
 }
 
+
+/* ტელეფონი */
+
+@media(max-width:750px){
+
+    #developersPage .yh-developers-banner{
+        height:230px;
+    }
+
+    #developersPage .yh-developers-banner-content{
+        padding:0 18px 22px;
+    }
+
+    #developersPage .yh-developers-banner-title{
+        font-size:34px;
+        font-weight:400;
+    }
+
+    #developersPage .yh-developers-divider{
+        margin:11px 0;
+    }
+
+    #developersPage .yh-developers-divider span{
+        width:44px;
+    }
+
+    #developersPage .yh-developers-banner-subtitle{
+        max-width:320px;
+        font-size:13px;
+    }
+}
+
 </style>
 
 
 <div class="yh-developers-banner">
 
-    <div class="yh-developers-wave"></div>
+    <svg
+    class="yh-developers-art"
+    viewBox="0 0 1600 390"
+    preserveAspectRatio="xMidYMid slice"
+    aria-hidden="true">
 
-    <div class="yh-developers-wave two"></div>
+        <defs>
 
-    <div class="yh-developers-lines"></div>
+            <linearGradient
+            id="yhDevWave1"
+            x1="0"
+            y1="0"
+            x2="1"
+            y2="0">
 
-    <div class="yh-developers-banner-title">
-        დეველოპერები
+                <stop
+                offset="0%"
+                stop-color="#ebe3c4"
+                stop-opacity=".88"/>
+
+                <stop
+                offset="100%"
+                stop-color="#b2bb79"
+                stop-opacity=".62"/>
+
+            </linearGradient>
+
+
+            <linearGradient
+            id="yhDevWave2"
+            x1="0"
+            y1="0"
+            x2="1"
+            y2="0">
+
+                <stop
+                offset="0%"
+                stop-color="#c9cf9b"
+                stop-opacity=".62"/>
+
+                <stop
+                offset="100%"
+                stop-color="#7d8b45"
+                stop-opacity=".94"/>
+
+            </linearGradient>
+
+        </defs>
+
+
+        <!-- მარცხენა შენობები -->
+
+        <g
+        fill="none"
+        stroke="#7d8b45"
+        stroke-width="1.3"
+        opacity=".23">
+
+            <path d="
+                M0 315
+                L58 270
+                L58 200
+                L115 168
+                L115 315
+            "/>
+
+            <path d="
+                M72 315
+                L72 185
+                L130 155
+                L130 315
+            "/>
+
+            <path d="
+                M145 315
+                L145 210
+                L225 174
+                L225 315
+            "/>
+
+            <path d="
+                M242 315
+                L242 145
+                L328 112
+                L328 315
+            "/>
+
+
+            <path d="M91 205 V296"/>
+            <path d="M108 196 V296"/>
+
+            <path d="M163 222 V296"/>
+            <path d="M185 212 V296"/>
+            <path d="M207 202 V296"/>
+
+            <path d="M263 160 V296"/>
+            <path d="M286 151 V296"/>
+            <path d="M307 143 V296"/>
+
+
+            <path d="M242 180 H328"/>
+            <path d="M242 216 H328"/>
+            <path d="M242 252 H328"/>
+
+        </g>
+
+
+        <!-- მარჯვენა შენობები -->
+
+        <g
+        fill="none"
+        stroke="#7d8b45"
+        stroke-width="1.3"
+        opacity=".22">
+
+            <path d="
+                M1270 315
+                L1270 155
+                L1360 124
+                L1360 315
+            "/>
+
+            <path d="
+                M1342 315
+                L1342 188
+                L1428 152
+                L1428 315
+            "/>
+
+            <path d="
+                M1410 315
+                L1410 112
+                L1510 72
+                L1510 315
+            "/>
+
+            <path d="
+                M1495 315
+                L1495 180
+                L1600 140
+                L1600 315
+            "/>
+
+
+            <path d="M1292 176 V296"/>
+            <path d="M1317 168 V296"/>
+            <path d="M1340 160 V296"/>
+
+            <path d="M1365 198 V296"/>
+            <path d="M1390 188 V296"/>
+            <path d="M1415 178 V296"/>
+
+            <path d="M1438 130 V296"/>
+            <path d="M1466 118 V296"/>
+            <path d="M1492 108 V296"/>
+
+
+            <path d="M1410 166 H1510"/>
+            <path d="M1410 210 H1510"/>
+            <path d="M1410 254 H1510"/>
+
+        </g>
+
+
+        <!-- პატარა მზე -->
+
+        <circle
+        cx="190"
+        cy="65"
+        r="32"
+        fill="#d8c98f"
+        opacity=".18"/>
+
+
+        <!-- წერტილები -->
+
+        <g
+        fill="#7d8b45"
+        opacity=".28">
+
+            <circle cx="1440" cy="65" r="2"/>
+            <circle cx="1458" cy="65" r="2"/>
+            <circle cx="1476" cy="65" r="2"/>
+            <circle cx="1494" cy="65" r="2"/>
+
+            <circle cx="1440" cy="83" r="2"/>
+            <circle cx="1458" cy="83" r="2"/>
+            <circle cx="1476" cy="83" r="2"/>
+            <circle cx="1494" cy="83" r="2"/>
+
+            <circle cx="1440" cy="101" r="2"/>
+            <circle cx="1458" cy="101" r="2"/>
+            <circle cx="1476" cy="101" r="2"/>
+            <circle cx="1494" cy="101" r="2"/>
+
+        </g>
+
+
+        <!-- ქვედა ნაზი ფორმები -->
+
+        <path
+        d="
+            M0 330
+            C220 280,
+             400 300,
+             620 335
+            C810 365,
+             1010 330,
+             1190 305
+            C1360 280,
+             1500 300,
+             1600 330
+            L1600 390
+            L0 390
+            Z
+        "
+        fill="url(#yhDevWave1)"/>
+
+
+        <path
+        d="
+            M0 365
+            C260 335,
+             470 350,
+             690 375
+            C920 400,
+             1110 350,
+             1290 325
+            C1430 305,
+             1530 320,
+             1600 345
+            L1600 390
+            L0 390
+            Z
+        "
+        fill="url(#yhDevWave2)"/>
+
+    </svg>
+
+
+    <div class="yh-developers-banner-content">
+
+        <div class="yh-developers-banner-title">
+            დეველოპერები
+        </div>
+
+        <div class="yh-developers-divider">
+            <span></span>
+            ◆
+            <span></span>
+        </div>
+
+        <div class="yh-developers-banner-subtitle">
+            გაეცანი დეველოპერულ კომპანიებს და მათ პროექტებს
+        </div>
+
     </div>
 
 </div>
@@ -4939,8 +5185,6 @@ id="developersPage">
     type="button">
         ← 🏠 მთავარი
     </button>
-
-</div>
 
 </div>
 
