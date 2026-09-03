@@ -51712,9 +51712,11 @@ function yhAdRenderNextHome(){
     ?.addEventListener(
         "click",
         () =>
-            yhAdOpenTarget(
-                ad
-            )
+         alert(
+        ad.title ||
+        ad.company_name ||
+        "რეკლამა"
+    )
     );
 
 
