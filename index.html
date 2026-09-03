@@ -4776,7 +4776,8 @@ id="developersPage">
     position:relative;
 
     width:100vw;
-    height:430px;
+    height:auto;
+aspect-ratio:3 / 2;
 
     margin-left:calc(50% - 50vw);
     margin-right:calc(50% - 50vw);
@@ -4801,12 +4802,15 @@ id="developersPage">
 @media(min-width:751px){
 
     #developersPage .yh-developers-banner{
-        height:330px;
+        height:auto;
+        aspect-ratio:3 / 2;
     }
 
     #developersPage .yh-developers-banner img{
-        object-fit:cover;
-        object-position:center 54%;
+        width:100%;
+        height:100%;
+        object-fit:contain;
+        object-position:center center;
     }
 
 }
