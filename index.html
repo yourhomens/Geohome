@@ -24441,10 +24441,33 @@ setDisplayCurrency(
         yhCloseVipModal();
 
 
-        showMessage(
-            "✅ პაკეტი არჩეულია. Bank of Georgia-ს გადახდა ჩაირთვება ბანკის API-ს მიღების შემდეგ."
-        );
+        supabaseClient.functions.invoke(
+  "bog-create-order",
+  {
+    body: {
+      plan: yhSelectedPromotion.plan,
+      days: yhSelectedPromotion.days,
+      service_type: "listing_promotion",
+      target_id: String(yhPromotionListingId)
+    }
+  }
+).then(({ data, error }) => {
 
+  if(error){
+    console.error("BOG create order error:", error);
+    showMessage("❌ გადახდის დაწყება ვერ მოხერხდა.");
+    return;
+  }
+
+  if(!data?.redirect_url){
+    console.error("BOG redirect URL missing:", data);
+    showMessage("❌ ბანკის გადახდის ბმული ვერ მოიძებნა.");
+    return;
+  }
+
+  window.location.href = data.redirect_url;
+
+});
     }
 
 
