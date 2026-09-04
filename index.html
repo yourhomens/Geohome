@@ -51696,7 +51696,149 @@ async function yhAdLoadMyAds(){
                 }
             )
             .join("");
+        container
+        .querySelectorAll(
+            ".yh-my-ad"
+        )
+        .forEach(
+            (card,index) => {
 
+                const ad =
+                    rows[index];
+
+                const status =
+                    String(
+                        ad?.status ||
+                        "pending"
+                    )
+                    .toLowerCase();
+
+                if(
+                    status !==
+                    "approved"
+                ){
+                    return;
+                }
+
+                card.style.cursor =
+                    "pointer";
+
+                card.addEventListener(
+                    "click",
+                    async function(){
+
+                        const planMap = {
+                            ad_standard:
+                                "business_standard",
+
+                            ad_vip:
+                                "business_vip",
+
+                            ad_vip_plus:
+                                "business_vip_plus",
+
+                            ad_premium:
+                                "business_premium"
+                        };
+
+                        const plan =
+                            planMap[
+                                ad.package_code
+                            ];
+
+                        const days =
+                            Number(
+                                ad.duration_days
+                            );
+
+                        const targetId =
+                            String(
+                                ad.id ||
+                                ""
+                            );
+
+                        if(
+                            !plan ||
+                            !targetId ||
+                            ![
+                                7,
+                                15,
+                                30
+                            ].includes(days)
+                        ){
+                            yhAdMessage(
+                                "❌ რეკლამის გადახდის მონაცემები არასწორია."
+                            );
+
+                            return;
+                        }
+
+                        card.style.pointerEvents =
+                            "none";
+
+                        try{
+
+                            const{
+                                data,
+                                error
+                            } =
+                            await yhAdDb
+                            .functions
+                            .invoke(
+                                "bog-create-order",
+                                {
+                                    body:{
+                                        plan:
+                                            plan,
+
+                                        days:
+                                            days,
+
+                                        service_type:
+                                            "business_ad",
+
+                                        target_id:
+                                            targetId
+                                    }
+                                }
+                            );
+
+                            if(error){
+                                throw error;
+                            }
+
+                            if(
+                                !data
+                                ?.redirect_url
+                            ){
+                                throw new Error(
+                                    "BOG redirect URL missing"
+                                );
+                            }
+
+                            window.location.href =
+                                data.redirect_url;
+
+                        }catch(error){
+
+                            console.error(
+                                "Business ad BOG payment:",
+                                error
+                            );
+
+                            card.style.pointerEvents =
+                                "";
+
+                            yhAdMessage(
+                                "❌ გადახდის დაწყება ვერ მოხერხდა."
+                            );
+                        }
+
+                    }
+                );
+
+            }
+        );
 
     }catch(error){
 
