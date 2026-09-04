@@ -32737,7 +32737,8 @@ if(project.status === "approved"){
 
     const promotionBox =
     document.createElement("div");
-
+promotionBox.setAttribute("data-project-promotion-box", "");
+promotionBox.dataset.projectId = String(project.id || "");
     promotionBox.style.cssText = `
         grid-column:1 / -1;
         border-top:1px solid var(--border);
