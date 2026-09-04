@@ -5932,7 +5932,34 @@ async function loadAds(){
         errorBox("adsList",error);
     }
 }
+async function loadDeveloperBannerAds(){
 
+    setLoading(
+        "developerBannerAdsList"
+    );
+
+    try{
+
+        const {data,error} =
+            await sb.rpc(
+                "yh_admin_developer_banner_ads_final"
+            );
+
+        if(error){
+            throw error;
+        }
+
+        developerBannerAdsData =
+            rows(data);
+
+    }catch(error){
+
+        errorBox(
+            "developerBannerAdsList",
+            error
+        );
+    }
+}
 function renderAds(){
 
     const status=$("adsStatusFilter").value;
