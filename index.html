@@ -31341,6 +31341,198 @@ if(yhDeveloperBannerSubmit){
                 );
                 return;
             }
+            const projectId =
+    yhDeveloperBannerProject?.value || null;
+
+const packageDays =
+    Number(
+        selectedOption.dataset.days
+    );
+
+const packagePrice =
+    Number(
+        selectedOption.dataset.price
+    );
+
+yhDeveloperBannerSubmit.disabled = true;
+yhDeveloperBannerSubmit.textContent =
+    "იგზავნება...";
+
+let uploadedPath = "";
+
+try{
+
+    const profileResult =
+        await supabaseClient
+        .from(
+            "developer_profiles"
+        )
+        .select(
+            "id,status"
+        )
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .maybeSingle();
+
+    if(
+        profileResult.error ||
+        !profileResult.data
+    ){
+        throw new Error(
+            "დეველოპერის პროფილი ვერ მოიძებნა."
+        );
+    }
+
+    const developerId =
+        profileResult.data.id;
+
+    const extension =
+        (
+            imageFile.name
+            .split(".")
+            .pop() ||
+            "jpg"
+        )
+        .toLowerCase()
+        .replace(
+            /[^a-z0-9]/g,
+            ""
+        ) || "jpg";
+
+    const uniquePart =
+    (
+        typeof crypto !==
+        "undefined" &&
+        crypto.randomUUID
+    )
+    ?
+    crypto.randomUUID()
+    :
+    Math.random()
+    .toString(36)
+    .slice(2);
+
+    uploadedPath =
+        currentUser.id +
+        "/banner-" +
+        Date.now() +
+        "-" +
+        uniquePart +
+        "." +
+        extension;
+
+    const uploadResult =
+        await supabaseClient
+        .storage
+        .from(
+            "developer-media"
+        )
+        .upload(
+            uploadedPath,
+            imageFile,
+            {
+                cacheControl:"3600",
+                upsert:false,
+                contentType:
+                    imageFile.type ||
+                    undefined
+            }
+        );
+
+    if(uploadResult.error){
+        throw uploadResult.error;
+    }
+
+    const publicResult =
+        supabaseClient
+        .storage
+        .from(
+            "developer-media"
+        )
+        .getPublicUrl(
+            uploadedPath
+        );
+
+    const imageUrl =
+        publicResult.data.publicUrl;
+
+    const orderResult =
+        await supabaseClient
+        .from(
+            "developer_banner_orders"
+        )
+        .insert({
+            developer_id:
+                developerId,
+            project_id:
+                projectId,
+            package_days:
+                packageDays,
+            price:
+                packagePrice,
+            payment_status:
+                "pending",
+            banner_status:
+                "pending"
+        });
+
+    if(orderResult.error){
+        throw orderResult.error;
+    }
+
+    const adResult =
+        await supabaseClient
+        .from(
+            "developer_banner_ads"
+        )
+        .insert({
+            developer_id:
+                developerId,
+            project_id:
+                projectId,
+            title:
+                title,
+            subtitle:
+                subtitle || null,
+            image_url:
+                imageUrl,
+            status:
+                "pending",
+            is_active:
+                false
+        });
+
+    if(adResult.error){
+        throw adResult.error;
+    }
+
+    showMessage(
+        "✅ ბანერის მოთხოვნა გაიგზავნა ადმინისტრატორთან."
+    );
+
+    yhCloseDeveloperBannerAdModal();
+
+}catch(error){
+
+    console.error(
+        "Developer banner submit error:",
+        error
+    );
+
+    showMessage(
+        "❌ ბანერის მოთხოვნის გაგზავნა ვერ მოხერხდა."
+    );
+
+}finally{
+
+    yhDeveloperBannerSubmit.disabled =
+        false;
+
+    yhDeveloperBannerSubmit.textContent =
+        "გაგრძელება →";
+}
         }
     );
 }
