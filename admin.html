@@ -2550,7 +2550,10 @@ function openPage(name){
     if(name==="support")loadSupportThreads();
     if(name==="teamchat")loadTeamAdmins();
     if(name==="groupchat")loadGroupMessages(true);
-    if(name==="ads")loadAds();
+    if(name==="ads"){
+    loadAds();
+    loadDeveloperBannerAds();
+}
     if(name==="admins")loadAdminManagement();
     if(name==="finance")loadAdPackages();
 }
