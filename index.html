@@ -31304,7 +31304,46 @@ if(yhDeveloperBannerImage){
     );
 }
 
+if(yhDeveloperBannerSubmit){
 
+    yhDeveloperBannerSubmit.addEventListener(
+        "click",
+        async function(){
+
+            const title =
+                document.getElementById(
+                    "yhDeveloperBannerTitle"
+                )?.value.trim() || "";
+
+            const subtitle =
+                document.getElementById(
+                    "yhDeveloperBannerSubtitle"
+                )?.value.trim() || "";
+
+            const durationSelect =
+                document.getElementById(
+                    "yhDeveloperBannerDuration"
+                );
+
+            const selectedOption =
+                durationSelect?.selectedOptions?.[0];
+
+            const imageFile =
+                yhDeveloperBannerImage?.files?.[0] || null;
+
+            if(
+                !title ||
+                !selectedOption?.value ||
+                !imageFile
+            ){
+                showMessage(
+                    "შეავსეთ სათაური, პერიოდი და აირჩიეთ ბანერის ფოტო."
+                );
+                return;
+            }
+        }
+    );
+}
 if(developerProjectsButton){
 
     developerProjectsButton
