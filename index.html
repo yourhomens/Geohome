@@ -58081,6 +58081,97 @@ if(vipDetails){
 
     continueButton.dataset.price =
     price || "";
+    if(!continueButton.dataset.bogBound){
+
+    continueButton.dataset.bogBound = "1";
+
+    continueButton.addEventListener(
+        "click",
+        async function(event){
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const planMap = {
+                vip: "project_vip",
+                vip_plus: "project_vip_plus",
+                vip_pro: "project_vip_pro"
+            };
+
+            const selectedPlan =
+                planMap[
+                    continueButton.dataset.plan
+                ];
+
+            const selectedDays =
+                Number(
+                    continueButton.dataset.days
+                );
+
+            const projectId =
+                String(
+                    promotionBox.dataset.projectId ||
+                    ""
+                );
+
+            if(
+                !selectedPlan ||
+                !selectedDays ||
+                !projectId
+            ){
+                showMessage(
+                    "❌ გადახდის მონაცემები არასწორია."
+                );
+                return;
+            }
+
+            try{
+
+                continueButton.disabled = true;
+
+                const { data, error } =
+                    await supabaseClient.functions.invoke(
+                        "bog-create-order",
+                        {
+                            body:{
+                                plan: selectedPlan,
+                                days: selectedDays,
+                                service_type:
+                                    "developer_project_promotion",
+                                target_id: projectId
+                            }
+                        }
+                    );
+
+                if(error){
+                    throw error;
+                }
+
+                if(!data?.redirect_url){
+                    throw new Error(
+                        "BOG redirect URL missing"
+                    );
+                }
+
+                window.location.href =
+                    data.redirect_url;
+
+            }catch(error){
+
+                console.error(
+                    "Developer project BOG payment:",
+                    error
+                );
+
+                continueButton.disabled = false;
+
+                showMessage(
+                    "❌ გადახდის დაწყება ვერ მოხერხდა."
+                );
+            }
+        }
+    );
+}
 }
         }
 
