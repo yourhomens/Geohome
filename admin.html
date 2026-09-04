@@ -5951,7 +5951,57 @@ async function loadDeveloperBannerAds(){
 
         developerBannerAdsData =
             rows(data);
+$("developerBannerAdsList").innerHTML =
+    developerBannerAdsData.length
+    ? developerBannerAdsData.map(ad=>`
+        <article class="data-card">
 
+            <div class="data-title">
+                ${esc(ad.company_name || "დეველოპერი")}
+            </div>
+
+            <div class="data-sub">
+                🏢 ${esc(ad.project_title || "პროექტი არჩეული არ არის")}
+            </div>
+
+            <div class="data-sub">
+                📢 ${esc(ad.title || "")}
+            </div>
+
+            ${
+                ad.subtitle
+                ? `<div class="data-sub">${esc(ad.subtitle)}</div>`
+                : ""
+            }
+
+            ${
+                ad.image_url
+                ? `
+                    <div style="margin-top:12px">
+                        <img
+                            src="${esc(ad.image_url)}"
+                            style="width:100%;max-height:230px;object-fit:cover;border-radius:14px"
+                        >
+                    </div>
+                `
+                : ""
+            }
+
+            <div class="pills">
+                <span class="pill ${
+                    ad.status==="pending"
+                    ? "orange"
+                    : ad.status==="rejected"
+                    ? "red"
+                    : "olive"
+                }">
+                    ${esc(ad.status || "")}
+                </span>
+            </div>
+
+        </article>
+    `).join("")
+    : `<div class="empty-state">Developer Banner მოთხოვნები არ არის.</div>`;
     }catch(error){
 
         errorBox(
