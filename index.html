@@ -32592,9 +32592,191 @@ await yhLoadMyDeveloperProjects();
     /* =========================
    MY DEVELOPER PROJECTS
 ========================= */
+async function yhLoadMyDeveloperBanners(){
 
+    const list =
+        document.getElementById(
+            "yhDeveloperMyBannersList"
+        );
+
+    if(!list){
+        return;
+    }
+
+    if(!currentUser){
+        list.innerHTML =
+        `<div class="yh-empty">
+            ავტორიზაცია საჭიროა.
+        </div>`;
+        return;
+    }
+
+    list.innerHTML =
+    `<div class="yh-empty">
+        ბანერები იტვირთება...
+    </div>`;
+
+    try{
+
+        const profileResult =
+        await supabaseClient
+        .from("developer_profiles")
+        .select("id")
+        .eq("user_id",currentUser.id)
+        .maybeSingle();
+
+        if(profileResult.error){
+            throw profileResult.error;
+        }
+
+        if(!profileResult.data){
+            list.innerHTML =
+            `<div class="yh-empty">
+                დეველოპერის პროფილი ვერ მოიძებნა.
+            </div>`;
+            return;
+        }
+
+        const result =
+        await supabaseClient
+        .from("developer_banner_ads")
+        .select(
+            "id,project_id,order_id,title,subtitle,image_url,status,is_active,created_at"
+        )
+        .eq(
+            "developer_id",
+            profileResult.data.id
+        )
+        .order(
+            "created_at",
+            {ascending:false}
+        );
+
+        if(result.error){
+            throw result.error;
+        }
+
+        const banners =
+            result.data || [];
+
+        if(!banners.length){
+            list.innerHTML =
+            `<div class="yh-empty">
+                ბანერის მოთხოვნები ჯერ არ გაქვთ.
+            </div>`;
+            return;
+        }
+
+        const statusMap = {
+            pending:"⏳ განხილვაში",
+            approved:"✅ დამტკიცებულია",
+            active:"🟢 აქტიურია",
+            rejected:"❌ უარყოფილია",
+            expired:"⏹ დასრულებულია"
+        };
+
+        list.innerHTML =
+        banners.map(banner=>`
+            <div style="
+                border:1px solid var(--border);
+                border-radius:14px;
+                padding:14px;
+                margin-bottom:12px;
+                background:#fafbf8;
+            ">
+
+                ${
+                    banner.image_url
+                    ? `
+                    <img
+                        src="${banner.image_url}"
+                        alt=""
+                        style="
+                            width:100%;
+                            max-height:220px;
+                            object-fit:cover;
+                            border-radius:11px;
+                            margin-bottom:12px;
+                        ">
+                    `
+                    : ""
+                }
+
+                <div style="
+                    font-weight:800;
+                    font-size:16px;
+                ">
+                    ${escapeHtml(
+                        banner.title || "ბანერი"
+                    )}
+                </div>
+
+                ${
+                    banner.subtitle
+                    ? `
+                    <div style="
+                        margin-top:5px;
+                        font-size:13px;
+                        color:var(--muted);
+                    ">
+                        ${escapeHtml(banner.subtitle)}
+                    </div>
+                    `
+                    : ""
+                }
+
+                <div style="
+                    margin-top:10px;
+                    font-weight:700;
+                    color:var(--olive-dark);
+                ">
+                    ${
+                        statusMap[banner.status] ||
+                        banner.status ||
+                        ""
+                    }
+                </div>
+
+                ${
+                    banner.status === "approved"
+                    ? `
+                    <button
+                        type="button"
+                        data-developer-banner-pay="${banner.id}"
+                        style="
+                            width:100%;
+                            margin-top:12px;
+                            border:0;
+                            background:var(--olive);
+                            color:#fff;
+                            padding:12px;
+                            border-radius:10px;
+                            font-weight:800;
+                        ">
+                        💳 გადახდა და გააქტიურება
+                    </button>
+                    `
+                    : ""
+                }
+
+            </div>
+        `).join("");
+
+    }catch(error){
+
+        console.error(
+            "Developer banners load error:",
+            error
+        );
+
+        list.innerHTML =
+        `<div class="yh-empty">
+            ბანერების ჩატვირთვა ვერ მოხერხდა.
+        </div>`;
+    }
+}
 async function yhLoadMyDeveloperProjects(){
-
+yhLoadMyDeveloperBanners();
     const list =
     document.getElementById(
         "yhDeveloperProjectsList"
