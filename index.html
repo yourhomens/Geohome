@@ -32776,6 +32776,149 @@ async function yhLoadMyDeveloperBanners(){
     }
 }
 async function yhLoadMyDeveloperProjects(){
+    const yhDeveloperMyBannersList =
+document.getElementById(
+    "yhDeveloperMyBannersList"
+);
+
+if(yhDeveloperMyBannersList){
+
+    yhDeveloperMyBannersList.addEventListener(
+        "click",
+        async function(event){
+
+            const payButton =
+                event.target.closest(
+                    "[data-developer-banner-pay]"
+                );
+
+            if(!payButton){
+                return;
+            }
+
+            const bannerId =
+                payButton.dataset
+                .developerBannerPay;
+
+            payButton.disabled = true;
+
+            try{
+
+                const {
+                    data:banner,
+                    error:bannerError
+                } =
+                await supabaseClient
+                .from("developer_banner_ads")
+                .select(
+                    "id,order_id,status"
+                )
+                .eq("id",bannerId)
+                .single();
+
+                if(bannerError){
+                    throw bannerError;
+                }
+
+                if(
+                    !banner ||
+                    banner.status !== "approved"
+                ){
+                    throw new Error(
+                        "ბანერი გადახდისთვის მზად არ არის."
+                    );
+                }
+
+                if(!banner.order_id){
+                    throw new Error(
+                        "ბანერის შეკვეთა ვერ მოიძებნა."
+                    );
+                }
+
+                const {
+                    data:order,
+                    error:orderError
+                } =
+                await supabaseClient
+                .from(
+                    "developer_banner_orders"
+                )
+                .select(
+                    "id,package_days,payment_status"
+                )
+                .eq(
+                    "id",
+                    banner.order_id
+                )
+                .single();
+
+                if(orderError){
+                    throw orderError;
+                }
+
+                const days =
+                    Number(
+                        order.package_days
+                    );
+
+                if(!days){
+                    throw new Error(
+                        "ბანერის პერიოდი ვერ მოიძებნა."
+                    );
+                }
+
+                const {data,error} =
+                    await supabaseClient
+                    .functions
+                    .invoke(
+                        "bog-create-order",
+                        {
+                            body:{
+                                plan:
+                                    "developer_banner",
+                                days:
+                                    days,
+                                service_type:
+                                    "developer_banner",
+                                target_id:
+                                    String(banner.id)
+                            }
+                        }
+                    );
+
+                if(error){
+                    throw error;
+                }
+
+                if(!data?.redirect_url){
+                    throw new Error(
+                        "BOG redirect URL missing"
+                    );
+                }
+
+                window.location.href =
+                    data.redirect_url;
+
+            }catch(error){
+
+                console.error(
+                    "Developer banner BOG payment:",
+                    error
+                );
+
+                payButton.disabled = false;
+
+                showMessage(
+                    "❌ " +
+                    (
+                        error?.message ||
+                        "გადახდის დაწყება ვერ მოხერხდა."
+                    )
+                );
+            }
+        }
+    );
+}
 yhLoadMyDeveloperBanners();
     const list =
     document.getElementById(
