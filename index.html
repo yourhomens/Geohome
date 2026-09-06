@@ -55791,7 +55791,144 @@ if(
 })();
 
 </script>
+<script id="yhSeoSearchBridge">
 
+(function(){
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const seoLocation =
+        params.get("location");
+
+    const seoProperty =
+        params.get("property");
+
+    const seoDeal =
+        params.get("deal");
+
+    const seoOwner =
+        params.get("owner");
+
+    const shouldOpen =
+        params.get("open") === "1";
+
+
+    if(
+        !seoLocation &&
+        !seoProperty &&
+        !seoDeal &&
+        !seoOwner &&
+        !shouldOpen
+    ){
+        return;
+    }
+
+
+    function applySeoSearch(){
+
+        if(
+            seoDeal &&
+            typeof setSearchType ===
+            "function"
+        ){
+            setSearchType(
+                seoDeal
+            );
+        }
+
+
+        const locationInput =
+            document.getElementById(
+                "locationInput"
+            );
+
+        if(
+            locationInput &&
+            seoLocation
+        ){
+            locationInput.value =
+                seoLocation;
+        }
+
+
+        const propertyType =
+            document.getElementById(
+                "propertyType"
+            );
+
+        if(
+            propertyType &&
+            seoProperty
+        ){
+            propertyType.value =
+                seoProperty;
+        }
+
+
+        const ownerType =
+            document.getElementById(
+                "filterOwnerType"
+            );
+
+        if(
+            ownerType &&
+            seoOwner
+        ){
+            ownerType.value =
+                seoOwner;
+        }
+
+
+        if(shouldOpen){
+
+            const searchButton =
+                document.getElementById(
+                    "searchButton"
+                );
+
+            if(searchButton){
+                searchButton.click();
+            }
+        }
+    }
+
+
+    let attempts = 0;
+
+    function waitForListings(){
+
+        attempts++;
+
+        if(
+            (
+                typeof currentListings !==
+                "undefined" &&
+                Array.isArray(
+                    currentListings
+                ) &&
+                currentListings.length > 0
+            ) ||
+            attempts >= 50
+        ){
+            applySeoSearch();
+            return;
+        }
+
+        setTimeout(
+            waitForListings,
+            200
+        );
+    }
+
+
+    waitForListings();
+
+})();
+
+</script>
 <!-- YOUR HOME — SEARCH RESULTS + PAGINATION V1 END -->
     <!-- =========================================================
      YOUR HOME — SHOW ALL TO RESULTS V1.1
