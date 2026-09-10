@@ -44295,6 +44295,44 @@ async function(){
 
         await loadListings();
         await loadDeveloperProjects();
+      const initialHash =
+window.location.hash || "";
+
+if(
+    initialHash.startsWith(
+        "#listing-"
+    )
+){
+    const listingId =
+    initialHash.replace(
+        "#listing-",
+        ""
+    );
+
+    const listing =
+    findListingById(
+        listingId
+    );
+
+    if(listing){
+
+        window.history.replaceState(
+            {
+                yourHomeView:"listing",
+                listingId:String(
+                    listing.id
+                )
+            },
+            "",
+            window.location.href
+        );
+
+        openListing(
+            listing,
+            false
+        );
+    }
+}
 
     }catch(error){
 
