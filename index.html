@@ -5429,8 +5429,8 @@ placeholder="მაგ. 82">
 <option value="1">1</option>
 <option value="2">2</option>
 <option value="3">3</option>
+<option value="4">4</option>
 <option value="4+">4+</option>
-
 </select>
 
 </div>
@@ -37367,26 +37367,105 @@ async function yhUpdateNotificationBell(){
         badge.style.display =
         "flex";
 
-        panel.innerHTML =
-        `
-        <div style="
-            padding:14px;
-            line-height:1.6;
-        ">
-            <strong>
-                🔔 ახალი განცხადებები
-            </strong>
+        const notificationListings =
+Array.from(newListingIds)
+.map(
+    function(id){
+        return currentListings.find(
+            function(listing){
+                return String(listing.id) === String(id);
+            }
+        );
+    }
+)
+.filter(Boolean);
 
-            <div style="
-                margin-top:7px;
-                color:var(--text);
-            ">
-                თქვენს შენახულ ძებნაში
-                <strong>${count}</strong>
-                ახალი განცხადებაა.
-            </div>
-        </div>
-        `;
+panel.innerHTML =
+`
+<div style="
+    padding:12px;
+">
+    <strong>
+        🔔 ახალი განცხადებები
+    </strong>
+
+    <div style="
+        margin:7px 0 10px;
+        color:var(--text);
+        font-size:13px;
+    ">
+        თქვენს შენახულ ძებნაში
+        <strong>${count}</strong>
+        ახალი განცხადებაა.
+    </div>
+
+    ${
+        notificationListings
+        .map(
+            function(listing){
+
+                const title =
+                listing.title ||
+                "უძრავი ქონების განცხადება";
+
+                const address =
+                [
+                    listing.city,
+                    listing.district
+                ]
+                .filter(Boolean)
+                .join(", ");
+
+                return `
+                <button
+                    type="button"
+                    class="yh-notification-listing"
+                    data-listing-id="${escapeHtml(
+                        String(listing.id)
+                    )}"
+                    style="
+                        width:100%;
+                        border:1px solid var(--border);
+                        background:#fff;
+                        border-radius:10px;
+                        padding:11px;
+                        margin-top:7px;
+                        text-align:left;
+                        cursor:pointer;
+                    ">
+
+                    <strong style="
+                        display:block;
+                        color:var(--dark);
+                    ">
+                        ${escapeHtml(title)}
+                    </strong>
+
+                    ${
+                        address
+                        ?
+                        `
+                        <span style="
+                            display:block;
+                            margin-top:4px;
+                            color:var(--muted);
+                            font-size:12px;
+                        ">
+                            📍 ${escapeHtml(address)}
+                        </span>
+                        `
+                        :
+                        ""
+                    }
+
+                </button>
+                `;
+            }
+        )
+        .join("")
+    }
+</div>
+`;
 
     }else{
 
@@ -37497,7 +37576,32 @@ document
     }
 );
 
+document
+.getElementById(
+    "yhNotificationPanel"
+)
+?.addEventListener(
+    "click",
+    function(event){
 
+        const item =
+        event.target.closest(
+            ".yh-notification-listing[data-listing-id]"
+        );
+
+        if(!item){
+            return;
+        }
+
+        this.classList.remove(
+            "active"
+        );
+
+        openListingById(
+            item.dataset.listingId
+        );
+    }
+);
 const yhPreviousUserChanged =
 window.yhAfterUserChanged;
 
