@@ -59035,6 +59035,482 @@ if(vipDetails){
     true
 );
 </script>
+  <!-- YOUR HOME — LISTING PHOTO VIEWER -->
+<style>
+
+.listing-main-photo{
+    object-fit:contain !important;
+    background:#f3f4ef !important;
+    cursor:zoom-in;
+}
+
+/* ბარათებზეც ფოტო სრულად გამოჩნდეს */
+.card-image,
+.yh-featured-image{
+    background-size:contain !important;
+    background-repeat:no-repeat !important;
+    background-position:center !important;
+    background-color:#f3f4ef !important;
+}
+
+/* FULL SCREEN VIEWER */
+#yhPhotoViewer{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    background:rgba(0,0,0,.92);
+    align-items:center;
+    justify-content:center;
+}
+
+#yhPhotoViewer.active{
+    display:flex;
+}
+
+#yhPhotoViewerImage{
+    max-width:94vw;
+    max-height:90vh;
+    width:auto;
+    height:auto;
+    object-fit:contain;
+    border-radius:8px;
+}
+
+.yh-photo-close,
+.yh-photo-prev,
+.yh-photo-next{
+    position:absolute;
+    border:0;
+    background:rgba(255,255,255,.92);
+    color:#252a24;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index:2;
+}
+
+.yh-photo-close{
+    right:20px;
+    top:20px;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    font-size:25px;
+}
+
+.yh-photo-prev,
+.yh-photo-next{
+    top:50%;
+    transform:translateY(-50%);
+    width:48px;
+    height:62px;
+    border-radius:12px;
+    font-size:38px;
+}
+
+.yh-photo-prev{
+    left:18px;
+}
+
+.yh-photo-next{
+    right:18px;
+}
+
+.yh-photo-counter{
+    position:absolute;
+    bottom:18px;
+    left:50%;
+    transform:translateX(-50%);
+    color:#fff;
+    background:rgba(0,0,0,.55);
+    padding:7px 13px;
+    border-radius:20px;
+    font-size:14px;
+}
+
+@media(max-width:750px){
+
+    .yh-photo-prev,
+    .yh-photo-next{
+        width:42px;
+        height:54px;
+        font-size:32px;
+    }
+
+    .yh-photo-prev{
+        left:8px;
+    }
+
+    .yh-photo-next{
+        right:8px;
+    }
+
+    .yh-photo-close{
+        right:10px;
+        top:10px;
+    }
+}
+
+</style>
+
+<div id="yhPhotoViewer">
+
+    <button
+        class="yh-photo-close"
+        type="button">
+        ×
+    </button>
+
+    <button
+        class="yh-photo-prev"
+        type="button">
+        ‹
+    </button>
+
+    <img
+        id="yhPhotoViewerImage"
+        alt="ქონების ფოტო">
+
+    <button
+        class="yh-photo-next"
+        type="button">
+        ›
+    </button>
+
+    <div
+        class="yh-photo-counter"
+        id="yhPhotoCounter">
+    </div>
+
+</div>
+
+<script>
+
+(function(){
+
+    let photos = [];
+    let currentIndex = 0;
+    let touchStartX = 0;
+
+    const viewer =
+    document.getElementById(
+        "yhPhotoViewer"
+    );
+
+    const viewerImage =
+    document.getElementById(
+        "yhPhotoViewerImage"
+    );
+
+    const counter =
+    document.getElementById(
+        "yhPhotoCounter"
+    );
+
+
+    function renderPhoto(){
+
+        if(!photos.length){
+            return;
+        }
+
+        viewerImage.src =
+        photos[currentIndex];
+
+        counter.textContent =
+        (currentIndex + 1) +
+        " / " +
+        photos.length;
+
+        const showArrows =
+        photos.length > 1;
+
+        document
+        .querySelector(
+            ".yh-photo-prev"
+        )
+        .style.display =
+        showArrows
+        ?
+        "flex"
+        :
+        "none";
+
+        document
+        .querySelector(
+            ".yh-photo-next"
+        )
+        .style.display =
+        showArrows
+        ?
+        "flex"
+        :
+        "none";
+    }
+
+
+    function openViewer(
+        clickedPhoto
+    ){
+
+        if(
+            !window.activeListing &&
+            typeof activeListing ===
+            "undefined"
+        ){
+            return;
+        }
+
+        const listing =
+        typeof activeListing !==
+        "undefined"
+        ?
+        activeListing
+        :
+        window.activeListing;
+
+        photos =
+        Array.isArray(
+            listing?.photos
+        )
+        ?
+        listing.photos
+        :
+        [];
+
+        if(!photos.length){
+            return;
+        }
+
+        const index =
+        photos.findIndex(
+            function(photo){
+                return photo ===
+                clickedPhoto;
+            }
+        );
+
+        currentIndex =
+        index >= 0
+        ?
+        index
+        :
+        0;
+
+        renderPhoto();
+
+        viewer.classList.add(
+            "active"
+        );
+
+        document.body.style.overflow =
+        "hidden";
+    }
+
+
+    function closeViewer(){
+
+        viewer.classList.remove(
+            "active"
+        );
+
+        viewerImage.src =
+        "";
+
+        document.body.style.overflow =
+        "";
+    }
+
+
+    function nextPhoto(){
+
+        if(!photos.length){
+            return;
+        }
+
+        currentIndex =
+        (
+            currentIndex + 1
+        ) %
+        photos.length;
+
+        renderPhoto();
+    }
+
+
+    function previousPhoto(){
+
+        if(!photos.length){
+            return;
+        }
+
+        currentIndex =
+        (
+            currentIndex -
+            1 +
+            photos.length
+        ) %
+        photos.length;
+
+        renderPhoto();
+    }
+
+
+    document.addEventListener(
+        "click",
+        function(event){
+
+            const mainPhoto =
+            event.target.closest(
+                ".listing-main-photo"
+            );
+
+            if(mainPhoto){
+
+                openViewer(
+                    mainPhoto.src
+                );
+
+                return;
+            }
+
+
+            if(
+                event.target.closest(
+                    ".yh-photo-close"
+                )
+            ){
+
+                closeViewer();
+                return;
+            }
+
+
+            if(
+                event.target.closest(
+                    ".yh-photo-next"
+                )
+            ){
+
+                nextPhoto();
+                return;
+            }
+
+
+            if(
+                event.target.closest(
+                    ".yh-photo-prev"
+                )
+            ){
+
+                previousPhoto();
+                return;
+            }
+
+
+            if(
+                event.target ===
+                viewer
+            ){
+
+                closeViewer();
+            }
+
+        }
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        function(event){
+
+            if(
+                !viewer.classList
+                .contains(
+                    "active"
+                )
+            ){
+                return;
+            }
+
+            if(
+                event.key ===
+                "ArrowRight"
+            ){
+                nextPhoto();
+            }
+
+            if(
+                event.key ===
+                "ArrowLeft"
+            ){
+                previousPhoto();
+            }
+
+            if(
+                event.key ===
+                "Escape"
+            ){
+                closeViewer();
+            }
+
+        }
+    );
+
+
+    viewer.addEventListener(
+        "touchstart",
+        function(event){
+
+            touchStartX =
+            event.touches[0]
+            .clientX;
+
+        },
+        {
+            passive:true
+        }
+    );
+
+
+    viewer.addEventListener(
+        "touchend",
+        function(event){
+
+            const endX =
+            event.changedTouches[0]
+            .clientX;
+
+            const difference =
+            touchStartX -
+            endX;
+
+            if(
+                Math.abs(
+                    difference
+                ) <
+                45
+            ){
+                return;
+            }
+
+            if(difference > 0){
+                nextPhoto();
+            }else{
+                previousPhoto();
+            }
+
+        },
+        {
+            passive:true
+        }
+    );
+
+})();
+
+</script>
 </body>
 </html>
 
