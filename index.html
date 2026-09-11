@@ -70904,10 +70904,19 @@ else{
             </button>
         `;
 
-        editor.insertBefore(
-            box,
-            actions
-        );
+        const worksSection =
+document.getElementById(
+    "yhcwmSection"
+);
+
+if(!worksSection){
+    return false;
+}
+
+worksSection.insertAdjacentElement(
+    "afterend",
+    box
+);
 
         return true;
     }
