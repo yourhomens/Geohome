@@ -64300,26 +64300,44 @@ const cities = [
 
             <span class="yhc-rating">
 
-            ★
+★
+${
+  n(
+    p.rating_avg
+  )
+  .toFixed(1)
+}
 
-            ${
-              n(
-                p.rating_avg
-              )
-              .toFixed(1)
-            }
+(
+${
+  n(
+    p.rating_count
+  )
+}
+)
 
-            (
+</span>
 
-            ${
-              n(
-                p.rating_count
-              )
-            }
-
-            )
-
-            </span>
+<button
+type="button"
+class="yhc-reviews-btn"
+data-reviews="${esc(p.id)}"
+style="
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--olive-dark);
+    border-radius:8px;
+    padding:6px 10px;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+">
+შეფასებების ნახვა (${
+    n(
+        p.rating_count
+    )
+})
+</button>
 
 
             <span>
