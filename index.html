@@ -59681,6 +59681,5390 @@ if(vipDetails){
 }
 
 </style>
+  <!-- =========================================================
+     YOUR HOME — CRAFTSMEN / ხელოსნები — FRONTEND V1
+========================================================= -->
+<script>
+(function(){
+  "use strict";
+
+  if(window.__YH_CRAFTSMEN_V1__) return;
+  window.__YH_CRAFTSMEN_V1__=true;
+
+  const CATS=[
+    "სახლების მშენებლობა",
+    "აგარაკების მშენებლობა",
+    "მშენებლობა ნულიდან",
+    "ფუნდამენტი",
+    "კარკასი",
+    "ბეტონის სამუშაოები",
+    "ბლოკი/აგური",
+    "სახურავი",
+    "ფასადი",
+    "თბოიზოლაცია",
+    "მიწის სამუშაოები",
+    "ეზოს მოწყობა",
+    "ღობე",
+    "ტერასა",
+    "აუზი",
+    "სრული რემონტი",
+    "შიდა რემონტი",
+    "ელექტრიკი",
+    "სანტექნიკა",
+    "კაფელი/მეტლახი",
+    "შეღებვა",
+    "გიფსოკარდონი",
+    "იატაკი/ლამინატი",
+    "პარკეტი",
+    "გათბობა",
+    "კონდიცირება",
+    "კარ-ფანჯარა",
+    "ავეჯი",
+    "შედუღება",
+    "დემონტაჟი",
+    "სხვა"
+  ];
+
+  const SCALES=[
+    "მცირე სამუშაო",
+    "ბინის სრული რემონტი",
+    "კერძო სახლი",
+    "დიდი სამშენებლო სამუშაო"
+  ];
+
+  const QUICK=[
+    ["🏠","სახლების მშენებლობა"],
+    ["🛠️","სრული რემონტი"],
+    ["⚡","ელექტრიკი"],
+    ["🔧","სანტექნიკა"],
+    ["🧱","კაფელი/მეტლახი"],
+    ["▦","გიფსოკარდონი"],
+    ["🖌️","შეღებვა"],
+    ["⌂","სახურავი"],
+    ["▧","ფასადი"],
+    ["🌿","ეზოს მოწყობა"],
+    ["•••","სხვა"]
+  ];
+
+  const S={
+    q:"",
+    cat:"",
+    city:"",
+    scale:"",
+    sort:"recommended",
+    page:1,
+    perPage:20,
+    view:"grid",
+    scrollY:0,
+    detailId:null
+  };
+
+  let db=null;
+  let all=[];
+  let filtered=[];
+  let works=[];
+  let gallery=[];
+  let galleryIndex=0;
+
+  let loaded=false;
+  let loading=false;
+  let failed=false;
+
+
+  /* =========================================================
+     HELPERS
+  ========================================================= */
+
+  const $=id=>
+    document.getElementById(id);
+
+
+  const esc=v=>
+    String(v ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+
+  const arr=v=>
+    Array.isArray(v)
+        ? v.filter(Boolean)
+        : [];
+
+
+  const n=v=>
+    Number.isFinite(Number(v))
+        ? Number(v)
+        : 0;
+
+
+  const ms=v=>
+    v
+        ? new Date(v).getTime() || 0
+        : 0;
+
+
+  const phone=v=>
+    String(v || "")
+    .replace(/[^\d+]/g,"");
+
+
+  function compact(v){
+
+    v=n(v);
+
+    if(v >= 1000000){
+
+      return (
+        (v / 1000000)
+        .toFixed(1)
+        .replace(".0","") +
+        "M"
+      );
+
+    }
+
+    if(v >= 1000){
+
+      return (
+        (v / 1000)
+        .toFixed(1)
+        .replace(".0","") +
+        "K"
+      );
+
+    }
+
+    return String(v);
+
+  }
+
+
+  function type(v){
+
+    v=String(v || "")
+    .toLowerCase();
+
+    if(
+      [
+        "brigade",
+        "crew",
+        "ბრიგადა"
+      ].includes(v)
+    ){
+      return "ბრიგადა";
+    }
+
+    if(
+      [
+        "construction_team",
+        "construction-team",
+        "team",
+        "სამშენებლო გუნდი"
+      ].includes(v)
+    ){
+      return "სამშენებლო გუნდი";
+    }
+
+    return "ინდივიდუალური ხელოსანი";
+
+  }
+
+
+  function plan(v){
+
+    v=String(v || "")
+    .toLowerCase();
+
+    if(
+      v.includes("plus") ||
+      v.includes("+")
+    ){
+      return "vip_plus";
+    }
+
+    if(
+      v.includes("vip")
+    ){
+      return "vip";
+    }
+
+    return "free";
+
+  }
+
+
+  function tier(p){
+
+    const x=
+      plan(
+        p.promotion_plan
+      );
+
+    const e=
+      ms(
+        p.promotion_expires_at
+      );
+
+    if(
+      x === "free" ||
+      (
+        e &&
+        e < Date.now()
+      )
+    ){
+      return 0;
+    }
+
+    return (
+      x === "vip_plus"
+      ? 2
+      : 1
+    );
+
+  }
+
+
+  function wa(v){
+
+    v=
+      String(v || "")
+      .trim();
+
+    if(!v){
+      return "";
+    }
+
+    if(
+      /^https?:\/\//i
+      .test(v)
+    ){
+      return v;
+    }
+
+    return (
+      "https://wa.me/" +
+      v.replace(/\D/g,"")
+    );
+
+  }
+
+
+  function tg(v){
+
+    v=
+      String(v || "")
+      .trim();
+
+    if(!v){
+      return "";
+    }
+
+    if(
+      /^https?:\/\//i
+      .test(v)
+    ){
+      return v;
+    }
+
+    if(
+      v[0] === "@"
+    ){
+      return (
+        "https://t.me/" +
+        v.slice(1)
+      );
+    }
+
+    return (
+      "https://t.me/" +
+      v
+    );
+
+  }
+
+
+  function vb(v){
+
+    v=
+      String(v || "")
+      .trim();
+
+    if(!v){
+      return "";
+    }
+
+    if(
+      /^viber:/i
+      .test(v)
+    ){
+      return v;
+    }
+
+    const p=
+      phone(v);
+
+    return (
+      p
+      ?
+      "viber://chat?number=" +
+      encodeURIComponent(p)
+      :
+      ""
+    );
+
+  }
+
+
+  /* =========================================================
+     SERVICES
+  ========================================================= */
+
+  function serviceList(p){
+
+    const x=
+      p?.services;
+
+    const out=[];
+
+    if(
+      Array.isArray(x)
+    ){
+
+      x.forEach(
+        function(s,i){
+
+          if(
+            typeof s ===
+            "string"
+          ){
+
+            out.push({
+              name:s,
+              price:"",
+              unit:""
+            });
+
+          }
+          else if(
+            s &&
+            typeof s ===
+            "object"
+          ){
+
+            out.push({
+
+              name:
+                s.name ||
+                s.title ||
+                s.service ||
+                (
+                  "მომსახურება " +
+                  (i + 1)
+                ),
+
+              price:
+                s.price ??
+                s.from_price ??
+                s.from ??
+                "",
+
+              unit:
+                s.unit ||
+                s.price_unit ||
+                ""
+
+            });
+
+          }
+
+        }
+      );
+
+    }
+    else if(
+      x &&
+      typeof x ===
+      "object"
+    ){
+
+      Object
+      .entries(x)
+      .forEach(
+        function(entry){
+
+          const k=
+            entry[0];
+
+          const v=
+            entry[1];
+
+          if(
+            v &&
+            typeof v ===
+            "object"
+          ){
+
+            out.push({
+
+              name:
+                v.name ||
+                k,
+
+              price:
+                v.price ??
+                v.from_price ??
+                v.from ??
+                "",
+
+              unit:
+                v.unit ||
+                v.price_unit ||
+                ""
+
+            });
+
+          }
+          else{
+
+            out.push({
+
+              name:k,
+              price:v ?? "",
+              unit:""
+
+            });
+
+          }
+
+        }
+      );
+
+    }
+
+    return out;
+
+  }
+
+
+  function fromPrice(p){
+
+    const a=
+      serviceList(p)
+      .map(
+        function(s){
+
+          return {
+
+            ...s,
+
+            num:
+              parseFloat(
+                String(
+                  s.price
+                )
+                .replace(
+                  /[^0-9.,]/g,
+                  ""
+                )
+                .replace(
+                  ",",
+                  "."
+                )
+              )
+
+          };
+
+        }
+      )
+      .filter(
+        function(s){
+
+          return Number
+          .isFinite(
+            s.num
+          );
+
+        }
+      )
+      .sort(
+        function(a,b){
+
+          return (
+            a.num -
+            b.num
+          );
+
+        }
+      );
+
+
+    if(
+      !a.length
+    ){
+      return "ფასი შეთანხმებით";
+    }
+
+
+    const s=
+      a[0];
+
+
+    return (
+      esc(s.price) +
+      "₾" +
+      (
+        s.unit
+        ?
+        "/" +
+        esc(s.unit)
+        :
+        ""
+      ) +
+      "-დან"
+    );
+
+  }
+
+
+  /* =========================================================
+     VIP / BOOST
+  ========================================================= */
+
+  function badges(p){
+
+    let h="";
+
+    const t=
+      tier(p);
+
+
+    if(
+      t === 2
+    ){
+
+      h +=
+      `
+      <span
+      class="yhc-badge plus">
+      VIP+
+      </span>
+      `;
+
+    }
+    else if(
+      t === 1
+    ){
+
+      h +=
+      `
+      <span
+      class="yhc-badge vip">
+      VIP
+      </span>
+      `;
+
+    }
+
+
+    if(
+      p.boosted_at
+    ){
+
+      h +=
+      `
+      <span
+      class="yhc-badge boost">
+      Boost
+      </span>
+      `;
+
+    }
+
+
+    return h;
+
+  }
+
+
+  /* =========================================================
+     CONTACTS
+  ========================================================= */
+
+  function contacts(
+    p,
+    big=false
+  ){
+
+    const ph=
+      phone(
+        p.phone
+      );
+
+    const w=
+      wa(
+        p.whatsapp ||
+        p.phone
+      );
+
+    const v=
+      vb(
+        p.viber ||
+        p.phone
+      );
+
+    const g=
+      tg(
+        p.telegram
+      );
+
+    const c=
+      big
+      ?
+      "yhc-contact-big"
+      :
+      "yhc-contact";
+
+
+    return `
+
+    ${
+      ph
+      ?
+      `
+      <a
+      class="${c} phone"
+      href="tel:${esc(ph)}"
+      data-stop>
+      ☎${big ? " დარეკვა" : ""}
+      </a>
+      `
+      :
+      ""
+    }
+
+    ${
+      w
+      ?
+      `
+      <a
+      class="${c} wa"
+      href="${esc(w)}"
+      target="_blank"
+      rel="noopener"
+      data-stop>
+      ${big ? "WhatsApp" : "◉"}
+      </a>
+      `
+      :
+      ""
+    }
+
+    ${
+      v
+      ?
+      `
+      <a
+      class="${c} vi"
+      href="${esc(v)}"
+      data-stop>
+      ${big ? "Viber" : "V"}
+      </a>
+      `
+      :
+      ""
+    }
+
+    ${
+      g
+      ?
+      `
+      <a
+      class="${c} tg"
+      href="${esc(g)}"
+      target="_blank"
+      rel="noopener"
+      data-stop>
+      ${big ? "Telegram" : "➤"}
+      </a>
+      `
+      :
+      ""
+    }
+
+    `;
+
+  }
+
+
+  /* =========================================================
+     HISTORY STATE
+  ========================================================= */
+
+  function snap(){
+
+    return {
+
+      q:S.q,
+
+      cat:S.cat,
+
+      city:S.city,
+
+      scale:S.scale,
+
+      sort:S.sort,
+
+      page:S.page,
+
+      view:S.view,
+
+      scrollY:S.scrollY
+
+    };
+
+  }
+
+
+  function restore(x){
+
+    if(!x){
+      return;
+    }
+
+
+    [
+      "q",
+      "cat",
+      "city",
+      "scale",
+      "sort",
+      "view"
+    ]
+    .forEach(
+      function(k){
+
+        if(
+          x[k] !==
+          undefined
+        ){
+          S[k]=x[k];
+        }
+
+      }
+    );
+
+
+    S.page=
+      Math.max(
+        1,
+        +x.page || 1
+      );
+
+
+    S.scrollY=
+      Math.max(
+        0,
+        +x.scrollY || 0
+      );
+
+  }
+
+
+  function historySet(
+    view,
+    extra={},
+    replace=false
+  ){
+
+    const hash=
+
+      (
+        view ===
+        "craftsman-detail" &&
+        extra.craftsmanId
+      )
+
+      ?
+
+      "#craftsman-" +
+      extra.craftsmanId
+
+      :
+
+      "#craftsmen";
+
+
+    history[
+      replace
+      ?
+      "replaceState"
+      :
+      "pushState"
+    ](
+
+      {
+
+        yourHomeView:
+          view,
+
+        craftsmanState:
+          snap(),
+
+        ...extra
+
+      },
+
+      "",
+
+      location.pathname +
+      location.search +
+      hash
+
+    );
+
+  }
+
+
+  function syncHistory(){
+
+    if(
+      history.state
+      ?.yourHomeView ===
+      "craftsmen"
+    ){
+
+      historySet(
+        "craftsmen",
+        {},
+        true
+      );
+
+    }
+
+  }
+
+
+  /* =========================================================
+     CSS
+  ========================================================= */
+
+  function css(){
+
+    if(
+      $("yhcStyle")
+    ){
+      return;
+    }
+
+
+    const s=
+      document
+      .createElement(
+        "style"
+      );
+
+
+    s.id=
+      "yhcStyle";
+
+
+    s.textContent=
+    `
+
+    #yhCraftsmenNav.yhc-active{
+      color:var(--olive-dark);
+      font-weight:800;
+    }
+
+
+    .yhc-page{
+      display:none!important;
+      max-width:none!important;
+      margin:0!important;
+      padding:0 0 70px!important;
+      background:#f7f8f4;
+    }
+
+
+    .yhc-page.active{
+      display:block!important;
+    }
+
+
+    .yhc-hero{
+      min-height:220px;
+      padding:42px 20px 70px;
+
+      display:flex;
+      justify-content:center;
+
+      text-align:center;
+      color:#fff;
+
+      background-color:#4b503e;
+
+      background-image:
+      linear-gradient(
+        90deg,
+        rgba(25,29,23,.72),
+        rgba(25,29,23,.35)
+      ),
+      url("craftsmen-banner.png"),
+      url("https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1800&q=85");
+
+      background-size:cover;
+      background-position:center;
+    }
+
+
+    .yhc-hero h1{
+      font-size:34px;
+      margin:0 0 8px;
+      text-shadow:0 2px 10px #0007;
+    }
+
+
+    .yhc-hero p{
+      margin:0;
+      font-size:16px;
+    }
+
+
+    .yhc-shell{
+      width:min(
+        1440px,
+        calc(100% - 48px)
+      );
+
+      margin:auto;
+    }
+
+
+    .yhc-search{
+      position:relative;
+      z-index:3;
+
+      margin-top:-40px;
+
+      padding:11px;
+
+      background:#fff;
+
+      border:1px solid var(--border);
+      border-radius:15px;
+
+      box-shadow:
+      0 10px 28px
+      rgba(37,42,36,.12);
+
+      display:grid;
+
+      grid-template-columns:
+      1.6fr
+      1fr
+      1fr
+      150px;
+
+      gap:8px;
+    }
+
+
+    .yhc-search input,
+    .yhc-search select,
+    .yhc-toolbar select{
+
+      height:46px;
+
+      border:
+      1px solid
+      var(--border);
+
+      border-radius:9px;
+
+      background:#fff;
+
+      padding:
+      0 12px;
+
+      outline:none;
+
+      width:100%;
+    }
+
+
+    .yhc-search button{
+
+      border:0;
+
+      border-radius:9px;
+
+      background:
+      var(--olive);
+
+      color:#fff;
+
+      font-weight:800;
+    }
+
+
+    .yhc-search button:hover{
+      background:
+      var(--olive-dark);
+    }
+
+
+    .yhc-quick{
+
+      display:grid;
+
+      grid-template-columns:
+      repeat(
+        11,
+        minmax(
+          106px,
+          1fr
+        )
+      );
+
+      gap:8px;
+
+      overflow-x:auto;
+
+      margin:
+      12px 0 15px;
+    }
+
+
+    .yhc-cat{
+
+      min-width:106px;
+      min-height:70px;
+
+      border:
+      1px solid
+      var(--border);
+
+      background:#fff;
+
+      border-radius:10px;
+
+      padding:7px;
+
+      font-size:11px;
+
+      font-weight:700;
+
+      display:flex;
+
+      flex-direction:column;
+
+      align-items:center;
+
+      justify-content:center;
+
+      gap:5px;
+    }
+
+
+    .yhc-cat b{
+
+      font-size:21px;
+
+      color:
+      var(--olive-dark);
+    }
+
+
+    .yhc-cat.active,
+    .yhc-cat:hover{
+
+      background:
+      var(--olive-light);
+
+      border-color:
+      var(--olive);
+
+      color:
+      var(--olive-dark);
+    }
+
+
+    .yhc-toolbar{
+
+      display:flex;
+
+      justify-content:
+      space-between;
+
+      align-items:center;
+
+      gap:10px;
+
+      margin:
+      10px 0;
+    }
+
+
+    .yhc-found{
+
+      font-weight:800;
+
+      font-size:17px;
+    }
+
+
+    .yhc-tools{
+
+      display:flex;
+
+      gap:7px;
+
+      align-items:center;
+    }
+
+
+    .yhc-toolbar select{
+
+      height:39px;
+
+      min-width:170px;
+    }
+
+
+    .yhc-switch{
+
+      display:flex;
+
+      padding:3px;
+
+      border:
+      1px solid
+      var(--border);
+
+      border-radius:9px;
+
+      background:#fff;
+    }
+
+
+    .yhc-switch button{
+
+      width:36px;
+      height:31px;
+
+      border:0;
+
+      border-radius:6px;
+
+      background:
+      transparent;
+    }
+
+
+    .yhc-switch button.active{
+
+      background:
+      var(--olive-light);
+
+      color:
+      var(--olive-dark);
+    }
+
+
+    .yhc-grid{
+
+      display:grid;
+
+      grid-template-columns:
+      repeat(
+        auto-fill,
+        minmax(
+          205px,
+          1fr
+        )
+      );
+
+      gap:12px;
+    }
+
+
+    .yhc-card{
+
+      background:#fff;
+
+      border:
+      1px solid
+      var(--border);
+
+      border-radius:12px;
+
+      overflow:hidden;
+
+      cursor:pointer;
+
+      transition:.18s;
+    }
+
+
+    .yhc-card:hover{
+
+      transform:
+      translateY(-2px);
+
+      box-shadow:
+      0 8px 24px
+      rgba(37,42,36,.09);
+    }
+
+
+    .yhc-cover{
+
+      height:145px;
+
+      background:
+      #e9ece6
+      center /
+      cover
+      no-repeat;
+
+      position:relative;
+    }
+
+
+    .yhc-badges{
+
+      position:absolute;
+
+      left:9px;
+      top:9px;
+
+      display:flex;
+
+      gap:5px;
+
+      flex-wrap:wrap;
+    }
+
+
+    .yhc-badge{
+
+      padding:
+      5px 8px;
+
+      border-radius:14px;
+
+      color:#fff;
+
+      font-size:11px;
+
+      font-weight:900;
+    }
+
+
+    .yhc-badge.plus{
+      background:#ff8b27;
+    }
+
+
+    .yhc-badge.vip{
+      background:#c49a23;
+    }
+
+
+    .yhc-badge.boost{
+      background:#179966;
+    }
+
+
+    .yhc-avatar{
+
+      position:absolute;
+
+      left:11px;
+      bottom:-22px;
+
+      width:48px;
+      height:48px;
+
+      border-radius:50%;
+
+      border:
+      3px solid
+      #fff;
+
+      background:
+      #eef0ea
+      center /
+      cover
+      no-repeat;
+    }
+
+
+    .yhc-body{
+
+      padding:
+      28px 11px 11px;
+    }
+
+
+    .yhc-name{
+
+      font-size:15px;
+
+      font-weight:900;
+
+      white-space:nowrap;
+
+      overflow:hidden;
+
+      text-overflow:
+      ellipsis;
+    }
+
+
+    .yhc-type,
+    .yhc-cats,
+    .yhc-city,
+    .yhc-meta{
+
+      font-size:12px;
+
+      color:
+      var(--muted);
+    }
+
+
+    .yhc-type{
+      margin:
+      4px 0;
+    }
+
+
+    .yhc-cats{
+
+      height:34px;
+
+      overflow:hidden;
+
+      line-height:1.4;
+    }
+
+
+    .yhc-meta{
+
+      display:flex;
+
+      gap:10px;
+
+      margin-top:7px;
+    }
+
+
+    .yhc-rating{
+
+      color:#d69800;
+
+      font-weight:800;
+    }
+
+
+    .yhc-city{
+
+      margin-top:6px;
+
+      white-space:nowrap;
+
+      overflow:hidden;
+
+      text-overflow:
+      ellipsis;
+    }
+
+
+    .yhc-price{
+
+      font-size:14px;
+
+      font-weight:900;
+
+      margin-top:7px;
+    }
+
+
+    .yhc-contact-row{
+
+      display:flex;
+
+      gap:6px;
+
+      margin-top:8px;
+    }
+
+
+    .yhc-contact{
+
+      width:29px;
+      height:29px;
+
+      border-radius:50%;
+
+      display:inline-flex;
+
+      align-items:center;
+
+      justify-content:center;
+
+      text-decoration:none;
+
+      background:#f1f3ed;
+
+      color:
+      var(--olive-dark);
+    }
+
+
+    .yhc-contact.wa{
+      color:#159c58;
+    }
+
+
+    .yhc-contact.vi{
+      color:#7348aa;
+    }
+
+
+    .yhc-contact.tg{
+      color:#168bc1;
+    }
+
+
+    .yhc-detail-btn{
+
+      width:100%;
+      height:34px;
+
+      border:0;
+
+      border-radius:7px;
+
+      background:
+      var(--olive);
+
+      color:#fff;
+
+      font-weight:800;
+
+      margin-top:8px;
+    }
+
+
+    .yhc-grid.list{
+      grid-template-columns:1fr;
+    }
+
+
+    .yhc-grid.list
+    .yhc-card{
+
+      display:grid;
+
+      grid-template-columns:
+      260px 1fr;
+    }
+
+
+    .yhc-grid.list
+    .yhc-cover{
+
+      height:100%;
+
+      min-height:190px;
+    }
+
+
+    .yhc-grid.list
+    .yhc-body{
+
+      padding:
+      18px 18px
+      15px 34px;
+    }
+
+
+    .yhc-grid.list
+    .yhc-cats{
+      height:auto;
+    }
+
+
+    .yhc-status{
+
+      background:#fff;
+
+      border:
+      1px solid
+      var(--border);
+
+      border-radius:14px;
+
+      padding:
+      44px 20px;
+
+      text-align:center;
+
+      color:
+      var(--muted);
+    }
+
+
+    .yhc-pages{
+
+      display:flex;
+
+      justify-content:center;
+
+      gap:5px;
+
+      margin:
+      20px 0;
+    }
+
+
+    .yhc-pages button{
+
+      min-width:34px;
+      height:34px;
+
+      border:
+      1px solid
+      var(--border);
+
+      border-radius:7px;
+
+      background:#fff;
+
+      font-weight:700;
+    }
+
+
+    .yhc-pages
+    button.active{
+
+      background:
+      var(--olive);
+
+      color:#fff;
+    }
+
+
+    .yhc-pages
+    button:disabled{
+      opacity:.45;
+    }
+
+
+    .yhc-dots{
+
+      padding:
+      8px 3px;
+
+      color:
+      var(--muted);
+    }
+
+
+    .yhc-list.hidden{
+      display:none;
+    }
+
+
+    .yhc-detail{
+      display:none;
+    }
+
+
+    .yhc-detail.active{
+      display:block;
+    }
+
+
+    .yhc-back{
+
+      margin:
+      18px 0 12px;
+
+      border:0;
+
+      background:none;
+
+      color:
+      var(--olive-dark);
+
+      font-weight:900;
+    }
+
+
+    .yhc-box{
+
+      background:#fff;
+
+      border:
+      1px solid
+      var(--border);
+
+      border-radius:14px;
+
+      padding:14px;
+    }
+
+
+    .yhc-detail-grid{
+
+      display:grid;
+
+      grid-template-columns:
+      minmax(0,1.5fr)
+      minmax(300px,.9fr);
+
+      gap:18px;
+    }
+
+
+    .yhc-main-photo{
+
+      height:370px;
+
+      border-radius:12px;
+
+      background:
+      #e9ece6
+      center /
+      cover
+      no-repeat;
+
+      cursor:pointer;
+    }
+
+
+    .yhc-thumbs{
+
+      display:flex;
+
+      gap:7px;
+
+      overflow-x:auto;
+
+      margin-top:8px;
+    }
+
+
+    .yhc-thumbs img{
+
+      width:75px;
+      height:58px;
+
+      object-fit:cover;
+
+      border-radius:7px;
+
+      cursor:pointer;
+    }
+
+
+    .yhc-head{
+
+      display:flex;
+
+      gap:12px;
+    }
+
+
+    .yhc-head-avatar{
+
+      width:64px;
+      height:64px;
+
+      border-radius:50%;
+
+      background:
+      #eef0ea
+      center /
+      cover
+      no-repeat;
+
+      flex:none;
+    }
+
+
+    .yhc-head h1{
+
+      font-size:25px;
+
+      margin:
+      0 0 4px;
+    }
+
+
+    .yhc-detail-meta{
+
+      display:flex;
+
+      gap:14px;
+
+      flex-wrap:wrap;
+
+      margin:
+      10px 0;
+
+      color:
+      var(--muted);
+
+      font-size:13px;
+    }
+
+
+    .yhc-big-contacts{
+
+      display:flex;
+
+      gap:7px;
+
+      flex-wrap:wrap;
+
+      margin:
+      12px 0;
+    }
+
+
+    .yhc-contact-big{
+
+      min-height:39px;
+
+      padding:
+      0 12px;
+
+      border:
+      1px solid
+      var(--border);
+
+      border-radius:8px;
+
+      display:inline-flex;
+
+      align-items:center;
+
+      text-decoration:none;
+
+      color:
+      var(--dark);
+
+      font-weight:800;
+    }
+
+
+    .yhc-contact-big.phone{
+
+      background:
+      var(--olive);
+
+      color:#fff;
+    }
+
+
+    .yhc-facts{
+
+      display:grid;
+
+      grid-template-columns:
+      repeat(
+        3,
+        1fr
+      );
+
+      gap:8px;
+
+      margin:
+      13px 0;
+    }
+
+
+    .yhc-fact{
+
+      background:#f7f8f4;
+
+      border:
+      1px solid
+      var(--border);
+
+      border-radius:9px;
+
+      padding:10px;
+    }
+
+
+    .yhc-fact small{
+
+      display:block;
+
+      color:
+      var(--muted);
+
+      margin-bottom:4px;
+    }
+
+
+    .yhc-section{
+      margin-top:16px;
+    }
+
+
+    .yhc-section h3{
+
+      font-size:17px;
+
+      margin:
+      0 0 9px;
+    }
+
+
+    .yhc-section p{
+
+      line-height:1.65;
+
+      white-space:
+      pre-wrap;
+    }
+
+
+    .yhc-tags{
+
+      display:flex;
+
+      gap:6px;
+
+      flex-wrap:wrap;
+    }
+
+
+    .yhc-tag{
+
+      padding:
+      6px 9px;
+
+      border-radius:14px;
+
+      background:
+      var(--olive-light);
+
+      color:
+      var(--olive-dark);
+
+      font-size:11px;
+
+      font-weight:700;
+    }
+
+
+    .yhc-services{
+
+      border:
+      1px solid
+      var(--border);
+
+      border-radius:10px;
+
+      overflow:hidden;
+    }
+
+
+    .yhc-service{
+
+      display:flex;
+
+      justify-content:
+      space-between;
+
+      gap:10px;
+
+      padding:
+      10px 11px;
+
+      border-bottom:
+      1px solid
+      var(--border);
+
+      font-size:13px;
+    }
+
+
+    .yhc-service:last-child{
+      border-bottom:0;
+    }
+
+
+    .yhc-works{
+      margin-top:18px;
+    }
+
+
+    .yhc-works h2{
+
+      font-size:20px;
+
+      margin-bottom:10px;
+    }
+
+
+    .yhc-work-grid{
+
+      display:grid;
+
+      grid-template-columns:
+      repeat(
+        3,
+        1fr
+      );
+
+      gap:10px;
+    }
+
+
+    .yhc-work{
+
+      background:#fff;
+
+      border:
+      1px solid
+      var(--border);
+
+      border-radius:11px;
+
+      overflow:hidden;
+    }
+
+
+    .yhc-work-photo{
+
+      height:145px;
+
+      background:
+      #e9ece6
+      center /
+      cover
+      no-repeat;
+
+      cursor:pointer;
+    }
+
+
+    .yhc-work-body{
+      padding:10px;
+    }
+
+
+    .yhc-work-body b{
+      font-size:14px;
+    }
+
+
+    .yhc-work-body p{
+
+      font-size:12px;
+
+      line-height:1.45;
+
+      margin-top:6px;
+    }
+
+
+    .yhc-work-body small{
+      color:
+      var(--muted);
+    }
+
+
+    .yhc-lightbox{
+
+      display:none;
+
+      position:fixed;
+
+      inset:0;
+
+      z-index:12000;
+
+      background:
+      rgba(16,18,15,.94);
+
+      align-items:center;
+
+      justify-content:center;
+
+      padding:20px;
+    }
+
+
+    .yhc-lightbox.active{
+      display:flex;
+    }
+
+
+    .yhc-lightbox img{
+
+      max-width:92vw;
+
+      max-height:84vh;
+
+      object-fit:contain;
+    }
+
+
+    .yhc-lightbox button{
+
+      position:absolute;
+
+      width:42px;
+      height:42px;
+
+      border:0;
+
+      border-radius:50%;
+
+      background:#fff;
+
+      font-size:23px;
+    }
+
+
+    .yhc-close{
+      right:18px;
+      top:18px;
+    }
+
+
+    .yhc-prev{
+      left:18px;
+      top:50%;
+    }
+
+
+    .yhc-next{
+      right:18px;
+      top:50%;
+    }
+
+
+    @media(max-width:1000px){
+
+      .yhc-search{
+        grid-template-columns:
+        1fr 1fr;
+      }
+
+      .yhc-quick{
+        grid-template-columns:
+        repeat(
+          11,
+          115px
+        );
+      }
+
+      .yhc-detail-grid{
+        grid-template-columns:1fr;
+      }
+
+      .yhc-work-grid{
+        grid-template-columns:
+        repeat(
+          2,
+          1fr
+        );
+      }
+
+    }
+
+
+    @media(max-width:700px){
+
+      .yhc-hero{
+
+        min-height:245px;
+
+        padding:
+        36px 15px 76px;
+      }
+
+
+      .yhc-hero h1{
+        font-size:27px;
+      }
+
+
+      .yhc-shell{
+        width:
+        calc(100% - 24px);
+      }
+
+
+      .yhc-search{
+
+        grid-template-columns:1fr;
+
+        margin-top:-52px;
+      }
+
+
+      .yhc-toolbar{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+      }
+
+
+      .yhc-tools{
+
+        width:100%;
+
+        flex-wrap:wrap;
+      }
+
+
+      .yhc-toolbar select{
+
+        flex:1;
+
+        min-width:140px;
+      }
+
+
+      .yhc-grid{
+
+        grid-template-columns:
+        repeat(
+          2,
+          minmax(0,1fr)
+        );
+
+        gap:9px;
+      }
+
+
+      .yhc-cover{
+        height:125px;
+      }
+
+
+      .yhc-body{
+        padding:
+        27px 9px 9px;
+      }
+
+
+      .yhc-grid.list{
+        grid-template-columns:1fr;
+      }
+
+
+      .yhc-grid.list
+      .yhc-card{
+
+        grid-template-columns:
+        115px 1fr;
+      }
+
+
+      .yhc-grid.list
+      .yhc-body{
+        padding:13px;
+      }
+
+
+      .yhc-main-photo{
+        height:260px;
+      }
+
+
+      .yhc-facts{
+        grid-template-columns:1fr;
+      }
+
+
+      .yhc-work-grid{
+        grid-template-columns:1fr;
+      }
+
+    }
+
+    `;
+
+
+    document.head
+    .appendChild(s);
+
+  }
+
+
+  /* =========================================================
+     NAV BUTTON
+  ========================================================= */
+
+  function makeNav(){
+
+    if(
+      $("yhCraftsmenNav")
+    ){
+      return;
+    }
+
+
+    const nav=
+      document.querySelector(
+        "header nav"
+      );
+
+
+    const after=
+      $("newProjectsNav");
+
+
+    if(
+      !nav ||
+      !after
+    ){
+      return;
+    }
+
+
+    const b=
+      document
+      .createElement(
+        "button"
+      );
+
+
+    b.type=
+      "button";
+
+
+    b.id=
+      "yhCraftsmenNav";
+
+
+    b.textContent=
+      "ხელოსნები";
+
+
+    after
+    .insertAdjacentElement(
+      "afterend",
+      b
+    );
+
+
+    b.onclick=
+      function(){
+
+        openList(true);
+
+      };
+
+  }
+
+
+  /* =========================================================
+     PAGE
+  ========================================================= */
+
+  function makePage(){
+
+    if(
+      $("yhCraftsmenPage")
+    ){
+      return;
+    }
+
+
+    const p=
+      document
+      .createElement(
+        "section"
+      );
+
+
+    p.id=
+      "yhCraftsmenPage";
+
+
+    p.className=
+      "yh-feature-page yhc-page";
+
+
+    p.innerHTML=
+    `
+
+    <div class="yhc-hero">
+
+      <div>
+
+        <h1>
+        სანდო ხელოსნები ერთ სივრცეში
+        </h1>
+
+        <p>
+        იპოვე გამოცდილი ხელოსანი შენი პროექტისთვის მარტივად.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="yhc-shell">
+
+
+      <div
+      class="yhc-list"
+      id="yhcList">
+
+
+        <div class="yhc-search">
+
+          <input
+          id="yhcQ"
+          type="search"
+          placeholder="რას ეძებ? (მაგ: რემონტი, სახლის მშენებლობა...)">
+
+
+          <select
+          id="yhcCat">
+          </select>
+
+
+          <select
+          id="yhcCity">
+          </select>
+
+
+          <button
+          id="yhcSearch"
+          type="button">
+          ⌕ ძებნა
+          </button>
+
+        </div>
+
+
+        <div
+        class="yhc-quick"
+        id="yhcQuick">
+        </div>
+
+
+        <div class="yhc-toolbar">
+
+
+          <div
+          class="yhc-found"
+          id="yhcFound">
+          </div>
+
+
+          <div class="yhc-tools">
+
+
+            <select
+            id="yhcScale">
+            </select>
+
+
+            <select
+            id="yhcSort">
+
+              <option
+              value="recommended">
+              დალაგება: რეკომენდებული
+              </option>
+
+              <option
+              value="rating">
+              რეიტინგით
+              </option>
+
+              <option
+              value="views">
+              ნახვებით
+              </option>
+
+              <option
+              value="newest">
+              უახლესი
+              </option>
+
+            </select>
+
+
+            <div class="yhc-switch">
+
+              <button
+              type="button"
+              data-view="grid">
+              ▦
+              </button>
+
+              <button
+              type="button"
+              data-view="list">
+              ☷
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div id="yhcCards">
+        </div>
+
+
+        <div
+        class="yhc-pages"
+        id="yhcPages">
+        </div>
+
+
+      </div>
+
+
+      <div
+      class="yhc-detail"
+      id="yhcDetail">
+      </div>
+
+
+    </div>
+
+
+    <div
+    class="yhc-lightbox"
+    id="yhcLightbox">
+
+      <button
+      class="yhc-close"
+      data-g="close">
+      ×
+      </button>
+
+      <button
+      class="yhc-prev"
+      data-g="prev">
+      ‹
+      </button>
+
+      <img
+      id="yhcLightboxImg"
+      alt="">
+
+
+      <button
+      class="yhc-next"
+      data-g="next">
+      ›
+      </button>
+
+    </div>
+
+    `;
+
+
+    const f=
+      document.querySelector(
+        "footer"
+      );
+
+
+    if(f){
+
+      f.parentNode
+      .insertBefore(
+        p,
+        f
+      );
+
+    }
+    else{
+
+      document.body
+      .appendChild(p);
+
+    }
+
+
+    p.addEventListener(
+      "click",
+      clicks
+    );
+
+
+    $("yhcSearch")
+    .onclick=
+      controls;
+
+
+    $("yhcQ")
+    .onkeydown=
+      function(e){
+
+        if(
+          e.key ===
+          "Enter"
+        ){
+          controls();
+        }
+
+      };
+
+
+    [
+      "yhcCat",
+      "yhcCity",
+      "yhcScale",
+      "yhcSort"
+    ]
+    .forEach(
+      function(id){
+
+        $(id)
+        .onchange=
+          controls;
+
+      }
+    );
+
+  }
+
+
+  /* =========================================================
+     FILTER OPTIONS
+  ========================================================= */
+
+  function selects(){
+
+    $("yhcCat")
+    .innerHTML=
+
+      '<option value="">ყველა კატეგორია</option>' +
+
+      CATS
+      .map(
+        function(x){
+
+          return (
+            '<option value="' +
+            esc(x) +
+            '">' +
+            esc(x) +
+            '</option>'
+          );
+
+        }
+      )
+      .join("");
+
+
+    const cities=
+
+      [
+        ...new Set(
+
+          all
+          .map(
+            function(p){
+
+              return String(
+                p.city ||
+                ""
+              )
+              .trim();
+
+            }
+          )
+          .filter(Boolean)
+
+        )
+      ]
+      .sort(
+        function(a,b){
+
+          return a.localeCompare(
+            b,
+            "ka"
+          );
+
+        }
+      );
+
+
+    $("yhcCity")
+    .innerHTML=
+
+      '<option value="">ყველა ქალაქი</option>' +
+
+      cities
+      .map(
+        function(x){
+
+          return (
+            '<option value="' +
+            esc(x) +
+            '">' +
+            esc(x) +
+            '</option>'
+          );
+
+        }
+      )
+      .join("");
+
+
+    $("yhcScale")
+    .innerHTML=
+
+      '<option value="">ყველა მასშტაბი</option>' +
+
+      SCALES
+      .map(
+        function(x){
+
+          return (
+            '<option value="' +
+            esc(x) +
+            '">' +
+            esc(x) +
+            '</option>'
+          );
+
+        }
+      )
+      .join("");
+
+
+    syncControls();
+
+  }
+
+
+  function quick(){
+
+    $("yhcQuick")
+    .innerHTML=
+
+      QUICK
+      .map(
+        function(item){
+
+          const i=
+            item[0];
+
+          const x=
+            item[1];
+
+
+          return `
+
+          <button
+          type="button"
+          class="
+          yhc-cat
+          ${
+            S.cat === x
+            ?
+            "active"
+            :
+            ""
+          }
+          "
+          data-cat="${esc(x)}">
+
+            <b>
+            ${i}
+            </b>
+
+            <span>
+            ${esc(x)}
+            </span>
+
+          </button>
+
+          `;
+
+        }
+      )
+      .join("");
+
+  }
+
+
+  function syncControls(){
+
+    if(
+      !$("yhcQ")
+    ){
+      return;
+    }
+
+
+    $("yhcQ").value=
+      S.q;
+
+
+    $("yhcCat").value=
+      S.cat;
+
+
+    $("yhcCity").value=
+      S.city;
+
+
+    $("yhcScale").value=
+      S.scale;
+
+
+    $("yhcSort").value=
+      S.sort;
+
+
+    document
+    .querySelectorAll(
+      "[data-view]"
+    )
+    .forEach(
+      function(b){
+
+        b.classList
+        .toggle(
+          "active",
+          b.dataset.view ===
+          S.view
+        );
+
+      }
+    );
+
+  }
+
+
+  function controls(){
+
+    S.q=
+      $("yhcQ")
+      .value
+      .trim();
+
+
+    S.cat=
+      $("yhcCat")
+      .value;
+
+
+    S.city=
+      $("yhcCity")
+      .value;
+
+
+    S.scale=
+      $("yhcScale")
+      .value;
+
+
+    S.sort=
+      $("yhcSort")
+      .value;
+
+
+    S.page=1;
+
+
+    filter();
+
+    quick();
+
+    syncHistory();
+
+  }
+
+
+  /* =========================================================
+     SORT
+  ========================================================= */
+
+  function cmp(a,b){
+
+    let d=
+      tier(b) -
+      tier(a);
+
+
+    if(d){
+      return d;
+    }
+
+
+    if(
+      S.sort ===
+      "rating"
+    ){
+
+      d=
+        n(
+          b.rating_avg
+        )
+        -
+        n(
+          a.rating_avg
+        );
+
+
+      if(d){
+        return d;
+      }
+
+    }
+
+
+    if(
+      S.sort ===
+      "views"
+    ){
+
+      d=
+        n(
+          b.views
+        )
+        -
+        n(
+          a.views
+        );
+
+
+      if(d){
+        return d;
+      }
+
+    }
+
+
+    if(
+      S.sort ===
+      "newest"
+    ){
+
+      d=
+        ms(
+          b.created_at
+        )
+        -
+        ms(
+          a.created_at
+        );
+
+
+      if(d){
+        return d;
+      }
+
+    }
+
+
+    d=
+      Number(
+        !!b.boosted_at
+      )
+      -
+      Number(
+        !!a.boosted_at
+      );
+
+
+    if(d){
+      return d;
+    }
+
+
+    d=
+      ms(
+        b.boosted_at
+      )
+      -
+      ms(
+        a.boosted_at
+      );
+
+
+    if(d){
+      return d;
+    }
+
+
+    d=
+      n(
+        b.rating_avg
+      )
+      -
+      n(
+        a.rating_avg
+      );
+
+
+    if(d){
+      return d;
+    }
+
+
+    d=
+      n(
+        b.views
+      )
+      -
+      n(
+        a.views
+      );
+
+
+    if(d){
+      return d;
+    }
+
+
+    return (
+
+      ms(
+        b.updated_at ||
+        b.created_at
+      )
+
+      -
+
+      ms(
+        a.updated_at ||
+        a.created_at
+      )
+
+    );
+
+  }
+
+
+  /* =========================================================
+     FILTER
+  ========================================================= */
+
+  function filter(
+    render=true
+  ){
+
+    const q=
+      S.q
+      .toLocaleLowerCase(
+        "ka-GE"
+      );
+
+
+    filtered=
+
+      all
+      .filter(
+        function(p){
+
+          const c=
+            arr(
+              p.categories
+            );
+
+
+          const sc=
+            arr(
+              p.work_scale
+            );
+
+
+          const hay=
+
+            [
+              p.display_name,
+              p.about,
+              p.city,
+              p.service_area,
+              type(
+                p.profile_type
+              ),
+              ...c
+            ]
+            .join(" ")
+            .toLocaleLowerCase(
+              "ka-GE"
+            );
+
+
+          return (
+
+            (
+              !q ||
+              hay.includes(q)
+            )
+
+            &&
+
+            (
+              !S.cat ||
+              c.includes(
+                S.cat
+              )
+            )
+
+            &&
+
+            (
+              !S.city ||
+              String(
+                p.city ||
+                ""
+              ) ===
+              S.city
+            )
+
+            &&
+
+            (
+              !S.scale ||
+              sc.includes(
+                S.scale
+              )
+            )
+
+          );
+
+        }
+      )
+      .sort(cmp);
+
+
+    const pages=
+      Math.max(
+        1,
+        Math.ceil(
+          filtered.length /
+          S.perPage
+        )
+      );
+
+
+    if(
+      S.page >
+      pages
+    ){
+      S.page=
+        pages;
+    }
+
+
+    if(render){
+      renderList();
+    }
+
+  }
+
+
+  /* =========================================================
+     CARD
+  ========================================================= */
+
+  function card(p){
+
+    const cover=
+      p.cover_url ||
+      p.avatar_url ||
+      "";
+
+
+    const avatar=
+      p.avatar_url ||
+      p.cover_url ||
+      "";
+
+
+    const cats=
+
+      arr(
+        p.categories
+      )
+      .slice(
+        0,
+        3
+      )
+      .join(", ")
+
+      ||
+
+      type(
+        p.profile_type
+      );
+
+
+    return `
+
+    <article
+    class="yhc-card"
+    data-profile="${esc(p.id)}">
+
+
+      <div
+      class="yhc-cover"
+
+      ${
+        cover
+        ?
+        `style="background-image:url('${esc(cover)}')"`
+        :
+        ""
+      }>
+
+
+        <div class="yhc-badges">
+        ${badges(p)}
+        </div>
+
+
+        <div
+        class="yhc-avatar"
+
+        ${
+          avatar
+          ?
+          `style="background-image:url('${esc(avatar)}')"`
+          :
+          ""
+        }>
+        </div>
+
+
+      </div>
+
+
+      <div class="yhc-body">
+
+
+        <div class="yhc-name">
+        ${
+          esc(
+            p.display_name ||
+            type(
+              p.profile_type
+            )
+          )
+        }
+        </div>
+
+
+        <div class="yhc-type">
+
+        ${
+          esc(
+            type(
+              p.profile_type
+            )
+          )
+        }
+
+        ${
+          p.experience_years
+          ?
+          ` · ${esc(p.experience_years)} წელი`
+          :
+          ""
+        }
+
+        </div>
+
+
+        <div class="yhc-cats">
+        ${esc(cats)}
+        </div>
+
+
+        <div class="yhc-meta">
+
+          <span class="yhc-rating">
+          ★
+          ${
+            n(
+              p.rating_avg
+            )
+            .toFixed(1)
+          }
+          (
+          ${
+            n(
+              p.rating_count
+            )
+          }
+          )
+          </span>
+
+          <span>
+          ◉
+          ${
+            compact(
+              p.views
+            )
+          }
+          </span>
+
+        </div>
+
+
+        <div class="yhc-city">
+        ⌖
+        ${
+          esc(
+            [
+              p.city,
+              p.service_area
+            ]
+            .filter(Boolean)
+            .join(", ")
+            ||
+            "საქართველო"
+          )
+        }
+        </div>
+
+
+        <div class="yhc-price">
+        ${fromPrice(p)}
+        </div>
+
+
+        <div class="yhc-contact-row">
+        ${contacts(p)}
+        </div>
+
+
+        <button
+        class="yhc-detail-btn"
+        type="button"
+        data-open="${esc(p.id)}">
+        დაწვრილებით
+        </button>
+
+
+      </div>
+
+
+    </article>
+
+    `;
+
+  }
+
+
+  /* =========================================================
+     LIST RENDER
+  ========================================================= */
+
+  function renderList(){
+
+    S.detailId=null;
+
+
+    $("yhcList")
+    .classList
+    .remove(
+      "hidden"
+    );
+
+
+    $("yhcDetail")
+    .classList
+    .remove(
+      "active"
+    );
+
+
+    $("yhcFound")
+    .textContent=
+
+      "ნაპოვნია " +
+      filtered.length +
+      " ხელოსანი";
+
+
+    const c=
+      $("yhcCards");
+
+
+    const pg=
+      $("yhcPages");
+
+
+    if(
+      loading
+    ){
+
+      c.className="";
+
+      c.innerHTML=
+      `
+      <div class="yhc-status">
+      ხელოსნები იტვირთება...
+      </div>
+      `;
+
+      pg.innerHTML="";
+
+      return;
+
+    }
+
+
+    if(
+      failed
+    ){
+
+      c.className="";
+
+      c.innerHTML=
+      `
+      <div class="yhc-status">
+      ხელოსნების ჩატვირთვა ვერ მოხერხდა.
+      </div>
+      `;
+
+      pg.innerHTML="";
+
+      return;
+
+    }
+
+
+    if(
+      !filtered.length
+    ){
+
+      c.className="";
+
+      c.innerHTML=
+      `
+      <div class="yhc-status">
+      ამ ფილტრებით ხელოსანი ვერ მოიძებნა.
+      </div>
+      `;
+
+      pg.innerHTML="";
+
+      return;
+
+    }
+
+
+    const start=
+      (
+        S.page -
+        1
+      )
+      *
+      S.perPage;
+
+
+    c.className=
+
+      "yhc-grid" +
+
+      (
+        S.view ===
+        "list"
+
+        ?
+
+        " list"
+
+        :
+
+        ""
+      );
+
+
+    c.innerHTML=
+
+      filtered
+      .slice(
+        start,
+        start +
+        S.perPage
+      )
+      .map(card)
+      .join("");
+
+
+    pages();
+
+    syncControls();
+
+    quick();
+
+  }
+
+
+  /* =========================================================
+     PAGINATION
+  ========================================================= */
+
+  function pages(){
+
+    const box=
+      $("yhcPages");
+
+
+    const total=
+      Math.ceil(
+        filtered.length /
+        S.perPage
+      );
+
+
+    if(
+      total <= 1
+    ){
+
+      box.innerHTML="";
+
+      return;
+
+    }
+
+
+    const nums=[];
+
+
+    for(
+      let i=1;
+      i<=total;
+      i++
+    ){
+
+      if(
+        i === 1 ||
+        i === total ||
+        Math.abs(
+          i -
+          S.page
+        ) <= 2
+      ){
+
+        nums.push(i);
+
+      }
+
+    }
+
+
+    let h=
+
+    `
+    <button
+    data-page="${S.page - 1}"
+    ${
+      S.page === 1
+      ?
+      "disabled"
+      :
+      ""
+    }>
+    ‹
+    </button>
+    `;
+
+
+    let prev=0;
+
+
+    nums
+    .forEach(
+      function(x){
+
+        if(
+          prev &&
+          x - prev > 1
+        ){
+
+          h +=
+          `
+          <span class="yhc-dots">
+          …
+          </span>
+          `;
+
+        }
+
+
+        h +=
+        `
+        <button
+        class="${
+          x === S.page
+          ?
+          "active"
+          :
+          ""
+        }"
+        data-page="${x}">
+        ${x}
+        </button>
+        `;
+
+
+        prev=x;
+
+      }
+    );
+
+
+    h +=
+
+    `
+    <button
+    data-page="${S.page + 1}"
+    ${
+      S.page === total
+      ?
+      "disabled"
+      :
+      ""
+    }>
+    ›
+    </button>
+    `;
+
+
+    box.innerHTML=h;
+
+  }
+
+
+  /* =========================================================
+     SUPABASE LOAD
+  ========================================================= */
+
+  async function load(
+    force=false
+  ){
+
+    if(
+      (
+        loaded &&
+        !force
+      )
+      ||
+      loading
+    ){
+      return;
+    }
+
+
+    loading=true;
+
+    failed=false;
+
+    renderList();
+
+
+    try{
+
+
+      db=
+        db ||
+        (
+          typeof supabaseClient !==
+          "undefined"
+
+          ?
+
+          supabaseClient
+
+          :
+
+          null
+        );
+
+
+      if(
+        !db
+      ){
+
+        throw Error(
+          "Supabase client not found"
+        );
+
+      }
+
+
+      const r=
+
+      await db
+      .from(
+        "craftsman_profiles"
+      )
+      .select("*")
+      .eq(
+        "is_published",
+        true
+      );
+
+
+      if(
+        r.error
+      ){
+
+        throw r.error;
+
+      }
+
+
+      all=
+        Array.isArray(
+          r.data
+        )
+        ?
+        r.data
+        :
+        [];
+
+
+      loaded=true;
+
+
+      selects();
+
+      filter(false);
+
+
+    }
+    catch(e){
+
+
+      failed=true;
+
+
+      console.error(
+        "CRAFTSMEN",
+        e
+      );
+
+
+    }
+    finally{
+
+
+      loading=false;
+
+      filter();
+
+
+    }
+
+  }
+
+
+  /* =========================================================
+     PAGE VISIBILITY
+  ========================================================= */
+
+  function hideOthers(){
+
+    if(
+      typeof hideAllPages ===
+      "function"
+    ){
+
+      hideAllPages();
+
+    }
+    else{
+
+
+      $("homePage")
+      ?.classList
+      .add(
+        "hidden"
+      );
+
+
+      document
+      .querySelectorAll(
+        ".yh-feature-page,.new-projects-page,.developers-page,.add-page,.my-listings-page"
+      )
+      .forEach(
+        function(x){
+
+          x.classList
+          .remove(
+            "active"
+          );
+
+        }
+      );
+
+    }
+
+  }
+
+
+  async function openList(
+    push=true
+  ){
+
+    hideOthers();
+
+
+    $("yhCraftsmenPage")
+    .classList
+    .add(
+      "active"
+    );
+
+
+    $("yhCraftsmenNav")
+    .classList
+    .add(
+      "yhc-active"
+    );
+
+
+    S.detailId=null;
+
+
+    if(push){
+
+      historySet(
+        "craftsmen"
+      );
+
+    }
+
+
+    await load();
+
+
+    filter();
+
+
+    window
+    .scrollTo({
+
+      top:0,
+
+      behavior:"smooth"
+
+    });
+
+  }
+
+
+  /* =========================================================
+     WORKS
+  ========================================================= */
+
+  async function loadWorks(id){
+
+    try{
+
+
+      const r=
+
+      await db
+      .from(
+        "craftsman_works"
+      )
+      .select("*")
+      .eq(
+        "craftsman_id",
+        id
+      )
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      );
+
+
+      if(
+        r.error
+      ){
+
+        throw r.error;
+
+      }
+
+
+      return (
+        Array.isArray(
+          r.data
+        )
+        ?
+        r.data
+        :
+        []
+      );
+
+
+    }
+    catch(e){
+
+
+      console.warn(e);
+
+
+      return [];
+
+
+    }
+
+  }
+
+
+  /* =========================================================
+     VIEWS
+  ========================================================= */
+
+  async function increment(id){
+
+    if(!db){
+      return;
+    }
+
+
+    const candidates=
+
+    [
+      {
+        p_craftsman_id:id
+      },
+
+      {
+        craftsman_id:id
+      },
+
+      {
+        profile_id:id
+      }
+    ];
+
+
+    for(
+      const args of
+      candidates
+    ){
+
+      try{
+
+
+        const r=
+
+        await db
+        .rpc(
+          "increment_craftsman_views",
+          args
+        );
+
+
+        if(
+          !r.error
+        ){
+          return;
+        }
+
+
+      }
+      catch{
+      }
+
+    }
+
+  }
+
+
+  /* =========================================================
+     DETAIL SERVICES
+  ========================================================= */
+
+  function servicesHtml(p){
+
+    const a=
+      serviceList(p);
+
+
+    if(
+      !a.length
+    ){
+
+      return `
+
+      <div class="yhc-services">
+
+        <div class="yhc-service">
+
+          <span>
+          ფასი შეთანხმებით
+          </span>
+
+        </div>
+
+      </div>
+
+      `;
+
+    }
+
+
+    return (
+
+      '<div class="yhc-services">' +
+
+      a
+      .map(
+        function(x){
+
+          return `
+
+          <div class="yhc-service">
+
+            <span>
+            ${esc(x.name)}
+            </span>
+
+            <strong>
+
+            ${
+              x.price !== ""
+              ?
+
+              (
+                esc(x.price) +
+                "₾" +
+                (
+                  x.unit
+                  ?
+                  "/" +
+                  esc(x.unit)
+                  :
+                  ""
+                )
+              )
+
+              :
+
+              "შეთანხმებით"
+            }
+
+            </strong>
+
+          </div>
+
+          `;
+
+        }
+      )
+      .join("")
+
+      +
+
+      '</div>'
+
+    );
+
+  }
+
+
+  /* =========================================================
+     WORKS RENDER
+  ========================================================= */
+
+  function worksHtml(){
+
+    if(
+      !works.length
+    ){
+      return "";
+    }
+
+
+    return `
+
+    <section class="yhc-works">
+
+      <h2>
+      ჩემი ნამუშევრები
+      </h2>
+
+
+      <div class="yhc-work-grid">
+
+      ${
+        works
+        .map(
+          function(w){
+
+            const ph=
+              arr(
+                w.photos
+              );
+
+
+            const first=
+              ph[0] ||
+              "";
+
+
+            const idx=
+              gallery
+              .indexOf(
+                first
+              );
+
+
+            return `
+
+            <article class="yhc-work">
+
+              ${
+                first
+                ?
+
+                `
+                <div
+                class="yhc-work-photo"
+                style="background-image:url('${esc(first)}')"
+                data-img="${idx}">
+                </div>
+                `
+
+                :
+
+                `
+                <div
+                class="yhc-work-photo">
+                </div>
+                `
+              }
+
+
+              <div class="yhc-work-body">
+
+
+                <b>
+                ${esc(w.title || "")}
+                </b>
+
+
+                ${
+                  w.location
+                  ?
+
+                  `
+                  <br>
+
+                  <small>
+                  ⌖
+                  ${esc(w.location)}
+                  </small>
+                  `
+
+                  :
+
+                  ""
+                }
+
+
+                ${
+                  w.description
+                  ?
+
+                  `
+                  <p>
+                  ${esc(w.description)}
+                  </p>
+                  `
+
+                  :
+
+                  ""
+                }
+
+
+              </div>
+
+
+            </article>
+
+            `;
+
+          }
+        )
+        .join("")
+      }
+
+      </div>
+
+    </section>
+
+    `;
+
+  }
+
+
+  /* =========================================================
+     DETAIL PAGE
+  ========================================================= */
+
+  async function openDetail(
+    id,
+    push=true
+  ){
+
+    if(
+      !loaded
+    ){
+
+      await load();
+
+    }
+
+
+    const p=
+
+      all
+      .find(
+        function(x){
+
+          return (
+            String(x.id) ===
+            String(id)
+          );
+
+        }
+      );
+
+
+    if(!p){
+      return;
+    }
+
+
+    S.scrollY=
+      window.scrollY;
+
+
+    S.detailId=
+      String(id);
+
+
+    syncHistory();
+
+
+    if(push){
+
+      historySet(
+        "craftsman-detail",
+        {
+          craftsmanId:
+            String(id)
+        }
+      );
+
+    }
+
+
+    hideOthers();
+
+
+    $("yhCraftsmenPage")
+    .classList
+    .add(
+      "active"
+    );
+
+
+    $("yhCraftsmenNav")
+    .classList
+    .add(
+      "yhc-active"
+    );
+
+
+    $("yhcList")
+    .classList
+    .add(
+      "hidden"
+    );
+
+
+    $("yhcDetail")
+    .classList
+    .add(
+      "active"
+    );
+
+
+    $("yhcDetail")
+    .innerHTML=
+
+    `
+    <div class="yhc-status">
+    იტვირთება...
+    </div>
+    `;
+
+
+    works=
+      await loadWorks(
+        p.id
+      );
+
+
+    gallery=
+
+      [
+        ...new Set(
+
+          [
+            p.cover_url,
+            p.avatar_url,
+
+            ...works
+            .flatMap(
+              function(w){
+
+                return arr(
+                  w.photos
+                );
+
+              }
+            )
+
+          ]
+          .filter(Boolean)
+
+        )
+      ];
+
+
+    increment(
+      p.id
+    );
+
+
+    const main=
+      gallery[0] ||
+      p.cover_url ||
+      p.avatar_url ||
+      "";
+
+
+    const avatar=
+      p.avatar_url ||
+      p.cover_url ||
+      "";
+
+
+    const cats=
+      arr(
+        p.categories
+      );
+
+
+    const sc=
+      arr(
+        p.work_scale
+      );
+
+
+    $("yhcDetail")
+    .innerHTML=
+    `
+
+    <button
+    class="yhc-back"
+    type="button"
+    data-back>
+    ← უკან ხელოსნებზე
+    </button>
+
+
+    <div class="yhc-box">
+
+
+      <div class="yhc-detail-grid">
+
+
+        <div>
+
+
+          <div
+          class="yhc-main-photo"
+
+          ${
+            main
+            ?
+
+            `
+            style="background-image:url('${esc(main)}')"
+            data-img="0"
+            `
+
+            :
+
+            ""
+          }>
+          </div>
+
+
+          ${
+            gallery.length > 1
+            ?
+
+            `
+
+            <div class="yhc-thumbs">
+
+            ${
+              gallery
+              .slice(
+                0,
+                10
+              )
+              .map(
+                function(x,i){
+
+                  return `
+
+                  <img
+                  src="${esc(x)}"
+                  data-img="${i}"
+                  alt="">
+
+                  `;
+
+                }
+              )
+              .join("")
+            }
+
+            </div>
+
+            `
+
+            :
+
+            ""
+          }
+
+
+        </div>
+
+
+        <aside>
+
+
+          <div class="yhc-head">
+
+
+            <div
+            class="yhc-head-avatar"
+
+            ${
+              avatar
+              ?
+
+              `
+              style="background-image:url('${esc(avatar)}')"
+              `
+
+              :
+
+              ""
+            }>
+            </div>
+
+
+            <div>
+
+
+              <h1>
+              ${
+                esc(
+                  p.display_name ||
+                  type(
+                    p.profile_type
+                  )
+                )
+              }
+              </h1>
+
+
+              <div
+              class="yhc-badges"
+              style="position:static">
+              ${badges(p)}
+              </div>
+
+
+              <small>
+              ${
+                esc(
+                  type(
+                    p.profile_type
+                  )
+                )
+              }
+              </small>
+
+
+            </div>
+
+
+          </div>
+
+
+          <div class="yhc-detail-meta">
+
+
+            <span class="yhc-rating">
+
+            ★
+
+            ${
+              n(
+                p.rating_avg
+              )
+              .toFixed(1)
+            }
+
+            (
+
+            ${
+              n(
+                p.rating_count
+              )
+            }
+
+            )
+
+            </span>
+
+
+            <span>
+
+            ◉
+
+            ${
+              compact(
+                p.views
+              )
+            }
+
+            ნახვა
+
+            </span>
+
+
+          </div>
+
+
+          <div class="yhc-big-contacts">
+          ${contacts(p,true)}
+          </div>
+
+
+          <div class="yhc-facts">
+
+
+            <div class="yhc-fact">
+
+              <small>
+              გამოცდილება
+              </small>
+
+              <strong>
+
+              ${
+                p.experience_years
+                ?
+
+                esc(
+                  p.experience_years
+                ) +
+                " წელი"
+
+                :
+
+                "—"
+              }
+
+              </strong>
+
+            </div>
+
+
+            <div class="yhc-fact">
+
+              <small>
+              მომსახურების არეალი
+              </small>
+
+              <strong>
+
+              ${
+                esc(
+
+                  [
+                    p.city,
+                    p.service_area
+                  ]
+                  .filter(Boolean)
+                  .join(", ")
+
+                  ||
+
+                  "—"
+
+                )
+              }
+
+              </strong>
+
+            </div>
+
+
+            <div class="yhc-fact">
+
+              <small>
+              პროფილის ტიპი
+              </small>
+
+              <strong>
+
+              ${
+                esc(
+                  type(
+                    p.profile_type
+                  )
+                )
+              }
+
+              </strong>
+
+            </div>
+
+
+          </div>
+
+
+          ${
+            p.about
+            ?
+
+            `
+
+            <div class="yhc-section">
+
+              <h3>
+              ჩემი შესახებ
+              </h3>
+
+              <p>
+              ${esc(p.about)}
+              </p>
+
+            </div>
+
+            `
+
+            :
+
+            ""
+          }
+
+
+        </aside>
+
+
+      </div>
+
+
+      <div
+      class="yhc-detail-grid"
+      style="margin-top:18px">
+
+
+        <div class="yhc-section">
+
+
+          <h3>
+          სამუშაოების კატეგორიები
+          </h3>
+
+
+          <div class="yhc-tags">
+
+          ${
+            cats.length
+            ?
+
+            cats
+            .map(
+              function(x){
+
+                return `
+
+                <span class="yhc-tag">
+                ${esc(x)}
+                </span>
+
+                `;
+
+              }
+            )
+            .join("")
+
+            :
+
+            "—"
+          }
+
+          </div>
+
+
+          ${
+            sc.length
+            ?
+
+            `
+
+            <h3
+            style="margin-top:15px">
+            სამუშაოს მასშტაბი
+            </h3>
+
+
+            <div class="yhc-tags">
+
+            ${
+              sc
+              .map(
+                function(x){
+
+                  return `
+
+                  <span class="yhc-tag">
+                  ${esc(x)}
+                  </span>
+
+                  `;
+
+                }
+              )
+              .join("")
+            }
+
+            </div>
+
+            `
+
+            :
+
+            ""
+          }
+
+
+        </div>
+
+
+        <div class="yhc-section">
+
+
+          <h3>
+          მომსახურებები და ფასები
+          </h3>
+
+
+          ${servicesHtml(p)}
+
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+
+    ${worksHtml()}
+
+    `;
+
+
+    window
+    .scrollTo({
+
+      top:0,
+
+      behavior:"smooth"
+
+    });
+
+  }
+
+
+  /* =========================================================
+     FULLSCREEN GALLERY
+  ========================================================= */
+
+  function light(i){
+
+    if(
+      !gallery.length
+    ){
+      return;
+    }
+
+
+    galleryIndex=
+      Math.max(
+        0,
+        Math.min(
+          gallery.length - 1,
+          +i || 0
+        )
+      );
+
+
+    $("yhcLightboxImg")
+    .src=
+      gallery[
+        galleryIndex
+      ];
+
+
+    $("yhcLightbox")
+    .classList
+    .add(
+      "active"
+    );
+
+
+    document.body
+    .style
+    .overflow=
+      "hidden";
+
+  }
+
+
+  function closeLight(){
+
+    $("yhcLightbox")
+    .classList
+    .remove(
+      "active"
+    );
+
+
+    document.body
+    .style
+    .overflow=
+      "";
+
+  }
+
+
+  function step(d){
+
+    if(
+      !gallery.length
+    ){
+      return;
+    }
+
+
+    galleryIndex=
+
+      (
+        galleryIndex +
+        d +
+        gallery.length
+      )
+
+      %
+
+      gallery.length;
+
+
+    $("yhcLightboxImg")
+    .src=
+      gallery[
+        galleryIndex
+      ];
+
+  }
+
+
+  /* =========================================================
+     CLICKS
+  ========================================================= */
+
+  function clicks(e){
+
+    if(
+      e.target
+      .closest(
+        "[data-stop]"
+      )
+    ){
+
+      e.stopPropagation();
+
+      return;
+
+    }
+
+
+    const c=
+      e.target
+      .closest(
+        "[data-cat]"
+      );
+
+
+    if(c){
+
+      S.cat=
+
+        S.cat ===
+        c.dataset.cat
+
+        ?
+
+        ""
+
+        :
+
+        c.dataset.cat;
+
+
+      S.page=1;
+
+
+      syncControls();
+
+      filter();
+
+      quick();
+
+      syncHistory();
+
+      return;
+
+    }
+
+
+    const v=
+      e.target
+      .closest(
+        "[data-view]"
+      );
+
+
+    if(v){
+
+      S.view=
+        v.dataset.view;
+
+
+      renderList();
+
+      syncHistory();
+
+      return;
+
+    }
+
+
+    const p=
+      e.target
+      .closest(
+        "[data-page]"
+      );
+
+
+    if(
+      p &&
+      !p.disabled
+    ){
+
+      S.page=
+        Math.max(
+          1,
+          +p.dataset.page ||
+          1
+        );
+
+
+      renderList();
+
+      syncHistory();
+
+
+      $("yhcFound")
+      .scrollIntoView({
+
+        behavior:"smooth",
+
+        block:"start"
+
+      });
+
+
+      return;
+
+    }
+
+
+    const o=
+      e.target
+      .closest(
+        "[data-open]"
+      );
+
+
+    if(o){
+
+      openDetail(
+        o.dataset.open,
+        true
+      );
+
+      return;
+
+    }
+
+
+    const card=
+      e.target
+      .closest(
+        "[data-profile]"
+      );
+
+
+    if(
+      card &&
+      !e.target.closest(
+        "a,button"
+      )
+    ){
+
+      openDetail(
+        card.dataset.profile,
+        true
+      );
+
+      return;
+
+    }
+
+
+    if(
+      e.target
+      .closest(
+        "[data-back]"
+      )
+    ){
+
+      if(
+        history.state
+        ?.yourHomeView ===
+        "craftsman-detail"
+      ){
+
+        history.back();
+
+      }
+      else{
+
+        renderList();
+
+        window.scrollTo({
+
+          top:S.scrollY
+
+        });
+
+      }
+
+
+      return;
+
+    }
+
+
+    const im=
+      e.target
+      .closest(
+        "[data-img]"
+      );
+
+
+    if(im){
+
+      light(
+        im.dataset.img
+      );
+
+      return;
+
+    }
+
+
+    const g=
+      e.target
+      .closest(
+        "[data-g]"
+      );
+
+
+    if(g){
+
+      if(
+        g.dataset.g ===
+        "close"
+      ){
+        closeLight();
+      }
+
+
+      if(
+        g.dataset.g ===
+        "prev"
+      ){
+        step(-1);
+      }
+
+
+      if(
+        g.dataset.g ===
+        "next"
+      ){
+        step(1);
+      }
+
+
+      return;
+
+    }
+
+
+    if(
+      e.target.id ===
+      "yhcLightbox"
+    ){
+
+      closeLight();
+
+    }
+
+  }
+
+
+  /* =========================================================
+     BROWSER BACK
+  ========================================================= */
+
+  function historyHook(){
+
+    const prev=
+      window
+      .yhHandleCustomHistory;
+
+
+    window
+    .yhHandleCustomHistory=
+
+    async function(
+      view,
+      st
+    ){
+
+
+      if(
+        view ===
+        "craftsmen"
+      ){
+
+
+        restore(
+          st?.craftsmanState
+        );
+
+
+        hideOthers();
+
+
+        $("yhCraftsmenPage")
+        .classList
+        .add(
+          "active"
+        );
+
+
+        $("yhCraftsmenNav")
+        .classList
+        .add(
+          "yhc-active"
+        );
+
+
+        await load();
+
+
+        filter();
+
+
+        setTimeout(
+          function(){
+
+            window.scrollTo({
+
+              top:
+                S.scrollY ||
+                0
+
+            });
+
+          },
+          0
+        );
+
+
+        return true;
+
+      }
+
+
+      if(
+        view ===
+        "craftsman-detail" &&
+        st?.craftsmanId
+      ){
+
+
+        restore(
+          st?.craftsmanState
+        );
+
+
+        await openDetail(
+          st.craftsmanId,
+          false
+        );
+
+
+        return true;
+
+      }
+
+
+      $("yhCraftsmenPage")
+      ?.classList
+      .remove(
+        "active"
+      );
+
+
+      $("yhCraftsmenNav")
+      ?.classList
+      .remove(
+        "yhc-active"
+      );
+
+
+      return (
+
+        typeof prev ===
+        "function"
+
+        ?
+
+        await prev(
+          view,
+          st
+        )
+
+        :
+
+        false
+
+      );
+
+    };
+
+  }
+
+
+  /* =========================================================
+     START
+  ========================================================= */
+
+  async function start(){
+
+    css();
+
+    makePage();
+
+    makeNav();
+
+    selects();
+
+    quick();
+
+    historyHook();
+
+
+    document
+    .addEventListener(
+      "keydown",
+      function(e){
+
+        if(
+          !$("yhcLightbox")
+          ?.classList
+          .contains(
+            "active"
+          )
+        ){
+          return;
+        }
+
+
+        if(
+          e.key ===
+          "Escape"
+        ){
+          closeLight();
+        }
+
+
+        if(
+          e.key ===
+          "ArrowLeft"
+        ){
+          step(-1);
+        }
+
+
+        if(
+          e.key ===
+          "ArrowRight"
+        ){
+          step(1);
+        }
+
+      }
+    );
+
+
+    setTimeout(
+
+      async function(){
+
+
+        if(
+          location.hash ===
+          "#craftsmen"
+        ){
+
+          await openList(
+            false
+          );
+
+        }
+        else if(
+          location.hash
+          .startsWith(
+            "#craftsman-"
+          )
+        ){
+
+          await openList(
+            false
+          );
+
+
+          await openDetail(
+
+            location.hash
+            .replace(
+              "#craftsman-",
+              ""
+            ),
+
+            false
+
+          );
+
+        }
+
+
+      },
+
+      150
+
+    );
+
+  }
+
+
+  if(
+    document.readyState ===
+    "loading"
+  ){
+
+    document
+    .addEventListener(
+      "DOMContentLoaded",
+      start,
+      {
+        once:true
+      }
+    );
+
+  }
+  else{
+
+    start();
+
+  }
+
+})();
+</script>
+<!-- =========================================================
+     END — YOUR HOME CRAFTSMEN
+========================================================= -->
 </body>
 </html>
 
