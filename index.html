@@ -74549,6 +74549,569 @@ await supabaseClient
 
 })();
 </script>
+  <script>
+document.addEventListener("click", async function(event){
+
+    const btn =
+        event.target.closest("[data-review-delete]");
+
+    if(!btn){
+        return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    if(!confirm("გსურს შენი შეფასების წაშლა?")){
+        return;
+    }
+
+    try{
+
+        const {
+            data:{ user }
+        } =
+        await supabaseClient.auth.getUser();
+
+        if(!user){
+            alert("ჯერ უნდა შეხვიდე ანგარიშში.");
+            return;
+        }
+
+        const reviewId =
+            btn.dataset.reviewDelete;
+
+        const { error } =
+            await supabaseClient
+            .from("craftsman_ratings")
+            .delete()
+            .eq("id", reviewId)
+            .eq("user_id", user.id);
+
+        if(error){
+            throw error;
+        }
+
+        alert("✅ შეფასება წაიშალა.");
+
+        window.location.reload();
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        alert("შეფასების წაშლა ვერ მოხერხდა.");
+    }
+
+}, true);
+</script>
+  <script>
+(function(){
+
+    if(window.__YH_REVIEW_ACTIONS_V2__){
+        return;
+    }
+
+    window.__YH_REVIEW_ACTIONS_V2__ = true;
+
+
+    /* =========================================
+       REVIEW EDIT / DELETE
+    ========================================= */
+
+    document.addEventListener(
+        "click",
+        async function(event){
+
+            /* =========================
+               DELETE
+            ========================= */
+
+            const deleteBtn =
+                event.target.closest(
+                    "[data-review-delete]"
+                );
+
+            if(deleteBtn){
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                if(
+                    !confirm(
+                        "გსურს შენი შეფასების წაშლა?"
+                    )
+                ){
+                    return;
+                }
+
+                try{
+
+                    const {
+                        data:{ user }
+                    } =
+                    await supabaseClient
+                    .auth
+                    .getUser();
+
+                    if(!user){
+
+                        alert(
+                            "ჯერ უნდა შეხვიდე ანგარიშში."
+                        );
+
+                        return;
+                    }
+
+
+                    const reviewId =
+                        deleteBtn
+                        .dataset
+                        .reviewDelete;
+
+
+                    const {
+                        error
+                    } =
+                    await supabaseClient
+                    .from(
+                        "craftsman_ratings"
+                    )
+                    .delete()
+                    .eq(
+                        "id",
+                        reviewId
+                    )
+                    .eq(
+                        "user_id",
+                        user.id
+                    );
+
+
+                    if(error){
+                        throw error;
+                    }
+
+
+                    alert(
+                        "✅ შეფასება წაიშალა."
+                    );
+
+                    window.location.reload();
+
+                }
+                catch(error){
+
+                    console.error(
+                        "Delete review:",
+                        error
+                    );
+
+                    alert(
+                        "შეფასების წაშლა ვერ მოხერხდა."
+                    );
+
+                }
+
+                return;
+            }
+
+
+
+            /* =========================
+               EDIT
+            ========================= */
+
+            const editBtn =
+                event.target.closest(
+                    "[data-review-edit]"
+                );
+
+            if(editBtn){
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                try{
+
+                    const {
+                        data:{ user }
+                    } =
+                    await supabaseClient
+                    .auth
+                    .getUser();
+
+
+                    if(!user){
+
+                        alert(
+                            "ჯერ უნდა შეხვიდე ანგარიშში."
+                        );
+
+                        return;
+                    }
+
+
+                    const reviewId =
+                        editBtn
+                        .dataset
+                        .reviewEdit;
+
+
+                    const {
+                        data:review,
+                        error
+                    } =
+                    await supabaseClient
+                    .from(
+                        "craftsman_ratings"
+                    )
+                    .select(
+                        "id,user_id,rating,review"
+                    )
+                    .eq(
+                        "id",
+                        reviewId
+                    )
+                    .eq(
+                        "user_id",
+                        user.id
+                    )
+                    .maybeSingle();
+
+
+                    if(error){
+                        throw error;
+                    }
+
+
+                    if(!review){
+
+                        alert(
+                            "შეფასება ვერ მოიძებნა."
+                        );
+
+                        return;
+                    }
+
+
+                    document
+                    .getElementById(
+                        "yhcReviewEditModal"
+                    )
+                    ?.remove();
+
+
+                    const modal =
+                        document.createElement(
+                            "div"
+                        );
+
+                    modal.id =
+                        "yhcReviewEditModal";
+
+                    modal.style.cssText = `
+                        position:fixed;
+                        inset:0;
+                        z-index:999999;
+                        background:rgba(20,25,20,.55);
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        padding:18px;
+                    `;
+
+
+                    modal.innerHTML = `
+
+                        <div
+                        style="
+                            width:min(460px,100%);
+                            background:#fff;
+                            border-radius:20px;
+                            padding:22px;
+                            box-shadow:0 20px 60px rgba(0,0,0,.22);
+                        ">
+
+                            <h3
+                            style="
+                                margin:0 0 16px;
+                                font-size:21px;
+                            ">
+                                ✏️ შეფასების რედაქტირება
+                            </h3>
+
+
+                            <div
+                            id="yhcEditStars"
+                            style="
+                                display:flex;
+                                gap:7px;
+                                margin-bottom:17px;
+                            ">
+
+                                ${[1,2,3,4,5].map(n=>`
+
+                                    <button
+                                    type="button"
+                                    data-yhc-edit-star="${n}"
+                                    style="
+                                        border:0;
+                                        background:transparent;
+                                        padding:2px;
+                                        font-size:34px;
+                                        cursor:pointer;
+                                    ">
+                                        ★
+                                    </button>
+
+                                `).join("")}
+
+                            </div>
+
+
+                            <textarea
+                            id="yhcEditReviewText"
+                            maxlength="1000"
+                            placeholder="დაწერე კომენტარი..."
+                            style="
+                                width:100%;
+                                min-height:120px;
+                                border:1px solid #e1e5dc;
+                                border-radius:14px;
+                                padding:12px;
+                                resize:vertical;
+                                font:inherit;
+                                outline:none;
+                            "></textarea>
+
+
+                            <div
+                            style="
+                                display:flex;
+                                gap:9px;
+                                margin-top:16px;
+                            ">
+
+                                <button
+                                type="button"
+                                id="yhcEditReviewSave"
+                                style="
+                                    flex:1;
+                                    border:0;
+                                    border-radius:12px;
+                                    padding:12px;
+                                    background:#7d8b45;
+                                    color:#fff;
+                                    font-weight:900;
+                                ">
+                                    💾 შენახვა
+                                </button>
+
+
+                                <button
+                                type="button"
+                                id="yhcEditReviewCancel"
+                                style="
+                                    border:1px solid #e1e5dc;
+                                    border-radius:12px;
+                                    padding:12px 16px;
+                                    background:#fff;
+                                    font-weight:800;
+                                ">
+                                    გაუქმება
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+
+                    document.body
+                    .appendChild(
+                        modal
+                    );
+
+
+                    const textarea =
+                        document
+                        .getElementById(
+                            "yhcEditReviewText"
+                        );
+
+                    textarea.value =
+                        review.review || "";
+
+
+                    let selectedRating =
+                        Math.max(
+                            1,
+                            Math.min(
+                                5,
+                                Number(
+                                    review.rating || 5
+                                )
+                            )
+                        );
+
+
+                    function paintStars(){
+
+                        modal
+                        .querySelectorAll(
+                            "[data-yhc-edit-star]"
+                        )
+                        .forEach(
+                            function(star){
+
+                                const n =
+                                    Number(
+                                        star.dataset
+                                        .yhcEditStar
+                                    );
+
+                                star.style.color =
+                                    n <= selectedRating
+                                    ?
+                                    "#c79500"
+                                    :
+                                    "#d8d8d8";
+
+                            }
+                        );
+
+                    }
+
+
+                    paintStars();
+
+
+                    modal
+                    .querySelectorAll(
+                        "[data-yhc-edit-star]"
+                    )
+                    .forEach(
+                        function(star){
+
+                            star.onclick =
+                            function(){
+
+                                selectedRating =
+                                    Number(
+                                        star.dataset
+                                        .yhcEditStar
+                                    );
+
+                                paintStars();
+
+                            };
+
+                        }
+                    );
+
+
+                    document
+                    .getElementById(
+                        "yhcEditReviewCancel"
+                    )
+                    .onclick =
+                    function(){
+
+                        modal.remove();
+
+                    };
+
+
+                    document
+                    .getElementById(
+                        "yhcEditReviewSave"
+                    )
+                    .onclick =
+                    async function(){
+
+                        try{
+
+                            const {
+                                error:updateError
+                            } =
+                            await supabaseClient
+                            .from(
+                                "craftsman_ratings"
+                            )
+                            .update({
+
+                                rating:
+                                    selectedRating,
+
+                                review:
+                                    textarea
+                                    .value
+                                    .trim()
+
+                            })
+                            .eq(
+                                "id",
+                                reviewId
+                            )
+                            .eq(
+                                "user_id",
+                                user.id
+                            );
+
+
+                            if(updateError){
+                                throw updateError;
+                            }
+
+
+                            alert(
+                                "✅ შეფასება განახლდა."
+                            );
+
+                            window.location.reload();
+
+                        }
+                        catch(error){
+
+                            console.error(
+                                "Edit review:",
+                                error
+                            );
+
+                            alert(
+                                "შეფასების განახლება ვერ მოხერხდა."
+                            );
+
+                        }
+
+                    };
+
+                }
+                catch(error){
+
+                    console.error(
+                        "Open review editor:",
+                        error
+                    );
+
+                    alert(
+                        "რედაქტირება ვერ გაიხსნა."
+                    );
+
+                }
+
+                return;
+            }
+
+        },
+        true
+    );
+
+})();
+</script>
 </body>
 </html>
 
