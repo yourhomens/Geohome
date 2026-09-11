@@ -71099,6 +71099,728 @@ worksSection.insertAdjacentElement(
 
 })();
 </script>
+  <!-- YOUR HOME — CRAFTSMAN RATINGS -->
+<style>
+
+#yhcPublicRating{
+    margin:18px 0;
+    padding:20px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+}
+
+#yhcPublicRating h3{
+    margin:0 0 7px;
+    font-size:22px;
+}
+
+.yhc-rating-help{
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:14px;
+}
+
+.yhc-rating-stars{
+    display:flex;
+    gap:6px;
+    margin:8px 0 15px;
+}
+
+.yhc-rating-star{
+    border:0;
+    background:transparent;
+    padding:0;
+    font-size:38px;
+    line-height:1;
+    color:#d6a400;
+    cursor:pointer;
+}
+
+#yhcRatingReview{
+    width:100%;
+    min-height:95px;
+    resize:vertical;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:12px;
+    font:inherit;
+    outline:none;
+}
+
+#yhcRatingReview:focus{
+    border-color:var(--olive);
+}
+
+#yhcRatingSave{
+    width:100%;
+    margin-top:11px;
+    border:0;
+    border-radius:10px;
+    padding:13px;
+    background:var(--olive);
+    color:#fff;
+    font-weight:900;
+    cursor:pointer;
+}
+
+#yhcRatingSave:disabled{
+    opacity:.55;
+    cursor:default;
+}
+
+#yhcRatingMessage{
+    margin-top:10px;
+    font-size:13px;
+    color:var(--muted);
+}
+
+</style>
+
+<script>
+(function(){
+
+    "use strict";
+
+    if(window.__YH_CRAFTSMAN_RATING_V1__){
+        return;
+    }
+
+    window.__YH_CRAFTSMAN_RATING_V1__ = true;
+
+
+    function yhcRatingId(){
+
+        const state =
+        history.state || {};
+
+        if(
+            state.yourHomeView ===
+            "craftsman-detail" &&
+            state.craftsmanId
+        ){
+            return String(
+                state.craftsmanId
+            );
+        }
+
+        return "";
+    }
+
+
+    function yhcPaintStars(
+        box,
+        value
+    ){
+
+        box
+        .querySelectorAll(
+            ".yhc-rating-star"
+        )
+        .forEach(
+            function(star){
+
+                const number =
+                Number(
+                    star.dataset.rating
+                );
+
+                star.textContent =
+                number <= value
+                ? "★"
+                : "☆";
+
+            }
+        );
+    }
+
+
+    async function yhcMountRating(){
+
+        const detail =
+        document.getElementById(
+            "yhcDetail"
+        );
+
+        if(
+            !detail ||
+            !detail.classList.contains(
+                "active"
+            )
+        ){
+            return;
+        }
+
+        if(
+            document.getElementById(
+                "yhcPublicRating"
+            )
+        ){
+            return;
+        }
+
+        const craftsmanId =
+            yhcRatingId();
+
+        if(!craftsmanId){
+            return;
+        }
+
+
+        const {
+            data:profile,
+            error:profileError
+        } =
+        await supabaseClient
+        .from(
+            "craftsman_profiles"
+        )
+        .select(
+            "id,user_id,rating_avg,rating_count"
+        )
+        .eq(
+            "id",
+            craftsmanId
+        )
+        .single();
+
+
+        if(
+            profileError ||
+            !profile
+        ){
+            return;
+        }
+
+
+        const firstBox =
+        detail.querySelector(
+            ".yhc-box"
+        );
+
+        if(!firstBox){
+            return;
+        }
+
+
+        const box =
+        document.createElement(
+            "div"
+        );
+
+        box.id =
+            "yhcPublicRating";
+
+        box.dataset.craftsmanId =
+            craftsmanId;
+
+        box.dataset.rating =
+            "0";
+
+        box.innerHTML = `
+            <h3>
+                ⭐ შეაფასე ხელოსანი
+            </h3>
+
+            <div class="yhc-rating-help">
+                აირჩიე 1-დან 5 ვარსკვლავამდე.
+                კომენტარის დამატება სურვილისამებრ შეგიძლია.
+            </div>
+
+            <div
+                class="yhc-rating-stars">
+
+                <button
+                    type="button"
+                    class="yhc-rating-star"
+                    data-rating="1">☆</button>
+
+                <button
+                    type="button"
+                    class="yhc-rating-star"
+                    data-rating="2">☆</button>
+
+                <button
+                    type="button"
+                    class="yhc-rating-star"
+                    data-rating="3">☆</button>
+
+                <button
+                    type="button"
+                    class="yhc-rating-star"
+                    data-rating="4">☆</button>
+
+                <button
+                    type="button"
+                    class="yhc-rating-star"
+                    data-rating="5">☆</button>
+
+            </div>
+
+            <textarea
+                id="yhcRatingReview"
+                maxlength="500"
+                placeholder="კომენტარი (სურვილისამებრ)"></textarea>
+
+            <button
+                type="button"
+                id="yhcRatingSave">
+                შეფასების შენახვა
+            </button>
+
+            <div
+                id="yhcRatingMessage">
+            </div>
+        `;
+
+
+        firstBox.insertAdjacentElement(
+            "afterend",
+            box
+        );
+
+
+        const {
+            data:{
+                user
+            }
+        } =
+        await supabaseClient
+        .auth
+        .getUser();
+
+
+        const message =
+        box.querySelector(
+            "#yhcRatingMessage"
+        );
+
+
+        if(!user){
+
+            message.textContent =
+                "შეფასებისთვის საჭიროა ანგარიშში შესვლა.";
+
+            return;
+        }
+
+
+        if(
+            String(user.id) ===
+            String(profile.user_id)
+        ){
+
+            box.dataset.owner =
+                "1";
+
+            box.querySelector(
+                "#yhcRatingReview"
+            ).disabled = true;
+
+            box.querySelector(
+                "#yhcRatingSave"
+            ).disabled = true;
+
+            message.textContent =
+                "საკუთარი პროფილის შეფასება შეუძლებელია.";
+
+            return;
+        }
+
+
+        const {
+            data:existing
+        } =
+        await supabaseClient
+        .from(
+            "craftsman_ratings"
+        )
+        .select(
+            "id,rating,review"
+        )
+        .eq(
+            "craftsman_id",
+            craftsmanId
+        )
+        .eq(
+            "user_id",
+            user.id
+        )
+        .maybeSingle();
+
+
+        if(existing){
+
+            box.dataset.rating =
+                String(
+                    existing.rating || 0
+                );
+
+            box.dataset.ratingId =
+                String(
+                    existing.id
+                );
+
+            box.querySelector(
+                "#yhcRatingReview"
+            ).value =
+                existing.review || "";
+
+            yhcPaintStars(
+                box,
+                Number(
+                    existing.rating || 0
+                )
+            );
+
+            message.textContent =
+                "შენი შეფასება უკვე არსებობს — შეგიძლია შეცვალო.";
+
+        }
+
+    }
+
+
+    document.addEventListener(
+        "click",
+        async function(event){
+
+            const star =
+            event.target.closest(
+                ".yhc-rating-star"
+            );
+
+            if(star){
+
+                const box =
+                star.closest(
+                    "#yhcPublicRating"
+                );
+
+                if(!box){
+                    return;
+                }
+
+
+                if(
+                    box.dataset.owner ===
+                    "1"
+                ){
+                    return;
+                }
+
+
+                const {
+                    data:{
+                        user
+                    }
+                } =
+                await supabaseClient
+                .auth
+                .getUser();
+
+
+                if(!user){
+
+                    if(
+                        typeof openLogin ===
+                        "function"
+                    ){
+                        openLogin();
+                    }
+
+                    return;
+                }
+
+
+                const value =
+                Number(
+                    star.dataset.rating
+                );
+
+
+                box.dataset.rating =
+                    String(value);
+
+
+                yhcPaintStars(
+                    box,
+                    value
+                );
+
+                return;
+            }
+
+
+            const save =
+            event.target.closest(
+                "#yhcRatingSave"
+            );
+
+
+            if(!save){
+                return;
+            }
+
+
+            const box =
+            save.closest(
+                "#yhcPublicRating"
+            );
+
+
+            const rating =
+            Number(
+                box.dataset.rating ||
+                0
+            );
+
+
+            const message =
+            box.querySelector(
+                "#yhcRatingMessage"
+            );
+
+
+            if(
+                rating < 1 ||
+                rating > 5
+            ){
+
+                message.textContent =
+                    "ჯერ აირჩიე ვარსკვლავების რაოდენობა.";
+
+                return;
+            }
+
+
+            const {
+                data:{
+                    user
+                }
+            } =
+            await supabaseClient
+            .auth
+            .getUser();
+
+
+            if(!user){
+
+                if(
+                    typeof openLogin ===
+                    "function"
+                ){
+                    openLogin();
+                }
+
+                return;
+            }
+
+
+            save.disabled = true;
+
+            message.textContent =
+                "ინახება...";
+
+
+            try{
+
+                const craftsmanId =
+                    box.dataset
+                    .craftsmanId;
+
+                const review =
+                    box
+                    .querySelector(
+                        "#yhcRatingReview"
+                    )
+                    .value
+                    .trim();
+
+
+                const {
+                    data:existing,
+                    error:existingError
+                } =
+                await supabaseClient
+                .from(
+                    "craftsman_ratings"
+                )
+                .select(
+                    "id"
+                )
+                .eq(
+                    "craftsman_id",
+                    craftsmanId
+                )
+                .eq(
+                    "user_id",
+                    user.id
+                )
+                .maybeSingle();
+
+
+                if(existingError){
+                    throw existingError;
+                }
+
+
+                if(existing){
+
+                    const {
+                        error
+                    } =
+                    await supabaseClient
+                    .from(
+                        "craftsman_ratings"
+                    )
+                    .update({
+                        rating:
+                            rating,
+                        review:
+                            review || null
+                    })
+                    .eq(
+                        "id",
+                        existing.id
+                    );
+
+
+                    if(error){
+                        throw error;
+                    }
+
+                }
+                else{
+
+                    const {
+                        error
+                    } =
+                    await supabaseClient
+                    .from(
+                        "craftsman_ratings"
+                    )
+                    .insert({
+                        craftsman_id:
+                            craftsmanId,
+                        user_id:
+                            user.id,
+                        rating:
+                            rating,
+                        review:
+                            review || null
+                    });
+
+
+                    if(error){
+                        throw error;
+                    }
+
+                }
+
+
+                message.textContent =
+                    "შეფასება წარმატებით შეინახა ✅";
+
+
+                const {
+                    data:updated
+                } =
+                await supabaseClient
+                .from(
+                    "craftsman_profiles"
+                )
+                .select(
+                    "rating_avg,rating_count"
+                )
+                .eq(
+                    "id",
+                    craftsmanId
+                )
+                .single();
+
+
+                if(updated){
+
+                    const ratingElement =
+                    document
+                    .querySelector(
+                        "#yhcDetail .yhc-rating"
+                    );
+
+
+                    if(ratingElement){
+
+                        ratingElement
+                        .textContent =
+                        "★ " +
+                        Number(
+                            updated.rating_avg ||
+                            0
+                        )
+                        .toFixed(1) +
+                        " (" +
+                        Number(
+                            updated.rating_count ||
+                            0
+                        ) +
+                        ")";
+                    }
+
+                }
+
+            }
+            catch(error){
+
+                console.error(
+                    "Craftsman rating:",
+                    error
+                );
+
+                message.textContent =
+                    "შეფასების შენახვა ვერ მოხერხდა.";
+
+            }
+            finally{
+
+                save.disabled =
+                    false;
+
+            }
+
+        }
+    );
+
+
+    const observer =
+    new MutationObserver(
+        function(){
+
+            setTimeout(
+                yhcMountRating,
+                50
+            );
+
+        }
+    );
+
+
+    observer.observe(
+        document.body,
+        {
+            childList:true,
+            subtree:true
+        }
+    );
+
+
+    setTimeout(
+        yhcMountRating,
+        300
+    );
+
+})();
+</script>
 </body>
 </html>
 
