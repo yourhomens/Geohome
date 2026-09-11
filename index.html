@@ -64602,7 +64602,308 @@ style="
     });
 
   }
+/* =========================================================
+   CRAFTSMAN REVIEWS
+========================================================= */
 
+async function openReviews(id){
+
+    if(!db){
+        db = supabaseClient;
+    }
+
+    const p =
+    all.find(
+        function(x){
+            return String(x.id) ===
+                   String(id);
+        }
+    );
+
+    if(!p){
+        return;
+    }
+
+    $("yhcList")
+    .classList
+    .add("hidden");
+
+    $("yhcDetail")
+    .classList
+    .add("active");
+
+    $("yhcDetail")
+    .innerHTML = `
+        <div class="yhc-status">
+            იტვირთება...
+        </div>
+    `;
+
+
+    const result =
+    await db
+    .from("craftsman_ratings")
+    .select(
+        "id,craftsman_id,user_id,rating,review,created_at,updated_at"
+    )
+    .eq(
+        "craftsman_id",
+        id
+    )
+    .order(
+        "created_at",
+        {
+            ascending:false
+        }
+    );
+
+
+    if(result.error){
+
+        console.error(
+            "Craftsman reviews:",
+            result.error
+        );
+
+        $("yhcDetail")
+        .innerHTML = `
+            <button
+            type="button"
+            class="yhc-back"
+            data-reviews-back="${esc(id)}">
+            ← უკან ხელოსნის პროფილზე
+            </button>
+
+            <div
+            style="
+                background:#fff;
+                border:1px solid var(--border);
+                border-radius:16px;
+                padding:22px;
+            ">
+                შეფასებების ჩატვირთვა ვერ მოხერხდა.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    const reviews =
+    Array.isArray(result.data)
+    ? result.data
+    : [];
+
+
+    const average =
+    n(p.rating_avg)
+    .toFixed(1);
+
+
+    $("yhcDetail")
+    .innerHTML = `
+
+        <button
+        type="button"
+        class="yhc-back"
+        data-reviews-back="${esc(id)}">
+        ← უკან ხელოსნის პროფილზე
+        </button>
+
+
+        <div
+        id="yhcReviewsPage"
+        style="
+            background:#fff;
+            border:1px solid var(--border);
+            border-radius:16px;
+            padding:22px;
+        ">
+
+            <div
+            style="
+                margin-bottom:22px;
+            ">
+
+                <h2
+                style="
+                    margin:0 0 7px;
+                ">
+                    შეფასებები
+                </h2>
+
+                <div
+                style="
+                    color:#c79500;
+                    font-size:18px;
+                    font-weight:900;
+                ">
+                    ★ ${average}
+                    (${reviews.length})
+                </div>
+
+            </div>
+
+
+            ${
+                reviews.length
+                ?
+                reviews
+                .map(
+                    function(r){
+
+                        const stars =
+                            "★".repeat(
+                                Math.max(
+                                    0,
+                                    Math.min(
+                                        5,
+                                        Number(
+                                            r.rating || 0
+                                        )
+                                    )
+                                )
+                            )
+                            +
+                            "☆".repeat(
+                                Math.max(
+                                    0,
+                                    5 -
+                                    Math.min(
+                                        5,
+                                        Number(
+                                            r.rating || 0
+                                        )
+                                    )
+                                )
+                            );
+
+
+                        let date = "";
+
+                        if(r.created_at){
+
+                            try{
+
+                                date =
+                                new Date(
+                                    r.created_at
+                                )
+                                .toLocaleDateString(
+                                    "ka-GE"
+                                );
+
+                            }
+                            catch(error){
+                            }
+
+                        }
+
+
+                        return `
+                            <div
+                            style="
+                                border-top:1px solid var(--border);
+                                padding:18px 0;
+                            ">
+
+                                <div
+                                style="
+                                    display:flex;
+                                    justify-content:space-between;
+                                    gap:10px;
+                                    align-items:center;
+                                    margin-bottom:8px;
+                                ">
+
+                                    <strong>
+                                        მომხმარებელი
+                                    </strong>
+
+                                    <span
+                                    style="
+                                        color:var(--muted);
+                                        font-size:12px;
+                                    ">
+                                        ${esc(date)}
+                                    </span>
+
+                                </div>
+
+
+                                <div
+                                style="
+                                    color:#c79500;
+                                    font-size:20px;
+                                    margin-bottom:8px;
+                                ">
+                                    ${stars}
+                                    <strong
+                                    style="
+                                        color:var(--dark);
+                                        font-size:14px;
+                                    ">
+                                        ${Number(
+                                            r.rating || 0
+                                        )}/5
+                                    </strong>
+                                </div>
+
+
+                                ${
+                                    r.review
+                                    ?
+                                    `
+                                    <div
+                                    style="
+                                        line-height:1.6;
+                                        color:var(--text);
+                                        white-space:pre-wrap;
+                                    ">
+                                        ${esc(r.review)}
+                                    </div>
+                                    `
+                                    :
+                                    `
+                                    <div
+                                    style="
+                                        color:var(--muted);
+                                        font-size:13px;
+                                    ">
+                                        კომენტარი არ არის დამატებული.
+                                    </div>
+                                    `
+                                }
+
+                            </div>
+                        `;
+
+                    }
+                )
+                .join("")
+                :
+                `
+                <div
+                style="
+                    padding:30px 0;
+                    text-align:center;
+                    color:var(--muted);
+                ">
+                    ამ ხელოსანს ჯერ შეფასება არ აქვს.
+                </div>
+                `
+            }
+
+        </div>
+    `;
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
 
   /* =========================================================
      FULLSCREEN GALLERY
