@@ -60440,7 +60440,7 @@ const v=
       class="${c} phone"
       href="tel:${esc(ph)}"
       data-stop>
-      ☎${big ? " დარეკვა" : " ზარი"}
+      ☎${big ? " დარეკვა" : ""}
       </a>
       `
       :
@@ -60457,7 +60457,10 @@ const v=
       target="_blank"
       rel="noopener"
       data-stop>
-      ${big ? "WhatsApp" : "WhatsApp"}
+      ${big
+  ? "WhatsApp"
+  : '<img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="WhatsApp">'
+}
       </a>
       `
       :
@@ -60472,7 +60475,10 @@ const v=
       class="${c} vi"
       href="${esc(v)}"
       data-stop>
-      ${big ? "Viber" : "Viber"}
+      ${big
+  ? "Viber"
+  : '<img src="https://cdn.simpleicons.org/viber/7360F2" alt="Viber">'
+}
       </a>
       `
       :
@@ -60489,7 +60495,10 @@ const v=
       target="_blank"
       rel="noopener"
       data-stop>
-      ${big ? "Telegram" : "Telegram"}
+      ${big
+  ? "Telegram"
+  : '<img src="https://cdn.simpleicons.org/telegram/26A5E4" alt="Telegram">'
+}
       </a>
       `
       :
@@ -75110,6 +75119,31 @@ document.addEventListener("click", async function(event){
 
 })();
 </script>
+  <style>
+/* CRAFTSMAN SMALL CONTACT BUTTONS */
+
+.yhc-contact{
+    width:38px !important;
+    height:38px !important;
+    min-width:38px !important;
+    padding:0 !important;
+    border-radius:50% !important;
+
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    font-size:20px !important;
+    text-decoration:none !important;
+}
+
+.yhc-contact img{
+    width:20px !important;
+    height:20px !important;
+    display:block !important;
+    object-fit:contain !important;
+}
+</style>
 </body>
 </html>
 
