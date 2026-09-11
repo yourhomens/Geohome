@@ -60408,16 +60408,14 @@ if(vipDetails){
       );
 
     const w=
-      wa(
-        p.whatsapp ||
-        p.phone
-      );
+  wa(
+    p.whatsapp
+  );
 
-    const v=
-      vb(
-        p.viber ||
-        p.phone
-      );
+const v=
+  vb(
+    p.viber
+  );
 
     const g=
       tg(
@@ -60442,7 +60440,7 @@ if(vipDetails){
       class="${c} phone"
       href="tel:${esc(ph)}"
       data-stop>
-      ☎${big ? " დარეკვა" : ""}
+      ☎${big ? " დარეკვა" : " ზარი"}
       </a>
       `
       :
@@ -60459,7 +60457,7 @@ if(vipDetails){
       target="_blank"
       rel="noopener"
       data-stop>
-      ${big ? "WhatsApp" : "◉"}
+      ${big ? "WhatsApp" : "WhatsApp"}
       </a>
       `
       :
@@ -60474,7 +60472,7 @@ if(vipDetails){
       class="${c} vi"
       href="${esc(v)}"
       data-stop>
-      ${big ? "Viber" : "V"}
+      ${big ? "Viber" : "Viber"}
       </a>
       `
       :
@@ -60491,7 +60489,7 @@ if(vipDetails){
       target="_blank"
       rel="noopener"
       data-stop>
-      ${big ? "Telegram" : "➤"}
+      ${big ? "Telegram" : "Telegram"}
       </a>
       `
       :
