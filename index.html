@@ -65115,6 +65115,3212 @@ const cities = [
 <!-- =========================================================
      END — YOUR HOME CRAFTSMEN
 ========================================================= -->
+  <!-- =========================================================
+     YOUR HOME — CRAFTSMAN PROFILE EDITOR V1
+========================================================= -->
+
+<style id="yhCraftsmanEditorStyle">
+
+.yhcp-page{
+    display:none;
+    max-width:1100px;
+    margin:35px auto;
+    padding:0 22px 70px;
+}
+
+.yhcp-page.active{
+    display:block;
+}
+
+.yhcp-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:22px;
+}
+
+.yhcp-top h1{
+    margin:0;
+    font-size:30px;
+}
+
+.yhcp-back{
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:9px;
+    padding:10px 15px;
+    font-weight:700;
+}
+
+.yhcp-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:24px;
+    margin-bottom:18px;
+}
+
+.yhcp-card h2{
+    margin:0 0 18px;
+    font-size:20px;
+}
+
+.yhcp-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:15px;
+}
+
+.yhcp-field{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.yhcp-field.full{
+    grid-column:1/-1;
+}
+
+.yhcp-field label{
+    font-size:13px;
+    font-weight:800;
+    color:var(--dark);
+}
+
+.yhcp-field input,
+.yhcp-field select,
+.yhcp-field textarea{
+    width:100%;
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:9px;
+    padding:12px;
+    font-size:14px;
+    outline:none;
+}
+
+.yhcp-field textarea{
+    min-height:125px;
+    resize:vertical;
+}
+
+.yhcp-field input:focus,
+.yhcp-field select:focus,
+.yhcp-field textarea:focus{
+    border-color:var(--olive);
+}
+
+.yhcp-note{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.45;
+}
+
+.yhcp-choice-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:9px;
+}
+
+.yhcp-choice{
+    position:relative;
+}
+
+.yhcp-choice input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+}
+
+.yhcp-choice label{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:52px;
+    padding:9px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:#fff;
+    text-align:center;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:700;
+}
+
+.yhcp-choice input:checked + label{
+    background:var(--olive-light);
+    border-color:var(--olive);
+    color:var(--olive-dark);
+}
+
+.yhcp-check-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+
+.yhcp-check{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    background:#fff;
+    font-size:13px;
+    cursor:pointer;
+}
+
+.yhcp-check input{
+    width:17px;
+    height:17px;
+    accent-color:var(--olive);
+    flex:none;
+}
+
+.yhcp-media-grid{
+    display:grid;
+    grid-template-columns:1fr 2fr;
+    gap:16px;
+}
+
+.yhcp-photo-box{
+    border:2px dashed #ccd2c4;
+    border-radius:13px;
+    padding:15px;
+    background:#fafbf8;
+}
+
+.yhcp-photo-box strong{
+    display:block;
+    margin-bottom:9px;
+}
+
+.yhcp-photo-preview{
+    width:100%;
+    height:170px;
+    border-radius:10px;
+    background:#edf0e8 center/cover no-repeat;
+    margin-bottom:10px;
+}
+
+.yhcp-photo-box.avatar .yhcp-photo-preview{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.yhcp-file-button{
+    display:block;
+    width:100%;
+    border:0;
+    border-radius:9px;
+    background:var(--olive-light);
+    color:var(--olive-dark);
+    text-align:center;
+    padding:11px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.yhcp-file-button input{
+    display:none;
+}
+
+.yhcp-service{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr 42px;
+    gap:8px;
+    margin-bottom:8px;
+}
+
+.yhcp-service input{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:10px;
+    outline:none;
+}
+
+.yhcp-remove-service{
+    border:1px solid #ead4d4;
+    background:#fff;
+    color:#b94343;
+    border-radius:8px;
+    font-size:19px;
+}
+
+.yhcp-add-service{
+    border:1px solid var(--olive);
+    background:var(--olive-light);
+    color:var(--olive-dark);
+    border-radius:9px;
+    padding:10px 14px;
+    font-weight:800;
+}
+
+.yhcp-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:20px;
+}
+
+.yhcp-cancel{
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:9px;
+    padding:13px 20px;
+    font-weight:700;
+}
+
+.yhcp-save{
+    border:0;
+    background:var(--olive);
+    color:#fff;
+    border-radius:9px;
+    padding:13px 24px;
+    font-weight:900;
+}
+
+.yhcp-save:disabled{
+    opacity:.6;
+}
+
+#yhCraftsmanProfileAction{
+    border:0;
+    background:var(--olive);
+    color:#fff;
+    border-radius:9px;
+    padding:11px 15px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.yhcp-page-action{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:12px;
+}
+
+.yhcp-account-button{
+    width:100%;
+    border:0;
+    background:#fff;
+    text-align:left;
+    padding:12px;
+    border-radius:8px;
+    font-size:14px;
+}
+
+.yhcp-account-button:hover{
+    background:var(--olive-light);
+}
+
+@media(max-width:700px){
+
+    .yhcp-page{
+        margin:22px auto;
+        padding:0 14px 55px;
+    }
+
+    .yhcp-top{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .yhcp-top h1{
+        font-size:25px;
+    }
+
+    .yhcp-grid,
+    .yhcp-media-grid{
+        grid-template-columns:1fr;
+    }
+
+    .yhcp-check-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .yhcp-choice-grid{
+        grid-template-columns:1fr;
+    }
+
+    .yhcp-service{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .yhcp-service-name{
+        grid-column:1/-1;
+    }
+
+    .yhcp-remove-service{
+        height:42px;
+    }
+
+    .yhcp-actions{
+        flex-direction:column-reverse;
+    }
+
+    .yhcp-actions button{
+        width:100%;
+    }
+
+    .yhcp-card{
+        padding:17px;
+    }
+
+    .yhcp-page-action{
+        justify-content:stretch;
+    }
+
+    #yhCraftsmanProfileAction{
+        width:100%;
+    }
+}
+
+</style>
+
+
+<script>
+
+(function(){
+
+"use strict";
+
+if(
+    window.__YH_CRAFTSMAN_EDITOR_V1__
+){
+    return;
+}
+
+window.__YH_CRAFTSMAN_EDITOR_V1__ =
+true;
+
+
+const YHCP_CITIES = [
+
+    "თბილისი",
+    "ბათუმი",
+    "ქუთაისი",
+    "რუსთავი",
+    "ზუგდიდი",
+    "ფოთი",
+    "გორი",
+    "თელავი",
+    "მცხეთა",
+    "ახალციხე",
+    "ოზურგეთი",
+    "მარნეული",
+    "ქობულეთი",
+    "ხაშური",
+    "სამტრედია",
+    "სენაკი",
+    "ზესტაფონი",
+    "წყალტუბო",
+    "ჭიათურა",
+    "ბორჯომი",
+    "ბაკურიანი",
+    "გუდაური",
+    "საგარეჯო",
+    "გურჯაანი",
+    "ყვარელი",
+    "ლაგოდეხი",
+    "სიღნაღი",
+    "დედოფლისწყარო",
+    "ახმეტა",
+    "წნორი",
+    "ბოლნისი",
+    "გარდაბანი",
+    "თეთრიწყარო",
+    "წალკა",
+    "დმანისი",
+    "დუშეთი",
+    "თიანეთი",
+    "სტეფანწმინდა",
+    "კასპი",
+    "ქარელი",
+    "საჩხერე",
+    "ტყიბული",
+    "ხონი",
+    "ვანი",
+    "ბაღდათი",
+    "თერჯოლა",
+    "ამბროლაური",
+    "ონი",
+    "ცაგერი",
+    "ლენტეხი",
+    "მესტია",
+    "ხობი",
+    "აბაშა",
+    "მარტვილი",
+    "ჩხოროწყუ",
+    "წალენჯიხა",
+    "ლანჩხუთი",
+    "ჩოხატაური"
+
+];
+
+
+const YHCP_CATEGORIES = [
+
+    "სახლების მშენებლობა",
+    "აგარაკების მშენებლობა",
+    "მშენებლობა ნულიდან",
+    "ფუნდამენტი",
+    "კარკასი",
+    "ბეტონის სამუშაოები",
+    "ბლოკი/აგური",
+    "სახურავი",
+    "ფასადი",
+    "თბოიზოლაცია",
+    "მიწის სამუშაოები",
+    "ეზოს მოწყობა",
+    "ღობე",
+    "ტერასა",
+    "აუზი",
+    "სრული რემონტი",
+    "შიდა რემონტი",
+    "ელექტრიკი",
+    "სანტექნიკა",
+    "კაფელი/მეტლახი",
+    "შეღებვა",
+    "გიფსოკარდონი",
+    "იატაკი/ლამინატი",
+    "პარკეტი",
+    "გათბობა",
+    "კონდიცირება",
+    "კარ-ფანჯარა",
+    "ავეჯი",
+    "შედუღება",
+    "დემონტაჟი",
+    "სხვა"
+
+];
+
+
+const YHCP_SCALES = [
+
+    "მცირე სამუშაო",
+    "ბინის სრული რემონტი",
+    "კერძო სახლი",
+    "დიდი სამშენებლო სამუშაო"
+
+];
+
+
+let yhcpProfile =
+null;
+
+let yhcpAvatarFile =
+null;
+
+let yhcpCoverFile =
+null;
+
+let yhcpAvatarUrl =
+"";
+
+let yhcpCoverUrl =
+"";
+
+
+function yhcpEsc(
+    value
+){
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+async function yhcpGetUser(){
+
+    try{
+
+        if(
+            typeof currentUser !==
+            "undefined" &&
+            currentUser
+        ){
+            return currentUser;
+        }
+
+    }catch(error){}
+
+
+    try{
+
+        const{
+            data
+        } =
+        await supabaseClient
+        .auth
+        .getUser();
+
+
+        return (
+            data?.user ||
+            null
+        );
+
+    }
+    catch(error){
+
+        return null;
+
+    }
+
+}
+
+
+function yhcpMessage(
+    text
+){
+
+    if(
+        typeof showMessage ===
+        "function"
+    ){
+
+        showMessage(
+            text
+        );
+
+        return;
+
+    }
+
+
+    alert(
+        text
+    );
+
+}
+
+
+function yhcpLogin(){
+
+    if(
+        typeof openLogin ===
+        "function"
+    ){
+
+        openLogin();
+
+    }
+    else{
+
+        const modal =
+        document.getElementById(
+            "loginModal"
+        );
+
+
+        modal
+        ?.classList
+        .add(
+            "active"
+        );
+
+    }
+
+
+    yhcpMessage(
+        "ხელოსნის პროფილის შესაქმნელად ჯერ გაიარე ავტორიზაცია."
+    );
+
+}
+
+
+function yhcpHidePages(){
+
+    if(
+        typeof hideAllPages ===
+        "function"
+    ){
+
+        hideAllPages();
+
+    }
+    else{
+
+        document
+        .querySelectorAll(
+            ".yh-feature-page"
+        )
+        .forEach(
+            function(page){
+
+                page.classList
+                .remove(
+                    "active"
+                );
+
+            }
+        );
+
+    }
+
+}
+
+
+function yhcpCreatePage(){
+
+    if(
+        document.getElementById(
+            "yhCraftsmanEditorPage"
+        )
+    ){
+        return;
+    }
+
+
+    const page =
+    document.createElement(
+        "section"
+    );
+
+
+    page.id =
+    "yhCraftsmanEditorPage";
+
+
+    page.className =
+    "yh-feature-page yhcp-page";
+
+
+    page.innerHTML =
+    `
+
+    <div class="yhcp-top">
+
+        <div>
+
+            <h1 id="yhcpTitle">
+            ხელოსნის პროფილის შექმნა
+            </h1>
+
+            <p
+            style="
+            margin-top:7px;
+            color:var(--muted);
+            ">
+            შექმენი შენი პროფესიული პროფილი Your Home-ზე.
+            </p>
+
+        </div>
+
+
+        <button
+        type="button"
+        class="yhcp-back"
+        id="yhcpBack">
+        ← ხელოსნებზე
+        </button>
+
+    </div>
+
+
+    <div class="yhcp-card">
+
+        <h2>
+        პროფილის ტიპი
+        </h2>
+
+
+        <div class="yhcp-choice-grid">
+
+
+            <div class="yhcp-choice">
+
+                <input
+                type="radio"
+                name="yhcpProfileType"
+                value="individual"
+                id="yhcpTypeIndividual"
+                checked>
+
+                <label
+                for="yhcpTypeIndividual">
+                👤 ინდივიდუალური ხელოსანი
+                </label>
+
+            </div>
+
+
+            <div class="yhcp-choice">
+
+                <input
+                type="radio"
+                name="yhcpProfileType"
+                value="brigade"
+                id="yhcpTypeBrigade">
+
+                <label
+                for="yhcpTypeBrigade">
+                👥 ბრიგადა
+                </label>
+
+            </div>
+
+
+            <div class="yhcp-choice">
+
+                <input
+                type="radio"
+                name="yhcpProfileType"
+                value="construction_team"
+                id="yhcpTypeTeam">
+
+                <label
+                for="yhcpTypeTeam">
+                🏗️ სამშენებლო გუნდი
+                </label>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <div class="yhcp-card">
+
+        <h2>
+        ძირითადი ინფორმაცია
+        </h2>
+
+
+        <div class="yhcp-grid">
+
+
+            <div class="yhcp-field full">
+
+                <label>
+                სახელი ან ბრიგადის / გუნდის დასახელება *
+                </label>
+
+                <input
+                type="text"
+                id="yhcpName"
+                maxlength="120"
+                placeholder="მაგ: გიორგი და გუნდი">
+
+            </div>
+
+
+            <div class="yhcp-field">
+
+                <label>
+                ქალაქი *
+                </label>
+
+                <select
+                id="yhcpCity">
+                </select>
+
+            </div>
+
+
+            <div class="yhcp-field">
+
+                <label>
+                გამოცდილება — წელი
+                </label>
+
+                <input
+                type="number"
+                id="yhcpExperience"
+                min="0"
+                max="70"
+                inputmode="numeric"
+                placeholder="მაგ: 10">
+
+            </div>
+
+
+            <div class="yhcp-field full">
+
+                <label>
+                მომსახურების არეალი
+                </label>
+
+                <input
+                type="text"
+                id="yhcpServiceArea"
+                maxlength="250"
+                placeholder="მაგ: თბილისი, მცხეთა, რუსთავი">
+
+                <div class="yhcp-note">
+                მიუთითე სად შეგიძლია სამუშაოს შესრულება.
+                </div>
+
+            </div>
+
+
+            <div class="yhcp-field full">
+
+                <label>
+                ჩემს შესახებ
+                </label>
+
+                <textarea
+                id="yhcpAbout"
+                maxlength="2500"
+                placeholder="მოკლედ აღწერე გამოცდილება, სამუშაოს სტილი და რას სთავაზობ მომხმარებელს."></textarea>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <div class="yhcp-card">
+
+        <h2>
+        ფოტოები
+        </h2>
+
+
+        <div class="yhcp-media-grid">
+
+
+            <div
+            class="yhcp-photo-box avatar">
+
+                <strong>
+                პროფილის ფოტო / ლოგო
+                </strong>
+
+
+                <div
+                class="yhcp-photo-preview"
+                id="yhcpAvatarPreview">
+                </div>
+
+
+                <label
+                class="yhcp-file-button">
+
+                📷 ფოტოს არჩევა
+
+                <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                id="yhcpAvatarInput">
+
+                </label>
+
+            </div>
+
+
+            <div
+            class="yhcp-photo-box">
+
+                <strong>
+                მთავარი ფოტო
+                </strong>
+
+
+                <div
+                class="yhcp-photo-preview"
+                id="yhcpCoverPreview">
+                </div>
+
+
+                <label
+                class="yhcp-file-button">
+
+                📷 მთავარი ფოტოს არჩევა
+
+                <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                id="yhcpCoverInput">
+
+                </label>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <div class="yhcp-card">
+
+        <h2>
+        სამუშაოების კატეგორიები *
+        </h2>
+
+
+        <p
+        style="
+        margin:-8px 0 15px;
+        color:var(--muted);
+        font-size:13px;
+        ">
+        შეგიძლია ერთდროულად რამდენიმე კატეგორიის არჩევა.
+        </p>
+
+
+        <div
+        class="yhcp-check-grid"
+        id="yhcpCategories">
+        </div>
+
+    </div>
+
+
+    <div class="yhcp-card">
+
+        <h2>
+        სამუშაოს მასშტაბი
+        </h2>
+
+
+        <div
+        class="yhcp-check-grid"
+        id="yhcpScales">
+        </div>
+
+    </div>
+
+
+    <div class="yhcp-card">
+
+        <h2>
+        მომსახურებები და ფასები
+        </h2>
+
+
+        <p
+        style="
+        margin:-8px 0 15px;
+        color:var(--muted);
+        font-size:13px;
+        ">
+        მაგალითად: ელექტრო წერტილი — 25₾ / ცალი
+        </p>
+
+
+        <div id="yhcpServices">
+        </div>
+
+
+        <button
+        type="button"
+        class="yhcp-add-service"
+        id="yhcpAddService">
+        + მომსახურების დამატება
+        </button>
+
+    </div>
+
+
+    <div class="yhcp-card">
+
+        <h2>
+        საკონტაქტო ინფორმაცია
+        </h2>
+
+
+        <div class="yhcp-grid">
+
+
+            <div class="yhcp-field">
+
+                <label>
+                ტელეფონი *
+                </label>
+
+                <input
+                type="tel"
+                id="yhcpPhone"
+                placeholder="+995 5XX XX XX XX">
+
+            </div>
+
+
+            <div class="yhcp-field">
+
+                <label>
+                WhatsApp
+                </label>
+
+                <input
+                type="text"
+                id="yhcpWhatsapp"
+                placeholder="+995...">
+
+            </div>
+
+
+            <div class="yhcp-field">
+
+                <label>
+                Viber
+                </label>
+
+                <input
+                type="text"
+                id="yhcpViber"
+                placeholder="+995...">
+
+            </div>
+
+
+            <div class="yhcp-field">
+
+                <label>
+                Telegram
+                </label>
+
+                <input
+                type="text"
+                id="yhcpTelegram"
+                placeholder="@username">
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <div class="yhcp-actions">
+
+
+        <button
+        type="button"
+        class="yhcp-cancel"
+        id="yhcpCancel">
+        გაუქმება
+        </button>
+
+
+        <button
+        type="button"
+        class="yhcp-save"
+        id="yhcpSave">
+        პროფილის გამოქვეყნება
+        </button>
+
+
+    </div>
+
+    `;
+
+
+    const footer =
+    document.querySelector(
+        "footer"
+    );
+
+
+    if(footer){
+
+        footer.parentNode
+        .insertBefore(
+            page,
+            footer
+        );
+
+    }
+    else{
+
+        document.body
+        .appendChild(
+            page
+        );
+
+    }
+
+
+    yhcpFillStaticOptions();
+
+    yhcpBindPageEvents();
+
+}
+
+
+function yhcpFillStaticOptions(){
+
+    const city =
+    document.getElementById(
+        "yhcpCity"
+    );
+
+
+    city.innerHTML =
+
+    `
+    <option value="">
+    აირჩიე ქალაქი
+    </option>
+    `
+
+    +
+
+    YHCP_CITIES
+    .map(
+        function(item){
+
+            return (
+
+                '<option value="' +
+                yhcpEsc(item) +
+                '">' +
+                yhcpEsc(item) +
+                '</option>'
+
+            );
+
+        }
+    )
+    .join("");
+
+
+    const cats =
+    document.getElementById(
+        "yhcpCategories"
+    );
+
+
+    cats.innerHTML =
+
+    YHCP_CATEGORIES
+    .map(
+        function(item,index){
+
+            return `
+
+            <label
+            class="yhcp-check">
+
+                <input
+                type="checkbox"
+                value="${yhcpEsc(item)}"
+                data-yhcp-category>
+
+                <span>
+                ${yhcpEsc(item)}
+                </span>
+
+            </label>
+
+            `;
+
+        }
+    )
+    .join("");
+
+
+    const scales =
+    document.getElementById(
+        "yhcpScales"
+    );
+
+
+    scales.innerHTML =
+
+    YHCP_SCALES
+    .map(
+        function(item){
+
+            return `
+
+            <label
+            class="yhcp-check">
+
+                <input
+                type="checkbox"
+                value="${yhcpEsc(item)}"
+                data-yhcp-scale>
+
+                <span>
+                ${yhcpEsc(item)}
+                </span>
+
+            </label>
+
+            `;
+
+        }
+    )
+    .join("");
+
+}
+
+
+function yhcpAddServiceRow(
+    service={}
+){
+
+    const box =
+    document.getElementById(
+        "yhcpServices"
+    );
+
+
+    const row =
+    document.createElement(
+        "div"
+    );
+
+
+    row.className =
+    "yhcp-service";
+
+
+    row.innerHTML =
+    `
+
+    <input
+    type="text"
+    class="yhcp-service-name"
+    placeholder="მომსახურება"
+    value="${yhcpEsc(
+        service.name ||
+        service.title ||
+        service.service ||
+        ""
+    )}">
+
+
+    <input
+    type="number"
+    class="yhcp-service-price"
+    min="0"
+    step="0.01"
+    inputmode="decimal"
+    placeholder="ფასი"
+    value="${yhcpEsc(
+        service.price ??
+        service.from_price ??
+        service.from ??
+        ""
+    )}">
+
+
+    <input
+    type="text"
+    class="yhcp-service-unit"
+    placeholder="მაგ: მ²"
+    value="${yhcpEsc(
+        service.unit ||
+        service.price_unit ||
+        ""
+    )}">
+
+
+    <button
+    type="button"
+    class="yhcp-remove-service"
+    title="წაშლა">
+    ×
+    </button>
+
+    `;
+
+
+    row
+    .querySelector(
+        ".yhcp-remove-service"
+    )
+    .addEventListener(
+        "click",
+        function(){
+
+            row.remove();
+
+        }
+    );
+
+
+    box.appendChild(
+        row
+    );
+
+}
+
+
+function yhcpParseServices(
+    value
+){
+
+    if(
+        Array.isArray(value)
+    ){
+
+        return value;
+
+    }
+
+
+    if(
+        value &&
+        typeof value ===
+        "object"
+    ){
+
+        return Object
+        .entries(value)
+        .map(
+            function(
+                [key,val]
+            ){
+
+                if(
+                    val &&
+                    typeof val ===
+                    "object"
+                ){
+
+                    return {
+
+                        name:
+                            val.name ||
+                            key,
+
+                        price:
+                            val.price ??
+                            val.from_price ??
+                            val.from ??
+                            "",
+
+                        unit:
+                            val.unit ||
+                            val.price_unit ||
+                            ""
+
+                    };
+
+                }
+
+
+                return {
+
+                    name:key,
+                    price:val,
+                    unit:""
+
+                };
+
+            }
+        );
+
+    }
+
+
+    return [];
+
+}
+
+
+function yhcpGetServices(){
+
+    return [
+
+        ...document
+        .querySelectorAll(
+            ".yhcp-service"
+        )
+
+    ]
+    .map(
+        function(row){
+
+            const name =
+            row
+            .querySelector(
+                ".yhcp-service-name"
+            )
+            .value
+            .trim();
+
+
+            const price =
+            row
+            .querySelector(
+                ".yhcp-service-price"
+            )
+            .value
+            .trim();
+
+
+            const unit =
+            row
+            .querySelector(
+                ".yhcp-service-unit"
+            )
+            .value
+            .trim();
+
+
+            return {
+
+                name,
+                price:
+                    price === ""
+                    ?
+                    ""
+                    :
+                    Number(price),
+
+                unit
+
+            };
+
+        }
+    )
+    .filter(
+        function(item){
+
+            return item.name;
+
+        }
+    );
+
+}
+
+
+function yhcpSelected(
+    selector
+){
+
+    return [
+
+        ...document
+        .querySelectorAll(
+            selector
+        )
+
+    ]
+    .filter(
+        function(input){
+
+            return input.checked;
+
+        }
+    )
+    .map(
+        function(input){
+
+            return input.value;
+
+        }
+    );
+
+}
+
+
+function yhcpSetChecked(
+    selector,
+    values
+){
+
+    const set =
+    new Set(
+        Array.isArray(values)
+        ?
+        values
+        :
+        []
+    );
+
+
+    document
+    .querySelectorAll(
+        selector
+    )
+    .forEach(
+        function(input){
+
+            input.checked =
+            set.has(
+                input.value
+            );
+
+        }
+    );
+
+}
+
+
+function yhcpPreview(
+    element,
+    value
+){
+
+    if(!element){
+        return;
+    }
+
+
+    if(value){
+
+        element.style
+        .backgroundImage =
+        `url("${value}")`;
+
+    }
+    else{
+
+        element.style
+        .backgroundImage =
+        "";
+
+    }
+
+}
+
+
+function yhcpResetForm(){
+
+    yhcpProfile =
+    null;
+
+    yhcpAvatarFile =
+    null;
+
+    yhcpCoverFile =
+    null;
+
+    yhcpAvatarUrl =
+    "";
+
+    yhcpCoverUrl =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpTitle"
+    )
+    .textContent =
+    "ხელოსნის პროფილის შექმნა";
+
+
+    document
+    .getElementById(
+        "yhcpSave"
+    )
+    .textContent =
+    "პროფილის გამოქვეყნება";
+
+
+    document
+    .getElementById(
+        "yhcpTypeIndividual"
+    )
+    .checked =
+    true;
+
+
+    document
+    .getElementById(
+        "yhcpName"
+    )
+    .value =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpCity"
+    )
+    .value =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpExperience"
+    )
+    .value =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpServiceArea"
+    )
+    .value =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpAbout"
+    )
+    .value =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpPhone"
+    )
+    .value =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpWhatsapp"
+    )
+    .value =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpViber"
+    )
+    .value =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpTelegram"
+    )
+    .value =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpAvatarInput"
+    )
+    .value =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpCoverInput"
+    )
+    .value =
+    "";
+
+
+    yhcpSetChecked(
+        "[data-yhcp-category]",
+        []
+    );
+
+
+    yhcpSetChecked(
+        "[data-yhcp-scale]",
+        []
+    );
+
+
+    document
+    .getElementById(
+        "yhcpServices"
+    )
+    .innerHTML =
+    "";
+
+
+    yhcpAddServiceRow();
+
+
+    yhcpPreview(
+        document.getElementById(
+            "yhcpAvatarPreview"
+        ),
+        ""
+    );
+
+
+    yhcpPreview(
+        document.getElementById(
+            "yhcpCoverPreview"
+        ),
+        ""
+    );
+
+}
+
+
+function yhcpFillProfile(
+    profile
+){
+
+    yhcpProfile =
+    profile;
+
+
+    yhcpAvatarUrl =
+    profile.avatar_url ||
+    "";
+
+
+    yhcpCoverUrl =
+    profile.cover_url ||
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpTitle"
+    )
+    .textContent =
+    "ხელოსნის პროფილის რედაქტირება";
+
+
+    document
+    .getElementById(
+        "yhcpSave"
+    )
+    .textContent =
+    "ცვლილებების შენახვა";
+
+
+    const type =
+    String(
+        profile.profile_type ||
+        "individual"
+    );
+
+
+    const radio =
+    document.querySelector(
+        `input[name="yhcpProfileType"][value="${type}"]`
+    );
+
+
+    if(radio){
+        radio.checked=true;
+    }
+
+
+    document
+    .getElementById(
+        "yhcpName"
+    )
+    .value =
+    profile.display_name ||
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpCity"
+    )
+    .value =
+    profile.city ||
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpExperience"
+    )
+    .value =
+    profile.experience_years ??
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpServiceArea"
+    )
+    .value =
+    profile.service_area ||
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpAbout"
+    )
+    .value =
+    profile.about ||
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpPhone"
+    )
+    .value =
+    profile.phone ||
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpWhatsapp"
+    )
+    .value =
+    profile.whatsapp ||
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpViber"
+    )
+    .value =
+    profile.viber ||
+    "";
+
+
+    document
+    .getElementById(
+        "yhcpTelegram"
+    )
+    .value =
+    profile.telegram ||
+    "";
+
+
+    yhcpSetChecked(
+        "[data-yhcp-category]",
+        profile.categories
+    );
+
+
+    yhcpSetChecked(
+        "[data-yhcp-scale]",
+        profile.work_scale
+    );
+
+
+    yhcpPreview(
+        document.getElementById(
+            "yhcpAvatarPreview"
+        ),
+        yhcpAvatarUrl
+    );
+
+
+    yhcpPreview(
+        document.getElementById(
+            "yhcpCoverPreview"
+        ),
+        yhcpCoverUrl
+    );
+
+
+    const services =
+    yhcpParseServices(
+        profile.services
+    );
+
+
+    document
+    .getElementById(
+        "yhcpServices"
+    )
+    .innerHTML =
+    "";
+
+
+    if(
+        services.length
+    ){
+
+        services
+        .forEach(
+            function(item){
+
+                yhcpAddServiceRow(
+                    item
+                );
+
+            }
+        );
+
+    }
+    else{
+
+        yhcpAddServiceRow();
+
+    }
+
+}
+
+
+async function yhcpLoadMine(
+    user
+){
+
+    const result =
+    await supabaseClient
+    .from(
+        "craftsman_profiles"
+    )
+    .select("*")
+    .eq(
+        "user_id",
+        user.id
+    )
+    .maybeSingle();
+
+
+    if(
+        result.error
+    ){
+
+        throw result.error;
+
+    }
+
+
+    return (
+        result.data ||
+        null
+    );
+
+}
+
+
+async function yhcpOpen(
+    pushHistory=true
+){
+
+    const user =
+    await yhcpGetUser();
+
+
+    if(!user){
+
+        yhcpLogin();
+
+        return;
+
+    }
+
+
+    yhcpHidePages();
+
+
+    const page =
+    document.getElementById(
+        "yhCraftsmanEditorPage"
+    );
+
+
+    page
+    .classList
+    .add(
+        "active"
+    );
+
+
+    yhcpResetForm();
+
+
+    document
+    .getElementById(
+        "yhcpSave"
+    )
+    .disabled =
+    true;
+
+
+    document
+    .getElementById(
+        "yhcpSave"
+    )
+    .textContent =
+    "იტვირთება...";
+
+
+    try{
+
+        const profile =
+        await yhcpLoadMine(
+            user
+        );
+
+
+        if(profile){
+
+            yhcpFillProfile(
+                profile
+            );
+
+        }
+        else{
+
+            document
+            .getElementById(
+                "yhcpSave"
+            )
+            .textContent =
+            "პროფილის გამოქვეყნება";
+
+        }
+
+
+        if(
+            pushHistory
+        ){
+
+            window.history
+            .pushState(
+                {
+                    yourHomeView:
+                    "craftsman-editor"
+                },
+                "",
+                (
+                    typeof APP_URL !==
+                    "undefined"
+                    ?
+                    APP_URL
+                    :
+                    "/"
+                )
+                +
+                "#craftsman-profile"
+            );
+
+        }
+
+    }
+    catch(error){
+
+        console.error(
+            "Craftsman profile load:",
+            error
+        );
+
+
+        yhcpMessage(
+            "პროფილის ჩატვირთვა ვერ მოხერხდა."
+        );
+
+    }
+    finally{
+
+        document
+        .getElementById(
+            "yhcpSave"
+        )
+        .disabled =
+        false;
+
+
+        if(
+            yhcpProfile
+        ){
+
+            document
+            .getElementById(
+                "yhcpSave"
+            )
+            .textContent =
+            "ცვლილებების შენახვა";
+
+        }
+
+    }
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+function yhcpBack(){
+
+    if(
+        window.history.state
+        ?.yourHomeView ===
+        "craftsman-editor"
+    ){
+
+        window.history.back();
+
+        return;
+
+    }
+
+
+    document
+    .getElementById(
+        "yhCraftsmenNav"
+    )
+    ?.click();
+
+}
+
+
+async function yhcpUpload(
+    file,
+    userId,
+    prefix
+){
+
+    if(!file){
+        return "";
+    }
+
+
+    const ext =
+    (
+        file.name
+        .split(".")
+        .pop() ||
+        "jpg"
+    )
+    .toLowerCase();
+
+
+    const path =
+
+    userId +
+    "/profile/" +
+    prefix +
+    "-" +
+    Date.now() +
+    "-" +
+    Math.random()
+    .toString(36)
+    .slice(2,8)
+    +
+    "." +
+    ext;
+
+
+    const upload =
+    await supabaseClient
+    .storage
+    .from(
+        "craftsman-media"
+    )
+    .upload(
+        path,
+        file,
+        {
+            cacheControl:"3600",
+            upsert:false,
+            contentType:
+                file.type ||
+                undefined
+        }
+    );
+
+
+    if(
+        upload.error
+    ){
+
+        throw upload.error;
+
+    }
+
+
+    const publicResult =
+    supabaseClient
+    .storage
+    .from(
+        "craftsman-media"
+    )
+    .getPublicUrl(
+        path
+    );
+
+
+    return (
+        publicResult
+        .data
+        .publicUrl
+    );
+
+}
+
+
+async function yhcpSave(){
+
+    const user =
+    await yhcpGetUser();
+
+
+    if(!user){
+
+        yhcpLogin();
+
+        return;
+
+    }
+
+
+    const typeInput =
+    document.querySelector(
+        'input[name="yhcpProfileType"]:checked'
+    );
+
+
+    const displayName =
+    document
+    .getElementById(
+        "yhcpName"
+    )
+    .value
+    .trim();
+
+
+    const city =
+    document
+    .getElementById(
+        "yhcpCity"
+    )
+    .value;
+
+
+    const experienceRaw =
+    document
+    .getElementById(
+        "yhcpExperience"
+    )
+    .value;
+
+
+    const serviceArea =
+    document
+    .getElementById(
+        "yhcpServiceArea"
+    )
+    .value
+    .trim();
+
+
+    const about =
+    document
+    .getElementById(
+        "yhcpAbout"
+    )
+    .value
+    .trim();
+
+
+    const phone =
+    document
+    .getElementById(
+        "yhcpPhone"
+    )
+    .value
+    .trim();
+
+
+    const whatsapp =
+    document
+    .getElementById(
+        "yhcpWhatsapp"
+    )
+    .value
+    .trim();
+
+
+    const viber =
+    document
+    .getElementById(
+        "yhcpViber"
+    )
+    .value
+    .trim();
+
+
+    const telegram =
+    document
+    .getElementById(
+        "yhcpTelegram"
+    )
+    .value
+    .trim();
+
+
+    const categories =
+    yhcpSelected(
+        "[data-yhcp-category]"
+    );
+
+
+    const scales =
+    yhcpSelected(
+        "[data-yhcp-scale]"
+    );
+
+
+    const services =
+    yhcpGetServices();
+
+
+    if(!displayName){
+
+        yhcpMessage(
+            "მიუთითე სახელი ან ბრიგადის / გუნდის დასახელება."
+        );
+
+        return;
+
+    }
+
+
+    if(!city){
+
+        yhcpMessage(
+            "აირჩიე ქალაქი."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !categories.length
+    ){
+
+        yhcpMessage(
+            "აირჩიე მინიმუმ ერთი სამუშაოს კატეგორია."
+        );
+
+        return;
+
+    }
+
+
+    if(!phone){
+
+        yhcpMessage(
+            "მიუთითე ტელეფონის ნომერი."
+        );
+
+        return;
+
+    }
+
+
+    const button =
+    document.getElementById(
+        "yhcpSave"
+    );
+
+
+    const oldText =
+    button.textContent;
+
+
+    button.disabled =
+    true;
+
+
+    button.textContent =
+    "ინახება...";
+
+
+    try{
+
+
+        let avatarUrl =
+        yhcpAvatarUrl;
+
+
+        let coverUrl =
+        yhcpCoverUrl;
+
+
+        if(
+            yhcpAvatarFile
+        ){
+
+            avatarUrl =
+            await yhcpUpload(
+                yhcpAvatarFile,
+                user.id,
+                "avatar"
+            );
+
+        }
+
+
+        if(
+            yhcpCoverFile
+        ){
+
+            coverUrl =
+            await yhcpUpload(
+                yhcpCoverFile,
+                user.id,
+                "cover"
+            );
+
+        }
+
+
+        const payload = {
+
+            user_id:
+                user.id,
+
+            profile_type:
+                typeInput
+                ?.value ||
+                "individual",
+
+            display_name:
+                displayName,
+
+            avatar_url:
+                avatarUrl ||
+                null,
+
+            cover_url:
+                coverUrl ||
+                null,
+
+            city:
+                city,
+
+            service_area:
+                serviceArea ||
+                null,
+
+            experience_years:
+                experienceRaw ===
+                ""
+                ?
+                null
+                :
+                Number(
+                    experienceRaw
+                ),
+
+            about:
+                about ||
+                null,
+
+            phone:
+                phone,
+
+            whatsapp:
+                whatsapp ||
+                null,
+
+            viber:
+                viber ||
+                null,
+
+            telegram:
+                telegram ||
+                null,
+
+            categories:
+                categories,
+
+            work_scale:
+                scales,
+
+            services:
+                services,
+
+            is_published:
+                true,
+
+            updated_at:
+                new Date()
+                .toISOString()
+
+        };
+
+
+        let result;
+
+
+        if(
+            yhcpProfile?.id
+        ){
+
+            result =
+            await supabaseClient
+            .from(
+                "craftsman_profiles"
+            )
+            .update(
+                payload
+            )
+            .eq(
+                "id",
+                yhcpProfile.id
+            )
+            .eq(
+                "user_id",
+                user.id
+            )
+            .select("*")
+            .single();
+
+        }
+        else{
+
+            result =
+            await supabaseClient
+            .from(
+                "craftsman_profiles"
+            )
+            .insert(
+                payload
+            )
+            .select("*")
+            .single();
+
+        }
+
+
+        if(
+            result.error
+        ){
+
+            throw result.error;
+
+        }
+
+
+        yhcpProfile =
+        result.data;
+
+
+        yhcpMessage(
+            "ხელოსნის პროფილი წარმატებით გამოქვეყნდა ✅"
+        );
+
+
+        setTimeout(
+            function(){
+
+                const base =
+                (
+                    typeof APP_URL !==
+                    "undefined"
+                    ?
+                    APP_URL
+                    :
+                    window.location.origin +
+                    "/"
+                );
+
+
+                window.location.href =
+                base +
+                "#craftsmen";
+
+
+                window.location.reload();
+
+            },
+            650
+        );
+
+    }
+    catch(error){
+
+        console.error(
+            "Craftsman profile save:",
+            error
+        );
+
+
+        yhcpMessage(
+            "პროფილის შენახვა ვერ მოხერხდა: " +
+            (
+                error?.message ||
+                "Unknown error"
+            )
+        );
+
+    }
+    finally{
+
+        button.disabled =
+        false;
+
+
+        button.textContent =
+        oldText;
+
+    }
+
+}
+
+
+function yhcpBindPageEvents(){
+
+    document
+    .getElementById(
+        "yhcpBack"
+    )
+    .addEventListener(
+        "click",
+        yhcpBack
+    );
+
+
+    document
+    .getElementById(
+        "yhcpCancel"
+    )
+    .addEventListener(
+        "click",
+        yhcpBack
+    );
+
+
+    document
+    .getElementById(
+        "yhcpSave"
+    )
+    .addEventListener(
+        "click",
+        yhcpSave
+    );
+
+
+    document
+    .getElementById(
+        "yhcpAddService"
+    )
+    .addEventListener(
+        "click",
+        function(){
+
+            yhcpAddServiceRow();
+
+        }
+    );
+
+
+    document
+    .getElementById(
+        "yhcpAvatarInput"
+    )
+    .addEventListener(
+        "change",
+        function(){
+
+            const file =
+            this.files?.[0];
+
+            if(!file){
+                return;
+            }
+
+
+            if(
+                file.size >
+                8 * 1024 * 1024
+            ){
+
+                yhcpMessage(
+                    "ფოტო მაქსიმუმ 8MB უნდა იყოს."
+                );
+
+                this.value="";
+
+                return;
+
+            }
+
+
+            yhcpAvatarFile =
+            file;
+
+
+            yhcpPreview(
+                document.getElementById(
+                    "yhcpAvatarPreview"
+                ),
+                URL.createObjectURL(
+                    file
+                )
+            );
+
+        }
+    );
+
+
+    document
+    .getElementById(
+        "yhcpCoverInput"
+    )
+    .addEventListener(
+        "change",
+        function(){
+
+            const file =
+            this.files?.[0];
+
+            if(!file){
+                return;
+            }
+
+
+            if(
+                file.size >
+                10 * 1024 * 1024
+            ){
+
+                yhcpMessage(
+                    "ფოტო მაქსიმუმ 10MB უნდა იყოს."
+                );
+
+                this.value="";
+
+                return;
+
+            }
+
+
+            yhcpCoverFile =
+            file;
+
+
+            yhcpPreview(
+                document.getElementById(
+                    "yhcpCoverPreview"
+                ),
+                URL.createObjectURL(
+                    file
+                )
+            );
+
+        }
+    );
+
+}
+
+
+function yhcpCreateButtons(){
+
+    /*
+       ღილაკი ხელოსნების გვერდზე
+    */
+
+    const list =
+    document.getElementById(
+        "yhcList"
+    );
+
+
+    if(
+        list &&
+        !document.getElementById(
+            "yhCraftsmanProfileAction"
+        )
+    ){
+
+        const row =
+        document.createElement(
+            "div"
+        );
+
+
+        row.className =
+        "yhcp-page-action";
+
+
+        row.innerHTML =
+        `
+
+        <button
+        type="button"
+        id="yhCraftsmanProfileAction">
+        + ხელოსნის პროფილის შექმნა
+        </button>
+
+        `;
+
+
+        const search =
+        list.querySelector(
+            ".yhc-search"
+        );
+
+
+        if(search){
+
+            list.insertBefore(
+                row,
+                search
+            );
+
+        }
+        else{
+
+            list.prepend(
+                row
+            );
+
+        }
+
+
+        document
+        .getElementById(
+            "yhCraftsmanProfileAction"
+        )
+        .addEventListener(
+            "click",
+            function(){
+
+                yhcpOpen(
+                    true
+                );
+
+            }
+        );
+
+    }
+
+
+    /*
+       ღილაკი ანგარიშის მენიუში
+    */
+
+    const menu =
+    document.getElementById(
+        "accountMenu"
+    );
+
+
+    if(
+        menu &&
+        !document.getElementById(
+            "yhCraftsmanAccountButton"
+        )
+    ){
+
+        const button =
+        document.createElement(
+            "button"
+        );
+
+
+        button.id =
+        "yhCraftsmanAccountButton";
+
+
+        button.type =
+        "button";
+
+
+        button.className =
+        "yhcp-account-button";
+
+
+        button.textContent =
+        "🔨 ჩემი ხელოსნის პროფილი";
+
+
+        const logout =
+        document.getElementById(
+            "logoutButton"
+        );
+
+
+        if(
+            logout
+        ){
+
+            menu.insertBefore(
+                button,
+                logout
+            );
+
+        }
+        else{
+
+            menu.appendChild(
+                button
+            );
+
+        }
+
+
+        button.addEventListener(
+            "click",
+            function(){
+
+                menu.classList
+                .remove(
+                    "active"
+                );
+
+
+                yhcpOpen(
+                    true
+                );
+
+            }
+        );
+
+    }
+
+}
+
+
+async function yhcpRefreshButton(){
+
+    const button =
+    document.getElementById(
+        "yhCraftsmanProfileAction"
+    );
+
+
+    if(!button){
+        return;
+    }
+
+
+    const user =
+    await yhcpGetUser();
+
+
+    if(!user){
+
+        button.textContent =
+        "+ ხელოსნის პროფილის შექმნა";
+
+        return;
+
+    }
+
+
+    try{
+
+        const profile =
+        await yhcpLoadMine(
+            user
+        );
+
+
+        button.textContent =
+        profile
+        ?
+        "✏️ ჩემი პროფილი / რედაქტირება"
+        :
+        "+ ხელოსნის პროფილის შექმნა";
+
+    }
+    catch(error){
+
+        button.textContent =
+        "+ ხელოსნის პროფილის შექმნა";
+
+    }
+
+}
+
+
+function yhcpHistory(){
+
+    const previous =
+    window
+    .yhHandleCustomHistory;
+
+
+    window
+    .yhHandleCustomHistory =
+    async function(
+        view,
+        state
+    ){
+
+        if(
+            view ===
+            "craftsman-editor"
+        ){
+
+            await yhcpOpen(
+                false
+            );
+
+
+            return true;
+
+        }
+
+
+        document
+        .getElementById(
+            "yhCraftsmanEditorPage"
+        )
+        ?.classList
+        .remove(
+            "active"
+        );
+
+
+        if(
+            typeof previous ===
+            "function"
+        ){
+
+            return await previous(
+                view,
+                state
+            );
+
+        }
+
+
+        return false;
+
+    };
+
+}
+
+
+function yhcpHookUserChange(){
+
+    const previous =
+    window
+    .yhAfterUserChanged;
+
+
+    window
+    .yhAfterUserChanged =
+    async function(){
+
+        if(
+            typeof previous ===
+            "function"
+        ){
+
+            try{
+
+                await previous
+                .apply(
+                    this,
+                    arguments
+                );
+
+            }
+            catch(error){
+
+                console.error(
+                    error
+                );
+
+            }
+
+        }
+
+
+        await yhcpRefreshButton();
+
+    };
+
+}
+
+
+async function yhcpStart(){
+
+    yhcpCreatePage();
+
+    yhcpCreateButtons();
+
+    yhcpHistory();
+
+    yhcpHookUserChange();
+
+    yhcpAddServiceRow();
+
+    await yhcpRefreshButton();
+
+
+    if(
+        window.location.hash ===
+        "#craftsman-profile"
+    ){
+
+        setTimeout(
+            function(){
+
+                yhcpOpen(
+                    false
+                );
+
+            },
+            200
+        );
+
+    }
+
+}
+
+
+if(
+    document.readyState ===
+    "loading"
+){
+
+    document
+    .addEventListener(
+        "DOMContentLoaded",
+        yhcpStart,
+        {
+            once:true
+        }
+    );
+
+}
+else{
+
+    yhcpStart();
+
+}
+
+})();
+
+</script>
+
+<!-- =========================================================
+     END — CRAFTSMAN PROFILE EDITOR
+========================================================= -->
 </body>
 </html>
 
