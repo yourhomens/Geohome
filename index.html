@@ -68414,6 +68414,2199 @@ else{
 })();
 </script>
 <!-- END FIX -->
+  <!-- =========================================================
+     YOUR HOME — CRAFTSMAN WORKS MANAGER V1
+========================================================= -->
+
+<style id="yhCraftsmanWorksManagerStyle">
+
+.yhcwm-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:24px;
+    margin-bottom:18px;
+}
+
+.yhcwm-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:16px;
+}
+
+.yhcwm-head h2{
+    margin:0;
+    font-size:20px;
+}
+
+.yhcwm-count{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:5px;
+}
+
+.yhcwm-add{
+    border:0;
+    background:var(--olive);
+    color:#fff;
+    border-radius:9px;
+    padding:11px 16px;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.yhcwm-add:disabled{
+    opacity:.5;
+}
+
+.yhcwm-empty{
+    padding:28px 15px;
+    border:1px dashed var(--border);
+    border-radius:12px;
+    text-align:center;
+    color:var(--muted);
+}
+
+.yhcwm-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+}
+
+.yhcwm-item{
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    background:#fff;
+}
+
+.yhcwm-photos{
+    height:170px;
+    display:flex;
+    gap:2px;
+    background:#edf0e8;
+    overflow:hidden;
+}
+
+.yhcwm-photo{
+    flex:1;
+    min-width:0;
+    background:#e9ece6 center/cover no-repeat;
+}
+
+.yhcwm-body{
+    padding:13px;
+}
+
+.yhcwm-title{
+    font-weight:900;
+    font-size:15px;
+}
+
+.yhcwm-location{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:5px;
+}
+
+.yhcwm-desc{
+    font-size:13px;
+    line-height:1.5;
+    margin-top:8px;
+    color:var(--text);
+}
+
+.yhcwm-item-bottom{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-top:11px;
+}
+
+.yhcwm-photo-count{
+    font-size:12px;
+    color:var(--muted);
+}
+
+.yhcwm-delete{
+    border:1px solid #e6caca;
+    color:#b94646;
+    background:#fff;
+    border-radius:8px;
+    padding:7px 10px;
+    font-size:12px;
+    font-weight:800;
+}
+
+.yhcwm-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:15000;
+    background:rgba(20,24,18,.72);
+    padding:18px;
+    overflow-y:auto;
+}
+
+.yhcwm-modal.active{
+    display:block;
+}
+
+.yhcwm-modal-box{
+    width:min(680px,100%);
+    margin:30px auto;
+    background:#fff;
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 25px 80px rgba(0,0,0,.28);
+}
+
+.yhcwm-modal-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.yhcwm-modal-head h2{
+    margin:0;
+    font-size:22px;
+}
+
+.yhcwm-close{
+    width:38px;
+    height:38px;
+    border:0;
+    background:#f1f2ee;
+    border-radius:50%;
+    font-size:22px;
+}
+
+.yhcwm-field{
+    margin-bottom:14px;
+}
+
+.yhcwm-field label{
+    display:block;
+    margin-bottom:7px;
+    font-size:13px;
+    font-weight:800;
+}
+
+.yhcwm-field input,
+.yhcwm-field textarea{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:9px;
+    padding:12px;
+    font-size:14px;
+    outline:none;
+}
+
+.yhcwm-field textarea{
+    min-height:110px;
+    resize:vertical;
+}
+
+.yhcwm-upload{
+    border:2px dashed #ccd2c4;
+    background:#fafbf8;
+    border-radius:12px;
+    padding:15px;
+}
+
+.yhcwm-file-button{
+    display:block;
+    width:100%;
+    background:var(--olive-light);
+    color:var(--olive-dark);
+    border-radius:9px;
+    padding:12px;
+    text-align:center;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.yhcwm-file-button input{
+    display:none;
+}
+
+.yhcwm-note{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:8px;
+}
+
+.yhcwm-preview{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:7px;
+    margin-top:12px;
+}
+
+.yhcwm-preview-item{
+    position:relative;
+    aspect-ratio:1/1;
+    border-radius:8px;
+    overflow:hidden;
+    background:#edf0e8;
+}
+
+.yhcwm-preview-item img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:cover;
+}
+
+.yhcwm-preview-remove{
+    position:absolute;
+    right:4px;
+    top:4px;
+    width:25px;
+    height:25px;
+    border:0;
+    border-radius:50%;
+    background:rgba(0,0,0,.72);
+    color:#fff;
+    font-size:17px;
+}
+
+.yhcwm-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:9px;
+    margin-top:20px;
+}
+
+.yhcwm-cancel{
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:9px;
+    padding:12px 18px;
+    font-weight:800;
+}
+
+.yhcwm-save{
+    border:0;
+    background:var(--olive);
+    color:#fff;
+    border-radius:9px;
+    padding:12px 20px;
+    font-weight:900;
+}
+
+.yhcwm-save:disabled{
+    opacity:.6;
+}
+
+@media(max-width:700px){
+
+    .yhcwm-card{
+        padding:17px;
+    }
+
+    .yhcwm-head{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .yhcwm-add{
+        width:100%;
+    }
+
+    .yhcwm-grid{
+        grid-template-columns:1fr;
+    }
+
+    .yhcwm-photos{
+        height:190px;
+    }
+
+    .yhcwm-modal{
+        padding:10px;
+    }
+
+    .yhcwm-modal-box{
+        margin:14px auto;
+        padding:17px;
+    }
+
+    .yhcwm-preview{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .yhcwm-actions{
+        flex-direction:column-reverse;
+    }
+
+    .yhcwm-actions button{
+        width:100%;
+    }
+}
+
+</style>
+
+
+<script>
+
+(function(){
+
+"use strict";
+
+if(
+    window.__YH_CRAFTSMAN_WORKS_MANAGER_V1__
+){
+    return;
+}
+
+window.__YH_CRAFTSMAN_WORKS_MANAGER_V1__ =
+true;
+
+
+const YHCWM_MAX_WORKS = 20;
+
+const YHCWM_MAX_PHOTOS = 8;
+
+const YHCWM_MAX_PHOTO_SIZE =
+10 * 1024 * 1024;
+
+
+let yhcwmProfile =
+null;
+
+let yhcwmWorks = [];
+
+let yhcwmFiles = [];
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function yhcwmEsc(
+    value
+){
+
+    return String(
+        value ?? ""
+    )
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function yhcwmMessage(
+    text
+){
+
+    if(
+        typeof showMessage ===
+        "function"
+    ){
+
+        showMessage(
+            text
+        );
+
+    }
+    else{
+
+        alert(
+            text
+        );
+
+    }
+
+}
+
+
+async function yhcwmUser(){
+
+    try{
+
+        if(
+            typeof currentUser !==
+            "undefined" &&
+            currentUser
+        ){
+
+            return currentUser;
+
+        }
+
+    }
+    catch(error){}
+
+
+    try{
+
+        const{
+            data
+        } =
+        await supabaseClient
+        .auth
+        .getUser();
+
+
+        return (
+            data?.user ||
+            null
+        );
+
+    }
+    catch(error){
+
+        return null;
+
+    }
+
+}
+
+
+/* =========================================================
+   CREATE UI
+========================================================= */
+
+function yhcwmCreate(){
+
+    const editor =
+    document.getElementById(
+        "yhCraftsmanEditorPage"
+    );
+
+
+    if(
+        !editor ||
+        document.getElementById(
+            "yhcwmSection"
+        )
+    ){
+        return;
+    }
+
+
+    const section =
+    document.createElement(
+        "div"
+    );
+
+
+    section.className =
+    "yhcwm-card";
+
+
+    section.id =
+    "yhcwmSection";
+
+
+    section.innerHTML =
+    `
+
+    <div class="yhcwm-head">
+
+        <div>
+
+            <h2>
+            ჩემი ნამუშევრები
+            </h2>
+
+            <div
+            class="yhcwm-count"
+            id="yhcwmCount">
+            0 / ${YHCWM_MAX_WORKS}
+            </div>
+
+        </div>
+
+
+        <button
+        type="button"
+        class="yhcwm-add"
+        id="yhcwmAdd">
+        + ნამუშევრის დამატება
+        </button>
+
+    </div>
+
+
+    <div id="yhcwmList">
+
+        <div class="yhcwm-empty">
+        იტვირთება...
+        </div>
+
+    </div>
+
+    `;
+
+
+    const actions =
+    editor.querySelector(
+        ".yhcp-actions"
+    );
+
+
+    if(actions){
+
+        editor.insertBefore(
+            section,
+            actions
+        );
+
+    }
+    else{
+
+        editor.appendChild(
+            section
+        );
+
+    }
+
+
+    const modal =
+    document.createElement(
+        "div"
+    );
+
+
+    modal.className =
+    "yhcwm-modal";
+
+
+    modal.id =
+    "yhcwmModal";
+
+
+    modal.innerHTML =
+    `
+
+    <div class="yhcwm-modal-box">
+
+
+        <div class="yhcwm-modal-head">
+
+            <h2>
+            ნამუშევრის დამატება
+            </h2>
+
+
+            <button
+            type="button"
+            class="yhcwm-close"
+            id="yhcwmClose">
+            ×
+            </button>
+
+        </div>
+
+
+        <div class="yhcwm-field">
+
+            <label>
+            სათაური *
+            </label>
+
+            <input
+            type="text"
+            maxlength="150"
+            id="yhcwmTitle"
+            placeholder="მაგ: კერძო სახლის სრული რემონტი">
+
+        </div>
+
+
+        <div class="yhcwm-field">
+
+            <label>
+            მდებარეობა
+            </label>
+
+            <input
+            type="text"
+            maxlength="180"
+            id="yhcwmLocation"
+            placeholder="მაგ: თბილისი, დიღომი">
+
+        </div>
+
+
+        <div class="yhcwm-field">
+
+            <label>
+            აღწერა
+            </label>
+
+            <textarea
+            maxlength="2000"
+            id="yhcwmDescription"
+            placeholder="მოკლედ აღწერე შესრულებული სამუშაო."></textarea>
+
+        </div>
+
+
+        <div class="yhcwm-field">
+
+            <label>
+            ფოტოები *
+            </label>
+
+
+            <div class="yhcwm-upload">
+
+
+                <label
+                class="yhcwm-file-button">
+
+                📷 ფოტოების არჩევა
+
+                <input
+                type="file"
+                id="yhcwmPhotos"
+                accept="image/jpeg,image/png,image/webp"
+                multiple>
+
+                </label>
+
+
+                <div class="yhcwm-note">
+                მაქსიმუმ 8 ფოტო · თითო ფოტო მაქსიმუმ 10MB
+                </div>
+
+
+                <div
+                class="yhcwm-preview"
+                id="yhcwmPreview">
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <div class="yhcwm-actions">
+
+            <button
+            type="button"
+            class="yhcwm-cancel"
+            id="yhcwmCancel">
+            გაუქმება
+            </button>
+
+
+            <button
+            type="button"
+            class="yhcwm-save"
+            id="yhcwmSave">
+            ნამუშევრის გამოქვეყნება
+            </button>
+
+        </div>
+
+
+    </div>
+
+    `;
+
+
+    document.body
+    .appendChild(
+        modal
+    );
+
+
+    document
+    .getElementById(
+        "yhcwmAdd"
+    )
+    .addEventListener(
+        "click",
+        yhcwmOpenModal
+    );
+
+
+    document
+    .getElementById(
+        "yhcwmClose"
+    )
+    .addEventListener(
+        "click",
+        yhcwmCloseModal
+    );
+
+
+    document
+    .getElementById(
+        "yhcwmCancel"
+    )
+    .addEventListener(
+        "click",
+        yhcwmCloseModal
+    );
+
+
+    document
+    .getElementById(
+        "yhcwmSave"
+    )
+    .addEventListener(
+        "click",
+        yhcwmSave
+    );
+
+
+    document
+    .getElementById(
+        "yhcwmPhotos"
+    )
+    .addEventListener(
+        "change",
+        yhcwmPickPhotos
+    );
+
+
+    modal
+    .addEventListener(
+        "click",
+        function(event){
+
+            if(
+                event.target ===
+                modal
+            ){
+
+                yhcwmCloseModal();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   LOAD PROFILE + WORKS
+========================================================= */
+
+async function yhcwmLoad(){
+
+    const user =
+    await yhcwmUser();
+
+
+    const add =
+    document.getElementById(
+        "yhcwmAdd"
+    );
+
+
+    const list =
+    document.getElementById(
+        "yhcwmList"
+    );
+
+
+    if(
+        !user
+    ){
+
+        yhcwmProfile =
+        null;
+
+        yhcwmWorks =
+        [];
+
+
+        if(add){
+            add.disabled=true;
+        }
+
+
+        if(list){
+
+            list.innerHTML =
+            `
+            <div class="yhcwm-empty">
+            ნამუშევრების დასამატებლად ჯერ გაიარე ავტორიზაცია.
+            </div>
+            `;
+
+        }
+
+
+        yhcwmRenderCount();
+
+        return;
+
+    }
+
+
+    if(list){
+
+        list.innerHTML =
+        `
+        <div class="yhcwm-empty">
+        იტვირთება...
+        </div>
+        `;
+
+    }
+
+
+    try{
+
+
+        const profileResult =
+        await supabaseClient
+        .from(
+            "craftsman_profiles"
+        )
+        .select(
+            "id,user_id,display_name"
+        )
+        .eq(
+            "user_id",
+            user.id
+        )
+        .maybeSingle();
+
+
+        if(
+            profileResult.error
+        ){
+
+            throw profileResult.error;
+
+        }
+
+
+        yhcwmProfile =
+        profileResult.data ||
+        null;
+
+
+        if(
+            !yhcwmProfile
+        ){
+
+            yhcwmWorks =
+            [];
+
+
+            if(add){
+                add.disabled=true;
+            }
+
+
+            if(list){
+
+                list.innerHTML =
+                `
+                <div class="yhcwm-empty">
+                ჯერ შექმენი და გამოაქვეყნე ხელოსნის პროფილი.<br><br>
+                შემდეგ აქ შეძლებ ნამუშევრების დამატებას.
+                </div>
+                `;
+
+            }
+
+
+            yhcwmRenderCount();
+
+            return;
+
+        }
+
+
+        const worksResult =
+        await supabaseClient
+        .from(
+            "craftsman_works"
+        )
+        .select("*")
+        .eq(
+            "craftsman_id",
+            yhcwmProfile.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
+
+        if(
+            worksResult.error
+        ){
+
+            throw worksResult.error;
+
+        }
+
+
+        yhcwmWorks =
+        Array.isArray(
+            worksResult.data
+        )
+        ?
+        worksResult.data
+        :
+        [];
+
+
+        if(add){
+
+            add.disabled =
+            yhcwmWorks.length >=
+            YHCWM_MAX_WORKS;
+
+        }
+
+
+        yhcwmRender();
+
+    }
+    catch(error){
+
+        console.error(
+            "Craftsman works load:",
+            error
+        );
+
+
+        if(list){
+
+            list.innerHTML =
+            `
+            <div class="yhcwm-empty">
+            ნამუშევრების ჩატვირთვა ვერ მოხერხდა.
+            </div>
+            `;
+
+        }
+
+    }
+
+
+    yhcwmRenderCount();
+
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function yhcwmRenderCount(){
+
+    const count =
+    document.getElementById(
+        "yhcwmCount"
+    );
+
+
+    if(count){
+
+        count.textContent =
+
+        yhcwmWorks.length +
+        " / " +
+        YHCWM_MAX_WORKS;
+
+    }
+
+}
+
+
+function yhcwmRender(){
+
+    const list =
+    document.getElementById(
+        "yhcwmList"
+    );
+
+
+    if(!list){
+        return;
+    }
+
+
+    yhcwmRenderCount();
+
+
+    if(
+        !yhcwmWorks.length
+    ){
+
+        list.innerHTML =
+        `
+
+        <div class="yhcwm-empty">
+
+        ჯერ ნამუშევარი არ გაქვს დამატებული.<br><br>
+
+        დააჭირე
+        <strong>
+        „+ ნამუშევრის დამატება“
+        </strong>
+
+        </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    list.innerHTML =
+
+    `
+
+    <div class="yhcwm-grid">
+
+    ${
+        yhcwmWorks
+        .map(
+            function(work){
+
+                const photos =
+                Array.isArray(
+                    work.photos
+                )
+                ?
+                work.photos
+                :
+                [];
+
+
+                const show =
+                photos
+                .slice(
+                    0,
+                    3
+                );
+
+
+                return `
+
+                <article class="yhcwm-item">
+
+
+                    <div class="yhcwm-photos">
+
+                    ${
+                        show.length
+
+                        ?
+
+                        show
+                        .map(
+                            function(url){
+
+                                return `
+
+                                <div
+                                class="yhcwm-photo"
+                                style="
+                                background-image:
+                                url('${yhcwmEsc(url)}');
+                                ">
+                                </div>
+
+                                `;
+
+                            }
+                        )
+                        .join("")
+
+                        :
+
+                        `
+
+                        <div
+                        class="yhcwm-photo">
+                        </div>
+
+                        `
+                    }
+
+                    </div>
+
+
+                    <div class="yhcwm-body">
+
+
+                        <div class="yhcwm-title">
+                        ${yhcwmEsc(
+                            work.title ||
+                            "ნამუშევარი"
+                        )}
+                        </div>
+
+
+                        ${
+                            work.location
+                            ?
+
+                            `
+                            <div class="yhcwm-location">
+                            📍
+                            ${yhcwmEsc(
+                                work.location
+                            )}
+                            </div>
+                            `
+
+                            :
+
+                            ""
+                        }
+
+
+                        ${
+                            work.description
+                            ?
+
+                            `
+                            <div class="yhcwm-desc">
+                            ${yhcwmEsc(
+                                work.description
+                            )}
+                            </div>
+                            `
+
+                            :
+
+                            ""
+                        }
+
+
+                        <div class="yhcwm-item-bottom">
+
+
+                            <span class="yhcwm-photo-count">
+
+                            📷
+                            ${photos.length}
+                            ფოტო
+
+                            </span>
+
+
+                            <button
+                            type="button"
+                            class="yhcwm-delete"
+                            data-yhcwm-delete="${yhcwmEsc(
+                                work.id
+                            )}">
+                            წაშლა
+                            </button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </article>
+
+                `;
+
+            }
+        )
+        .join("")
+    }
+
+    </div>
+
+    `;
+
+
+    list
+    .querySelectorAll(
+        "[data-yhcwm-delete]"
+    )
+    .forEach(
+        function(button){
+
+            button
+            .addEventListener(
+                "click",
+                function(){
+
+                    yhcwmDelete(
+                        this.dataset
+                        .yhcwmDelete
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function yhcwmOpenModal(){
+
+    if(
+        !yhcwmProfile
+    ){
+
+        yhcwmMessage(
+            "ჯერ შექმენი ხელოსნის პროფილი."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        yhcwmWorks.length >=
+        YHCWM_MAX_WORKS
+    ){
+
+        yhcwmMessage(
+            "ერთ პროფილზე მაქსიმუმ 20 ნამუშევრის დამატება შეგიძლია."
+        );
+
+        return;
+
+    }
+
+
+    yhcwmFiles =
+    [];
+
+
+    document
+    .getElementById(
+        "yhcwmTitle"
+    )
+    .value =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcwmLocation"
+    )
+    .value =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcwmDescription"
+    )
+    .value =
+    "";
+
+
+    document
+    .getElementById(
+        "yhcwmPhotos"
+    )
+    .value =
+    "";
+
+
+    yhcwmPreview();
+
+
+    document
+    .getElementById(
+        "yhcwmModal"
+    )
+    .classList
+    .add(
+        "active"
+    );
+
+
+    document.body
+    .style
+    .overflow =
+    "hidden";
+
+}
+
+
+function yhcwmCloseModal(){
+
+    document
+    .getElementById(
+        "yhcwmModal"
+    )
+    ?.classList
+    .remove(
+        "active"
+    );
+
+
+    document.body
+    .style
+    .overflow =
+    "";
+
+}
+
+
+/* =========================================================
+   PHOTOS
+========================================================= */
+
+function yhcwmPickPhotos(
+    event
+){
+
+    const incoming =
+    [
+        ...(
+            event.target
+            .files ||
+            []
+        )
+    ];
+
+
+    for(
+        const file of
+        incoming
+    ){
+
+        if(
+            yhcwmFiles.length >=
+            YHCWM_MAX_PHOTOS
+        ){
+
+            break;
+
+        }
+
+
+        if(
+            file.size >
+            YHCWM_MAX_PHOTO_SIZE
+        ){
+
+            yhcwmMessage(
+                file.name +
+                " — ფოტო 10MB-ზე დიდია და არ დაემატა."
+            );
+
+            continue;
+
+        }
+
+
+        if(
+            !file.type
+            .startsWith(
+                "image/"
+            )
+        ){
+
+            continue;
+
+        }
+
+
+        yhcwmFiles.push(
+            file
+        );
+
+    }
+
+
+    event.target.value =
+    "";
+
+
+    yhcwmPreview();
+
+}
+
+
+function yhcwmPreview(){
+
+    const box =
+    document.getElementById(
+        "yhcwmPreview"
+    );
+
+
+    if(!box){
+        return;
+    }
+
+
+    box.innerHTML =
+    "";
+
+
+    yhcwmFiles
+    .forEach(
+        function(
+            file,
+            index
+        ){
+
+            const url =
+            URL.createObjectURL(
+                file
+            );
+
+
+            const item =
+            document.createElement(
+                "div"
+            );
+
+
+            item.className =
+            "yhcwm-preview-item";
+
+
+            item.innerHTML =
+            `
+
+            <img
+            src="${url}"
+            alt="">
+
+
+            <button
+            type="button"
+            class="yhcwm-preview-remove"
+            data-index="${index}">
+            ×
+            </button>
+
+            `;
+
+
+            item
+            .querySelector(
+                "button"
+            )
+            .addEventListener(
+                "click",
+                function(){
+
+                    yhcwmFiles
+                    .splice(
+                        index,
+                        1
+                    );
+
+
+                    yhcwmPreview();
+
+                }
+            );
+
+
+            box.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   STORAGE UPLOAD
+========================================================= */
+
+async function yhcwmUploadPhotos(
+    user,
+    profile
+){
+
+    const urls =
+    [];
+
+    const paths =
+    [];
+
+
+    for(
+        let i=0;
+        i<
+        yhcwmFiles.length;
+        i++
+    ){
+
+        const file =
+        yhcwmFiles[i];
+
+
+        const ext =
+        (
+            file.name
+            .split(".")
+            .pop() ||
+            "jpg"
+        )
+        .toLowerCase();
+
+
+        const path =
+
+        user.id +
+        "/works/" +
+        profile.id +
+        "/" +
+        Date.now() +
+        "-" +
+        i +
+        "-" +
+        Math.random()
+        .toString(36)
+        .slice(2,7)
+        +
+        "." +
+        ext;
+
+
+        const result =
+        await supabaseClient
+        .storage
+        .from(
+            "craftsman-media"
+        )
+        .upload(
+            path,
+            file,
+            {
+                cacheControl:
+                "3600",
+
+                upsert:false,
+
+                contentType:
+                file.type ||
+                undefined
+            }
+        );
+
+
+        if(
+            result.error
+        ){
+
+            throw result.error;
+
+        }
+
+
+        paths.push(
+            path
+        );
+
+
+        const publicResult =
+        supabaseClient
+        .storage
+        .from(
+            "craftsman-media"
+        )
+        .getPublicUrl(
+            path
+        );
+
+
+        urls.push(
+            publicResult
+            .data
+            .publicUrl
+        );
+
+    }
+
+
+    return{
+        urls,
+        paths
+    };
+
+}
+
+
+/* =========================================================
+   SAVE WORK
+========================================================= */
+
+async function yhcwmSave(){
+
+    const user =
+    await yhcwmUser();
+
+
+    if(
+        !user ||
+        !yhcwmProfile
+    ){
+
+        yhcwmMessage(
+            "ხელოსნის პროფილი ვერ მოიძებნა."
+        );
+
+        return;
+
+    }
+
+
+    const title =
+    document
+    .getElementById(
+        "yhcwmTitle"
+    )
+    .value
+    .trim();
+
+
+    const location =
+    document
+    .getElementById(
+        "yhcwmLocation"
+    )
+    .value
+    .trim();
+
+
+    const description =
+    document
+    .getElementById(
+        "yhcwmDescription"
+    )
+    .value
+    .trim();
+
+
+    if(!title){
+
+        yhcwmMessage(
+            "მიუთითე ნამუშევრის სათაური."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !yhcwmFiles.length
+    ){
+
+        yhcwmMessage(
+            "აირჩიე მინიმუმ ერთი ფოტო."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        yhcwmFiles.length >
+        YHCWM_MAX_PHOTOS
+    ){
+
+        yhcwmMessage(
+            "ერთ ნამუშევარზე მაქსიმუმ 8 ფოტო შეიძლება."
+        );
+
+        return;
+
+    }
+
+
+    const button =
+    document.getElementById(
+        "yhcwmSave"
+    );
+
+
+    button.disabled =
+    true;
+
+
+    button.textContent =
+    "იტვირთება...";
+
+
+    let uploadedPaths =
+    [];
+
+
+    try{
+
+
+        const uploaded =
+        await yhcwmUploadPhotos(
+            user,
+            yhcwmProfile
+        );
+
+
+        uploadedPaths =
+        uploaded.paths;
+
+
+        const result =
+        await supabaseClient
+        .from(
+            "craftsman_works"
+        )
+        .insert({
+
+            craftsman_id:
+                yhcwmProfile.id,
+
+            title:
+                title,
+
+            description:
+                description ||
+                null,
+
+            location:
+                location ||
+                null,
+
+            photos:
+                uploaded.urls
+
+        })
+        .select("*")
+        .single();
+
+
+        if(
+            result.error
+        ){
+
+            throw result.error;
+
+        }
+
+
+        yhcwmCloseModal();
+
+
+        yhcwmMessage(
+            "ნამუშევარი წარმატებით დაემატა ✅"
+        );
+
+
+        await yhcwmLoad();
+
+
+    }
+    catch(error){
+
+
+        console.error(
+            "Craftsman work save:",
+            error
+        );
+
+
+        if(
+            uploadedPaths.length
+        ){
+
+            try{
+
+                await supabaseClient
+                .storage
+                .from(
+                    "craftsman-media"
+                )
+                .remove(
+                    uploadedPaths
+                );
+
+            }
+            catch(cleanupError){
+
+                console.error(
+                    cleanupError
+                );
+
+            }
+
+        }
+
+
+        yhcwmMessage(
+            "ნამუშევრის დამატება ვერ მოხერხდა: " +
+            (
+                error?.message ||
+                "Unknown error"
+            )
+        );
+
+
+    }
+    finally{
+
+
+        button.disabled =
+        false;
+
+
+        button.textContent =
+        "ნამუშევრის გამოქვეყნება";
+
+
+    }
+
+}
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+async function yhcwmDelete(
+    id
+){
+
+    const work =
+    yhcwmWorks
+    .find(
+        function(item){
+
+            return (
+                String(
+                    item.id
+                ) ===
+                String(
+                    id
+                )
+            );
+
+        }
+    );
+
+
+    if(!work){
+        return;
+    }
+
+
+    const yes =
+    confirm(
+        "ნამდვილად გინდა ამ ნამუშევრის წაშლა?"
+    );
+
+
+    if(!yes){
+        return;
+    }
+
+
+    try{
+
+
+        const result =
+        await supabaseClient
+        .from(
+            "craftsman_works"
+        )
+        .delete()
+        .eq(
+            "id",
+            work.id
+        )
+        .eq(
+            "craftsman_id",
+            yhcwmProfile.id
+        );
+
+
+        if(
+            result.error
+        ){
+
+            throw result.error;
+
+        }
+
+
+        /*
+           storage-ში ფოტოების წაშლა
+           public URL-ებიდან path-ის ამოღებით
+        */
+
+        const photos =
+        Array.isArray(
+            work.photos
+        )
+        ?
+        work.photos
+        :
+        [];
+
+
+        const paths =
+        photos
+        .map(
+            function(url){
+
+                try{
+
+                    const marker =
+                    "/storage/v1/object/public/craftsman-media/";
+
+
+                    const index =
+                    String(url)
+                    .indexOf(
+                        marker
+                    );
+
+
+                    if(
+                        index === -1
+                    ){
+                        return "";
+                    }
+
+
+                    return decodeURIComponent(
+                        String(url)
+                        .slice(
+                            index +
+                            marker.length
+                        )
+                    );
+
+                }
+                catch(error){
+
+                    return "";
+
+                }
+
+            }
+        )
+        .filter(Boolean);
+
+
+        if(
+            paths.length
+        ){
+
+            try{
+
+                await supabaseClient
+                .storage
+                .from(
+                    "craftsman-media"
+                )
+                .remove(
+                    paths
+                );
+
+            }
+            catch(error){
+
+                console.warn(
+                    error
+                );
+
+            }
+
+        }
+
+
+        yhcwmMessage(
+            "ნამუშევარი წაიშალა."
+        );
+
+
+        await yhcwmLoad();
+
+
+    }
+    catch(error){
+
+
+        console.error(
+            "Craftsman work delete:",
+            error
+        );
+
+
+        yhcwmMessage(
+            "ნამუშევრის წაშლა ვერ მოხერხდა."
+        );
+
+
+    }
+
+}
+
+
+/* =========================================================
+   WATCH EDITOR PAGE
+========================================================= */
+
+function yhcwmWatch(){
+
+    const editor =
+    document.getElementById(
+        "yhCraftsmanEditorPage"
+    );
+
+
+    if(!editor){
+        return;
+    }
+
+
+    const observer =
+    new MutationObserver(
+        function(){
+
+            if(
+                editor.classList
+                .contains(
+                    "active"
+                )
+            ){
+
+                setTimeout(
+                    yhcwmLoad,
+                    150
+                );
+
+            }
+
+        }
+    );
+
+
+    observer.observe(
+        editor,
+        {
+            attributes:true,
+            attributeFilter:[
+                "class"
+            ]
+        }
+    );
+
+
+    document
+    .addEventListener(
+        "click",
+        function(event){
+
+            if(
+                event.target.closest(
+                    "#yhCraftsmanProfileAction,#yhCraftsmanAccountButton"
+                )
+            ){
+
+                setTimeout(
+                    yhcwmLoad,
+                    450
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+function yhcwmStart(){
+
+    yhcwmCreate();
+
+    yhcwmWatch();
+
+
+    const editor =
+    document.getElementById(
+        "yhCraftsmanEditorPage"
+    );
+
+
+    if(
+        editor
+        ?.classList
+        .contains(
+            "active"
+        )
+    ){
+
+        yhcwmLoad();
+
+    }
+
+}
+
+
+if(
+    document.readyState ===
+    "loading"
+){
+
+    document
+    .addEventListener(
+        "DOMContentLoaded",
+        yhcwmStart,
+        {
+            once:true
+        }
+    );
+
+}
+else{
+
+    yhcwmStart();
+
+}
+
+})();
+
+</script>
+
+<!-- =========================================================
+     END — CRAFTSMAN WORKS MANAGER
+========================================================= -->
 </body>
 </html>
 
