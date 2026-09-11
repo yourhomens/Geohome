@@ -70723,6 +70723,373 @@ else{
 }
 
 </style>
+  <!-- YOUR HOME — CRAFTSMAN VIP / VIP+ / BOOST -->
+<style>
+#yhCraftsmanPromoBox{
+    margin:22px 0;
+    padding:20px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+}
+
+#yhCraftsmanPromoBox h2{
+    margin:0 0 7px;
+}
+
+.yhcp-promo-note{
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:18px;
+}
+
+.yhcp-promo-title{
+    font-weight:900;
+    margin:16px 0 9px;
+}
+
+.yhcp-promo-options{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:9px;
+}
+
+.yhcp-promo-option{
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:10px;
+    padding:12px 8px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.yhcp-promo-option:hover{
+    border-color:var(--olive);
+    background:var(--olive-light);
+}
+
+.yhcp-promo-plus{
+    border-color:var(--olive);
+}
+
+.yhcp-promo-boost{
+    width:100%;
+    margin-top:9px;
+    border:1px solid var(--olive);
+    background:var(--olive-light);
+    color:var(--olive-dark);
+    border-radius:10px;
+    padding:13px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+@media(max-width:600px){
+    .yhcp-promo-options{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+
+<script>
+(function(){
+
+    if(window.__YH_CRAFTSMAN_PROMO_V1__) return;
+    window.__YH_CRAFTSMAN_PROMO_V1__ = true;
+
+    function mountCraftsmanPromo(){
+
+        const editor =
+        document.getElementById(
+            "yhCraftsmanEditorPage"
+        );
+
+        if(!editor) return false;
+
+        if(
+            document.getElementById(
+                "yhCraftsmanPromoBox"
+            )
+        ){
+            return true;
+        }
+
+        const actions =
+        editor.querySelector(
+            ".yhcp-actions"
+        );
+
+        if(!actions) return false;
+
+        const box =
+        document.createElement("div");
+
+        box.id =
+        "yhCraftsmanPromoBox";
+
+        box.innerHTML = `
+            <h2>⭐ პროფილის გაძლიერება</h2>
+
+            <div class="yhcp-promo-note">
+                VIP და VIP+ პროფილს ხელოსნების სიაში უფრო მაღლა აჩვენებს.
+                პაკეტი ავტომატურად ჩაირთვება წარმატებული გადახდის შემდეგ.
+            </div>
+
+            <div class="yhcp-promo-title">
+                VIP
+            </div>
+
+            <div class="yhcp-promo-options">
+                <button
+                    class="yhcp-promo-option"
+                    data-craftsman-plan="craftsman_vip"
+                    data-days="7"
+                    type="button">
+                    7 დღე · 5 ₾
+                </button>
+
+                <button
+                    class="yhcp-promo-option"
+                    data-craftsman-plan="craftsman_vip"
+                    data-days="15"
+                    type="button">
+                    15 დღე · 8 ₾
+                </button>
+
+                <button
+                    class="yhcp-promo-option"
+                    data-craftsman-plan="craftsman_vip"
+                    data-days="30"
+                    type="button">
+                    30 დღე · 12 ₾
+                </button>
+            </div>
+
+            <div class="yhcp-promo-title">
+                VIP+
+            </div>
+
+            <div class="yhcp-promo-options">
+                <button
+                    class="yhcp-promo-option yhcp-promo-plus"
+                    data-craftsman-plan="craftsman_vip_plus"
+                    data-days="7"
+                    type="button">
+                    7 დღე · 9 ₾
+                </button>
+
+                <button
+                    class="yhcp-promo-option yhcp-promo-plus"
+                    data-craftsman-plan="craftsman_vip_plus"
+                    data-days="15"
+                    type="button">
+                    15 დღე · 15 ₾
+                </button>
+
+                <button
+                    class="yhcp-promo-option yhcp-promo-plus"
+                    data-craftsman-plan="craftsman_vip_plus"
+                    data-days="30"
+                    type="button">
+                    30 დღე · 25 ₾
+                </button>
+            </div>
+
+            <button
+                type="button"
+                class="yhcp-promo-boost"
+                data-craftsman-plan="craftsman_boost"
+                data-days="0">
+                🚀 Boost · 2 ₾
+            </button>
+        `;
+
+        editor.insertBefore(
+            box,
+            actions
+        );
+
+        return true;
+    }
+
+
+    async function startCraftsmanPayment(
+        button
+    ){
+
+        const plan =
+        button.dataset.craftsmanPlan;
+
+        const days =
+        Number(
+            button.dataset.days || 0
+        );
+
+        const {
+            data:{
+                user
+            }
+        } =
+        await supabaseClient
+        .auth
+        .getUser();
+
+        if(!user){
+            alert(
+                "გადახდისთვის ავტორიზაცია საჭიროა."
+            );
+            return;
+        }
+
+        const {
+            data:profile,
+            error:profileError
+        } =
+        await supabaseClient
+        .from(
+            "craftsman_profiles"
+        )
+        .select(
+            "id"
+        )
+        .eq(
+            "user_id",
+            user.id
+        )
+        .maybeSingle();
+
+        if(
+            profileError ||
+            !profile
+        ){
+            alert(
+                "ჯერ შეინახე ხელოსნის პროფილი."
+            );
+            return;
+        }
+
+        button.disabled = true;
+
+        try{
+
+            localStorage.setItem(
+                "yourHomePendingCraftsmanPromotion",
+                JSON.stringify({
+                    profileId:
+                        profile.id,
+                    plan:
+                        plan,
+                    days:
+                        days,
+                    createdAt:
+                        new Date()
+                        .toISOString()
+                })
+            );
+
+            const {
+                data,
+                error
+            } =
+            await supabaseClient
+            .functions
+            .invoke(
+                "bog-create-order",
+                {
+                    body:{
+                        plan:
+                            plan,
+                        days:
+                            days,
+                        service_type:
+                            "craftsman_promotion",
+                        target_id:
+                            String(
+                                profile.id
+                            )
+                    }
+                }
+            );
+
+            if(error){
+                throw error;
+            }
+
+            if(
+                !data?.redirect_url
+            ){
+                throw new Error(
+                    "ბანკის გადახდის ბმული ვერ მოიძებნა."
+                );
+            }
+
+            window.location.href =
+            data.redirect_url;
+
+        }
+        catch(error){
+
+            console.error(
+                "Craftsman payment:",
+                error
+            );
+
+            button.disabled =
+            false;
+
+            alert(
+                "გადახდის დაწყება ვერ მოხერხდა."
+            );
+        }
+
+    }
+
+
+    document.addEventListener(
+        "click",
+        function(event){
+
+            const button =
+            event.target.closest(
+                "[data-craftsman-plan]"
+            );
+
+            if(!button) return;
+
+            startCraftsmanPayment(
+                button
+            );
+
+        }
+    );
+
+
+    if(!mountCraftsmanPromo()){
+
+        const observer =
+        new MutationObserver(
+            function(){
+
+                if(
+                    mountCraftsmanPromo()
+                ){
+                    observer.disconnect();
+                }
+
+            }
+        );
+
+        observer.observe(
+            document.body,
+            {
+                childList:true,
+                subtree:true
+            }
+        );
+    }
+
+})();
+</script>
 </body>
 </html>
 
