@@ -6452,6 +6452,21 @@ async function loadFinanceRevenue(){
         $("financeCraftsmanBoost").textContent =
             Number(r.craftsman_boost || 0)
             .toLocaleString("ka-GE") + " ₾";
+        $("financeListingRevenue").textContent =
+    Number(r.listing_total || 0)
+    .toLocaleString("ka-GE") + " ₾";
+
+$("financeDeveloperProjectRevenue").textContent =
+    Number(r.developer_project_total || 0)
+    .toLocaleString("ka-GE") + " ₾";
+
+$("financeBusinessAdRevenue").textContent =
+    Number(r.business_ad_total || 0)
+    .toLocaleString("ka-GE") + " ₾";
+
+$("financeDeveloperBannerRevenue").textContent =
+    Number(r.developer_banner_total || 0)
+    .toLocaleString("ka-GE") + " ₾";
 
     }
     catch(error){
