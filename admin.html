@@ -2591,7 +2591,10 @@ function openPage(name){
     loadDeveloperBannerAds();
 }
     if(name==="admins")loadAdminManagement();
-    if(name==="finance")loadAdPackages();
+    if(name==="finance"){
+    loadFinanceRevenue();
+    loadAdPackages();
+}
 }
 
 document.querySelectorAll(".nav-btn").forEach(btn=>{
