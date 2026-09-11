@@ -74188,7 +74188,15 @@ worksSection.insertAdjacentElement(
                         ratingResult.data
                         :
                         [];
-
+                  
+const {
+    data:{
+        user:currentReviewUser
+    }
+} =
+await supabaseClient
+.auth
+.getUser();
 
                     detail.innerHTML = `
 
@@ -74376,6 +74384,54 @@ worksSection.insertAdjacentElement(
                                                     </div>
                                                     `
                                                 }
+                                                ${
+    currentReviewUser &&
+    String(currentReviewUser.id) ===
+    String(review.user_id)
+    ?
+    `
+    <div
+    style="
+        display:flex;
+        gap:8px;
+        margin-top:14px;
+        flex-wrap:wrap;
+    ">
+
+        <button
+        type="button"
+        data-review-edit="${escReview(review.id)}"
+        style="
+            border:1px solid var(--border);
+            background:#fff;
+            color:var(--olive-dark);
+            border-radius:8px;
+            padding:8px 12px;
+            font-weight:800;
+        ">
+            ✏️ რედაქტირება
+        </button>
+
+        <button
+        type="button"
+        data-review-delete="${escReview(review.id)}"
+        data-review-craftsman="${escReview(craftsmanId)}"
+        style="
+            border:1px solid #d8a7a7;
+            background:#fff;
+            color:#b64040;
+            border-radius:8px;
+            padding:8px 12px;
+            font-weight:800;
+        ">
+            🗑️ წაშლა
+        </button>
+
+    </div>
+    `
+    :
+    ""
+}
 
                                             </div>
 
