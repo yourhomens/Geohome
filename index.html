@@ -70627,6 +70627,46 @@ else{
     max-height:none !important;
 }
 </style>
+  <style>
+
+/* ხელოსნის ფოტოების FULLSCREEN — საბოლოო FIX */
+
+#yhcLightbox{
+    z-index:2147483647 !important;
+    padding:12px !important;
+}
+
+#yhcLightboxImg{
+    width:auto !important;
+    height:auto !important;
+
+    max-width:calc(100vw - 24px) !important;
+    max-height:calc(100dvh - 24px) !important;
+
+    object-fit:contain !important;
+    object-position:center !important;
+}
+
+#yhcLightbox .yhc-close{
+    position:fixed !important;
+    top:14px !important;
+    right:14px !important;
+    z-index:2147483647 !important;
+
+    width:46px !important;
+    height:46px !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+}
+
+#yhcLightbox .yhc-prev,
+#yhcLightbox .yhc-next{
+    z-index:2147483647 !important;
+}
+
+</style>
 </body>
 </html>
 
