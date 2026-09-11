@@ -74055,6 +74055,444 @@ worksSection.insertAdjacentElement(
 
 })();
 </script>
+  <script>
+(function(){
+
+    "use strict";
+
+    if(window.__YH_REVIEWS_CLICK_FIX__){
+        return;
+    }
+
+    window.__YH_REVIEWS_CLICK_FIX__ = true;
+
+    let savedDetailHtml = "";
+    let savedScrollY = 0;
+
+
+    function escReview(value){
+
+        return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+    }
+
+
+    document.addEventListener(
+        "click",
+        async function(event){
+
+
+            /* =========================
+               OPEN REVIEWS
+            ========================= */
+
+            const reviewsButton =
+            event.target.closest(
+                "[data-reviews]"
+            );
+
+            if(reviewsButton){
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const craftsmanId =
+                    reviewsButton.dataset.reviews;
+
+                const detail =
+                    document.getElementById(
+                        "yhcDetail"
+                    );
+
+                if(
+                    !craftsmanId ||
+                    !detail
+                ){
+                    return;
+                }
+
+
+                savedDetailHtml =
+                    detail.innerHTML;
+
+                savedScrollY =
+                    window.scrollY;
+
+
+                detail.innerHTML = `
+                    <div class="yhc-status">
+                        იტვირთება...
+                    </div>
+                `;
+
+
+                try{
+
+                    const profileResult =
+                    await supabaseClient
+                    .from(
+                        "craftsman_profiles"
+                    )
+                    .select(
+                        "id,display_name,rating_avg,rating_count"
+                    )
+                    .eq(
+                        "id",
+                        craftsmanId
+                    )
+                    .single();
+
+
+                    if(profileResult.error){
+                        throw profileResult.error;
+                    }
+
+
+                    const ratingResult =
+                    await supabaseClient
+                    .from(
+                        "craftsman_ratings"
+                    )
+                    .select(
+                        "id,user_id,rating,review,created_at,updated_at"
+                    )
+                    .eq(
+                        "craftsman_id",
+                        craftsmanId
+                    )
+                    .order(
+                        "created_at",
+                        {
+                            ascending:false
+                        }
+                    );
+
+
+                    if(ratingResult.error){
+                        throw ratingResult.error;
+                    }
+
+
+                    const profile =
+                        profileResult.data;
+
+                    const reviews =
+                        Array.isArray(
+                            ratingResult.data
+                        )
+                        ?
+                        ratingResult.data
+                        :
+                        [];
+
+
+                    detail.innerHTML = `
+
+                        <button
+                        type="button"
+                        class="yhc-back"
+                        id="yhcReviewsBack">
+                            ← უკან ხელოსნის პროფილზე
+                        </button>
+
+
+                        <div
+                        id="yhcReviewsPage"
+                        style="
+                            background:#fff;
+                            border:1px solid var(--border);
+                            border-radius:16px;
+                            padding:20px;
+                        ">
+
+                            <h2
+                            style="
+                                margin:0 0 6px;
+                            ">
+                                შეფასებები
+                            </h2>
+
+
+                            <div
+                            style="
+                                font-size:14px;
+                                color:var(--muted);
+                                margin-bottom:10px;
+                            ">
+                                ${escReview(
+                                    profile?.display_name ||
+                                    ""
+                                )}
+                            </div>
+
+
+                            <div
+                            style="
+                                color:#c79500;
+                                font-size:21px;
+                                font-weight:900;
+                                margin-bottom:18px;
+                            ">
+                                ★ ${
+                                    Number(
+                                        profile?.rating_avg ||
+                                        0
+                                    ).toFixed(1)
+                                }
+                                (${
+                                    Number(
+                                        profile?.rating_count ||
+                                        reviews.length
+                                    )
+                                })
+                            </div>
+
+
+                            ${
+                                reviews.length
+                                ?
+                                reviews
+                                .map(
+                                    function(review){
+
+                                        const rating =
+                                            Math.max(
+                                                1,
+                                                Math.min(
+                                                    5,
+                                                    Number(
+                                                        review.rating ||
+                                                        0
+                                                    )
+                                                )
+                                            );
+
+                                        const stars =
+                                            "★".repeat(
+                                                rating
+                                            ) +
+                                            "☆".repeat(
+                                                5 - rating
+                                            );
+
+
+                                        let date = "";
+
+                                        if(review.created_at){
+
+                                            try{
+
+                                                date =
+                                                new Date(
+                                                    review.created_at
+                                                )
+                                                .toLocaleDateString(
+                                                    "ka-GE"
+                                                );
+
+                                            }
+                                            catch(error){}
+
+                                        }
+
+
+                                        return `
+
+                                            <div
+                                            style="
+                                                border-top:1px solid var(--border);
+                                                padding:17px 0;
+                                            ">
+
+                                                <div
+                                                style="
+                                                    display:flex;
+                                                    justify-content:space-between;
+                                                    gap:10px;
+                                                    align-items:center;
+                                                ">
+
+                                                    <strong>
+                                                        მომხმარებელი
+                                                    </strong>
+
+                                                    <span
+                                                    style="
+                                                        color:var(--muted);
+                                                        font-size:12px;
+                                                    ">
+                                                        ${escReview(date)}
+                                                    </span>
+
+                                                </div>
+
+
+                                                <div
+                                                style="
+                                                    margin-top:7px;
+                                                    color:#c79500;
+                                                    font-size:20px;
+                                                ">
+                                                    ${stars}
+
+                                                    <strong
+                                                    style="
+                                                        color:var(--dark);
+                                                        font-size:13px;
+                                                    ">
+                                                        ${rating}/5
+                                                    </strong>
+                                                </div>
+
+
+                                                ${
+                                                    review.review
+                                                    ?
+                                                    `
+                                                    <div
+                                                    style="
+                                                        margin-top:9px;
+                                                        line-height:1.6;
+                                                        white-space:pre-wrap;
+                                                    ">
+                                                        ${escReview(
+                                                            review.review
+                                                        )}
+                                                    </div>
+                                                    `
+                                                    :
+                                                    `
+                                                    <div
+                                                    style="
+                                                        margin-top:9px;
+                                                        color:var(--muted);
+                                                        font-size:13px;
+                                                    ">
+                                                        კომენტარი არ არის დამატებული.
+                                                    </div>
+                                                    `
+                                                }
+
+                                            </div>
+
+                                        `;
+
+                                    }
+                                )
+                                .join("")
+                                :
+                                `
+                                <div
+                                style="
+                                    border-top:1px solid var(--border);
+                                    padding:30px 0;
+                                    text-align:center;
+                                    color:var(--muted);
+                                ">
+                                    ამ ხელოსანს ჯერ შეფასება არ აქვს.
+                                </div>
+                                `
+                            }
+
+                        </div>
+
+                    `;
+
+
+                    window.scrollTo({
+                        top:0,
+                        behavior:"smooth"
+                    });
+
+                }
+                catch(error){
+
+                    console.error(
+                        "Craftsman reviews:",
+                        error
+                    );
+
+                    detail.innerHTML = `
+
+                        <button
+                        type="button"
+                        class="yhc-back"
+                        id="yhcReviewsBack">
+                            ← უკან ხელოსნის პროფილზე
+                        </button>
+
+                        <div
+                        style="
+                            background:#fff;
+                            padding:20px;
+                            border-radius:16px;
+                        ">
+                            შეფასებების ჩატვირთვა ვერ მოხერხდა.
+                        </div>
+
+                    `;
+
+                }
+
+                return;
+            }
+
+
+
+            /* =========================
+               BACK TO PROFILE
+            ========================= */
+
+            const back =
+            event.target.closest(
+                "#yhcReviewsBack"
+            );
+
+            if(back){
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const detail =
+                document.getElementById(
+                    "yhcDetail"
+                );
+
+                if(
+                    detail &&
+                    savedDetailHtml
+                ){
+
+                    detail.innerHTML =
+                        savedDetailHtml;
+
+                    setTimeout(
+                        function(){
+
+                            window.scrollTo({
+                                top:savedScrollY,
+                                behavior:"smooth"
+                            });
+
+                        },
+                        30
+                    );
+
+                }
+
+                return;
+            }
+
+        },
+        true
+    );
+
+})();
+</script>
 </body>
 </html>
 
