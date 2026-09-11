@@ -6385,7 +6385,56 @@ $("adsList").onclick=async event=>{
 };
 
 /* FINANCE / AD PACKAGES */
+async function loadFinanceRevenue(){
 
+    if(currentAdmin?.finance_access !== true){
+        return;
+    }
+
+    try{
+
+        const { data, error } =
+        await sb.rpc(
+            "yh_admin_finance_revenue_final"
+        );
+
+        if(error){
+            throw error;
+        }
+
+        const r = data || {};
+
+        $("financeTotalRevenue").textContent =
+            Number(r.total_revenue || 0)
+            .toLocaleString("ka-GE") + " ₾";
+
+        $("financeCraftsmanRevenue").textContent =
+            Number(r.craftsman_total || 0)
+            .toLocaleString("ka-GE") + " ₾";
+
+        $("financeCraftsmanVip").textContent =
+            Number(r.craftsman_vip || 0)
+            .toLocaleString("ka-GE") + " ₾";
+
+        $("financeCraftsmanVipPlus").textContent =
+            Number(r.craftsman_vip_plus || 0)
+            .toLocaleString("ka-GE") + " ₾";
+
+        $("financeCraftsmanBoost").textContent =
+            Number(r.craftsman_boost || 0)
+            .toLocaleString("ka-GE") + " ₾";
+
+    }
+    catch(error){
+
+        console.error(
+            "Finance revenue error:",
+            error
+        );
+
+    }
+
+}
 async function loadAdPackages(){
 
     if(currentAdmin?.finance_access!==true)return;
