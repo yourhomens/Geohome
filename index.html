@@ -74207,7 +74207,8 @@ await supabaseClient
 
 
                         <div
-                        id="yhcReviewsPage"
+id="yhcReviewsPage"
+class="yhc-box"
                         style="
                             background:#fff;
                             border:1px solid var(--border);
@@ -74363,7 +74364,9 @@ await supabaseClient
                                                     style="
                                                         margin-top:9px;
                                                         line-height:1.6;
-                                                        white-space:pre-wrap;
+                                                        white-space:pre-line;
+text-align:left;
+overflow-wrap:anywhere;
                                                     ">
                                                         ${escReview(
                                                             review.review
@@ -74551,7 +74554,7 @@ await supabaseClient
 document.addEventListener("click", async function(event){
 
     const btn =
-        event.target.closest("[data-review-delete]");
+        event.target.closest("[data-review-delete-disabled]");
 
     if(!btn){
         return;
