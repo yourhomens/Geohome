@@ -68252,7 +68252,140 @@ function yhcpBindPageEvents(){
         yhcpBack
     );
 
+document
+.getElementById(
+    "yhcpDelete"
+)
+.addEventListener(
+    "click",
+    async function(){
 
+        const user =
+        await yhcpGetUser();
+
+        if(!user){
+            yhcpLogin();
+            return;
+        }
+
+        if(!yhcpProfile?.id){
+            yhcpMessage(
+                "წასაშლელი პროფილი ვერ მოიძებნა."
+            );
+            return;
+        }
+
+        const confirmed =
+        confirm(
+            "ნამდვილად გსურს ხელოსნის პროფილის წაშლა? ეს მოქმედება შეუქცევადია."
+        );
+
+        if(!confirmed){
+            return;
+        }
+
+        const button =
+        document.getElementById(
+            "yhcpDelete"
+        );
+
+        const oldText =
+        button.textContent;
+
+        button.disabled =
+        true;
+
+        button.textContent =
+        "იშლება...";
+
+        try{
+
+            const {
+                data,
+                error
+            } =
+            await supabaseClient
+            .from(
+                "craftsman_profiles"
+            )
+            .delete()
+            .eq(
+                "id",
+                yhcpProfile.id
+            )
+            .eq(
+                "user_id",
+                user.id
+            )
+            .select(
+                "id"
+            )
+            .maybeSingle();
+
+            if(error){
+                throw error;
+            }
+
+            if(!data){
+                throw new Error(
+                    "პროფილი ვერ წაიშალა."
+                );
+            }
+
+            yhcpProfile =
+            null;
+
+            yhcpMessage(
+                "ხელოსნის პროფილი წაიშალა ✅"
+            );
+
+            setTimeout(
+                function(){
+
+                    const base =
+                    (
+                        typeof APP_URL !==
+                        "undefined"
+                        ?
+                        APP_URL
+                        :
+                        window.location.origin + "/"
+                    );
+
+                    window.location.href =
+                    base + "#craftsmen";
+
+                    window.location.reload();
+
+                },
+                500
+            );
+
+        }
+        catch(error){
+
+            console.error(
+                "Craftsman profile delete:",
+                error
+            );
+
+            yhcpMessage(
+                "პროფილის წაშლა ვერ მოხერხდა: " +
+                (
+                    error?.message ||
+                    "Unknown error"
+                )
+            );
+
+            button.disabled =
+            false;
+
+            button.textContent =
+            oldText;
+        }
+
+    }
+);
     document
     .getElementById(
         "yhcpSave"
