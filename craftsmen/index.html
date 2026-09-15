@@ -9,11 +9,11 @@
 name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>ხელოსნები საქართველოში | სანდო ხელოსნები — Your Home</title>
+<title>ხელოსნები თბილისში და საქართველოში | რემონტი და მშენებლობა — Your Home</title>
 
 <meta
 name="description"
-content="იპოვე ხელოსნები საქართველოში — სანტექნიკოსები, ელექტრიკოსები, მღებავები, რემონტისა და სამშენებლო სამუშაოების სპეციალისტები. ნახე პროფილები, ნამუშევრები და შეფასებები Your Home-ზე."
+content="იპოვე ხელოსნები თბილისში და საქართველოში — ბინის რემონტი, სანტექნიკა, ელექტრობა, სტიაჟკის დასხმა, ლამინატის დაგება, კაფელ-მეტლახი, კედლების დაშპაკვლა და შეღებვა, გათბობა, სახურავი, ფასადი და სხვა სამუშაოები."
 >
 
 <meta
@@ -39,12 +39,12 @@ content="website"
 
 <meta
 property="og:title"
-content="ხელოსნები საქართველოში — Your Home"
+content="ხელოსნები თბილისში და საქართველოში — Your Home"
 >
 
 <meta
 property="og:description"
-content="იპოვე სანდო ხელოსნები, ნახე მათი ნამუშევრები, მომსახურებები და შეფასებები."
+content="იპოვე ხელოსანი რემონტისა და სამშენებლო სამუშაოებისთვის. ნახე პროფილები, ნამუშევრები, მომსახურებები და შეფასებები."
 >
 
 <meta
@@ -52,17 +52,58 @@ property="og:url"
 content="https://yourhome24.ge/craftsmen/"
 >
 
+<meta
+property="og:site_name"
+content="Your Home"
+>
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "ხელოსნები საქართველოში",
-  "description": "ხელოსნების მოძიება საქართველოში — რემონტი, მშენებლობა, სანტექნიკა, ელექტრობა და სხვა მომსახურებები.",
+  "name": "ხელოსნები თბილისში და საქართველოში",
+  "description": "ხელოსნების მოძიება საქართველოში — ბინის რემონტი, მშენებლობა, სანტექნიკა, ელექტრობა, გათბობა, კაფელ-მეტლახი, შეღებვა, გალესვა და სხვა სამუშაოები.",
   "url": "https://yourhome24.ge/craftsmen/",
   "isPartOf": {
     "@type": "WebSite",
     "name": "Your Home",
     "url": "https://yourhome24.ge/"
+  },
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "ხელოსნების მომსახურებები",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "ბინის რემონტი"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "სანტექნიკური სამუშაოები"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "ელექტრო სამუშაოები"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "კაფელისა და მეტლახის დაგება"
+      },
+      {
+        "@type": "ListItem",
+        "position": 5,
+        "name": "კედლების დაშპაკვლა და შეღებვა"
+      },
+      {
+        "@type": "ListItem",
+        "position": 6,
+        "name": "გათბობის სისტემის მონტაჟი"
+      }
+    ]
   }
 }
 </script>
@@ -87,6 +128,7 @@ header{
 }
 
 .logo{
+    display:block;
     max-width:1150px;
     margin:auto;
     font-size:22px;
@@ -97,8 +139,8 @@ header{
 
 main{
     max-width:1050px;
-    margin:55px auto;
-    padding:0 22px;
+    margin:45px auto;
+    padding:0 22px 60px;
 }
 
 .hero{
@@ -107,15 +149,17 @@ main{
     border-radius:22px;
     padding:45px 28px;
     text-align:center;
+    box-shadow:0 8px 25px rgba(37,42,36,0.06);
 }
 
 h1{
     margin:0 0 16px;
     font-size:36px;
+    line-height:1.25;
 }
 
-p{
-    max-width:720px;
+.hero-text{
+    max-width:760px;
     margin:0 auto 28px;
     line-height:1.7;
     color:#666;
@@ -129,6 +173,10 @@ p{
     padding:14px 25px;
     border-radius:12px;
     font-weight:700;
+}
+
+.button:hover{
+    background:#5d6933;
 }
 
 .categories{
@@ -146,10 +194,55 @@ p{
     font-size:14px;
 }
 
+.seo-content{
+    margin:45px auto 0;
+    max-width:850px;
+    background:#fff;
+    border:1px solid #e1e5dc;
+    border-radius:20px;
+    padding:30px;
+    line-height:1.8;
+}
+
+.seo-content h2{
+    margin:0 0 16px;
+    font-size:26px;
+    color:#252a24;
+}
+
+.seo-content h3{
+    margin:30px 0 12px;
+    font-size:21px;
+    color:#252a24;
+}
+
+.seo-content p{
+    margin:0 0 18px;
+    color:#555;
+}
+
+.services{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px 22px;
+    margin:20px 0;
+    padding:0;
+    list-style:none;
+}
+
+.services li{
+    background:#f6f7f3;
+    border-radius:10px;
+    padding:10px 12px;
+    color:#444a42;
+}
+
 @media(max-width:600px){
 
     main{
         margin:25px auto;
+        padding-left:15px;
+        padding-right:15px;
     }
 
     .hero{
@@ -158,6 +251,14 @@ p{
 
     h1{
         font-size:28px;
+    }
+
+    .seo-content{
+        padding:22px 18px;
+    }
+
+    .services{
+        grid-template-columns:1fr;
     }
 
 }
@@ -169,23 +270,27 @@ p{
 <body>
 
 <header>
-    <a
-    class="logo"
-    href="https://yourhome24.ge/">
-        YOUR HOME
-    </a>
+
+<a
+class="logo"
+href="https://yourhome24.ge/">
+YOUR HOME
+</a>
+
 </header>
 
 <main>
 
 <section class="hero">
 
-<h1>სანდო ხელოსნები ერთ სივრცეში</h1>
+<h1>
+სანდო ხელოსნები ერთ სივრცეში
+</h1>
 
-<p>
-იპოვე შენთვის სასურველი ხელოსანი საქართველოში.
-ნახე მომსახურებები, შესრულებული სამუშაოები, შეფასებები
-და დაუკავშირდი სპეციალისტს პირდაპირ.
+<p class="hero-text">
+იპოვე ხელოსანი თბილისში ან საქართველოს სხვა ქალაქში.
+ნახე მომსახურებები, შესრულებული სამუშაოები,
+შეფასებები და დაუკავშირდი სპეციალისტს პირდაპირ.
 </p>
 
 <a
@@ -199,9 +304,145 @@ href="https://yourhome24.ge/#craftsmen">
 <span>🔧 რემონტი</span>
 <span>⚡ ელექტრობა</span>
 <span>🚰 სანტექნიკა</span>
-<span>🎨 სამღებრო სამუშაოები</span>
+<span>🎨 შეღებვა</span>
 <span>🏗️ მშენებლობა</span>
-<span>🛠️ სხვა მომსახურებები</span>
+<span>🔥 გათბობა</span>
+
+</div>
+
+</section>
+
+
+<section class="seo-content">
+
+<h2>
+ხელოსნები თბილისში და საქართველოში
+</h2>
+
+<p>
+თუ ეძებ გამოცდილ ხელოსანს თბილისში ან საქართველოს სხვა ქალაქში,
+Your Home-ზე შეგიძლია მოძებნო სპეციალისტები
+ბინის რემონტის, სახლის რემონტის,
+მშენებლობისა და სხვადასხვა სარემონტო სამუშაოებისთვის.
+</p>
+
+<p>
+ნახე ხელოსნების პროფილები, შესრულებული ნამუშევრები,
+მომსახურებები და შეფასებები და შეარჩიე
+შენთვის სასურველი სპეციალისტი ან ბრიგადა.
+</p>
+
+
+<h3>
+რემონტისა და სამშენებლო სამუშაოები
+</h3>
+
+<ul class="services">
+
+<li>ბინის სრული რემონტი</li>
+<li>კოსმეტიკური რემონტი</li>
+
+<li>სახლის რემონტი</li>
+<li>რემონტის ბრიგადა</li>
+
+<li>სტიაჟკის დასხმა</li>
+<li>იატაკის მოჭიმვა</li>
+
+<li>ლამინატის დაგება</li>
+<li>პარკეტის დაგება</li>
+
+<li>კაფელისა და მეტლახის დაგება</li>
+<li>აბაზანის რემონტი</li>
+
+<li>კედლების დაშპაკვლა</li>
+<li>კედლების შეღებვა</li>
+
+<li>კედლების გალესვა</li>
+<li>შპალერის გაკვრა</li>
+
+<li>გიფსოკარდონის მონტაჟი</li>
+<li>შეკიდული ჭერის მოწყობა</li>
+
+<li>სანტექნიკის მონტაჟი</li>
+<li>მილების გაყვანა</li>
+
+<li>კანალიზაციის გაყვანა</li>
+<li>გათბობის სისტემის მონტაჟი</li>
+
+<li>რადიატორების დაყენება</li>
+<li>ელექტროგაყვანილობა</li>
+
+<li>როზეტებისა და ჩამრთველების მონტაჟი</li>
+<li>განათების მონტაჟი</li>
+
+<li>კარ-ფანჯრის მონტაჟი</li>
+<li>მეტალოპლასტმასის კარ-ფანჯარა</li>
+
+<li>კარების მონტაჟი</li>
+<li>კარების შეკეთება</li>
+
+<li>ფასადის მოპირკეთება</li>
+<li>ფასადის შეღებვა</li>
+
+<li>თბოიზოლაცია</li>
+<li>ჰიდროიზოლაცია</li>
+
+<li>სახურავის შეკეთება</li>
+<li>სახურავის გადახურვა</li>
+
+<li>დემონტაჟი</li>
+<li>კედლის დემონტაჟი</li>
+
+<li>ბეტონის სამუშაოები</li>
+<li>ბლოკის წყობა</li>
+
+<li>ქვის წყობა</li>
+<li>კიბის მოწყობა</li>
+
+<li>აივნის რემონტი</li>
+<li>სამზარეულოს რემონტი</li>
+
+<li>ავეჯის აწყობა</li>
+<li>ავეჯის მონტაჟი</li>
+
+</ul>
+
+
+<h3>
+ეძებ ხელოსანს თბილისში?
+</h3>
+
+<p>
+Your Home დაგეხმარება მოძებნო
+სანტექნიკოსი თბილისში,
+ელექტრიკოსი თბილისში,
+მღებავი თბილისში,
+რემონტის ხელოსანი,
+კაფელ-მეტლახის ხელოსანი,
+რემონტის ბრიგადა,
+სამშენებლო ბრიგადა
+და სხვა სპეციალისტები.
+</p>
+
+<p>
+თუ გჭირდება ხელოსანი გამოძახებით,
+ბინის სრული ან კოსმეტიკური რემონტი,
+სახლის მშენებლობა,
+სანტექნიკური ან ელექტრო სამუშაოები,
+გათბობის მოწყობა,
+სახურავის შეკეთება
+ან სხვა სამშენებლო მომსახურება,
+ნახე ხელოსნების პროფილები Your Home-ზე.
+</p>
+
+
+<div style="text-align:center;margin-top:30px;">
+
+<a
+class="button"
+href="https://yourhome24.ge/#craftsmen">
+იპოვე ხელოსანი →
+</a>
 
 </div>
 
