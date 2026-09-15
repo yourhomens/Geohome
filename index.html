@@ -75274,6 +75274,113 @@ document.addEventListener("click", async function(event){
     flex-wrap:nowrap !important;
 }
     </style>
+  <script id="yhCraftsmenSeo">
+(function(){
+
+    const homeTitle =
+    "უძრავი ქონება საქართველოში | ბინები, ყიდვა და ქირა — Your Home";
+
+    const homeDescription =
+    "უძრავი ქონება საქართველოში — იყიდება, ქირავდება და გირავდება ბინები თბილისში და ბათუმში. განცხადებები მესაკუთრისგან და სააგენტოებისგან, ახალი პროექტები დეველოპერისგან.";
+
+    function setDescription(text){
+        const meta =
+        document.querySelector(
+            'meta[name="description"]'
+        );
+
+        if(meta){
+            meta.setAttribute(
+                "content",
+                text
+            );
+        }
+    }
+
+    function updateCraftsmenSeo(){
+
+        const hash =
+        window.location.hash || "";
+
+        if(
+            hash === "#craftsmen"
+        ){
+
+            document.title =
+            "ხელოსნები საქართველოში | სანდო ხელოსნები — Your Home";
+
+            setDescription(
+                "იპოვე ხელოსნები საქართველოში — სანტექნიკოსი, ელექტრიკოსი, მღებავი, რემონტისა და სამშენებლო სამუშაოების სპეციალისტები. ნახე ნამუშევრები, შეფასებები და საკონტაქტო ინფორმაცია."
+            );
+
+            return;
+        }
+
+        if(
+            hash.startsWith(
+                "#craftsman-"
+            )
+        ){
+
+            document.title =
+            "ხელოსნის პროფილი საქართველოში — Your Home";
+
+            setDescription(
+                "ნახე ხელოსნის პროფილი, ნამუშევრები, მომსახურებები, შეფასებები და საკონტაქტო ინფორმაცია Your Home-ზე."
+            );
+
+            return;
+        }
+
+        document.title =
+        homeTitle;
+
+        setDescription(
+            homeDescription
+        );
+    }
+
+    [
+        "pushState",
+        "replaceState"
+    ].forEach(function(method){
+
+        const original =
+        history[method];
+
+        history[method] =
+        function(){
+
+            const result =
+            original.apply(
+                this,
+                arguments
+            );
+
+            setTimeout(
+                updateCraftsmenSeo,
+                0
+            );
+
+            return result;
+        };
+
+    });
+
+    window.addEventListener(
+        "popstate",
+        updateCraftsmenSeo
+    );
+
+    window.addEventListener(
+        "hashchange",
+        updateCraftsmenSeo
+    );
+
+    updateCraftsmenSeo();
+
+})();
+</script>
 </body>
 </html>
 
