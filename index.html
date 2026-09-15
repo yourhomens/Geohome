@@ -61884,7 +61884,17 @@ const v=
       }
 
       .yhc-detail-grid{
-        grid-template-columns:1fr;
+        grid-template-columns:minmax(0,1fr);
+      }
+
+      .yhc-detail-grid > *{
+        min-width:0;
+        max-width:100%;
+      }
+
+      .yhc-thumbs{
+        max-width:100%;
+        min-width:0;
       }
 
       .yhc-work-grid{
