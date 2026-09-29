@@ -75422,7 +75422,15 @@ document.addEventListener("click", async function(event){
         const listing =
             findListingById(listingId);
 
-        if (!listing) return;
+        if (!listing) {
+
+    setTimeout(
+        openListingFromQuery,
+        500
+    );
+
+    return;
+}
 
         window.history.replaceState(
             {
