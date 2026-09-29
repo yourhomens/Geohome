@@ -75397,6 +75397,68 @@ document.addEventListener("click", async function(event){
 
 })();
 </script>
+  <script>
+(function () {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const listingId =
+        params.get("listing");
+
+    if (!listingId) return;
+
+    function openListingFromQuery() {
+
+        if (
+            typeof findListingById !== "function" ||
+            typeof openListing !== "function"
+        ) {
+            return;
+        }
+
+        const listing =
+            findListingById(listingId);
+
+        if (!listing) return;
+
+        window.history.replaceState(
+            {
+                yourHomeView: "listing",
+                listingId: String(listing.id)
+            },
+            "",
+            window.location.pathname +
+            "?listing=" +
+            encodeURIComponent(listing.id)
+        );
+
+        openListing(
+            listing,
+            false
+        );
+    }
+
+    if (
+        document.readyState ===
+        "loading"
+    ) {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            openListingFromQuery
+        );
+
+    } else {
+
+        openListingFromQuery();
+
+    }
+
+})();
+</script>
 </body>
 </html>
 
