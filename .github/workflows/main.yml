@@ -37,7 +37,7 @@ jobs:
           echo '  <url><loc>https://yourhome24.ge/tbilisi-districts/</loc></url>' >> sitemap.xml
           echo '  <url><loc>https://yourhome24.ge/craftsmen/</loc></url>' >> sitemap.xml
 
-                    response=$(curl -s \
+              response=$(curl -s \
             -H "apikey: $SUPABASE_KEY" \
             -H "Authorization: Bearer $SUPABASE_KEY" \
             "$SUPABASE_URL/rest/v1/listings?select=id")
@@ -50,4 +50,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml
+          git diff --cached --quiet || git commit -m "Update sitemap"
           git push
