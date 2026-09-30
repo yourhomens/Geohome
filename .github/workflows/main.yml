@@ -37,16 +37,17 @@ jobs:
           echo '  <url><loc>https://yourhome24.ge/tbilisi-districts/</loc></url>' >> sitemap.xml
           echo '  <url><loc>https://yourhome24.ge/craftsmen/</loc></url>' >> sitemap.xml
 
-          response=$(curl -s \
-  -H "apikey: $SUPABASE_KEY" \
-  -H "Authorization: Bearer $SUPABASE_KEY" \
-  "$SUPABASE_URL/rest/v1/listings?select=id")
+                    response=$(curl -s \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_KEY" \
+            "$SUPABASE_URL/rest/v1/listings?select=id")
 
-echo "$response" |
-jq -r '.[] | select(type == "object" and .id != null) | "  <url><loc>https://yourhome24.ge/?listing=\(.id)</loc></url>"' >> sitemap.xml
+          echo "$response" | jq -r '.[]? | select(type == "object" and .id != null) | "  <url><loc>https://yourhome24.ge/?listing=\(.id)</loc></url>"' >> sitemap.xml
+
+          echo '</urlset>' >> sitemap.xml
 
       - name: Commit sitemap
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git
+          git push
