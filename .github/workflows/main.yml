@@ -1,4 +1,4 @@
-: Update sitemap
+name: Update sitemap
 
 on:
   schedule:
