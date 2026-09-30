@@ -22,7 +22,7 @@ jobs:
       - name: Generate sitemap
         env:
           SUPABASE_URL: https://clymnqkiarrpatcfuwwt.supabase.co
-          SUPABASE_KEY: sb_publishable__CQ1qg7_KizhMzPKDaD3tA_TQq6Azs
+          SUPABASE_KEY: sb_publishable__CQ1qg7_KizhMzPKDaD3tA_TQq6AzsM
         run: |
           echo '<?xml version="1.0" encoding="UTF-8"?>' > sitemap.xml
           echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' >> sitemap.xml
